@@ -6,7 +6,7 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import MasonryCard from "@/components/LoopComponents/MasonryCard.astro";
+import FeatureCard from "@/components/LoopComponents/FeatureCard.astro";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import Button from "@/components/Button/Button";
 
@@ -29,6 +29,33 @@ const viewAllText = collectionTitle?.toLowerCase().includes("testimonial")
     : `Browse All ${collectionTitle || ""}`.trim();
 
 const safeItems = Array.isArray(items) ? items : [];
+
+const toFeatureCardData = (item: any = {}) => {
+  const base = typeof item.data === "object" ? item.data : {};
+  return {
+    icon: base.icon ?? item.icon,
+    title:
+      base.title ??
+      base.name ??
+      base.heading ??
+      item.title ??
+      item.name ??
+      "",
+    description:
+      base.description ??
+      base.summary ??
+      item.description ??
+      item.summary ??
+      item.excerpt ??
+      "",
+    featured: base.featured ?? item.featured ?? false,
+  };
+};
+
+const getCardClassName = (item: any = "") =>
+  ["break-inside-avoid mb-6", item?.class ?? item?.className ?? ""]
+    .filter(Boolean)
+    .join(" ");
 ---
 
 <section id={id} class={`py-16 ${className}`}>
@@ -50,7 +77,11 @@ const safeItems = Array.isArray(items) ? items : [];
           (item) =>
             item && (
               <li class="inline-block w-full">
-                <MasonryCard {...item} />
+                <FeatureCard
+                  data={toFeatureCardData(item)}
+                  ringDuration={item?.ringDuration ?? 800}
+                  class={getCardClassName(item)}
+                />
               </li>
             )
         )}

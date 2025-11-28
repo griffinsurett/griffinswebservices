@@ -297,6 +297,34 @@ body {
   @apply bg-bg text-heading;
 }
 
+@utility primary-gradient {
+  @apply bg-linear-to-r from-primary to-primary-700;
+}
+
+@utility secondary-gradient {
+  @apply bg-linear-to-r from-primary-300 to-primary;
+}
+
+@utility gradient-disappear-on-hover {
+  @apply hover:bg-transparent hover:from-transparent hover:to-transparent
+}
+
+@utility inner-card-transition {
+    @apply opacity-0 group-hover:opacity-100 transition-opacity main-duration;
+  }
+
+  @utility inner-card-style {
+    @apply absolute;
+  }
+
+  @utility inner-card-color {
+    @apply inset-0 bg-gradient-to-br from-accent/10 to-transparent;
+  }
+
+  @utility consent-banner {
+  @apply bg-bg border border-bg rounded-lg p-6 shadow-xl max-w-lg w-full
+}
+
 /* ============================================================
  * 4. COMPONENT PATTERNS
  * ============================================================ */
@@ -351,7 +379,7 @@ body {
   }
 
   .emphasized-text {
-    @apply font-bold text-accent;
+    @apply font-bold text-transparent secondary-gradient bg-clip-text;
   }
 
   /* Card shells */

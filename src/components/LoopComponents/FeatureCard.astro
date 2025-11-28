@@ -1,68 +1,69 @@
 ---
 // src/components/LoopComponents/FeatureCard.astro
-/**
- * Feature Card Component
- *
- * Card for displaying product/service features with:
- * - Optional header image
- * - Title and description
- * - Optional CTA link
- * - Hover lift effect
- *
- * Used in CardVariant for feature showcases, service listings.
- */
+import AnimatedBorder from "../AnimatedBorder/AnimatedBorder";
+import Icon from "@/components/Icon";
+import type { IconType } from "@/content/schema";
+
+interface FeatureCardData {
+  icon?: IconType;
+  title?: string;
+  description?: string;
+  featured?: boolean;
+}
 
 export interface Props {
-  title: string;
-  url?: string;
+  data?: FeatureCardData;
+  icon?: string;
+  title?: string;
   description?: string;
-  image?: {
-    src: string;
-    alt: string;
-  };
-  ctaText?: string; // Call-to-action text
+  ringDuration?: number;
+  class?: string;
 }
 
 const {
+  data,
+  icon,
   title,
-  url,
   description,
-  image,
-  ctaText = "Learn More →",
-} = Astro.props;
+  ringDuration = 800,
+  class: className = "",
+} = Astro.props as Props;
+
+const cardData: FeatureCardData = data ?? {
+  icon,
+  title,
+  description,
+};
+
+const resolvedIcon = (cardData.icon ?? icon) as IconType | undefined;
+const resolvedTitle = cardData.title ?? title ?? "";
+const resolvedDescription = cardData.description ?? description ?? "";
 ---
 
-<div
-  class="bg-bg rounded-xl overflow-hidden shadow-lg hover:-translate-y-2 hover:shadow-xl transition-all duration-300 flex flex-col"
->
-  {/* Optional header image */}
-  {
-    image && (
-      <img src={image.src} alt={image.alt} class="w-full h-48 object-cover" />
-    )
-  }
+<div class={className}>
+  <AnimatedBorder
+    variant="progress-b-f"
+    triggers="hover"
+    duration={ringDuration}
+    borderRadius="rounded-3xl"
+    borderWidth={2}
+    className="group text-center outer-card-transition outer-card-hover-transition !duration-[900ms] ease-out"
+    innerClassName="h-85 mx-auto px-10 flex flex-col justify-center items-center relative card-bg"
+    client:visible
+  >
+    <div class="inner-card-style inner-card-transition inner-card-color"></div>
 
-  {/* Card content */}
-  <div class="p-6 flex-1 flex flex-col">
-    <h3 class="text-2xl font-bold mb-4">{title}</h3>
-
-    {/* Description takes available space */}
     {
-      description && (
-        <p class="text-text mb-6 flex-1 leading-relaxed">{description}</p>
+      resolvedIcon && (
+        <div class="icon-large z-10 mb-5 card-icon-color flex items-center justify-center">
+          <Icon icon={resolvedIcon} size="xl" className="text-current" />
+        </div>
       )
     }
 
-    {/* CTA link at bottom */}
-    {
-      url && (
-        <a
-          href={url}
-          class="text-primary font-semibold hover:underline self-start"
-        >
-          {ctaText}
-        </a>
-      )
-    }
-  </div>
+    {resolvedTitle && <h3 class="h3 mb-3 relative z-10">{resolvedTitle}</h3>}
+    {resolvedDescription && (
+      <p class="text-text leading-relaxed relative z-10">{resolvedDescription}</p>
+    )}
+  </AnimatedBorder>
 </div>

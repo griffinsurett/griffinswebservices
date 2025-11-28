@@ -6,7 +6,7 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import GridCard from "@/components/LoopComponents/GridCard.astro";
+import FeatureCard from "@/components/LoopComponents/FeatureCard.astro";
 import Button from "@/components/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 
@@ -44,6 +44,31 @@ const columnClasses = {
   5: "grid-cols-1 md:grid-cols-2 lg:grid-cols-5",
   6: "grid-cols-1 md:grid-cols-3 lg:grid-cols-6",
 };
+
+const toFeatureCardData = (item: any = {}) => {
+  const base = typeof item.data === "object" ? item.data : {};
+  return {
+    icon: base.icon ?? item.icon,
+    title:
+      base.title ??
+      base.name ??
+      base.heading ??
+      item.title ??
+      item.name ??
+      "",
+    description:
+      base.description ??
+      base.summary ??
+      item.description ??
+      item.summary ??
+      item.excerpt ??
+      "",
+    featured: base.featured ?? item.featured ?? false,
+  };
+};
+
+const getCardClassName = (item: any = "") =>
+  [item?.class ?? item?.className ?? "", "h-full"].filter(Boolean).join(" ");
 ---
 
 <section id={id} class={`py-16 ${className}`}>
@@ -63,7 +88,11 @@ const columnClasses = {
       <ul class={`grid ${columnClasses[columns]} ${gapClasses[gap]} list-none`}>
         {items.map((item) => (
           <li>
-            <GridCard {...item} />
+            <FeatureCard
+              data={toFeatureCardData(item)}
+              ringDuration={item?.ringDuration ?? 800}
+              class={getCardClassName(item)}
+            />
           </li>
         ))}
       </ul>

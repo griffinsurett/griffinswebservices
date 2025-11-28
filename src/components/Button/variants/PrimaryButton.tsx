@@ -32,9 +32,7 @@ export default function PrimaryButton({
     baseShell,
     "primary-button-transition",
     "border-2 border-primary",
-    "text-bg hover:text-heading",
-    "bg-gradient-to-r from-primary to-primary-700",
-    "hover:bg-transparent hover:from-transparent hover:to-transparent",
+    "primary-gradient gradient-disappear-on-hover text-bg hover:text-heading",
   ]
     .filter(Boolean)
     .join(" ");
