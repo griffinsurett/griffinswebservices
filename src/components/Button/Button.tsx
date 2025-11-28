@@ -31,6 +31,10 @@ export interface BaseButtonProps {
    * default btn-base styling when they need full control over the shell.
    */
   unstyled?: boolean;
+  /**
+   * Allows variants to opt-out of their entrance animations (primary uses this).
+   */
+  animated?: boolean;
 }
 
 /**
@@ -66,6 +70,7 @@ export const ButtonBase = forwardRef<HTMLButtonElement | HTMLAnchorElement, Butt
       size = 'md',
       children,
       unstyled = false,
+      animated: _animated,
       ...props
     },
     ref

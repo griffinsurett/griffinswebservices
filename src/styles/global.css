@@ -493,7 +493,7 @@ body {
   }
 
   .button-hover-transition {
-    @apply transition-all duration-700 ease-out hover:-translate-y-1 hover:shadow-2xl;
+    @apply transition-all duration-700 ease-out hover:shadow-2xl;
   }
 
   .primary-button-transition {

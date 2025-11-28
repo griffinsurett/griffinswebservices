@@ -35,7 +35,6 @@ export default function SecondaryButton({
     getButtonBaseClasses(props.size),
     "relative z-10 shadow-none",
     "bg-transparent text-heading",
-    "hover:bg-accent/10 dark:hover:bg-primary-light/10 transition-colors",
     BORDER_RADIUS_CLASS,
     className,
   ]
