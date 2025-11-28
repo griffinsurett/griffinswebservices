@@ -241,7 +241,7 @@ export default function AnimatedBorder({
       onMouseLeave={handleLeave}
       {...rest}
     >
-      {mountOverlay && variant !== "none" && (
+      {mountOverlay && (
         <div className={overlayClassNames.join(" ")} style={overlayStyle} />
       )}
 

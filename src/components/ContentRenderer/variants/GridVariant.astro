@@ -45,8 +45,13 @@ const columnClasses = {
   6: "grid-cols-1 md:grid-cols-3 lg:grid-cols-6",
 };
 
+const safeItems = Array.isArray(items) ? (items as Record<string, any>[]) : [];
+
 const getCardClassName = (item: any = "") =>
   [item?.class ?? item?.className ?? "", "h-full"].filter(Boolean).join(" ");
+
+const getRingDuration = (item: Record<string, any>) =>
+  typeof item?.ringDuration === "number" ? item.ringDuration : 800;
 ---
 
 <section id={id} class={`py-16 ${className}`}>
@@ -62,14 +67,14 @@ const getCardClassName = (item: any = "") =>
   }
 
   {
-    items.length > 0 && (
+    safeItems.length > 0 && (
       <ul class={`grid ${columnClasses[columns]} ${gapClasses[gap]} list-none`}>
-        {items.map((item) => (
+        {safeItems.map((item) => (
           <li>
             <FeatureCard
               client:visible
               data={item}
-              ringDuration={item?.ringDuration ?? 800}
+              ringDuration={getRingDuration(item)}
               className={getCardClassName(item)}
             />
           </li>
@@ -79,7 +84,7 @@ const getCardClassName = (item: any = "") =>
   }
 
   {
-    shouldShowCollectionCTA(collectionUrl, items.length) && (
+    shouldShowCollectionCTA(collectionUrl, safeItems.length) && (
       <div class="mt-12 text-center">
         <Button
           client:load
