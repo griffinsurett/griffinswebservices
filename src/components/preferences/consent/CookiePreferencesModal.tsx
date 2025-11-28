@@ -242,7 +242,7 @@ function CookiePreferencesModal({
         <Button
           variant="secondary"
           onClick={handleRejectAll}
-          className="flex-1 rounded-xl border-2 border-primary bg-bg px-6 py-4 font-semibold text-primary transition-colors hover:bg-primary/10 disabled:opacity-50"
+          className="flex-1"
           type="button"
           disabled={isPending}
         >
@@ -251,7 +251,7 @@ function CookiePreferencesModal({
         <Button
           variant="primary"
           onClick={handleConfirm}
-          className="flex-1 rounded-xl bg-primary px-6 py-4 font-semibold text-bg transition-colors hover:bg-primary-700 disabled:opacity-50"
+          className="flex-1"
           type="button"
           disabled={isPending}
         >

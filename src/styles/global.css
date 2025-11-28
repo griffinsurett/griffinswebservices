@@ -240,6 +240,10 @@ body {
   @apply dark:bg-primary-light/5 light:bg-primary-dark/5 faded-accent-border transition-all main-duration;
 }
 
+@utility card-bg-2 {
+  @apply bg-bg3 faded-accent-border transition-all main-duration;
+}
+
 /* @utility hover-card-bg {
   @apply hover:bg-transparent hover:border-primary/50;
 } */
@@ -322,7 +326,7 @@ body {
   }
 
   @utility consent-banner {
-  @apply bg-bg border border-bg rounded-lg p-6 shadow-xl max-w-lg w-full
+  @apply max-w-xl w-full bg-transparent border-0 p-0 shadow-none;
 }
 
 /* ============================================================
