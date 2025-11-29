@@ -1,0 +1,174 @@
+---
+// src/layouts/AboutSection.astro
+// Modern, editorial about section optimized for the refreshed build
+import SectionHeader from "@/components/SectionHeader.astro";
+import Button from "@/components/Button/Button";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import IconListItem from "@/components/LoopComponents/IconListItem";
+import { query, sortByOrder } from "@/utils/query";
+import { siteData } from "@/content/siteData";
+
+const quickFacts = [
+  { label: "Average turnaround", value: "4-6 weeks" },
+  { label: "Engagement model", value: "Strategy, build, and care plan" },
+  { label: "Client satisfaction", value: "98% would hire us again" },
+  { label: "Based in", value: siteData.location },
+];
+
+const proofPoints = [
+  "Hand-crafted code instead of bloated templates",
+  "Performance, accessibility, and SEO baked in",
+  "Hosting, maintenance, and monitoring included",
+  "Responsive support from people who know your business",
+];
+
+const storyHighlights = [
+  {
+    title: "Not another template factory.",
+    description:
+      "Unlike the bloated DIY builders flooding the internet, our websites do not fall apart when real customers start using them.",
+    detail:
+      "We scope every project around your services, operations, and goals so the finished site feels tailor-made and never like a generic skin.",
+  },
+  {
+    title: "We handle everything.",
+    description:
+      "You do not need to manage hosting, updates, or security issues — we handle the nitty-gritty so you can stay focused on the work you care about.",
+    detail:
+      "From discovery to launch to ongoing improvements, you get one accountable partner who keeps your site running flawlessly.",
+  },
+];
+
+const ceoQuote = siteData.ceoQuote;
+---
+
+<section id="about" class="outer-section bg-bg2 relative">
+  <div class="section-color-border"></div>
+
+  <div class="inner-section space-y-20">
+    <div class="flex flex-col gap-12 lg:flex-row lg:items-start">
+      <article class="space-y-8 lg:flex-[1.25] min-w-0">
+        <SectionHeader
+          title="About Griffin's Web Services"
+          headingBefore="Websites that make your business look credible, "
+          headingEmphasis="fast, secure, and easy to manage "
+          headingAfter="from day one."
+          className="text-left"
+          headingClassName="h2 mb-6"
+          description="We build and manage websites that look elite, load instantly, and keep working long after launch so you never have to juggle multiple vendors again."
+          descriptionClassName="text-lg lg:text-xl text-text max-w-3xl"
+        />
+
+        <div class="space-y-6 text-lg leading-relaxed text-text">
+          <p>
+            Griffin's Web Services builds fast, secure, professional websites for businesses that want a strong, trustworthy online presence without any technical headaches.
+          </p>
+          <p class="text-muted">
+            Our focus is simple: make your business look credible, make it easy for customers to reach you, and keep your website running smoothly around the clock.
+          </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2">
+          {storyHighlights.map((item) => (
+            <div class="rounded-2xl border border-accent/20 card-bg p-6">
+              <h3 class="text-heading text-xl font-semibold mb-2">{item.title}</h3>
+              <p class="text-text text-base leading-relaxed">{item.description}</p>
+              <p class="text-muted text-sm leading-relaxed mt-4">{item.detail}</p>
+            </div>
+          ))}
+        </div>
+
+        <blockquote class="rounded-3xl border border-accent/15 hero-gradient-bg p-6 lg:p-8">
+          {ceoQuote && (
+            <p class="text-heading text-2xl font-semibold leading-relaxed">
+              &ldquo;{ceoQuote}&rdquo;
+            </p>
+          )}
+          <footer class="mt-4 text-sm text-muted leading-snug space-y-2">
+              <div>
+                {<span class="text-heading font-semibold block">{siteData.ceoName}</span>}
+                {<span>{siteData.ceoTitle}, {siteData.title}</span>}
+              </div>
+          </footer>
+        </blockquote>
+
+        <div class="flex flex-wrap gap-4">
+          <Button client:visible variant="primary" size="lg" href="#contact">
+            Start Your Project
+          </Button>
+          <Button
+            client:visible
+            variant="secondary"
+            size="lg"
+            href="/about-us"
+            rightIcon="lu:arrow-right"
+          >
+            Learn More
+          </Button>
+        </div>
+      </article>
+
+      <aside class="lg:sticky lg:top-0 lg:flex-[0.85] w-full">
+        <div class="bg-bg rounded-3xl border border-accent/20 p-8 lg:p-10 shadow-2xl space-y-6">
+          <IconListItem
+            client:visible
+            data={{
+              icon: "lucide:layers",
+              title: "We handle everything.",
+              description: "Fully managed partnership",
+            }}
+            layout="horizontal"
+            alignment="left"
+            className="items-start gap-4"
+            iconSize="lg"
+            titleClassName="text-heading text-2xl font-bold"
+            descriptionClassName="text-xs font-semibold uppercase tracking-[0.3em] emphasized-text"
+            containerClassName="space-y-1"
+          />
+          <p class="text-muted leading-relaxed mt-4">
+            You do not have to chase multiple contractors. We plan, design, develop, host, and maintain your site so it keeps earning trust and revenue in the background.
+          </p>
+
+          <div class="mt-8 space-y-6">
+            <div class="grid gap-4 sm:grid-cols-2">
+              {quickFacts.map((fact) => (
+                <div class="rounded-2xl border border-accent/25 p-4">
+                  <p class="text-xs uppercase tracking-[0.2em] text-muted">{fact.label}</p>
+                  <p class="text-heading text-xl font-semibold mt-2">{fact.value}</p>
+                </div>
+              ))}
+            </div>
+
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-muted">What sets us apart</p>
+              <ul class="mt-3 space-y-3">
+                {proofPoints.map((point) => (
+                  <li class="flex items-start gap-3 text-base leading-relaxed text-text">
+                    <span class="text-accent text-lg">✓</span>
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-8 rounded-2xl border border-accent/30 bg-gradient-to-br from-accent/15 via-transparent to-primary/10 p-6 flex items-center gap-4">
+            <div class="text-4xl" aria-hidden="true">🚀</div>
+            <div>
+              <p class="text-heading font-semibold">Your website, our expertise</p>
+              <p class="text-muted text-sm leading-relaxed">
+                Strategy, design, development, and care plans working together so your online presence keeps up with the pace of your business.
+              </p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <ContentRenderer
+      query={query("stats").orderBy(sortByOrder())}
+      variant="StatsInlineVariant"
+      columns={4}
+    />
+  </div>
+</section>

@@ -6,6 +6,7 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
+import type { FeatureCardData } from "@/components/LoopComponents/FeatureCard";
 import CardRenderer from "@/components/LoopTemplates/CardRenderer.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Button from "@/components/Button/Button";
@@ -13,7 +14,6 @@ import { shouldShowCollectionCTA } from "../utils/helpers";
 
 interface Props extends BaseVariantProps {
   columns?: 1 | 2 | 3 | 4;
-  eyebrow?: string;
 }
 
 const {
@@ -25,19 +25,31 @@ const {
   collectionUrl,
   collectionTitle,
   id,
-  eyebrow,
 } = Astro.props as Props;
 
 const viewAllText = `Explore All ${collectionTitle || ""}`.trim();
-const safeItems = Array.isArray(items) ? (items as Record<string, any>[]) : [];
+const safeItems: FeatureCardData[] = Array.isArray(items)
+  ? (items as FeatureCardData[])
+  : [];
 
-const getCardClassName = (item: any = "") =>
-  [item?.class ?? item?.className ?? ""].filter(Boolean).join(" ");
+const itemToRecord = (item: FeatureCardData): Record<string, any> | null =>
+  item && typeof item === "object" ? (item as Record<string, any>) : null;
 
-const getRingDuration = (item: Record<string, any>) =>
-  typeof item?.ringDuration === "number" ? item.ringDuration : 800;
+const resolveCardClassName = (item: FeatureCardData, _index: number): string => {
+  const record = itemToRecord(item);
+  if (!record) return "";
+  const classes = [record.class, record.className].filter(
+    (value): value is string => typeof value === "string" && value.trim().length > 0
+  );
+  return classes.join(" ");
+};
 
-const showHeader = Boolean(eyebrow || title || description);
+const resolveRingDuration = (item: FeatureCardData, _index: number): number => {
+  const record = itemToRecord(item);
+  return typeof record?.ringDuration === "number" ? record.ringDuration : 800;
+};
+
+const showHeader = Boolean(title || description);
 const gridMarginClass = showHeader ? "mt-12" : "";
 ---
 
@@ -45,7 +57,7 @@ const gridMarginClass = showHeader ? "mt-12" : "";
   id={id}
   class={`outer-section bg-bg2 relative overflow-hidden ${className}`.trim()}
 >
-  <div class="section-dim-border"></div>
+  <!-- <div class="section-dim-border"></div> -->
 
   <div class="inner-section">
     {showHeader && (
@@ -60,8 +72,8 @@ const gridMarginClass = showHeader ? "mt-12" : "";
       items={safeItems}
       columns={columns}
       className={gridMarginClass}
-      getCardClassName={(item) => getCardClassName(item)}
-      getRingDuration={(item) => getRingDuration(item)}
+      getCardClassName={resolveCardClassName}
+      getRingDuration={resolveRingDuration}
     />
 
     {shouldShowCollectionCTA(collectionUrl, safeItems.length) && (

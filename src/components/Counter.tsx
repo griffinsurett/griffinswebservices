@@ -5,36 +5,61 @@ interface CounterProps {
   end: number;
   duration?: number;
   className?: string;
+  decimals?: number;
   onComplete?: () => void;
 }
+
+const getDecimalPlaces = (value?: number) => {
+  if (typeof value !== "number" || !Number.isFinite(value)) return 0;
+  const [, fraction] = value.toString().split(".");
+  return fraction ? fraction.length : 0;
+};
+
+const formatValue = (value: number, decimals: number) =>
+  decimals > 0 ? value.toFixed(decimals) : Math.round(value).toString();
 
 export default function Counter({
   start = 0,
   end,
   duration = 2000,
   className = "",
+  decimals,
   onComplete,
 }: CounterProps) {
-  const [count, setCount] = useState(start);
+  const [displayValue, setDisplayValue] = useState(start);
+  const resolvedDecimals =
+    typeof decimals === "number" && !Number.isNaN(decimals)
+      ? Math.max(0, decimals)
+      : Math.max(getDecimalPlaces(start), getDecimalPlaces(end));
 
   useEffect(() => {
+    let rafId: number;
     const range = end - start;
-    if (range === 0) return;
-    const stepTime = Math.abs(Math.floor(duration / range));
-    let current = start;
-    const increment = end > start ? 1 : -1;
+    if (range === 0) {
+      setDisplayValue(end);
+      return undefined;
+    }
 
-    const timer = setInterval(() => {
-      current += increment;
-      setCount(current);
-      if (current === end) {
-        clearInterval(timer);
+    const startTime = performance.now();
+    const resolvedDuration = duration <= 0 ? 0 : duration;
+
+    const animate = (timestamp: number) => {
+      const elapsed = timestamp - startTime;
+      const progress = resolvedDuration === 0 ? 1 : Math.min(elapsed / resolvedDuration, 1);
+      const value = start + range * progress;
+      setDisplayValue(value);
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(animate);
+      } else {
         onComplete?.();
       }
-    }, Math.max(stepTime, 16));
+    };
 
-    return () => clearInterval(timer);
+    rafId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(rafId);
   }, [start, end, duration, onComplete]);
 
-  return <span className={className}>{count}</span>;
+  return <span className={className}>{formatValue(displayValue, resolvedDecimals)}</span>;
 }

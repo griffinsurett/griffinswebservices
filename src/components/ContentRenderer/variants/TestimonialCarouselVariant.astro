@@ -6,9 +6,7 @@ import Button from "@/components/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import TestimonialCarousel from "@/components/LoopTemplates/TestimonialCarousel";
 
-interface Props extends BaseVariantProps {
-  eyebrow?: string;
-}
+interface Props extends BaseVariantProps {}
 
 const {
   items = [],
@@ -18,12 +16,11 @@ const {
   collectionUrl,
   collectionTitle,
   id,
-  eyebrow,
 } = Astro.props as Props;
 
 const safeItems = Array.isArray(items) ? (items as Record<string, any>[]) : [];
 const heading = title ?? "What Our Clients Say";
-const eyebrowText = eyebrow ?? "Testimonials";
+const eyebrowText = heading;
 const descriptionText =
   description ??
   "Don't just take our word for it—hear directly from the partners we've helped grow.";

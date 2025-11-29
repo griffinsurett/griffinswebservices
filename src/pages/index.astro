@@ -3,6 +3,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { siteData } from "@/content/siteData";
+import AboutSection from "@/layouts/AboutSection.astro"
 import {
   query,
   whereArrayContains,
@@ -31,7 +32,26 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
       variant="PortfolioVariant"
     />
 
-    <ContentRenderer query={query("about-us")} variant="AccordionVariant" />
+    <AboutSection />
+
+    <ContentRenderer
+      query={query("capabilities")
+        .where((entry) => entry.data.parent === "website-services")
+        .orderBy(sortByOrder())
+        .limit(3)}
+      variant="CardVariant"
+      columns={3}
+      gap="lg"
+      title="Core Website Services"
+      description="The three pillars every engagement includes: design, dependable engineering, and proactive care."
+    />
+
+    <ContentRenderer
+      query={query("benefits")}
+      variant="BenefitsInlineVariant"
+      title="Built different. Built better."
+      description="Every site we build is intentionally crafted to load quickly, stay secure, and give your customers a smooth, frustration-free experience."
+    />
 
     <!-- Capabilities - auto-populates from capabilities meta -->
     <ContentRenderer
@@ -100,7 +120,6 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
       query={query("faq").orderBy(sortByOrder())}
       variant="AccordionVariant"
       allowMultiple={false}
-      eyebrow="FAQ"
     />
 
     <!-- Contact ContentRenderer -->

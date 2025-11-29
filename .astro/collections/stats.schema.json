@@ -351,6 +351,21 @@
         "stat": {
           "type": "string"
         },
+        "statValue": {
+          "type": "number"
+        },
+        "statStart": {
+          "type": "number"
+        },
+        "statPrefix": {
+          "type": "string"
+        },
+        "statSuffix": {
+          "type": "string"
+        },
+        "statAnimate": {
+          "type": "boolean"
+        },
         "highlight": {
           "type": "boolean"
         },
@@ -359,8 +374,7 @@
         }
       },
       "required": [
-        "title",
-        "stat"
+        "title"
       ],
       "additionalProperties": false
     }

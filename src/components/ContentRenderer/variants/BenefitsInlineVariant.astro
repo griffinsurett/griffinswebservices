@@ -1,0 +1,63 @@
+---
+// src/components/ContentRenderer/variants/BenefitsInlineVariant.astro
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import type { FeatureCardData } from "@/components/LoopComponents/FeatureCard";
+import SectionHeader from "@/components/SectionHeader.astro";
+import CardRenderer from "@/components/LoopTemplates/CardRenderer.astro";
+
+interface Props extends BaseVariantProps {
+  columns?: 1 | 2 | 3 | 4;
+}
+
+const {
+  items = [],
+  title,
+  description,
+  className = "",
+  columns = 2,
+  id,
+  collectionTitle,
+} = Astro.props as Props;
+
+const safeItems: FeatureCardData[] = Array.isArray(items)
+  ? (items as FeatureCardData[])
+  : [];
+
+const headingContent = title ?? collectionTitle;
+const eyebrowContent = collectionTitle;
+const showHeader = Boolean(eyebrowContent || headingContent || description);
+
+const featureCardProps = {
+  listItemProps: {
+    layout: "horizontal" as const,
+    alignment: "left" as const,
+    className: "gap-5 text-left items-start w-full",
+    containerClassName: "text-left space-y-2",
+    iconClassName: "icon-large z-10 card-icon-color mr-5 shrink-0",
+  },
+};
+---
+
+<section
+  id={id}
+  class={`outer-section bg-bg relative ${className}`.trim()}
+>
+  <div class="inner-section space-y-10">
+    {showHeader && (
+      <SectionHeader
+        title={eyebrowContent}
+        heading={headingContent}
+        description={description}
+        className="text-center"
+        headingClassName="h2 mb-4"
+        descriptionClassName="text-lg text-muted max-w-2xl mx-auto"
+      />
+    )}
+
+    <CardRenderer
+      items={safeItems}
+      columns={columns}
+      featureCardProps={featureCardProps}
+    />
+  </div>
+</section>

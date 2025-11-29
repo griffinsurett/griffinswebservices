@@ -1,4 +1,10 @@
 import type { HTMLAttributes, ReactNode } from "react";
+import type * as ReactNamespace from "react";
+
+type HeadingTag = Extract<
+  keyof ReactNamespace.JSX.IntrinsicElements,
+  keyof HTMLElementTagNameMap
+>;
 
 interface HeadingSegmentProps {
   id?: string;
@@ -8,7 +14,7 @@ interface HeadingSegmentProps {
 
 interface HeadingProps extends HTMLAttributes<HTMLElement> {
   className?: string;
-  tagName?: keyof JSX.IntrinsicElements;
+  tagName?: HeadingTag;
   before?: ReactNode;
   text?: ReactNode;
   after?: ReactNode;
@@ -69,7 +75,7 @@ export default function Heading({
     };
   };
 
-  const TagComponent = Tag as keyof JSX.IntrinsicElements;
+  const TagComponent = Tag as HeadingTag;
 
   return (
     <TagComponent className={finalClassName} {...props}>

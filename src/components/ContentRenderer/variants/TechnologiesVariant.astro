@@ -4,9 +4,7 @@ import type { BaseVariantProps } from "../ContentRenderer.types";
 import SectionHeader from "@/components/SectionHeader.astro";
 import TechStackSection from "@/components/LoopTemplates/TechStackSection";
 
-interface Props extends BaseVariantProps {
-  eyebrow?: string;
-}
+interface Props extends BaseVariantProps {}
 
 const {
   items = [],
@@ -14,12 +12,11 @@ const {
   description,
   className = "",
   id,
-  eyebrow,
 } = Astro.props as Props;
 
 const safeItems = Array.isArray(items) ? (items as Record<string, any>[]) : [];
 const heading = title ?? "Technologies We Trust";
-const eyebrowText = eyebrow ?? "Tech Stack";
+const eyebrowText = heading;
 const descriptionText =
   description ??
   "From modern frameworks to hosting infrastructure, we build with tools that scale.";

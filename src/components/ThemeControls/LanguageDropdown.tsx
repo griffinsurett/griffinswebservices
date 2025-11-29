@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import Icon from "@/components/Icon";
 import { CircleCheckbox } from "./checkboxes/CircleCheckbox";
 import {
@@ -8,6 +8,10 @@ import {
   type Language,
 } from "@/utils/languageTranslation/languages";
 import { useConsent } from "@/hooks/useConsent";
+
+const CookiePreferencesModal = lazy(
+  () => import("@/components/preferences/consent/CookiePreferencesModal"),
+);
 
 const CONSENT_MESSAGE =
   "Please enable functional cookies to use the language switcher. You can manage your preferences in the cookie settings.";
@@ -23,6 +27,7 @@ export default function LanguageDropdown() {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(
     getStoredLanguage,
   );
+  const [showConsentModal, setShowConsentModal] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { hasConsentFor } = useConsent();
   const hasFunctionalConsent = hasConsentFor("functional");
@@ -65,6 +70,15 @@ export default function LanguageDropdown() {
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
+
+  const handleOpenConsentModal = () => {
+    setShowConsentModal(true);
+    setOpen(false);
+  };
+
+  const handleCloseConsentModal = () => {
+    setShowConsentModal(false);
+  };
 
   const handleLanguageChange = (code: string) => {
     if (!hasFunctionalConsent) {
@@ -123,9 +137,16 @@ export default function LanguageDropdown() {
           onWheelCapture={(event) => event.stopPropagation()}
         >
           {!hasFunctionalConsent && (
-            <div className="mb-2 rounded-xl border border-yellow-400/40 bg-yellow-500/15 px-3 py-2 text-xs text-text">
+            <button
+              type="button"
+              onClick={handleOpenConsentModal}
+              className="mb-2 rounded-xl border border-yellow-400/40 bg-yellow-500/15 px-3 py-2 text-xs text-text text-left transition hover:border-yellow-400 hover:bg-yellow-500/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400"
+            >
               Enable functional cookies to switch languages.
-            </div>
+              <span className="mt-1 block text-[11px] font-semibold uppercase tracking-wide text-primary">
+                Manage consent preferences
+              </span>
+            </button>
           )}
 
           <div className="flex max-h-64 flex-col overflow-y-auto">
@@ -169,6 +190,15 @@ export default function LanguageDropdown() {
             })}
           </div>
         </div>
+      )}
+
+      {showConsentModal && (
+        <Suspense fallback={null}>
+          <CookiePreferencesModal
+            isOpen={showConsentModal}
+            onClose={handleCloseConsentModal}
+          />
+        </Suspense>
       )}
     </div>
   );

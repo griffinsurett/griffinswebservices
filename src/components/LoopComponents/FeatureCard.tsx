@@ -18,6 +18,7 @@ export interface FeatureCardProps {
   description?: ReactNode;
   className?: string;
   ringDuration?: number;
+  listItemProps?: Partial<Omit<IconListItemProps, "data">>;
 }
 
 const ICON_KEYS = ["icon", "Icon", "iconName"];
@@ -111,6 +112,7 @@ export default function FeatureCard({
   description,
   className = "",
   ringDuration = 800,
+  listItemProps,
 }: FeatureCardProps) {
   const overrideSource = createOverrideSource({ icon, title, description });
   const dataSources = [
@@ -119,6 +121,31 @@ export default function FeatureCard({
   ];
   const { content: resolvedData, url } =
     dataSources.length > 0 ? normalizeFeatureCardData(dataSources) : EMPTY_PAYLOAD;
+
+  const {
+    layout,
+    alignment,
+    iconClassName,
+    iconSize,
+    titleClassName,
+    titleTag,
+    descriptionClassName,
+    descriptionTag,
+    ...restListItemProps
+  } = listItemProps ?? {};
+
+  const listItemConfig: Omit<IconListItemProps, "data"> = {
+    layout: layout ?? "vertical",
+    alignment: alignment ?? "center",
+    iconClassName: iconClassName ?? "icon-large z-10 mb-5 card-icon-color",
+    iconSize: iconSize ?? "xl",
+    titleClassName: titleClassName ?? "h3 mb-3 relative z-10",
+    titleTag: titleTag ?? "h3",
+    descriptionClassName:
+      descriptionClassName ?? "text-text leading-relaxed relative z-10",
+    descriptionTag: descriptionTag ?? "p",
+    ...restListItemProps,
+  };
 
   return (
     <div className={className}>
@@ -135,14 +162,7 @@ export default function FeatureCard({
         <div className="inner-card-style inner-card-transition inner-card-color" />
         <IconListItem
           data={resolvedData}
-          layout="vertical"
-          alignment="center"
-          iconClassName="icon-large z-10 mb-5 card-icon-color"
-          iconSize="xl"
-          titleClassName="h3 mb-3 relative z-10"
-          titleTag="h3"
-          descriptionClassName="text-text leading-relaxed relative z-10"
-          descriptionTag="p"
+          {...listItemConfig}
         />
       </AnimatedBorder>
     </div>

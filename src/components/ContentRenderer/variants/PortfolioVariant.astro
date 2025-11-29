@@ -14,7 +14,6 @@ import { shouldShowCollectionCTA } from "../utils/helpers";
 interface Props extends BaseVariantProps {
   autoplay?: boolean;
   autoAdvanceDelay?: number;
-  eyebrow?: string;
 }
 
 const {
@@ -27,14 +26,13 @@ const {
   id,
   autoplay = true,
   autoAdvanceDelay = 7000,
-  eyebrow,
 } = Astro.props as Props;
 
 const safeItems = Array.isArray(items) ? (items as Record<string, any>[]) : [];
 const fallbackTitle = title ?? collectionTitle ?? "Portfolio";
-const headerEyebrow = eyebrow ?? fallbackTitle;
 const headerTitle = title ?? fallbackTitle;
-const showHeader = Boolean(headerEyebrow || headerTitle || description);
+const headerEyebrow = headerTitle;
+const showHeader = Boolean(headerTitle || description);
 const ctaLabelSource = collectionTitle || headerTitle || "Projects";
 const viewAllText = `View All ${ctaLabelSource}`.trim();
 ---

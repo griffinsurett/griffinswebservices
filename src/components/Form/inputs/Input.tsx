@@ -9,13 +9,16 @@ import {
   useId,
   useState,
   type FocusEvent,
+  type HTMLInputTypeAttribute,
   type InputHTMLAttributes,
 } from "react";
 import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
   name: string;
   label?: string;
+  type?: HTMLInputTypeAttribute;
 
   // Styling
   containerClassName?: string;

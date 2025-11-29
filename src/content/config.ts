@@ -158,7 +158,12 @@ export const collections = {
   "stats": defineCollection({
     schema: ({ image }) =>
       baseSchema({ image }).extend({
-        stat: z.string(),
+        stat: z.string().optional(),
+        statValue: z.number().optional(),
+        statStart: z.number().optional(),
+        statPrefix: z.string().optional(),
+        statSuffix: z.string().optional(),
+        statAnimate: z.boolean().optional(),
         icon: z.string().optional(),
         highlight: z.boolean().optional(),
       }),

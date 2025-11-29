@@ -7,14 +7,14 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
+import ContentBridge from "../ContentBridge/ContentBridge.astro";
+import Accordion from "@/components/LoopTemplates/Accordion";
 import Button from "@/components/Button/Button";
 import SectionHeader from "@/components/SectionHeader.astro";
-import ContentAccordion from "@/components/LoopTemplates/ContentAccordion.astro";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 
 interface Props extends BaseVariantProps {
   allowMultiple?: boolean;
-  eyebrow?: string;
   ctaHref?: string;
   ctaText?: string;
   ctaDescription?: string;
@@ -29,13 +29,13 @@ const {
   collectionUrl,
   collectionTitle,
   id,
-  eyebrow,
   ctaHref,
   ctaText,
   ctaDescription,
 } = Astro.props as Props;
 
 const safeItems = Array.isArray(items) ? items : [];
+const bridgeId = id || "accordion";
 const normalizedHeading =
   title || collectionTitle || "Frequently Asked Questions";
 const headingWords = normalizedHeading.trim().split(/\s+/).filter(Boolean);
@@ -48,7 +48,7 @@ if (!headingBefore) {
 }
 
 const headingBeforeText = headingBefore ? `${headingBefore} ` : undefined;
-const headerEyebrow = eyebrow ?? title ?? collectionTitle;
+const headerEyebrow = title ?? collectionTitle ?? normalizedHeading;
 const headerDescription =
   description ?? "Got questions? We've got answers...";
 const hasHeader = Boolean(headerEyebrow || normalizedHeading || headerDescription);
@@ -89,12 +89,21 @@ const buttonIcon = hasCollectionCTA ? "lu:arrow-right" : undefined;
       />
     )}
 
-    <ContentAccordion
-      items={safeItems}
-      allowMultiple={allowMultiple}
-      className="space-y-4 mt-12"
-      bridgeId={id || "accordion"}
-    />
+    {safeItems.length > 0 && (
+      <ContentBridge items={safeItems} bridgeId={bridgeId} className="mt-12">
+        <Accordion
+          items={safeItems.map((item, index) => ({
+            slug: item.slug,
+            title: item.title || "Untitled",
+            description: item.description,
+            contentSlotId: `${bridgeId}-slot-${index}`,
+          }))}
+          allowMultiple={allowMultiple}
+          className="space-y-4"
+          client:visible
+        />
+      </ContentBridge>
+    )}
 
     {shouldRenderCTA && (
       <div class="mt-12 text-center">
