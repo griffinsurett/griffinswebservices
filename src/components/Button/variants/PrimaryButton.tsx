@@ -18,6 +18,7 @@ export default function PrimaryButton({
   rightIcon,
   className = "",
   animated = true,
+  buttonWrapperClasses = "w-full lg:w-auto",
   ...props
 }: ButtonProps) {
   const anim = useAnimatedElement<HTMLSpanElement>({
@@ -30,9 +31,7 @@ export default function PrimaryButton({
   const baseShell = getButtonBaseClasses(props.size);
   const variantClasses = [
     baseShell,
-    "primary-button-transition",
-    "border-2 border-primary",
-    "primary-gradient gradient-disappear-on-hover text-bg hover:text-heading",
+    "primary-button-transition border-2 border-primary primary-gradient gradient-disappear-on-hover text-bg hover:text-heading",
   ]
     .filter(Boolean)
     .join(" ");
@@ -47,14 +46,15 @@ export default function PrimaryButton({
     />
   );
 
+
   if (!animated) {
-    return <span className="inline-flex w-full lg:w-auto">{buttonContent}</span>;
+    return <span className={`${buttonWrapperClasses} inline-flex`}>{buttonContent}</span>;
   }
 
   return (
     <span
       ref={anim.ref}
-      className="inline-flex w-full lg:w-auto animated-element zoom-in"
+      className={`${buttonWrapperClasses} animated-element zoom-in`.trim()}
       {...anim.props}
     >
       {buttonContent}

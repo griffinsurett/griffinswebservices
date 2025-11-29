@@ -7,6 +7,7 @@ interface HeadingSegmentProps {
 }
 
 interface HeadingProps extends HTMLAttributes<HTMLElement> {
+  className?: string;
   tagName?: keyof JSX.IntrinsicElements;
   before?: ReactNode;
   text?: ReactNode;

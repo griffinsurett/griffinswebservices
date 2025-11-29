@@ -243,6 +243,7 @@ function CookiePreferencesModal({
           variant="secondary"
           onClick={handleRejectAll}
           className="flex-1"
+          buttonWrapper="w-full"
           type="button"
           disabled={isPending}
         >
@@ -252,6 +253,7 @@ function CookiePreferencesModal({
           variant="primary"
           onClick={handleConfirm}
           className="flex-1"
+          buttonWrapper="w-full"
           type="button"
           disabled={isPending}
         >

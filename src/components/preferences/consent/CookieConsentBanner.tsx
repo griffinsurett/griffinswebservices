@@ -128,7 +128,7 @@ export default function CookieConsentBanner() {
                 <Button
                   variant="secondary"
                   onClick={handleRejectAll}
-                  className="flex-1"
+                  buttonWrapperClasses="inline-flex w-full"
                   type="button"
                   disabled={isPending}
                 >
@@ -137,6 +137,7 @@ export default function CookieConsentBanner() {
                 <Button
                   variant="primary"
                   onClick={handleAcceptAll}
+                  buttonWrapperClasses="inline-flex w-full"
                   className="flex-1"
                   animated={false}
                   type="button"

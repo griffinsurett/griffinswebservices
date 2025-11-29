@@ -26,6 +26,8 @@ export interface BaseButtonProps {
   size?: ButtonSize;       // Button size
   children: ReactNode;              // Button text/content
   className?: string;               // Additional CSS classes
+  /** Optional classes for wrapper spans used by certain variants */
+  buttonWrapperClasses?: string;
   /**
    * Internal escape hatch that allows variant components to opt-out of the
    * default btn-base styling when they need full control over the shell.
@@ -65,6 +67,7 @@ export const ButtonBase = forwardRef<HTMLButtonElement | HTMLAnchorElement, Butt
     {
       href,
       className = '',
+      buttonWrapperClasses: _buttonWrapperClasses,
       leftIcon,
       rightIcon,
       size = 'md',
