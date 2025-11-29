@@ -31,28 +31,29 @@ const {
 } = Astro.props as Props;
 
 const safeItems = Array.isArray(items) ? (items as Record<string, any>[]) : [];
-const showHeader = Boolean(eyebrow || title || description);
-const ctaLabelSource = collectionTitle || title || "Projects";
+const fallbackTitle = title ?? collectionTitle ?? "Portfolio";
+const headerEyebrow = eyebrow ?? fallbackTitle;
+const headerTitle = title ?? fallbackTitle;
+const showHeader = Boolean(headerEyebrow || headerTitle || description);
+const ctaLabelSource = collectionTitle || headerTitle || "Projects";
 const viewAllText = `View All ${ctaLabelSource}`.trim();
 ---
 
 <section
   id={id}
-  class={`bg-bg relative overflow-hidden ${className}`.trim()}
+  class={`outer-section bg-bg relative overflow-hidden ${className}`.trim()}
 >
   <div class="section-dim-border"></div>
 
   <div class="">
-    {showHeader && (
-      <SectionHeader
-        title={eyebrow}
-        heading={title}
-        description={description}
-        className="text-center"
-        headingClassName="h2 mb-6"
-        descriptionClassName="large-text max-w-2xl mx-auto"
-      />
-    )}
+    <SectionHeader
+      title={headerEyebrow}
+      heading={headerTitle}
+      description={description}
+      className="text-center"
+      headingClassName="h2 mb-6"
+      descriptionClassName="large-text max-w-2xl mx-auto"
+    />
 
     <PortfolioCarousel
       client:visible
@@ -67,7 +68,7 @@ const viewAllText = `View All ${ctaLabelSource}`.trim();
         <Button
           client:visible
           href={collectionUrl}
-          rightIcon="lu:chevron-right"
+          rightIcon="lu:arrow-right"
           variant="secondary"
         >
           {viewAllText}
