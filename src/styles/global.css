@@ -443,7 +443,7 @@ body {
 
   /* Icon sizing */
   .icon-large {
-    @apply w-15 h-15 text-xl lg:text-2xl flex items-center justify-center mx-auto rounded-full relative;
+    @apply w-16 h-16 text-xl lg:text-2xl flex items-center justify-center mx-auto rounded-full relative;
   }
 
   .icon-medium {
