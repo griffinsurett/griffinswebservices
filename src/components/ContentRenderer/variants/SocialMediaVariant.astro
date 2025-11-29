@@ -6,7 +6,7 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import SocialIcon from "@/components/LoopComponents/SocialIcon.astro";
+import SocialIcon from "@/components/LoopComponents/SocialIcon";
 
 interface Props extends BaseVariantProps {
   size?: "sm" | "md" | "lg";
@@ -58,7 +58,7 @@ const layoutClasses = {
       >
         {items.map((item) => (
           <li>
-            <SocialIcon {...item} size={size} />
+            <SocialIcon {...item} size={size} client:visible />
           </li>
         ))}
       </ul>

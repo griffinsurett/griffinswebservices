@@ -1,0 +1,77 @@
+---
+// src/components/SectionHeader.astro
+import BorderTitle from "@/components/BorderTitle";
+import Heading from "@/components/Heading";
+import type { ReactNode } from "react";
+
+interface Props {
+  title?: ReactNode;
+  titleClassName?: string;
+  titlePillClassName?: string;
+  heading?: ReactNode;
+  headingBefore?: ReactNode;
+  headingEmphasis?: ReactNode;
+  headingAfter?: ReactNode;
+  headingTag?: string;
+  headingClassName?: string;
+  emphasisClassName?: string;
+  description?: ReactNode;
+  descriptionClassName?: string;
+  className?: string;
+  headerProps?: Record<string, unknown>;
+}
+
+const {
+  title,
+  titleClassName = "",
+  titlePillClassName,
+  heading,
+  headingBefore,
+  headingEmphasis,
+  headingAfter,
+  headingTag = "h2",
+  headingClassName = "h2 mb-6",
+  emphasisClassName = "emphasized-text",
+  description,
+  descriptionClassName = "large-text",
+  className = "text-section",
+  headerProps = {},
+} = Astro.props as Props;
+
+const hasSegmentedHeading =
+  headingBefore !== undefined ||
+  headingEmphasis !== undefined ||
+  headingAfter !== undefined;
+---
+
+<div class={className}>
+  {title && (
+    <BorderTitle
+      client:visible
+      className={titleClassName}
+      pillClassName={titlePillClassName}
+    >
+      {title}
+    </BorderTitle>
+  )}
+
+  {hasSegmentedHeading ? (
+    <Heading
+      tagName={headingTag}
+      className={headingClassName}
+      before={headingBefore}
+      text={headingEmphasis}
+      after={headingAfter}
+      textClass={emphasisClassName}
+      {...headerProps}
+    />
+  ) : (
+    heading && (
+      <Heading tagName={headingTag} className={headingClassName} {...headerProps}>
+        {heading}
+      </Heading>
+    )
+  )}
+
+  {description && <p class={descriptionClassName}>{description}</p>}
+</div>

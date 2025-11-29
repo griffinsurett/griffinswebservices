@@ -26,11 +26,11 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
       }}
     />
 
-      <ContentRenderer
+    <ContentRenderer
       query={query("projects")
         .orderBy(sortByDate("publishDate", "desc"))
         .limit(5)}
-      variant="GridVariant"
+      variant="CardVariant"
     />
 
     <ContentRenderer query={query("about-us")} variant="AccordionVariant" />
@@ -38,21 +38,18 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
     <!-- Capabilities - auto-populates from capabilities meta -->
     <ContentRenderer
       query={query("capabilities").orderBy(sortByOrder())}
-      variant="GridVariant"
+      variant="CardVariant"
       columns={3}
       gap="lg"
     />
 
     <!-- Benefits - auto-populates from benefits meta -->
-    <ContentRenderer
-      query={query("benefits")}
-      variant="GridVariant"
-    />
+    <ContentRenderer query={query("benefits")} variant="CardVariant" />
 
-        <!-- Solutions - auto-populates from solutions meta -->
+    <!-- Solutions - auto-populates from solutions meta -->
     <ContentRenderer
       query={query("solutions").orderBy(sortByOrder())}
-      variant="GridVariant"
+      variant="CardVariant"
       columns={3}
       gap="lg"
     />
@@ -60,7 +57,7 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
     <!-- Filtered query - still gets meta from authors -->
     <!-- <ContentRenderer
       query={query("authors").where(whereArrayContains("tags", "featured"))}
-      variant="GridVariant"
+      variant="CardVariant"
       columns={3}
       gap="lg"
     /> -->
@@ -70,19 +67,19 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
       query={query("projects")
         .orderBy(sortByDate("publishDate", "desc"))
         .limit(5)}
-      variant="GridVariant"
+      variant="CardVariant"
     /> -->
 
     <!-- Testimonials with rating filter -->
     <ContentRenderer
       query={query("testimonials").where((entry) => entry.data.rating >= 4)}
-      variant="MasonryVariant"
+      variant="CardVariant"
     />
 
-       <!-- Addon Capabilities - auto-populates from capabilities meta -->
+    <!-- Addon Capabilities - auto-populates from capabilities meta -->
     <ContentRenderer
       query={query("stats")}
-      variant="GridVariant"
+      variant="CardVariant"
       columns={3}
       gap="lg"
     />
@@ -90,7 +87,7 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
     <!-- Addon Capabilities - auto-populates from capabilities meta -->
     <ContentRenderer
       query={query("capabilities").orderBy(sortByOrder())}
-      variant="GridVariant"
+      variant="CardVariant"
       columns={3}
       gap="lg"
     />

@@ -137,7 +137,7 @@ The `ContentRenderer` component accepts a `variant` prop to render content in di
 <!-- Grid layout -->
 <ContentRenderer 
   query={query('services')} 
-  variant="GridVariant" 
+  variant="CardVariant" 
   columns={3} 
 />
 
@@ -403,11 +403,11 @@ const { entries, title, description, customProp } = Astro.props;
 
 ### Available Variants
 
-- **GridVariant**: Responsive grid layout (1-6 columns)
+- **CardVariant**: Responsive grid layout (1-6 columns)
 - **ListVariant**: Vertical stack of horizontal cards
 - **BlogVariant**: Article layout with metadata (1-3 columns)
 - **CardVariant**: Feature showcase cards (1-4 columns)
-- **MasonryVariant**: Pinterest-style layout
+- **CardVariant**: Pinterest-style layout
 - **AccordionVariant**: Collapsible Q&A
 - **HeroVariant**: Full-width hero section
 - **ContactVariant**: Contact information cards

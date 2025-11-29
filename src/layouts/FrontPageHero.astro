@@ -2,7 +2,7 @@
 // src/layouts/FrontPageHero.astro
 import Button from "@/components/Button/Button";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import Heading from "@/components/Heading";
+import SectionHeader from "@/components/SectionHeader.astro";
 import { query } from "@/utils/query";
 import { siteData } from "@/content/siteData";
 
@@ -52,19 +52,18 @@ const tagline = {
       class="min-h-screen xl:h-auto inner-section mx-auto flex flex-col justify-center items-center"
     >
       <div
-        class="flex flex-col gap-2 justify-left items-start lg:justify-center lg:items-center lg:text-center"
+        class="flex flex-col gap-4 justify-left items-start lg:justify-center lg:items-center lg:text-center w-full"
       >
-        <Heading
-          tagName="h1"
-          before={tagline.before}
-          text={tagline.emphasized}
-          after={tagline.after}
-          textClass="emphasized-text"
+        <SectionHeader
+          className="text-left lg:text-center w-full"
+          headingBefore={tagline.before}
+          headingEmphasis={tagline.emphasized}
+          headingAfter={tagline.after}
+          headingTag="h1"
+          headingClassName="text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight"
+          description={siteData.description}
+          descriptionClassName="hero-text mb-4 lg:mb-6 text-lg max-w-3xl leading-relaxed mx-0 lg:mx-auto"
         />
-
-        <p class="hero-text mb-4 lg:mb-6 text-lg max-w-3xl leading-relaxed">
-          {siteData.description}
-        </p>
 
         <div class="flex flex-col lg:flex-row items-center gap-3 lg:gap-6">
           <Button
