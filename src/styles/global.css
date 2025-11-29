@@ -35,8 +35,8 @@
   /* ───── Neutrals ───── */
   /* Text colors */
   --color-heading: var(--color-tertiary-dark);
-  --color-text: var(--text-zinc-700);
-  --color-muted: var(--text-zinc-200);
+  --color-text: var(--color-zinc-300);
+  --color-muted: var(--color-zinc-200);
 
   /* Background surfaces */
   --color-bg: var(--color-primary-dark);
@@ -186,7 +186,7 @@ body {
   [data-theme="light"] {
     --color-primary: var(--color-zinc-900);
     --color-heading: var(--color-tertiary-dark);
-    --color-text: var(--text-zinc-700);
+    --color-text: var(--color-zinc-600);
     --color-muted: var(--text-zinc-600);
     --color-bg: var(--color-primary-light);
     --color-bg2: var(--color-secondary-light);
@@ -196,8 +196,8 @@ body {
   [data-theme="dark"] {
     --color-primary: var(--color-accent);
     --color-heading: var(--color-primary-light);
-    --color-text: var(--color-secondary-light);
-    --color-muted: var(--text-zinc-200);
+    --color-text: var(--color-zinc-300);
+    --color-muted: var(--color-zinc-200);
     --color-bg: var(--color-primary-dark);
     --color-bg2: var(--color-secondary-dark);
     --color-bg3: var(--color-tertiary-dark);
@@ -508,7 +508,7 @@ body {
   } */
 
   .hero-text {
-    @apply text-base sm:text-xl md:text-2xl leading-relaxed;
+    @apply text-sm sm:text-xl md:text-2xl leading-relaxed;
   }
 
   .small-text {
