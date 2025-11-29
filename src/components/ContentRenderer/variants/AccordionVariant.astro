@@ -7,10 +7,9 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import ContentBridge from "../ContentBridge/ContentBridge.astro";
-import Accordion from "@/components/LoopTemplates/Accordion";
 import Button from "@/components/Button/Button";
 import SectionHeader from "@/components/SectionHeader.astro";
+import ContentAccordion from "@/components/LoopTemplates/ContentAccordion.astro";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 
 interface Props extends BaseVariantProps {
@@ -37,7 +36,6 @@ const {
 } = Astro.props as Props;
 
 const safeItems = Array.isArray(items) ? items : [];
-const bridgeId = id || "accordion";
 const normalizedHeading =
   title || collectionTitle || "Frequently Asked Questions";
 const headingWords = normalizedHeading.trim().split(/\s+/).filter(Boolean);
@@ -91,21 +89,12 @@ const buttonIcon = hasCollectionCTA ? "lu:arrow-right" : undefined;
       />
     )}
 
-    {safeItems.length > 0 && (
-      <ContentBridge items={safeItems} bridgeId={bridgeId} className="mt-12">
-        <Accordion
-          items={safeItems.map((item, index) => ({
-            slug: item.slug,
-            title: item.title || "Untitled",
-            description: item.description,
-            contentSlotId: `${bridgeId}-slot-${index}`,
-          }))}
-          allowMultiple={allowMultiple}
-          className="space-y-4"
-          client:visible
-        />
-      </ContentBridge>
-    )}
+    <ContentAccordion
+      items={safeItems}
+      allowMultiple={allowMultiple}
+      className="space-y-4 mt-12"
+      bridgeId={id || "accordion"}
+    />
 
     {shouldRenderCTA && (
       <div class="mt-12 text-center">
