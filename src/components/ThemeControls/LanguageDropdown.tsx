@@ -164,7 +164,7 @@ export default function LanguageDropdown() {
                       className="text-primary"
                       aria-label="Currently selected language"
                     >
-                      <Icon icon="lucide:check-square" size="sm" className="text-primary" />
+                      <Icon icon="lucide:check" size="sm" className="text-primary" />
                     </span>
                   )}
                 </button>

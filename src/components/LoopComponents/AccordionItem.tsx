@@ -2,6 +2,7 @@
 import type { ReactNode } from "react";
 import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
 import IconListItem from "@/components/LoopComponents/IconListItem";
+import Icon from "@/components/Icon";
 
 export interface AccordionItemProps {
   id: string;
@@ -13,6 +14,7 @@ export interface AccordionItemProps {
   onToggle: () => void;
   headerClassName?: string;
   headerSlot?: ReactNode;
+  showIndicator?: boolean;
 }
 
 export default function AccordionItem({
@@ -25,6 +27,7 @@ export default function AccordionItem({
   onToggle,
   headerClassName = "",
   headerSlot,
+  showIndicator = true,
 }: AccordionItemProps) {
   return (
     <div
@@ -62,16 +65,20 @@ export default function AccordionItem({
             />
           )}
 
-          <div
-            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 text-lg font-semibold ${
-              isExpanded
-                ? "bg-primary text-bg rotate-45"
-                : "bg-primary/20 text-accent rotate-0"
-            }`}
-            aria-hidden="true"
-          >
-            <span className="translate-y-[-1px]">{isExpanded ? "−" : "+"}</span>
-          </div>
+          {showIndicator && (
+            <div
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 text-lg font-semibold ${
+                isExpanded ? "bg-primary text-bg" : "bg-primary/20 text-accent"
+              }`}
+              aria-hidden="true"
+            >
+              <Icon
+                icon={isExpanded ? "lucide:minus" : "lucide:plus"}
+                size="sm"
+                className="w-4 h-4"
+              />
+            </div>
+          )}
         </button>
 
         <div

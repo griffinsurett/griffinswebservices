@@ -191,6 +191,7 @@ function CookiePreferencesModal({
         allowMultiple
         className="space-y-3"
         items={accordionItems}
+        showIndicator={false}
         headerSlot={({ item, id, expanded }) => {
           const category = cookieCategories.find((c) => c.id === item.slug);
           if (!category) return null;
