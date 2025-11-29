@@ -1,20 +1,24 @@
 ---
 // src/components/ContentRenderer/variants/AccordionVariant.astro
 /**
- * AccordionVariant - Refactored to use ContentBridge
- *
- * The ONLY change: Wrap Accordion in ContentBridge instead of manually
- * rendering hidden slots. Your existing Accordion.tsx works unchanged!
+ * AccordionVariant
+ * Legacy-inspired accordion section with BorderTitle header + CTA block.
+ * Still relies on ContentBridge so React accordions can consume Astro content.
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import ContentBridge from "../ContentBridge/ContentBridge.astro";
 import Accordion from "@/components/LoopTemplates/Accordion";
 import Button from "@/components/Button/Button";
+import SectionHeader from "@/components/SectionHeader.astro";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 
 interface Props extends BaseVariantProps {
   allowMultiple?: boolean;
+  eyebrow?: string;
+  ctaHref?: string;
+  ctaText?: string;
+  ctaDescription?: string;
 }
 
 const {
@@ -26,62 +30,96 @@ const {
   collectionUrl,
   collectionTitle,
   id,
+  eyebrow,
+  ctaHref,
+  ctaText,
+  ctaDescription,
 } = Astro.props as Props;
 
-const viewAllText = `View All ${collectionTitle || ""}`.trim();
+const safeItems = Array.isArray(items) ? items : [];
 const bridgeId = id || "accordion";
+const normalizedHeading =
+  title || collectionTitle || "Frequently Asked Questions";
+const headingWords = normalizedHeading.trim().split(/\s+/).filter(Boolean);
+let headingEmphasis = headingWords.pop() || normalizedHeading;
+let headingBefore = headingWords.join(" ");
+
+if (!headingBefore) {
+  headingEmphasis = normalizedHeading;
+  headingBefore = "";
+}
+
+const headingBeforeText = headingBefore ? `${headingBefore} ` : undefined;
+const headerEyebrow = eyebrow ?? title ?? collectionTitle;
+const headerDescription =
+  description ?? "Got questions? We've got answers...";
+const hasHeader = Boolean(headerEyebrow || normalizedHeading || headerDescription);
+
+const hasCollectionCTA = shouldShowCollectionCTA(collectionUrl, safeItems.length);
+const defaultCtaText = hasCollectionCTA
+  ? `View All ${collectionTitle || ""}`.trim()
+  : "Contact Us Today";
+const finalCtaText = (ctaText ?? defaultCtaText) || "Contact Us Today";
+const finalCtaHref = hasCollectionCTA ? (collectionUrl as string) : ctaHref ?? "/#contact";
+const ctaMessage = hasCollectionCTA
+  ? undefined
+  : ctaDescription ?? "Still have questions? We're here to help!";
+const shouldRenderCTA = Boolean(finalCtaHref && finalCtaText);
+const buttonVariant = hasCollectionCTA ? "secondary" : "primary";
+const buttonIcon = hasCollectionCTA ? "lu:arrow-right" : undefined;
 ---
 
-<section id={id} class={`py-16 ${className}`}>
-  {/* Header Section */}
-  {
-    (title || description) && (
-      <div class="mb-12">
-        {title && <h2 class="text-4xl font-bold mb-4">{title}</h2>}
-        {description && (
-          <p class="text-lg text-text max-w-3xl">{description}</p>
-        )}
-      </div>
-    )
-  }
+<section
+  id={id}
+  class={`outer-section bg-bg relative overflow-hidden ${className}`.trim()}
+>
+  <div class="section-dim-border"></div>
 
-  {/* Accordion with ContentBridge */}
-  {
-    items.length > 0 && (
-      <ContentBridge items={items} bridgeId={bridgeId}>
-        {/* 
-        Your existing Accordion component!
-        ContentBridge generates slot IDs as: `${bridgeId}-slot-${index}`
-        Just pass that pattern to your Accordion as contentSlotId
-      */}
+  <div class="inner-section">
+    {hasHeader && (
+      <SectionHeader
+        title={headerEyebrow}
+        headingBefore={headingBeforeText}
+        headingEmphasis={headingEmphasis}
+        description={headerDescription}
+        className="text-center max-w-3xl mx-auto"
+        titleClassName="tracking-[0.25em]"
+        titlePillClassName="px-5 py-2.5 text-xs"
+        headingClassName="h2 mb-4 text-4xl sm:text-[2.75rem] font-semibold text-heading"
+        emphasisClassName="text-accent"
+        descriptionClassName="large-text text-text/80"
+      />
+    )}
+
+    {safeItems.length > 0 && (
+      <ContentBridge items={safeItems} bridgeId={bridgeId} className="mt-12">
         <Accordion
-          items={items.map((item, index) => ({
+          items={safeItems.map((item, index) => ({
             slug: item.slug,
             title: item.title || "Untitled",
             description: item.description,
-            contentSlotId: `${bridgeId}-slot-${index}`, // ← ContentBridge created this ID
+            contentSlotId: `${bridgeId}-slot-${index}`,
           }))}
           allowMultiple={allowMultiple}
+          className="space-y-4"
           client:visible
         />
       </ContentBridge>
-    )
-  }
+    )}
 
-  {/* Collection CTA */}
-  {
-    shouldShowCollectionCTA(collectionUrl, items.length) && (
+    {shouldRenderCTA && (
       <div class="mt-12 text-center">
+        {ctaMessage && <p class="text-text mb-6">{ctaMessage}</p>}
         <Button
           client:visible
-          href={collectionUrl}
-          rightIcon="lu:arrow-right"
-          variant="primary"
+          href={finalCtaHref}
+          rightIcon={buttonIcon}
+          variant={buttonVariant}
           size="lg"
         >
-          {viewAllText}
+          {finalCtaText}
         </Button>
       </div>
-    )
-  }
+    )}
+  </div>
 </section>
