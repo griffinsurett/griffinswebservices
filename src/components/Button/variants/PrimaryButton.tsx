@@ -43,7 +43,6 @@ export default function PrimaryButton({
       className={`${variantClasses} ${className}`.trim()}
       leftIcon={renderButtonIcon(leftIcon, props.size)}
       rightIcon={renderButtonIcon(rightIcon, props.size)}
-      unstyled
     />
   );
 

@@ -21,9 +21,9 @@ export function renderButtonIcon(
 }
 
 const BUTTON_SIZE_CLASSES: Record<ButtonSize, string> = {
-  sm: 'px-6 py-3 text-base',
-  md: 'px-8 py-4 text-lg',
-  lg: 'px-10 py-5 text-xl',
+  sm: 'btn-sm',
+  md: 'btn-md',
+  lg: 'btn-lg',
 };
 
 export function getButtonBaseClasses(size?: ButtonSize): string {

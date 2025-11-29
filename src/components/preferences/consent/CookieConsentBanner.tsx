@@ -100,7 +100,7 @@ export default function CookieConsentBanner() {
         ssr={false}
         ariaLabel="Cookie consent banner"
       >
-        <div className="outer-card-transition outer-card-hover-transition group text-left">
+        <div className="outer-card-transition group text-left">
           <div className="outer-card-style card-bg-2">
             <div
               className="inner-card-style inner-card-transition inner-card-color"
@@ -130,6 +130,7 @@ export default function CookieConsentBanner() {
                   onClick={handleRejectAll}
                   fullWidth={true}
                   type="button"
+                  size="md"
                   disabled={isPending}
                 >
                   Reject All
@@ -141,6 +142,7 @@ export default function CookieConsentBanner() {
                   className="flex-1"
                   animated={false}
                   type="button"
+                  size="md"
                   disabled={isPending}
                 >
                   Accept All

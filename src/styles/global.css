@@ -98,15 +98,15 @@ body {
   }
 
   .btn-sm {
-    @apply py-0.5 px-1.5 lg:px-3 lg:py-1.5 text-sm;
+    @apply px-4 py-2 lg:px-8 lg:py-3 text-sm;
   }
   
   .btn-md {
-    @apply px-3 py-1.5 lg:px-4 lg:py-2 text-base;
+    @apply px-6 py-3 lg:px-10 lg:py-4 text-base;
   }
   
   .btn-lg {
-    @apply px-3 py-1.5 lg:px-6 lg:py-3 text-lg;
+    @apply px-8 py-4 lg:px-12 lg:py-5 text-lg;
   }
 
   /* Link base styles */
@@ -266,7 +266,7 @@ body {
 }
 
 @utility button-style {
-  @apply px-8 py-4 rounded-full cursor-pointer w-full lg:w-auto;
+  @apply rounded-full cursor-pointer;
 }
 
 @utility section-border-styles {

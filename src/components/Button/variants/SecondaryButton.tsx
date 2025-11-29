@@ -48,7 +48,6 @@ export default function SecondaryButton({
         className={innerButtonClasses}
         leftIcon={renderButtonIcon(leftIcon, props.size)}
         rightIcon={renderButtonIcon(rightIcon, props.size)}
-        unstyled
       />
     </AnimatedBorder>
   );

@@ -82,7 +82,7 @@ export const ButtonBase = forwardRef<HTMLButtonElement | HTMLAnchorElement, Butt
     ref
   ) => {
     // Map size prop to Tailwind classes
-    const normalizedSize = size ?? 'md';
+    const normalizedSize = size ?? 'lg';
     const sizeClass =
       normalizedSize === 'sm'
         ? 'btn-sm'
