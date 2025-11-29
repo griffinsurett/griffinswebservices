@@ -18,7 +18,8 @@ export default function PrimaryButton({
   rightIcon,
   className = "",
   animated = true,
-  buttonWrapperClasses = "w-full lg:w-auto",
+  buttonWrapperClasses,
+  fullWidth = false,
   ...props
 }: ButtonProps) {
   const anim = useAnimatedElement<HTMLSpanElement>({
@@ -47,14 +48,22 @@ export default function PrimaryButton({
   );
 
 
+  const wrapperClasses = [
+    "inline-flex",
+    fullWidth ? "w-full" : "w-full lg:w-auto",
+    buttonWrapperClasses,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   if (!animated) {
-    return <span className={`${buttonWrapperClasses} inline-flex`}>{buttonContent}</span>;
+    return <span className={wrapperClasses}>{buttonContent}</span>;
   }
 
   return (
     <span
       ref={anim.ref}
-      className={`${buttonWrapperClasses} animated-element zoom-in`.trim()}
+      className={`${wrapperClasses} animated-element zoom-in`.trim()}
       {...anim.props}
     >
       {buttonContent}

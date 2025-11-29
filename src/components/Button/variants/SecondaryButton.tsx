@@ -11,7 +11,8 @@ export default function SecondaryButton({
   leftIcon,
   rightIcon,
   className = "",
-  buttonWrapperClasses = DEFAULT_WRAPPER_CLASSES,
+  buttonWrapperClasses,
+  fullWidth = false,
   ...props
 }: ButtonProps) {
   const innerButtonClasses = [
@@ -31,7 +32,15 @@ export default function SecondaryButton({
       color="var(--color-accent)"
       borderWidth={2}
       borderRadius={BORDER_RADIUS_CLASS}
-      className={`${buttonWrapperClasses} primary-button-transition justify-center items-center`}
+      className={
+        [
+          fullWidth ? "inline-flex w-full" : DEFAULT_WRAPPER_CLASSES,
+          buttonWrapperClasses,
+          "primary-button-transition justify-center items-center",
+        ]
+          .filter(Boolean)
+          .join(" ")
+      }
       innerClassName="p-0 shadow-none border-transparent justify-center items-center bg-transparent"
     >
       <ButtonBase

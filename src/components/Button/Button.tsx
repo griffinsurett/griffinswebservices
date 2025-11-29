@@ -28,6 +28,8 @@ export interface BaseButtonProps {
   className?: string;               // Additional CSS classes
   /** Optional classes for wrapper spans used by certain variants */
   buttonWrapperClasses?: string;
+  /** Forces the variant wrapper to span full width when supported */
+  fullWidth?: boolean;
   /**
    * Internal escape hatch that allows variant components to opt-out of the
    * default btn-base styling when they need full control over the shell.
@@ -68,6 +70,7 @@ export const ButtonBase = forwardRef<HTMLButtonElement | HTMLAnchorElement, Butt
       href,
       className = '',
       buttonWrapperClasses: _buttonWrapperClasses,
+      fullWidth: _fullWidth,
       leftIcon,
       rightIcon,
       size = 'md',
