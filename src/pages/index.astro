@@ -30,7 +30,7 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
       query={query("projects")
         .orderBy(sortByDate("publishDate", "desc"))
         .limit(5)}
-      variant="CardVariant"
+      variant="PortfolioVariant"
     />
 
     <ContentRenderer query={query("about-us")} variant="AccordionVariant" />
@@ -100,18 +100,18 @@ import FrontPageHero from "@/layouts/FrontPageHero.astro";
     />
 
     <!-- Contact ContentRenderer -->
-    <ContentRenderer
+    <!-- <ContentRenderer
       query={query("contact-us")}
       variant="ContactVariant"
       columns={2}
-    />
+    /> -->
 
     <!-- Blog with limit - auto-populates from blog meta -->
-    <ContentRenderer
+    <!-- <ContentRenderer
       query={query("blog").limit(2)}
       variant="BlogVariant"
       columns={2}
-    />
+    /> -->
 
     <!-- Multi-collection query - requires manual title/description -->
     <!-- <ContentRenderer

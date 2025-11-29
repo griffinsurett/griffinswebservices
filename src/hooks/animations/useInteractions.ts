@@ -408,3 +408,611 @@ export const useHoverInteraction = ({
     cancelUnhoverIntent: () => cancelIntent("manual"),
   };
 };
+
+// -----------------------------------------------------------------------------
+// Pointer interaction hook
+// -----------------------------------------------------------------------------
+type PointerType = PointerEvent["pointerType"];
+
+interface PointerInteractionMeta {
+  pointerId: number;
+  x: number;
+  y: number;
+  pointerType: PointerType;
+  timestamp?: number;
+  duration?: number;
+  moved?: boolean;
+  distance?: number;
+}
+
+export interface PointerInteractionOptions {
+  elementRef?: MutableRefObject<HTMLElement | null> | null;
+  pointerTypes?: PointerType[];
+  clickThreshold?: number;
+  longPressDelay?: number;
+  preventDefaultOnPointer?: boolean;
+  onPointerDown?: (event: PointerEvent, meta: PointerInteractionMeta) => void;
+  onPointerUp?: (event: PointerEvent, meta: PointerInteractionMeta) => void;
+  onPointerMove?: (event: PointerEvent, meta: PointerInteractionMeta) => void;
+  onPointerCancel?: (event: PointerEvent, meta: PointerInteractionMeta) => void;
+  onPointerClick?: (event: PointerEvent, meta: PointerInteractionMeta) => void;
+  onPointerLongPress?: (event: PointerEvent, meta: PointerInteractionMeta) => void;
+}
+
+export const usePointerInteraction = ({
+  elementRef,
+  pointerTypes = ["mouse", "touch", "pen"],
+  clickThreshold = 10,
+  longPressDelay = 500,
+  preventDefaultOnPointer = false,
+  onPointerDown = () => {},
+  onPointerUp = () => {},
+  onPointerMove = () => {},
+  onPointerCancel = () => {},
+  onPointerClick = () => {},
+  onPointerLongPress = () => {},
+}: PointerInteractionOptions = {}) => {
+  const pointerStateRef = useRef<Map<number, any>>(new Map());
+  const longPressTimersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+
+  const clearLongPressTimer = useCallback((pointerId: number) => {
+    const timer = longPressTimersRef.current.get(pointerId);
+    if (timer) {
+      clearTimeout(timer);
+      longPressTimersRef.current.delete(pointerId);
+    }
+  }, []);
+
+  const clearAllTimers = useCallback(() => {
+    longPressTimersRef.current.forEach((timer) => clearTimeout(timer));
+    longPressTimersRef.current.clear();
+  }, []);
+
+  useEffect(() => {
+    const host = resolveHost(elementRef);
+    if (!host) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!pointerTypes.includes(event.pointerType)) return;
+      const pointerId = event.pointerId;
+      const state = {
+        startX: event.clientX,
+        startY: event.clientY,
+        startTime: Date.now(),
+        moved: false,
+        pointerType: event.pointerType,
+      };
+      pointerStateRef.current.set(pointerId, state);
+
+      if (preventDefaultOnPointer) event.preventDefault();
+
+      onPointerDown(event, {
+        pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        pointerType: event.pointerType,
+        timestamp: state.startTime,
+      });
+
+      const timer = setTimeout(() => {
+        const current = pointerStateRef.current.get(pointerId);
+        if (current && !current.moved) {
+          onPointerLongPress(event, {
+            pointerId,
+            x: current.startX,
+            y: current.startY,
+            pointerType: current.pointerType,
+            duration: Date.now() - current.startTime,
+          });
+        }
+      }, longPressDelay);
+
+      longPressTimersRef.current.set(pointerId, timer);
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (!pointerTypes.includes(event.pointerType)) return;
+      const pointerId = event.pointerId;
+      const state = pointerStateRef.current.get(pointerId);
+      if (!state) return;
+
+      const deltaX = event.clientX - state.startX;
+      const deltaY = event.clientY - state.startY;
+      const distance = Math.hypot(deltaX, deltaY);
+
+      if (!state.moved && distance > clickThreshold) {
+        state.moved = true;
+        clearLongPressTimer(pointerId);
+      }
+
+      if (preventDefaultOnPointer) event.preventDefault();
+
+      onPointerMove(event, {
+        pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        pointerType: event.pointerType,
+        deltaX,
+        deltaY,
+        distance,
+        moved: state.moved,
+      });
+    };
+
+    const handlePointerUp = (event: PointerEvent) => {
+      if (!pointerTypes.includes(event.pointerType)) return;
+      const pointerId = event.pointerId;
+      const state = pointerStateRef.current.get(pointerId);
+      if (!state) return;
+
+      const duration = Date.now() - state.startTime;
+      clearLongPressTimer(pointerId);
+      if (preventDefaultOnPointer) event.preventDefault();
+
+      const meta = {
+        pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        pointerType: event.pointerType,
+        duration,
+        moved: state.moved,
+      };
+
+      onPointerUp(event, meta);
+      if (!state.moved) {
+        onPointerClick(event, meta);
+      }
+
+      pointerStateRef.current.delete(pointerId);
+    };
+
+    const handlePointerCancel = (event: PointerEvent) => {
+      if (!pointerTypes.includes(event.pointerType)) return;
+      const pointerId = event.pointerId;
+      clearLongPressTimer(pointerId);
+      onPointerCancel(event, {
+        pointerId,
+        pointerType: event.pointerType,
+      });
+      pointerStateRef.current.delete(pointerId);
+    };
+
+    host.addEventListener("pointerdown", handlePointerDown, { passive: !preventDefaultOnPointer });
+    host.addEventListener("pointermove", handlePointerMove, { passive: !preventDefaultOnPointer });
+    host.addEventListener("pointerup", handlePointerUp, { passive: !preventDefaultOnPointer });
+    host.addEventListener("pointercancel", handlePointerCancel, { passive: true });
+
+    return () => {
+      host.removeEventListener("pointerdown", handlePointerDown);
+      host.removeEventListener("pointermove", handlePointerMove);
+      host.removeEventListener("pointerup", handlePointerUp);
+      host.removeEventListener("pointercancel", handlePointerCancel);
+      clearAllTimers();
+    };
+  }, [
+    elementRef,
+    pointerTypes,
+    clickThreshold,
+    longPressDelay,
+    preventDefaultOnPointer,
+    onPointerDown,
+    onPointerMove,
+    onPointerUp,
+    onPointerCancel,
+    onPointerClick,
+    onPointerLongPress,
+    clearLongPressTimer,
+    clearAllTimers,
+  ]);
+
+  useEffect(() => () => clearAllTimers(), [clearAllTimers]);
+
+  return {
+    getActivePointers: () => Array.from(pointerStateRef.current.keys()),
+    getPointerState: (pointerId: number) => pointerStateRef.current.get(pointerId),
+    clearAllTimers,
+  };
+};
+
+// -----------------------------------------------------------------------------
+// Touch interaction hook
+// -----------------------------------------------------------------------------
+interface TouchInteractionMeta {
+  x: number;
+  y: number;
+  timestamp?: number;
+  duration?: number;
+  moved?: boolean;
+  longPressTriggered?: boolean;
+  deltaX?: number;
+  deltaY?: number;
+  distance?: number;
+}
+
+export interface TouchInteractionOptions {
+  elementRef?: MutableRefObject<HTMLElement | null> | null;
+  tapThreshold?: number;
+  longPressDelay?: number;
+  swipeThreshold?: number;
+  preventDefaultOnTouch?: boolean;
+  onTouchStart?: (event: TouchEvent, meta: TouchInteractionMeta) => void;
+  onTouchEnd?: (event: TouchEvent, meta: TouchInteractionMeta) => void;
+  onTouchMove?: (event: TouchEvent, meta: TouchInteractionMeta) => void;
+  onTap?: (event: TouchEvent, meta: TouchInteractionMeta) => void;
+  onLongPress?: (event: TouchEvent, meta: TouchInteractionMeta) => void;
+  onSwipe?: (
+    event: TouchEvent,
+    meta: TouchInteractionMeta & { direction: "left" | "right" | "up" | "down" | null }
+  ) => void;
+}
+
+export const useTouchInteraction = ({
+  elementRef,
+  tapThreshold = 10,
+  longPressDelay = 500,
+  swipeThreshold = 50,
+  preventDefaultOnTouch = false,
+  onTouchStart = () => {},
+  onTouchEnd = () => {},
+  onTouchMove = () => {},
+  onTap = () => {},
+  onLongPress = () => {},
+  onSwipe = () => {},
+}: TouchInteractionOptions = {}) => {
+  const stateRef = useRef({
+    active: false,
+    startX: 0,
+    startY: 0,
+    startTime: 0,
+    moved: false,
+    longPressTriggered: false,
+  });
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearLongPressTimer = useCallback(() => {
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  }, []);
+
+  const resetState = useCallback(() => {
+    stateRef.current = {
+      active: false,
+      startX: 0,
+      startY: 0,
+      startTime: 0,
+      moved: false,
+      longPressTriggered: false,
+    };
+    clearLongPressTimer();
+  }, [clearLongPressTimer]);
+
+  const getSwipeData = useCallback((endX: number, endY: number) => {
+    const deltaX = endX - stateRef.current.startX;
+    const deltaY = endY - stateRef.current.startY;
+    const distance = Math.hypot(deltaX, deltaY);
+    const duration = Date.now() - stateRef.current.startTime;
+    let direction: "left" | "right" | "up" | "down" | null = null;
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      direction = deltaX > 0 ? "right" : "left";
+    } else {
+      direction = deltaY > 0 ? "down" : "up";
+    }
+    return { deltaX, deltaY, distance, duration, direction };
+  }, []);
+
+  useEffect(() => {
+    const host = resolveHost(elementRef);
+    if (!host) return;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+
+      stateRef.current = {
+        active: true,
+        startX: touch.clientX,
+        startY: touch.clientY,
+        startTime: Date.now(),
+        moved: false,
+        longPressTriggered: false,
+      };
+
+      if (preventDefaultOnTouch) event.preventDefault();
+
+      onTouchStart(event, {
+        x: touch.clientX,
+        y: touch.clientY,
+        timestamp: stateRef.current.startTime,
+      });
+
+      longPressTimerRef.current = setTimeout(() => {
+        if (stateRef.current.active && !stateRef.current.moved) {
+          stateRef.current.longPressTriggered = true;
+          onLongPress(event, {
+            x: stateRef.current.startX,
+            y: stateRef.current.startY,
+            duration: Date.now() - stateRef.current.startTime,
+          });
+        }
+      }, longPressDelay);
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      if (!stateRef.current.active) return;
+
+      const deltaX = touch.clientX - stateRef.current.startX;
+      const deltaY = touch.clientY - stateRef.current.startY;
+      const distance = Math.hypot(deltaX, deltaY);
+
+      if (!stateRef.current.moved && distance > tapThreshold) {
+        stateRef.current.moved = true;
+        clearLongPressTimer();
+      }
+
+      if (preventDefaultOnTouch) event.preventDefault();
+
+      onTouchMove(event, {
+        x: touch.clientX,
+        y: touch.clientY,
+        deltaX,
+        deltaY,
+        distance,
+        moved: stateRef.current.moved,
+      });
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      const touch = event.changedTouches[0];
+      if (!touch) return;
+
+      if (preventDefaultOnTouch) event.preventDefault();
+
+      const duration = Date.now() - stateRef.current.startTime;
+
+      const meta: TouchInteractionMeta = {
+        x: touch.clientX,
+        y: touch.clientY,
+        duration,
+        moved: stateRef.current.moved,
+        longPressTriggered: stateRef.current.longPressTriggered,
+      };
+
+      onTouchEnd(event, meta);
+
+      if (!stateRef.current.moved && !stateRef.current.longPressTriggered) {
+        onTap(event, meta);
+      }
+
+      if (stateRef.current.moved) {
+        const swipeData = getSwipeData(touch.clientX, touch.clientY);
+        if (swipeData.distance >= swipeThreshold) {
+          onSwipe(event, { ...meta, ...swipeData });
+        }
+      }
+
+      resetState();
+    };
+
+    const handleTouchCancel = (event: TouchEvent) => {
+      onTouchEnd(event, {
+        x: stateRef.current.startX,
+        y: stateRef.current.startY,
+        duration: Date.now() - stateRef.current.startTime,
+        moved: stateRef.current.moved,
+        longPressTriggered: stateRef.current.longPressTriggered,
+      });
+      resetState();
+    };
+
+    host.addEventListener("touchstart", handleTouchStart, { passive: !preventDefaultOnTouch });
+    host.addEventListener("touchmove", handleTouchMove, { passive: !preventDefaultOnTouch });
+    host.addEventListener("touchend", handleTouchEnd, { passive: !preventDefaultOnTouch });
+    host.addEventListener("touchcancel", handleTouchCancel, { passive: true });
+
+    return () => {
+      host.removeEventListener("touchstart", handleTouchStart);
+      host.removeEventListener("touchmove", handleTouchMove);
+      host.removeEventListener("touchend", handleTouchEnd);
+      host.removeEventListener("touchcancel", handleTouchCancel);
+      clearLongPressTimer();
+    };
+  }, [
+    elementRef,
+    tapThreshold,
+    longPressDelay,
+    swipeThreshold,
+    preventDefaultOnTouch,
+    onTouchStart,
+    onTouchEnd,
+    onTouchMove,
+    onTap,
+    onLongPress,
+    onSwipe,
+    getSwipeData,
+    resetState,
+    clearLongPressTimer,
+  ]);
+
+  useEffect(() => () => clearLongPressTimer(), [clearLongPressTimer]);
+
+  return {
+    isTouchActive: () => stateRef.current.active,
+    getTouchState: () => ({ ...stateRef.current }),
+    resetTouchState: resetState,
+  };
+};
+
+// -----------------------------------------------------------------------------
+// Click interaction hook
+// -----------------------------------------------------------------------------
+export interface ClickInteractionOptions {
+  containerSelector?: string;
+  itemSelector?: string;
+  onOutsideClick?: (event: MouseEvent) => void;
+  onInsideClick?: (event: MouseEvent, container: Element) => void;
+  onItemClick?: (event: MouseEvent, item: Element | null, container: Element | null) => void;
+  trustedOnly?: boolean;
+}
+
+export const useClickInteraction = ({
+  containerSelector = "[data-container]",
+  itemSelector = "[data-item]",
+  onOutsideClick = () => {},
+  onInsideClick = () => {},
+  onItemClick = () => {},
+  trustedOnly = true,
+}: ClickInteractionOptions = {}) => {
+  useEffect(() => {
+    const handler = (event: MouseEvent) => {
+      if (trustedOnly && !event.isTrusted) return;
+      const target = event.target as HTMLElement | null;
+      const container = target?.closest?.(containerSelector) ?? null;
+      const item = target?.closest?.(itemSelector) ?? null;
+
+      if (!container) {
+        onOutsideClick(event);
+        return;
+      }
+
+      onInsideClick(event, container);
+      onItemClick(event, item, container);
+    };
+
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, [containerSelector, itemSelector, onInsideClick, onOutsideClick, onItemClick, trustedOnly]);
+
+  return {
+    triggerClick: (selector: string) => {
+      const el = document.querySelector(selector);
+      (el as HTMLElement | null)?.click?.();
+    },
+  };
+};
+
+// -----------------------------------------------------------------------------
+// Side drag navigation
+// -----------------------------------------------------------------------------
+export interface SideDragNavigationOptions {
+  enabled?: boolean;
+  leftElRef?: MutableRefObject<HTMLElement | null> | null;
+  rightElRef?: MutableRefObject<HTMLElement | null> | null;
+  onLeft?: () => void;
+  onRight?: () => void;
+  dragThreshold?: number;
+  tapThreshold?: number;
+}
+
+export const useSideDragNavigation = ({
+  enabled = true,
+  leftElRef,
+  rightElRef,
+  onLeft = () => {},
+  onRight = () => {},
+  dragThreshold = 40,
+  tapThreshold = 12,
+}: SideDragNavigationOptions = {}) => {
+  const stateRef = useRef({
+    active: false,
+    zone: null as "left" | "right" | null,
+    id: null as number | null,
+    startX: 0,
+    startY: 0,
+    moved: false,
+    slid: false,
+  });
+
+  const attach = useCallback(
+    (element: HTMLElement | null, zone: "left" | "right") => {
+      if (!element || typeof window === "undefined") return () => {};
+
+      const handlePointerDown = (event: PointerEvent) => {
+        if (!enabled) return;
+        stateRef.current = {
+          active: true,
+          zone,
+          id: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          moved: false,
+          slid: false,
+        };
+        element.setPointerCapture?.(event.pointerId);
+      };
+
+      const handlePointerMove = (event: PointerEvent) => {
+        const state = stateRef.current;
+        if (!state.active || state.id !== event.pointerId || state.zone !== zone) return;
+
+        const dx = event.clientX - state.startX;
+        const dy = event.clientY - state.startY;
+        if (!state.moved && (Math.abs(dx) > 2 || Math.abs(dy) > 2)) {
+          state.moved = true;
+        }
+
+        if (Math.abs(dy) > Math.abs(dx)) return;
+        event.preventDefault();
+
+        if (state.slid) return;
+        if (Math.abs(dx) >= dragThreshold) {
+          zone === "left" ? onLeft() : onRight();
+          state.slid = true;
+        }
+      };
+
+      const handlePointerEnd = (event: PointerEvent) => {
+        const state = stateRef.current;
+        if (!state.active || state.id !== event.pointerId || state.zone !== zone) return;
+        const dx = event.clientX - state.startX;
+        const dy = event.clientY - state.startY;
+
+        if (!state.slid && Math.hypot(dx, dy) <= tapThreshold) {
+          zone === "left" ? onLeft() : onRight();
+        }
+
+        try {
+          element.releasePointerCapture?.(event.pointerId);
+        } catch {
+          // ignore
+        }
+
+        stateRef.current = {
+          active: false,
+          zone: null,
+          id: null,
+          startX: 0,
+          startY: 0,
+          moved: false,
+          slid: false,
+        };
+      };
+
+      element.addEventListener("pointerdown", handlePointerDown);
+      element.addEventListener("pointermove", handlePointerMove);
+      element.addEventListener("pointerup", handlePointerEnd);
+      element.addEventListener("pointercancel", handlePointerEnd);
+
+      return () => {
+        element.removeEventListener("pointerdown", handlePointerDown);
+        element.removeEventListener("pointermove", handlePointerMove);
+        element.removeEventListener("pointerup", handlePointerEnd);
+        element.removeEventListener("pointercancel", handlePointerEnd);
+      };
+    },
+    [dragThreshold, enabled, onLeft, onRight, tapThreshold]
+  );
+
+  useEffect(() => {
+    if (!enabled) return;
+    const detachLeft = attach(leftElRef?.current ?? null, "left");
+    const detachRight = attach(rightElRef?.current ?? null, "right");
+    return () => {
+      detachLeft?.();
+      detachRight?.();
+    };
+  }, [enabled, leftElRef, rightElRef, attach]);
+};

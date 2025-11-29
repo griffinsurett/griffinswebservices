@@ -1,18 +1,19 @@
 ---
-// src/components/ContentRenderer/variants/CardVariant.astro
+// src/components/ContentRenderer/variants/PortfolioVariant.astro
 /**
- * Card Variant styled after our legacy WebsiteTypesSection
- * Retains ContentRenderer metadata + CTA behavior while reusing FeatureCard styling.
+ * Portfolio Variant
+ * Renders featured projects inside the React-based PortfolioCarousel.
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import CardRenderer from "@/components/LoopTemplates/CardRenderer.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Button from "@/components/Button/Button";
+import PortfolioCarousel from "@/components/LoopTemplates/PortfolioCarousel";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 
 interface Props extends BaseVariantProps {
-  columns?: 1 | 2 | 3 | 4;
+  autoplay?: boolean;
+  autoAdvanceDelay?: number;
   eyebrow?: string;
 }
 
@@ -21,47 +22,44 @@ const {
   title,
   description,
   className = "",
-  columns = 3,
   collectionUrl,
   collectionTitle,
   id,
+  autoplay = true,
+  autoAdvanceDelay = 7000,
   eyebrow,
 } = Astro.props as Props;
 
-const viewAllText = `Explore All ${collectionTitle || ""}`.trim();
 const safeItems = Array.isArray(items) ? (items as Record<string, any>[]) : [];
-
-const getCardClassName = (item: any = "") =>
-  [item?.class ?? item?.className ?? ""].filter(Boolean).join(" ");
-
-const getRingDuration = (item: Record<string, any>) =>
-  typeof item?.ringDuration === "number" ? item.ringDuration : 800;
-
 const showHeader = Boolean(eyebrow || title || description);
-const gridMarginClass = showHeader ? "mt-12" : "";
+const ctaLabelSource = collectionTitle || title || "Projects";
+const viewAllText = `View All ${ctaLabelSource}`.trim();
 ---
 
 <section
   id={id}
-  class={`outer-section bg-bg2 relative overflow-hidden ${className}`.trim()}
+  class={`bg-bg relative overflow-hidden ${className}`.trim()}
 >
   <div class="section-dim-border"></div>
 
-  <div class="inner-section">
+  <div class="">
     {showHeader && (
       <SectionHeader
-        title={title}
+        title={eyebrow}
         heading={title}
         description={description}
+        className="text-center"
+        headingClassName="h2 mb-6"
+        descriptionClassName="large-text max-w-2xl mx-auto"
       />
     )}
 
-    <CardRenderer
+    <PortfolioCarousel
+      client:visible
       items={safeItems}
-      columns={columns}
-      className={gridMarginClass}
-      getCardClassName={(item) => getCardClassName(item)}
-      getRingDuration={(item) => getRingDuration(item)}
+      autoplay={autoplay}
+      autoAdvanceDelay={autoAdvanceDelay}
+      className={`${showHeader ? "mt-12" : ""}`.trim()}
     />
 
     {shouldShowCollectionCTA(collectionUrl, safeItems.length) && (
