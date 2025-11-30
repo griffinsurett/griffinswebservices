@@ -26,7 +26,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
         .filter(Boolean)
         .join(" ")}
     >
-      <LanguageDropdown />
+      {/* <LanguageDropdown /> */}
       <DarkLightToggle />
       <AccentPicker />
     </div>

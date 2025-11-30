@@ -2,6 +2,7 @@
 import {
   isValidElement,
   type ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -44,6 +45,17 @@ interface PortfolioItemComponentProps {
   mediaChild?: ReactNode;
 }
 
+const AUTO_SCROLL_START_DELAY_MS = 1500;
+const AUTO_SCROLL_TARGET_DURATION_SEC = 30;
+const AUTO_SCROLL_DEFAULT_CYCLE_MS = AUTO_SCROLL_TARGET_DURATION_SEC * 1000;
+const AUTO_SCROLL_MAX_DURATION_MS = AUTO_SCROLL_DEFAULT_CYCLE_MS * 4;
+const AUTO_SCROLL_MIN_SPEED = 18;
+const AUTO_SCROLL_MAX_SPEED = 60;
+const AUTO_SCROLL_READY_TIMEOUT_MS = 3000;
+const MIN_SCROLL_DELTA = 6;
+const CONTENT_STABLE_WINDOW_MS = 260;
+const CONTENT_STABLE_DELTA_PX = 18;
+
 export default function PortfolioItemComponent({
   item,
   i,
@@ -59,6 +71,10 @@ export default function PortfolioItemComponent({
 }: PortfolioItemComponentProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const diff = i - activeIndex;
+  const [contentReady, setContentReady] = useState(false);
+  const [scrollDurationMs, setScrollDurationMs] = useState(
+    AUTO_SCROLL_DEFAULT_CYCLE_MS
+  );
 
   const position = useMemo(() => {
     if (diff === 0) return "center";
@@ -70,12 +86,43 @@ export default function PortfolioItemComponent({
   const isActive = position === "center";
   const translateBase = isActive ? "translate(-50%, 0)" : "translate(-50%, -50%)";
 
+  const resolveAutoScrollSpeed = useCallback((host: HTMLElement) => {
+    const maxScrollable = Math.max(0, host.scrollHeight - host.clientHeight);
+    if (maxScrollable <= 0) return 0;
+    const baseline = maxScrollable / AUTO_SCROLL_TARGET_DURATION_SEC;
+    if (!Number.isFinite(baseline) || baseline <= 0) {
+      return AUTO_SCROLL_MIN_SPEED;
+    }
+    return Math.min(
+      AUTO_SCROLL_MAX_SPEED,
+      Math.max(AUTO_SCROLL_MIN_SPEED, baseline)
+    );
+  }, []);
+
+  const measureScrollDuration = useCallback(
+    (host: HTMLElement) => {
+      const maxScrollable = Math.max(0, host.scrollHeight - host.clientHeight);
+      if (maxScrollable <= 0) return AUTO_SCROLL_DEFAULT_CYCLE_MS;
+      const pxPerSecond = resolveAutoScrollSpeed(host);
+      if (pxPerSecond <= 0) return AUTO_SCROLL_DEFAULT_CYCLE_MS;
+      const rawDurationMs = Math.round((maxScrollable / pxPerSecond) * 1000);
+      if (!Number.isFinite(rawDurationMs) || rawDurationMs <= 0) {
+        return AUTO_SCROLL_DEFAULT_CYCLE_MS;
+      }
+      return Math.min(
+        AUTO_SCROLL_MAX_DURATION_MS,
+        Math.max(AUTO_SCROLL_DEFAULT_CYCLE_MS, rawDurationMs)
+      );
+    },
+    [resolveAutoScrollSpeed]
+  );
+
   const autoScroll = useEngagementAutoScroll({
     ref: viewportRef,
-    active: isActive,
-    cycleDuration: 30,
+    active: isActive && contentReady,
+    speed: resolveAutoScrollSpeed,
     loop: false,
-    startDelay: 1500,
+    startDelay: AUTO_SCROLL_START_DELAY_MS,
     resumeDelay: 900,
     resumeOnUserInput: true,
     threshold: 0.1,
@@ -100,6 +147,157 @@ export default function PortfolioItemComponent({
       if (raf) cancelAnimationFrame(raf);
     };
   }, [isActive]);
+
+  useEffect(() => {
+    if (!isActive) {
+      setContentReady(false);
+      setScrollDurationMs(AUTO_SCROLL_DEFAULT_CYCLE_MS);
+      return;
+    }
+    const host = viewportRef.current;
+    if (!host) return;
+
+    let resolved = false;
+    let stabilityCleanup: (() => void) | null = null;
+
+    const hasScrollableContent = () => {
+      const max = Math.max(0, host.scrollHeight - host.clientHeight);
+      return max > MIN_SCROLL_DELTA;
+    };
+
+    const markReady = () => {
+      if (resolved) return;
+      resolved = true;
+      stabilityCleanup?.();
+      stabilityCleanup = null;
+      setContentReady(true);
+    };
+
+    const waitForStableContent = () => {
+      if (typeof ResizeObserver === "undefined") {
+        markReady();
+        return;
+      }
+
+      let stabilityTimer: number | null = null;
+      let lastHeight = host.scrollHeight;
+
+      const scheduleReady = () => {
+        if (stabilityTimer) return;
+        stabilityTimer = window.setTimeout(() => {
+          stabilityTimer = null;
+          markReady();
+        }, CONTENT_STABLE_WINDOW_MS);
+      };
+
+      const resetReady = () => {
+        if (stabilityTimer) {
+          window.clearTimeout(stabilityTimer);
+          stabilityTimer = null;
+        }
+      };
+
+      const observer = new ResizeObserver(() => {
+        const nextHeight = host.scrollHeight;
+        if (Math.abs(nextHeight - lastHeight) > CONTENT_STABLE_DELTA_PX) {
+          lastHeight = nextHeight;
+          resetReady();
+        }
+        scheduleReady();
+      });
+
+      observer.observe(host);
+      scheduleReady();
+
+      stabilityCleanup = () => {
+        observer.disconnect();
+        if (stabilityTimer) {
+          window.clearTimeout(stabilityTimer);
+          stabilityTimer = null;
+        }
+      };
+    };
+
+    let contentObserver: ResizeObserver | null = null;
+
+    if (hasScrollableContent()) {
+      waitForStableContent();
+    } else if (typeof ResizeObserver !== "undefined") {
+      contentObserver = new ResizeObserver(() => {
+        if (hasScrollableContent()) {
+          contentObserver?.disconnect();
+          contentObserver = null;
+          waitForStableContent();
+        }
+      });
+      contentObserver.observe(host);
+    } else {
+      markReady();
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      markReady();
+    }, AUTO_SCROLL_READY_TIMEOUT_MS);
+
+    return () => {
+      contentObserver?.disconnect();
+      stabilityCleanup?.();
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
+  }, [isActive]);
+
+  useEffect(() => {
+    if (!isActive || !contentReady) {
+      setScrollDurationMs(AUTO_SCROLL_DEFAULT_CYCLE_MS);
+      return;
+    }
+    const host = viewportRef.current;
+    if (!host) return;
+
+    const updateDuration = () => {
+      setScrollDurationMs(measureScrollDuration(host));
+    };
+
+    updateDuration();
+
+    const observer =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => updateDuration())
+        : null;
+
+    observer?.observe(host);
+
+    return () => observer?.disconnect();
+  }, [isActive, contentReady, measureScrollDuration]);
+
+  useEffect(() => {
+    if (!isActive || !contentReady || typeof window === "undefined") return;
+    const host = viewportRef.current;
+    if (!host) return;
+
+    const dispatch = (phase: "start" | "end") => {
+      host.dispatchEvent(
+        new CustomEvent("autoscroll-user", {
+          bubbles: true,
+          detail: { phase },
+        })
+      );
+    };
+
+    const startTimer = window.setTimeout(() => {
+      dispatch("start");
+    }, AUTO_SCROLL_START_DELAY_MS);
+
+    const stopTimer = window.setTimeout(() => {
+      dispatch("end");
+    }, AUTO_SCROLL_START_DELAY_MS + scrollDurationMs);
+
+    return () => {
+      window.clearTimeout(startTimer);
+      window.clearTimeout(stopTimer);
+      dispatch("end");
+    };
+  }, [isActive, contentReady, scrollDurationMs]);
 
   const slideBase =
     "absolute left-1/2 overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] will-change-transform bg-gray-900";

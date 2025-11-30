@@ -81,7 +81,6 @@ const processedItems = safeItems.map((item, index) => {
           metadata,
           alt: altText,
           key: item.slug ?? item.id ?? `portfolio-${index}`,
-          loading: index === 0 ? "eager" : "lazy",
         }
       : undefined,
   };
@@ -115,7 +114,7 @@ const viewAllText = `View All ${ctaLabelSource}`.trim();
     />
 
     <PortfolioCarousel
-      client:idle
+      client:visible
       items={portfolioItems}
       autoplay={autoplay}
       autoAdvanceDelay={autoAdvanceDelay}
@@ -127,7 +126,7 @@ const viewAllText = `View All ${ctaLabelSource}`.trim();
             key={media.key}
             src={media.metadata}
             alt={media.alt}
-            loading={media.loading}
+            loading="lazy"
             widths={[480, 640, 860, 1024, 1280, 1600]}
             sizes="(max-width: 640px) 90vw, (max-width: 1024px) 70vw, 860px"
             formats={["webp", "jpeg"]}
