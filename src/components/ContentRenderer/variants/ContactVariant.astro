@@ -25,6 +25,7 @@ const {
   collectionUrl,
   collectionTitle,
   id,
+  showButtonSection = true,
 } = Astro.props as Props;
 
 const viewAllText = `Contact Us`;
@@ -52,7 +53,8 @@ const columnClasses = {
       }
 
       {
-        shouldShowCollectionCTA(collectionUrl, items.length) && (
+        showButtonSection &&
+          shouldShowCollectionCTA(collectionUrl, items.length) && (
           <div class="mt-12 text-left">
             <Button
               client:visible

@@ -27,6 +27,7 @@ const {
   collectionTitle,
   id,
   autoAdvanceDelay = 3000,
+  showButtonSection = true,
 } = Astro.props as Props;
 
 const safeItems = Array.isArray(items) ? items : [];
@@ -37,7 +38,8 @@ const contentItems = solutionEntries.length > 0 ? solutionEntries : safeItems;
 const showHeader = Boolean(title || description);
 const viewAllText = `Explore All ${collectionTitle || ""}`.trim();
 const spacingClass = showHeader ? "mt-12" : "";
-const showCTA = shouldShowCollectionCTA(collectionUrl, contentItems.length);
+const showCTA =
+  showButtonSection && shouldShowCollectionCTA(collectionUrl, contentItems.length);
 const bridgeId = id ? `${id}-accordion` : "solution-accordion";
 
 const accordionItems = contentItems.map((item: any, index: number) => {

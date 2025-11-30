@@ -25,6 +25,7 @@ const {
   collectionUrl,
   collectionTitle,
   id,
+  showButtonSection = true,
 } = Astro.props as Props;
 
 const viewAllText = `View All`;
@@ -84,7 +85,8 @@ const getRingDuration = (item: Record<string, any>) =>
   }
 
   {
-    shouldShowCollectionCTA(collectionUrl, safeItems.length) && (
+    showButtonSection &&
+      shouldShowCollectionCTA(collectionUrl, safeItems.length) && (
       <div class="mt-12 text-center">
         <Button
           client:visible

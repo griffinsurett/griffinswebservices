@@ -32,6 +32,7 @@ const {
   ctaHref,
   ctaText,
   ctaDescription,
+  showButtonSection = true,
 } = Astro.props as Props;
 
 const safeItems = Array.isArray(items) ? items : [];
@@ -53,7 +54,8 @@ const headerDescription =
   description ?? "Got questions? We've got answers...";
 const hasHeader = Boolean(headerEyebrow || normalizedHeading || headerDescription);
 
-const hasCollectionCTA = shouldShowCollectionCTA(collectionUrl, safeItems.length);
+const hasCollectionCTA =
+  showButtonSection && shouldShowCollectionCTA(collectionUrl, safeItems.length);
 const defaultCtaText = hasCollectionCTA
   ? `View All ${collectionTitle || ""}`.trim()
   : "Contact Us Today";
@@ -62,7 +64,8 @@ const finalCtaHref = hasCollectionCTA ? (collectionUrl as string) : ctaHref ?? "
 const ctaMessage = hasCollectionCTA
   ? undefined
   : ctaDescription ?? "Still have questions? We're here to help!";
-const shouldRenderCTA = Boolean(finalCtaHref && finalCtaText);
+const shouldRenderCTA =
+  showButtonSection && Boolean(finalCtaHref && finalCtaText);
 const buttonVariant = hasCollectionCTA ? "secondary" : "primary";
 const buttonIcon = hasCollectionCTA ? "lu:arrow-right" : undefined;
 ---

@@ -23,6 +23,7 @@ const {
   collectionUrl,
   collectionTitle,
   id,
+  showButtonSection = true,
 } = Astro.props as Props;
 
 const viewAllText = `View All ${collectionTitle || "Articles"}`;
@@ -57,7 +58,8 @@ const columnClasses = {
   </ul>
 
   {
-    shouldShowCollectionCTA(collectionUrl, items.length) && (
+    showButtonSection &&
+      shouldShowCollectionCTA(collectionUrl, items.length) && (
       <div class="mt-12 text-center">
         <Button
           client:visible

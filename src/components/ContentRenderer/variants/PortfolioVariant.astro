@@ -32,6 +32,7 @@ const {
   id,
   autoplay = true,
   autoAdvanceDelay = 7000,
+  showButtonSection = true,
 } = Astro.props as Props;
 
 const safeItems = Array.isArray(items) ? (items as Record<string, any>[]) : [];
@@ -143,7 +144,8 @@ const viewAllText = `View All ${ctaLabelSource}`.trim();
       )}
     </PortfolioCarousel>
 
-    {shouldShowCollectionCTA(collectionUrl, portfolioItems.length) && (
+    {showButtonSection &&
+      shouldShowCollectionCTA(collectionUrl, portfolioItems.length) && (
       <div class="mt-12 text-center">
         <Button
           client:visible

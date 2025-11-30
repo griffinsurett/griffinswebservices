@@ -20,6 +20,7 @@ const {
   collectionUrl,
   collectionTitle,
   id,
+  showButtonSection = true,
 } = Astro.props as Props;
 
 const viewAllText = collectionTitle?.toLowerCase().includes("testimonial")
@@ -72,7 +73,8 @@ const getRingDuration = (item: Record<string, any>) =>
   }
 
   {
-    shouldShowCollectionCTA(collectionUrl, safeItems.length) && (
+    showButtonSection &&
+      shouldShowCollectionCTA(collectionUrl, safeItems.length) && (
       <div class="mt-12 text-center">
         <Button client:visible href={collectionUrl} variant="primary">
           {viewAllText}
