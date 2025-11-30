@@ -4,6 +4,7 @@
 import SectionHeader from "@/components/SectionHeader.astro";
 import Button from "@/components/Button/Button";
 import IconListItem from "@/components/LoopComponents/IconListItem";
+import LogoPoster from "@/assets/GWS-animated.png";
 
 const {
   headingTitle = "About Griffin's Web Services",
@@ -35,6 +36,9 @@ const sidebarFootTitle =
 const sidebarFootDescription =
   sidebar.footDescription ??
   "Strategy, design, development, and care plans working together so your online presence keeps up with the pace of your business.";
+
+const sidebarImageSrc = sidebar.image?.src ?? LogoPoster.src;
+const sidebarImageAlt = sidebar.image?.alt ?? sidebarTitle;
 ---
 
 <section id="about" class="outer-section bg-bg2 relative">
@@ -81,7 +85,7 @@ const sidebarFootDescription =
       </article>
 
       <aside class="lg:sticky lg:top-0 lg:flex-[0.85] w-full">
-        <div class="bg-bg rounded-3xl border border-accent/20 p-8 lg:p-10 shadow-2xl space-y-6">
+        <div class="bg-bg rounded-3xl border border-accent/20 p-4 lg:p-10 shadow-2xl space-y-6">
           <IconListItem
             client:visible
             data={{
@@ -91,9 +95,9 @@ const sidebarFootDescription =
             }}
             layout="horizontal"
             alignment="left"
-            className="items-start gap-4"
+            className="items-start gap-4 w-full"
             iconSize="lg"
-            titleClassName="text-heading text-2xl font-bold"
+            titleClassName="h3"
             descriptionClassName="text-xs font-semibold uppercase tracking-[0.3em] emphasized-text"
             containerClassName="space-y-1"
           />
