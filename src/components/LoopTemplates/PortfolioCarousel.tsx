@@ -1,11 +1,13 @@
 // src/components/LoopTemplates/PortfolioCarousel.tsx
 import {
+  Children,
   useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
+  type ReactNode,
 } from "react";
 import PortfolioItemComponent, {
   type PortfolioItemData,
@@ -24,6 +26,7 @@ interface PortfolioCarouselProps {
   showDots?: boolean;
   drag?: boolean;
   className?: string;
+  children?: ReactNode;
 }
 
 export default function PortfolioCarousel({
@@ -35,6 +38,7 @@ export default function PortfolioCarousel({
   showDots = true,
   drag = false,
   className = "",
+  children,
 }: PortfolioCarouselProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(defaultIndex);
@@ -43,6 +47,11 @@ export default function PortfolioCarousel({
   const slides = useMemo(
     () => (Array.isArray(items) ? items : []),
     [items]
+  );
+
+  const mediaChildren = useMemo(
+    () => Children.toArray(children ?? []),
+    [children]
   );
 
   const ready = containerW > 0;
@@ -184,6 +193,7 @@ export default function PortfolioCarousel({
                 sideH={sideH}
                 tx={tx}
                 onSelect={setIndex}
+                mediaChild={mediaChildren[slideIndex]}
               />
             ))}
 

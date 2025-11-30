@@ -1,5 +1,12 @@
 // src/components/LoopComponents/PortfolioItemComponent.tsx
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  isValidElement,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useEngagementAutoScroll } from "@/hooks/autoscroll/useEngagementAutoScroll";
 import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
 
@@ -34,6 +41,7 @@ interface PortfolioItemComponentProps {
   sideH: number;
   tx: number;
   onSelect: (index: number) => void;
+  mediaChild?: ReactNode;
 }
 
 export default function PortfolioItemComponent({
@@ -47,6 +55,7 @@ export default function PortfolioItemComponent({
   sideH,
   tx,
   onSelect,
+  mediaChild,
 }: PortfolioItemComponentProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const diff = i - activeIndex;
@@ -173,6 +182,16 @@ export default function PortfolioItemComponent({
 
   const imageSrc = getImageSrcForPosition();
   const altText = item.alt || item.title || "Project preview";
+  const providedMedia = useMemo(() => {
+    if (!mediaChild) return undefined;
+    if (
+      isValidElement(mediaChild) &&
+      mediaChild.props?.["data-portfolio-placeholder"]
+    ) {
+      return undefined;
+    }
+    return mediaChild;
+  }, [mediaChild]);
 
   return (
     <div
@@ -192,7 +211,9 @@ export default function PortfolioItemComponent({
         aria-hidden={isActive ? "false" : "true"}
         tabIndex={isActive ? 0 : -1}
       >
-        {imageSrc ? (
+        {providedMedia ? (
+          providedMedia
+        ) : imageSrc ? (
           <img
             src={imageSrc}
             alt={altText}
