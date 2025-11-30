@@ -29,6 +29,18 @@ import LogoPoster from "@/assets/2dfavicons/android-chrome-192x192.png";
       }}
     />
 
+        <ContentRenderer
+      query={query("capabilities")
+        .where((entry) => entry.data.parent === "website-services")
+        .orderBy(sortByOrder())
+        .limit(3)}
+      variant="CardVariant"
+      columns={3}
+      gap="lg"
+      title="Website Services"
+      description="The three pillars every engagement includes: design, dependable engineering, and proactive care."
+    />
+
     <ContentRenderer query={query("projects")} variant="PortfolioVariant" />
 
     <ContentRenderer
@@ -39,18 +51,6 @@ import LogoPoster from "@/assets/2dfavicons/android-chrome-192x192.png";
       title="Websites we build"
       description="Every engagement starts with a clear website outcome. Explore the most common builds we ship and watch a quick preview as you browse."
       autoAdvanceDelay={2000}
-    />
-
-    <ContentRenderer
-      query={query("capabilities")
-        .where((entry) => entry.data.parent === "website-services")
-        .orderBy(sortByOrder())
-        .limit(3)}
-      variant="CardVariant"
-      columns={3}
-      gap="lg"
-      title="Website Services"
-      description="The three pillars every engagement includes: design, dependable engineering, and proactive care."
     />
 
     <AboutSection>

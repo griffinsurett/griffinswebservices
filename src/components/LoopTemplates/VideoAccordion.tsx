@@ -9,11 +9,20 @@ import {
 } from "react";
 import EnhancedAccordionItem from "@/components/LoopComponents/EnhancedAccordionItem";
 import VideoPlayer from "@/components/VideoPlayer";
+import Button from "@/components/Button/Button";
 import { useAnimatedElement } from "@/hooks/animations/useViewAnimation";
 import useEngagementAutoplay from "@/hooks/autoplay/useEngagementAutoplay";
-import type { WebsiteType } from "@/constants/websiteTypes";
-
-export interface VideoAccordionItem extends WebsiteType {}
+export interface VideoAccordionItem {
+  key?: string;
+  title: string;
+  description?: string;
+  icon?: string;
+  videoSrc?: string;
+  contentSlotId?: string;
+  slug?: string;
+  hasPage?: boolean;
+  url?: string;
+}
 
 interface VideoAccordionProps {
   items: VideoAccordionItem[];
@@ -178,37 +187,48 @@ export default function VideoAccordion({
                     />
                   </div>
                 )}
+                {item.hasPage && item.url && (
+                  <div className="mt-4">
+                    <Button
+                      variant="link"
+                      href={item.url}
+                      rightIcon="lu:arrow-right"
+                    >
+                      Explore {item.title}
+                    </Button>
+                  </div>
+                )}
               </EnhancedAccordionItem>
             );
           })}
         </div>
 
         <div className="hidden lg:block lg:flex-1 min-w-0 lg:sticky lg:top-0">
-            <VideoPlayer
-              key={`desktop-${activeItem?.key ?? activeIndex}`}
-              ref={desktopVideoRef}
-              src={activeItem?.videoSrc}
-              onTimeUpdate={handleTimeUpdate}
-              onEnded={handleEnded}
-              onLoadedData={handleLoadedData}
-              onClick={handleVideoClick}
-              desktop
-              wrapperClassName="shadow-2xl shadow-accent/15 bg-card/40"
-            />
+          <VideoPlayer
+            key={`desktop-${activeItem?.key ?? activeIndex}`}
+            ref={desktopVideoRef}
+            src={activeItem?.videoSrc}
+            onTimeUpdate={handleTimeUpdate}
+            onEnded={handleEnded}
+            onLoadedData={handleLoadedData}
+            onClick={handleVideoClick}
+            desktop
+            wrapperClassName="shadow-2xl shadow-accent/15 bg-card/40"
+          />
 
-            {showDebug && (
-              <div className="mt-4 text-xs text-white/80 bg-zinc-900/70 p-3 rounded-xl space-y-1">
-                <div>⏸️ Autoplay Paused: {isAutoplayPaused ? "✅" : "❌"}</div>
-                <div>👤 Engaged: {userEngaged ? "✅" : "❌"}</div>
-                <div>
-                  ⏲️ Resume Scheduled: {isResumeScheduled ? "✅" : "❌"}
-                </div>
-                <div>🎪 Active Index: {activeIndex}</div>
-                <div>📊 Progress: {Math.round(progress)}%</div>
+          {showDebug && (
+            <div className="mt-4 text-xs text-white/80 bg-zinc-900/70 p-3 rounded-xl space-y-1">
+              <div>⏸️ Autoplay Paused: {isAutoplayPaused ? "✅" : "❌"}</div>
+              <div>👤 Engaged: {userEngaged ? "✅" : "❌"}</div>
+              <div>
+                ⏲️ Resume Scheduled: {isResumeScheduled ? "✅" : "❌"}
               </div>
-            )}
-          </div>
+              <div>🎪 Active Index: {activeIndex}</div>
+              <div>📊 Progress: {Math.round(progress)}%</div>
+            </div>
+          )}
         </div>
       </div>
+    </div>
   );
 }
