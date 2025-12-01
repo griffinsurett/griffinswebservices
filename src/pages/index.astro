@@ -17,13 +17,14 @@ import { siteData } from "@/content/siteData";
 import LogoPoster from "@/assets/2dfavicons/android-chrome-192x192.png";
 
 const heroTagline = {
-  before: "You Deserve a website you’re proud of, ",
-  emphasized: "fast, secure, and ready to grow",
-  after: " with your business.",
+  before: "Launch a website that works. ",
+  emphasized: "Fast, secure, growth-ready.",
+  after: "",
 };
 
 const heroDescription =
   "We design, build, and maintain credible sites that load instantly and stay cared for, so you can stay focused on the business.";
+
 ---
 
 <BaseLayout title="Home" description={siteData.description}>
@@ -38,7 +39,12 @@ const heroDescription =
         text: "Get Started",
         link: "/contact-us",
       }}
-    />
+    >
+      <ContentRenderer
+        query={query("projects")}
+        variant="PortfolioScreenVariant"
+      />
+    </FrontPageHero>
 
         <ContentRenderer
       query={query("capabilities")

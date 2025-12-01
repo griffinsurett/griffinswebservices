@@ -1,0 +1,111 @@
+---
+// PortfolioScreenVariant.astro
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import PortfolioScreenShowcase from "@/components/LoopTemplates/PortfolioScreenShowcase";
+import type { ImageInput } from "@/content/schema";
+import { getImageAlt } from "@/utils/images";
+
+interface Props extends BaseVariantProps {}
+
+const {
+  items = [],
+  title,
+  description,
+  className = "",
+  collectionUrl,
+  collectionTitle,
+  id,
+} = Astro.props as Props;
+
+const safeItems = Array.isArray(items) ? (items as Record<string, any>[]) : [];
+
+if (!safeItems.length) {
+  return;
+}
+
+const isImageMetadata = (img: unknown): img is ImageMetadata => {
+  return Boolean(
+    img &&
+      typeof img === "object" &&
+      "width" in img &&
+      "height" in img &&
+      "src" in img
+  );
+};
+
+const resolveImageMetadata = (
+  img?: ImageInput | null
+): ImageMetadata | undefined => {
+  if (!img) return undefined;
+
+  if (isImageMetadata(img)) return img;
+
+  if (
+    typeof img === "object" &&
+    "src" in img &&
+    img.src &&
+    isImageMetadata(img.src)
+  ) {
+    return img.src;
+  }
+
+  return undefined;
+};
+
+const processedItems = safeItems.map((item, index) => {
+  const primaryImage =
+    (typeof item.image === "object" ? item.image : undefined) ??
+    item.featuredImage ??
+    item.bannerImage;
+
+  const metadata = resolveImageMetadata(primaryImage);
+  const altText = primaryImage
+    ? getImageAlt(primaryImage, item.title ?? "Project preview")
+    : item.title ?? "Project preview";
+
+  return {
+    data: item,
+    media: metadata
+      ? {
+          metadata,
+          alt: altText,
+          key: item.slug ?? item.id ?? `portfolio-${index}`,
+        }
+      : undefined,
+  };
+});
+
+const portfolioItems = processedItems.map((entry) => entry.data);
+const showcaseMedia = processedItems.map((entry) => entry.media);
+
+---
+
+<section
+  id={id}
+  class={`relative rounded-lg overflow-hidden ${className}`.trim()}
+>
+  <PortfolioScreenShowcase
+    client:idle
+    items={portfolioItems}
+    className="max-w-5xl mx-auto"
+  >
+    {showcaseMedia.map((media) =>
+      media ? (
+        <Image
+          data-portfolio-media
+          src={media.metadata}
+          alt={media.alt}
+          loading="lazy"
+          widths={[480, 640, 860, 1024, 1280, 1600]}
+          sizes="(max-width: 640px) 90vw, (max-width: 1024px) 70vw, 860px"
+          class="block w-full h-auto min-h-full select-none object-cover object-top"
+          draggable="false"
+        />
+      ) : (
+        <span data-portfolio-placeholder class="hidden"></span>
+      )
+    )}
+  </PortfolioScreenShowcase>
+</section>
