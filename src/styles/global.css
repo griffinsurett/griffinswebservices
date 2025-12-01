@@ -307,7 +307,7 @@ body {
 }
 
 @utility secondary-gradient {
-  @apply bg-linear-to-r from-primary-300 to-primary;
+  @apply bg-linear-to-r from-accent-300 to-accent;
 }
 
 @utility gradient-disappear-on-hover {
