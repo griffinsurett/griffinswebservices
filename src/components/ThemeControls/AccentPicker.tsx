@@ -19,7 +19,7 @@ export default function AccentPicker() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative contents">
+    <div ref={containerRef} className="relative inline-flex">
       <CircleCheckbox
         checked={open}
         onChange={() => setOpen((value) => !value)}
@@ -35,7 +35,9 @@ export default function AccentPicker() {
       </CircleCheckbox>
 
       {open && (
-        <div className="absolute top-full mt-2 left-0 faded-bg rounded-xl p-3 flex space-x-3 overflow-x-auto hide-scrollbar shadow-lg z-50">
+        <div
+          className="absolute top-full mt-2 right-0 sm:left-0 sm:right-auto faded-bg rounded-xl p-3 flex space-x-3 overflow-x-auto hide-scrollbar shadow-lg z-50 w-max max-w-[calc(100vw-2.5rem)] sm:max-w-none"
+        >
           {accents.map((color) => (
             <SquareCheckbox
               key={color}

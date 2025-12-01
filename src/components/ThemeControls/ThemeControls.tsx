@@ -16,7 +16,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
       ref={ref}
       className={[
         "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
-        "flex items-center gap-1 lg:gap-1.5",
+        "flex items-center gap-1.5",
         "transition-opacity duration-300 ease-in-out",
         hidden
           ? "opacity-0 pointer-events-none"
