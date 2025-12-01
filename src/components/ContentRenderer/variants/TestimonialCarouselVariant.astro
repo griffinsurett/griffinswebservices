@@ -44,7 +44,11 @@ const viewAllText = `View All ${collectionTitle || heading}`.trim();
       descriptionClassName="large-text"
     />
 
-    <TestimonialCarousel client:visible items={safeItems} />
+    <TestimonialCarousel
+      client:visible
+      items={safeItems}
+      slidesPerView={{ base: 1, lg: 2 }}
+    />
 
     {
       showButtonSection &&
