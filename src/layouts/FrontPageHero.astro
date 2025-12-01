@@ -12,7 +12,9 @@ interface CTA {
 }
 
 export interface Props {
-  title?: string;
+  headingBefore?: string;
+  headingEmphasis?: string;
+  headingAfter?: string;
   description?: string;
   primaryCTA?: CTA;
   className?: string;
@@ -23,21 +25,17 @@ const defaultDescription =
   "Hand-crafted websites, automated systems, and ongoing support so you can sell more, grow faster, and stay secure without juggling multiple vendors.";
 
 const {
-  title,
-  description,
+  headingBefore,
+  headingEmphasis,
+  headingAfter,
+  description = siteData.description ?? defaultDescription,
   primaryCTA = {
     text: "Book An Intro Call",
     link: "#contact",
   },
   className = "",
   id = "hero",
-} = Astro.props;
-
-const tagline = {
-      before: "Build a website you’re proud of, ",
-      emphasized: "fast, secure, and ready to grow",
-      after: " with your business.",
-    };
+} = Astro.props as Props;
 
 ---
 
@@ -52,17 +50,17 @@ const tagline = {
       class="min-h-screen xl:h-auto inner-section mx-auto flex flex-col justify-center items-center"
     >
       <div
-        class="flex flex-col gap-2 lg:gap-4 justify-left items-start lg:justify-center lg:items-center lg:text-center w-full"
+        class="flex flex-col gap-2 lg:gap-4 justify-left items-start lg:justify-center lg:items-center space-y-6 lg:text-center w-full"
       >
         <SectionHeader
-          className="text-left lg:text-center w-full"
-          headingBefore={tagline.before}
-          headingEmphasis={tagline.emphasized}
-          headingAfter={tagline.after}
+          className="text-left lg:text-center w-full space-y-6"
+          headingBefore={headingBefore}
+          headingEmphasis={headingEmphasis}
+          headingAfter={headingAfter}
           headingTag="h1"
           headingClassName="text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight"
-          description={siteData.description}
-          descriptionClassName="hero-text mb-4 lg:mb-6 text-lg max-w-3xl leading-relaxed mx-0 lg:mx-auto"
+          description={description ?? defaultDescription}
+          descriptionClassName="hero-text lg:mb-6 text-lg max-w-3xl leading-relaxed mx-0 lg:mx-auto"
         />
 
         <div class="flex flex-col lg:flex-row items-center gap-3 lg:gap-6">

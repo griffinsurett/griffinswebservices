@@ -15,14 +15,25 @@ import {
 import FrontPageHero from "@/layouts/FrontPageHero.astro";
 import { siteData } from "@/content/siteData";
 import LogoPoster from "@/assets/2dfavicons/android-chrome-192x192.png";
+
+const heroTagline = {
+  before: "Build a website you’re proud of, ",
+  emphasized: "fast, secure, and ready to grow",
+  after: " with your business.",
+};
+
+const heroDescription =
+  "We design, build, and maintain credible sites that load instantly and stay cared for, so you can stay focused on the business.";
 ---
 
 <BaseLayout title="Home" description={siteData.description}>
   <main class="flex-1">
     <!-- Hero ContentRenderer with static content -->
     <FrontPageHero
-      title={siteData.tagline}
-      description={siteData.description}
+      headingBefore={heroTagline.before}
+      headingEmphasis={heroTagline.emphasized}
+      headingAfter={heroTagline.after}
+      description={heroDescription}
       primaryCTA={{
         text: "Get Started",
         link: "/contact-us",

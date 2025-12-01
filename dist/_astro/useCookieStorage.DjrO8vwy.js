@@ -1,0 +1,1 @@
+import{r as t}from"./react-core.EkFKhCmS.js";import{g as k,s as C,c}from"./consent.Drqa4rP7.js";function n(){const s=t.useCallback(o=>k(o),[]),a=t.useCallback((o,e,i={})=>{C(o,e,i)},[]),r=t.useCallback((o,e="/")=>{c(o,{path:e})},[]);return{getCookie:s,setCookie:a,deleteCookie:r}}export{n as u};
