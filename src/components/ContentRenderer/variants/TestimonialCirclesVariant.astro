@@ -5,6 +5,7 @@ import Heading from "@/components/Heading";
 import Placeholder from "@/assets/placeholder.jpg";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import { toArray } from "@/utils/array";
+import { resolveImageMetadata, getImageAlt } from "@/utils/images";
 
 interface Props extends BaseVariantProps {
   counterStart?: number;
@@ -41,23 +42,14 @@ if (faces.length === 0) {
 
 const resolveImage = (face: any) => {
   const featured = face.featuredImage;
-  if (!featured) {
-    return { src: Placeholder, alt: face.author };
+  const metadata = resolveImageMetadata(featured);
+
+  if (metadata) {
+    const alt = getImageAlt(featured, face.author ?? "Testimonial");
+    return { src: metadata, alt };
   }
 
-  if ("src" in featured && "width" in featured && "height" in featured) {
-    return { src: featured, alt: face.author };
-  }
-
-  if (typeof featured === "object" && "src" in featured) {
-    const imageSrc =
-      typeof featured.src === "object" && "width" in featured.src
-        ? featured.src
-        : Placeholder;
-    return { src: imageSrc, alt: featured.alt || face.author };
-  }
-
-  return { src: Placeholder, alt: face.author };
+  return { src: Placeholder, alt: face.author ?? "Testimonial" };
 };
 ---
 

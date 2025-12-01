@@ -270,7 +270,7 @@ function ComputerScreen({
   ]);
 
   useEffect(() => {
-    if (!contentReady) {
+    if (!contentReady || !isActive) {
       setScrollProgress(0);
       return;
     }
@@ -290,7 +290,7 @@ function ComputerScreen({
     return () => {
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [contentReady]);
+  }, [contentReady, isActive]);
 
   const fallbackSrc =
     getImageSrc(item.featuredImage) ||
@@ -497,6 +497,11 @@ export default function PortfolioScreenShowcase({
           const isActive = slideIndex === activeIndex;
           const isPrev = slideIndex === prevIndex;
           const isVisible = isActive || (isPrev && transitionStage !== "idle");
+
+          // Only mount slides that are active, previous (during transition), or next
+          const nextIndex = (activeIndex + 1) % slides.length;
+          const shouldMount = isActive || isPrev || slideIndex === nextIndex;
+          if (!shouldMount) return null;
 
           let translateClass = "translate-x-full";
           if (isPrev && transitionStage !== "idle") {

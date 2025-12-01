@@ -1,13 +1,51 @@
 // src/utils/images.ts
 /**
- * Image URL Utilities
+ * Image Utilities
  *
- * Helper functions for extracting image URLs from Astro-processed images.
- * Now that we enforce image() in the schema, we know all images are
- * properly processed and have predictable structures.
+ * Helper functions for working with Astro-processed images.
+ * Handles both formats: direct ImageMetadata and { src: ImageMetadata, alt: string }
  */
 
+import type { ImageMetadata } from "astro";
 import type { ImageInput } from "@/content/schema";
+
+/**
+ * Type guard to check if a value is Astro ImageMetadata
+ */
+export function isImageMetadata(img: unknown): img is ImageMetadata {
+  return Boolean(
+    img &&
+      typeof img === "object" &&
+      "width" in img &&
+      "height" in img &&
+      "src" in img
+  );
+}
+
+/**
+ * Extract ImageMetadata from various image input formats.
+ * Handles: direct ImageMetadata, { src: ImageMetadata, alt? }, or undefined
+ */
+export function resolveImageMetadata(
+  img?: ImageInput | null
+): ImageMetadata | undefined {
+  if (!img) return undefined;
+
+  // Direct ImageMetadata (from direct image() usage)
+  if (isImageMetadata(img)) return img;
+
+  // Wrapped format { src: ImageMetadata, alt?: string }
+  if (
+    typeof img === "object" &&
+    "src" in img &&
+    img.src &&
+    isImageMetadata(img.src)
+  ) {
+    return img.src;
+  }
+
+  return undefined;
+}
 
 /**
  * Extract image URL from Astro-processed image
