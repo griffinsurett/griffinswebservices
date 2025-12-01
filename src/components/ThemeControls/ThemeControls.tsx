@@ -5,17 +5,24 @@ import LanguageDropdown from "./LanguageDropdown";
 
 interface ThemeControlsProps {
   className?: string;
+  inline?: boolean;
 }
 
-export default function ThemeControls({ className = "" }: ThemeControlsProps) {
+export default function ThemeControls({
+  className = "",
+  inline = false,
+}: ThemeControlsProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [hidden] = useState(false);
+  const positionClasses = inline
+    ? ""
+    : "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2";
 
   return (
     <div
       ref={ref}
       className={[
-        "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+        positionClasses,
         "flex items-center gap-1.5",
         "transition-opacity duration-300 ease-in-out",
         hidden
