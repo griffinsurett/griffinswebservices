@@ -498,16 +498,16 @@ export default function PortfolioScreenShowcase({
           const isPrev = slideIndex === prevIndex;
           const isVisible = isActive || (isPrev && transitionStage !== "idle");
 
-          let translateClass = "translate-y-full";
+          let translateClass = "translate-x-full";
           if (isPrev && transitionStage !== "idle") {
-            translateClass = "-translate-y-full";
+            translateClass = "-translate-x-full";
           } else if (isActive) {
             if (transitionStage === "idle" || prevIndex === null) {
-              translateClass = "translate-y-0";
+              translateClass = "translate-x-0";
             } else if (transitionStage === "pre") {
-              translateClass = "translate-y-full";
+              translateClass = "translate-x-full";
             } else {
-              translateClass = "translate-y-0";
+              translateClass = "translate-x-0";
             }
           }
 
