@@ -64,7 +64,8 @@ function ComputerScreen({
   const [scrollDurationMs, setScrollDurationMs] = useState(
     AUTO_SCROLL_DEFAULT_CYCLE_MS,
   );
-  const [scrollProgress, setScrollProgress] = useState(0);
+  // Only track scroll progress in dev mode
+  const scrollProgressRef = useRef(0);
 
   const resolveAutoScrollSpeed = useCallback((host: HTMLElement) => {
     const maxScrollable = Math.max(0, host.scrollHeight - host.clientHeight);
@@ -269,26 +270,28 @@ function ComputerScreen({
     autoScroll.paused,
   ]);
 
+  // Only track scroll progress in dev mode to avoid continuous RAF in production
   useEffect(() => {
+    if (!import.meta.env.DEV) return;
     if (!contentReady || !isActive) {
-      setScrollProgress(0);
+      scrollProgressRef.current = 0;
       return;
     }
 
-    let raf: number | null = null;
-    const tick = () => {
-      const host = viewportRef.current;
-      if (host) {
-        const max = Math.max(0, host.scrollHeight - host.clientHeight);
-        const pct = max > 0 ? (host.scrollTop / max) * 100 : 0;
-        setScrollProgress(Math.round(pct));
-      }
-      raf = requestAnimationFrame(tick);
+    const host = viewportRef.current;
+    if (!host) return;
+
+    const updateProgress = () => {
+      const max = Math.max(0, host.scrollHeight - host.clientHeight);
+      const pct = max > 0 ? (host.scrollTop / max) * 100 : 0;
+      scrollProgressRef.current = Math.round(pct);
     };
 
-    raf = requestAnimationFrame(tick);
+    host.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+
     return () => {
-      if (raf) cancelAnimationFrame(raf);
+      host.removeEventListener("scroll", updateProgress);
     };
   }, [contentReady, isActive]);
 
@@ -390,7 +393,7 @@ function ComputerScreen({
         {import.meta.env.DEV && isActive && (
           <div className="absolute right-3 top-3 z-50 space-y-1 rounded-lg border border-white/10 bg-zinc-900/95 p-3 text-xs text-white/90 opacity-80 shadow-lg">
             <div>Slide {activeIndex + 1} / {totalSlides}</div>
-            <div>Progress: {scrollProgress}%</div>
+            <div>Progress: {scrollProgressRef.current}%</div>
             <div>In View: {autoScroll.inView ? "✅" : "❌"}</div>
             <div>Paused: {autoScroll.paused ? "✅" : "❌"}</div>
             <div>Engaged: {autoScroll.engaged ? "✅" : "❌"}</div>
@@ -498,9 +501,8 @@ export default function PortfolioScreenShowcase({
           const isPrev = slideIndex === prevIndex;
           const isVisible = isActive || (isPrev && transitionStage !== "idle");
 
-          // Only mount slides that are active, previous (during transition), or next
-          const nextIndex = (activeIndex + 1) % slides.length;
-          const shouldMount = isActive || isPrev || slideIndex === nextIndex;
+          // Only mount active slide and previous during transition
+          const shouldMount = isActive || (isPrev && transitionStage !== "idle");
           if (!shouldMount) return null;
 
           let translateClass = "translate-x-full";
