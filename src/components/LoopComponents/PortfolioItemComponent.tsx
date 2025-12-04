@@ -22,6 +22,7 @@ export interface PortfolioItemData {
   slug?: string;
   title?: string;
   alt?: string;
+  client?: string;
   featuredImage?: any;
   bannerImage?: any;
   image?: string;

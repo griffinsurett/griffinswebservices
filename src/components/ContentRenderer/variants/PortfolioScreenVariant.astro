@@ -28,7 +28,6 @@ const SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 860px";
 const processedItems = await Promise.all(
   safeItems.map(async (item, index) => {
     const primaryImage =
-      (typeof item.image === "object" ? item.image : undefined) ??
       item.featuredImage ??
       item.bannerImage;
 
