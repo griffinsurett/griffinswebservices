@@ -137,8 +137,8 @@ export default function FeatureCard({
   const resolvedLayout = layout ?? "vertical";
   const resolvedAlignment = alignment ?? (resolvedLayout.includes("horizontal") ? "left" : "center");
   const defaultIconClassName = resolvedLayout.includes("horizontal")
-    ? "icon-large z-10 card-icon-color"
-    : "icon-large z-10 mb-5 card-icon-color";
+    ? "icon-large z-10 card-icon-color mx-auto"
+    : "icon-large z-10 mb-5 card-icon-color mx-auto";
 
   const listItemConfig: Omit<IconListItemProps, "data"> = {
     layout: resolvedLayout,
