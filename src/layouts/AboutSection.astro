@@ -6,12 +6,17 @@ import Button from "@/components/Button/Button";
 import IconListItem from "@/components/LoopComponents/IconListItem";
 import LogoPoster from "@/assets/GWS-animated.png";
 
+const defaultHeading = {
+  title: "About Griffin's Web Services",
+  before: "Websites that make your business look credible, ",
+  text: "fast, secure, and easy to manage ",
+  after: "from day one.",
+  description:
+    "We build and manage websites that look elite, load instantly, and keep working long after launch so you never have to juggle multiple vendors again.",
+};
+
 const {
-  headingTitle = "About Griffin's Web Services",
-  headingBefore = "Websites that make your business look credible, ",
-  headingEmphasis = "fast, secure, and easy to manage ",
-  headingAfter = "from day one.",
-  headingDescription = "We build and manage websites that look elite, load instantly, and keep working long after launch so you never have to juggle multiple vendors again.",
+  heading = defaultHeading,
   primaryCTA = {
     text: "Start Your Project",
     href: "#contact",
@@ -23,6 +28,13 @@ const {
   },
   sidebar = {},
 } = Astro.props;
+
+const headingTitle = heading.title ?? defaultHeading.title;
+const headingBefore = heading.before ?? defaultHeading.before;
+const headingEmphasis =
+  heading.text ?? (heading as Record<string, any>)?.emphasis ?? defaultHeading.text;
+const headingAfter = heading.after ?? defaultHeading.after;
+const headingDescription = heading.description ?? defaultHeading.description;
 
 const sidebarIcon = sidebar.icon ?? "lucide:layers";
 const sidebarTitle = sidebar.title ?? "We handle everything.";

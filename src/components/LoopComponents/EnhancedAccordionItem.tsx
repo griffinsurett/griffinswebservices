@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
 import Icon from "@/components/Icon";
 import type { IconType } from "@/content/schema";
+import Button from "../Button/Button";
 
 interface EnhancedAccordionItemProps {
   icon?: string;
@@ -42,7 +43,8 @@ export default function EnhancedAccordionItem({
         className="transition-all duration-200"
         innerClassName="card-bg"
       >
-        <button
+        <Button
+          variant="link"
           type="button"
           className="w-full text-left flex items-center justify-between p-5 hover:bg-card/50 transition-colors duration-300 cursor-pointer relative z-20"
           onClick={onToggle}
@@ -78,7 +80,7 @@ export default function EnhancedAccordionItem({
           >
             <span className="translate-y-[-1px]">{isActive ? "−" : "+"}</span>
           </div>
-        </button>
+        </Button>
 
         <div
           className={`overflow-hidden transition-all duration-500 ease-in-out relative z-20 ${
