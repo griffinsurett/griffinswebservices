@@ -6,7 +6,7 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import type { FeatureCardData } from "@/components/LoopComponents/FeatureCard";
+import type { FeatureCardData, FeatureCardProps } from "@/components/LoopComponents/FeatureCard";
 import CardRenderer from "@/components/LoopTemplates/CardRenderer.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Button from "@/components/Button/Button";
@@ -18,7 +18,12 @@ interface Props extends BaseVariantProps {
   ctaHref?: string;
   ctaText?: string;
   ctaCollectionLabel?: string;
+  card?: CardPropOverrides;
 }
+
+type CardPropOverrides = Partial<Omit<FeatureCardProps, "data">> & {
+  listItem?: FeatureCardProps["listItemProps"];
+};
 
 const {
   items = [],
@@ -33,9 +38,31 @@ const {
   ctaHref,
   ctaText,
   ctaCollectionLabel,
+  card,
 } = Astro.props as Props;
 
 const safeItems = toArray(items) as FeatureCardData[];
+
+const normalizeCardProps = (
+  overrides?: CardPropOverrides,
+): Partial<FeatureCardProps> | undefined => {
+  if (!overrides) return undefined;
+  const { listItem, listItemProps, ...rest } = overrides as CardPropOverrides & {
+    listItemProps?: FeatureCardProps["listItemProps"];
+  };
+  const mergedListItemProps = {
+    ...(listItemProps ?? {}),
+    ...(listItem ?? {}),
+  };
+  return {
+    ...rest,
+    ...(Object.keys(mergedListItemProps).length > 0
+      ? { listItemProps: mergedListItemProps }
+      : {}),
+  };
+};
+
+const featureCardPropOverrides = normalizeCardProps(card);
 
 const resolveCardClassName = (item: FeatureCardData): string => {
   if (!item || typeof item !== "object") return "";
@@ -75,6 +102,7 @@ const gridMarginClass = showHeader ? "mt-12" : "";
       className={gridMarginClass}
       getCardClassName={resolveCardClassName}
       getRingDuration={resolveRingDuration}
+      featureCardProps={featureCardPropOverrides}
     />
 
     {showButtonSection &&

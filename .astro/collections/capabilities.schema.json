@@ -423,6 +423,35 @@
             }
           ]
         },
+        "heading": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "not": {}
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "before": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "after": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
         "features": {
           "type": "array",
           "items": {

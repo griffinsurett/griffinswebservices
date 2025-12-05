@@ -2,8 +2,10 @@
 // src/components/SectionHeader.astro
 import BorderTitle from "@/components/BorderTitle";
 import Heading from "@/components/Heading";
+import ContentHeading from "@/components/ContentHeading.astro";
 import type { ReactNode } from "react";
 import type { VisibleRootMargin } from "@/components/AnimatedBorder/AnimatedBorder";
+import type { HeadingContent } from "@/content/schema";
 
 interface Props {
   title?: ReactNode;
@@ -11,6 +13,7 @@ interface Props {
   titlePillClassName?: string;
   titleVisibleRootMargin?: VisibleRootMargin;
   heading?: ReactNode;
+  contentHeading?: HeadingContent | null;
   headingBefore?: ReactNode;
   headingEmphasis?: ReactNode;
   headingAfter?: ReactNode;
@@ -29,6 +32,7 @@ const {
   titlePillClassName,
   titleVisibleRootMargin,
   heading,
+  contentHeading,
   headingBefore,
   headingEmphasis,
   headingAfter,
@@ -45,6 +49,8 @@ const hasSegmentedHeading =
   headingBefore !== undefined ||
   headingEmphasis !== undefined ||
   headingAfter !== undefined;
+
+const hasContentHeading = contentHeading !== undefined && contentHeading !== null;
 ---
 
 <div class={className}>
@@ -59,7 +65,15 @@ const hasSegmentedHeading =
     </BorderTitle>
   )}
 
-  {hasSegmentedHeading ? (
+  {hasContentHeading ? (
+    <ContentHeading
+      heading={contentHeading}
+      tagName={headingTag}
+      className={headingClassName}
+      textClass={emphasisClassName}
+      {...headerProps}
+    />
+  ) : hasSegmentedHeading ? (
     <Heading
       tagName={headingTag}
       className={headingClassName}

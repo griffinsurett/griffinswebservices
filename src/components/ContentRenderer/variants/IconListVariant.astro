@@ -4,12 +4,12 @@ import IconListItem from "@/components/LoopComponents/IconListItem";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { toArray } from "@/utils/array";
 import Button from "@/components/Button/Button";
+import type { HeadingContent as SchemaHeadingContent } from "@/content/schema";
 
-interface HeadingContent {
+type SegmentedHeading = Extract<SchemaHeadingContent, Record<string, any>>;
+
+interface HeadingContent extends Partial<SegmentedHeading> {
   title?: string;
-  before?: string;
-  text?: string;
-  after?: string;
   description?: string;
 }
 
@@ -37,6 +37,17 @@ const headingBefore = heading?.before;
 const headingText = heading?.text;
 const headingAfter = heading?.after;
 const headingDescription = heading?.description ?? description;
+const hasSegmentedHeading = Boolean(headingBefore ?? headingText ?? headingAfter);
+const fallbackHeadingText = headingText ?? headingTitle ?? collectionTitle;
+const headingValue: SchemaHeadingContent | undefined = hasSegmentedHeading
+  ? fallbackHeadingText
+    ? {
+        before: headingBefore,
+        text: fallbackHeadingText,
+        after: headingAfter,
+      }
+    : undefined
+  : fallbackHeadingText;
 const showHeader = Boolean(
   headingTitle ?? headingDescription ?? headingBefore ?? headingText ?? headingAfter,
 );
@@ -73,10 +84,7 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
         <div class="w-full lg:w-1/3 lg:sticky lg:top-0 lg:self-start">
           <SectionHeader
             title={headingTitle}
-            heading={headingText ?? headingTitle}
-            headingBefore={headingBefore}
-            headingEmphasis={headingText}
-            headingAfter={headingAfter}
+            contentHeading={headingValue}
             description={headingDescription}
             className="space-y-4 text-left"
             headingClassName="h2 text-heading"
