@@ -15,6 +15,7 @@ import {
 import FrontPageHero from "@/layouts/FrontPageHero.astro";
 import { siteData } from "@/content/siteData";
 import LogoPoster from "@/assets/2dfavicons/android-chrome-192x192.png";
+import { roots } from "@/utils/query/snippets";
 
 const heroTagline = {
   before: "Launch a website that works. ",
@@ -46,14 +47,20 @@ const heroDescription =
     </FrontPageHero>
 
     <ContentRenderer
-      query={query("capabilities")
-        .where((entry) => entry.data.parent === "website-services")
+      query={roots("capabilities")
         .orderBy(sortByOrder())
         .limit(6)}
       variant="CardVariant"
+      title="Website Services"
+      heading={{
+        before: "Websites aren't just something we do. ",
+        text: "They're our specialty.",
+      }}
+      description="You deserve a lightning-fast, secure, and scalable website that turn your visitors into customers. Every site we build is built to dominate and stand the test of time."
       columns={3}
       gap="lg"
-      showButtonSection={false}
+      showButtonSection={true}
+      ctaInlineOnDesktop={true}
       className="bg-bg pt-35 lg:pt-20"
     />
 

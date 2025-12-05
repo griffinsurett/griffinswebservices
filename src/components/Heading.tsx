@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import type * as ReactNamespace from "react";
+import type { HeadingContent } from "@/content/schema";
 
 type HeadingTag = Extract<
   keyof ReactNamespace.JSX.IntrinsicElements,
@@ -27,6 +28,7 @@ interface HeadingProps extends HTMLAttributes<HTMLElement> {
   beforeProps?: HeadingSegmentProps;
   textProps?: HeadingSegmentProps;
   afterProps?: HeadingSegmentProps;
+  segmented?: HeadingContent | null;
   children?: ReactNode;
 }
 
@@ -45,6 +47,7 @@ export default function Heading({
   beforeProps,
   textProps,
   afterProps,
+  segmented,
   children,
   ...props
 }: HeadingProps) {
@@ -58,6 +61,8 @@ export default function Heading({
 
   const isPropBased =
     before !== undefined || text !== undefined || after !== undefined;
+  const hasSegmented =
+    segmented !== undefined && segmented !== null;
 
   const mergeProps = (
     idFromProp: string | undefined,
@@ -79,7 +84,25 @@ export default function Heading({
 
   return (
     <TagComponent className={finalClassName} {...props}>
-      {isPropBased ? (
+      {hasSegmented ? (
+        <>
+          {segmented?.before !== undefined && (
+            <span {...mergeProps(beforeId, beforeClass, beforeProps)}>
+              {segmented.before}
+            </span>
+          )}
+          {segmented?.text !== undefined && (
+            <span {...mergeProps(textId, textClass, textProps)}>
+              {segmented.text}
+            </span>
+          )}
+          {segmented?.after !== undefined && (
+            <span {...mergeProps(afterId, afterClass, afterProps)}>
+              {segmented.after}
+            </span>
+          )}
+        </>
+      ) : isPropBased ? (
         <>
           {before !== undefined && (
             <span {...mergeProps(beforeId, beforeClass, beforeProps)}>

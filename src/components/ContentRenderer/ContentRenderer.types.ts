@@ -9,6 +9,7 @@
 import type { Query } from '@/utils/query';
 import type { CollectionKey } from 'astro:content';
 import type { PreparedItem } from '@/utils/collections';
+import type { HeadingContent } from '@/content/schema';
 
 /**
  * Base props available to all section variants
@@ -16,6 +17,7 @@ import type { PreparedItem } from '@/utils/collections';
 export interface BaseVariantProps {
   items?: PreparedItem[];      // Prepared collection items or static items
   title?: string;              // Section heading
+  heading?: string | HeadingContent | null; // Optional segmented heading content
   description?: string;        // Section description/subtitle
   className?: string;          // Additional CSS classes
   collectionUrl?: string;      // URL to collection index page (for "View All" links)

@@ -2,7 +2,6 @@
 // src/components/SectionHeader.astro
 import BorderTitle from "@/components/BorderTitle";
 import Heading from "@/components/Heading";
-import ContentHeading from "@/components/ContentHeading.astro";
 import type { ReactNode } from "react";
 import type { VisibleRootMargin } from "@/components/AnimatedBorder/AnimatedBorder";
 import type { HeadingContent } from "@/content/schema";
@@ -66,10 +65,10 @@ const hasContentHeading = contentHeading !== undefined && contentHeading !== nul
   )}
 
   {hasContentHeading ? (
-    <ContentHeading
-      heading={contentHeading}
+    <Heading
       tagName={headingTag}
       className={headingClassName}
+      segmented={contentHeading}
       textClass={emphasisClassName}
       {...headerProps}
     />

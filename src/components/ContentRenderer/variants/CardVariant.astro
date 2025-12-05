@@ -7,6 +7,7 @@
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import type { FeatureCardData, FeatureCardProps } from "@/components/LoopComponents/FeatureCard";
+import type { HeadingContent } from "@/content/schema";
 import CardRenderer from "@/components/LoopTemplates/CardRenderer.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Button from "@/components/Button/Button";
@@ -19,6 +20,8 @@ interface Props extends BaseVariantProps {
   ctaText?: string;
   ctaCollectionLabel?: string;
   card?: CardPropOverrides;
+  heading?: string | HeadingContent | null;
+  ctaInlineOnDesktop?: boolean;
 }
 
 type CardPropOverrides = Partial<Omit<FeatureCardProps, "data">> & {
@@ -39,6 +42,8 @@ const {
   ctaText,
   ctaCollectionLabel,
   card,
+  heading: headingValue,
+  ctaInlineOnDesktop = false,
 } = Astro.props as Props;
 
 const safeItems = toArray(items) as FeatureCardData[];
@@ -80,8 +85,25 @@ const resolveRingDuration = (item: FeatureCardData): number => {
   return typeof record?.ringDuration === "number" ? record.ringDuration : 800;
 };
 
-const showHeader = Boolean(title || description);
+const normalizedHeading = headingValue ?? title;
+const isSegmentedHeading =
+  typeof normalizedHeading === "object" && normalizedHeading !== null;
+const headingString =
+  typeof normalizedHeading === "string"
+    ? normalizedHeading
+    : isSegmentedHeading
+    ? normalizedHeading.text ?? ""
+    : undefined;
+const contentHeading = isSegmentedHeading ? normalizedHeading : undefined;
+const resolvedHeading = headingString ?? (contentHeading ? contentHeading.text : undefined);
+const showHeader = Boolean(title || contentHeading || resolvedHeading || description);
 const gridMarginClass = showHeader ? "mt-12" : "";
+const showCTA =
+  showButtonSection &&
+  shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+  (ctaText || ctaCollectionLabel || collectionTitle) &&
+  (ctaHref || collectionUrl);
+
 ---
 
 <section id={id} class={`relative overflow-hidden ${className}`.trim()}>
@@ -89,11 +111,39 @@ const gridMarginClass = showHeader ? "mt-12" : "";
 
   <div class="inner-section">
     {showHeader && (
-      <SectionHeader
-        title={title}
-        heading={title}
-        description={description}
-      />
+      <div
+        class={
+          ctaInlineOnDesktop && showCTA
+            ? "flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
+            : ""
+        }
+      >
+        <SectionHeader
+          title={title}
+          heading={contentHeading ? undefined : resolvedHeading}
+          contentHeading={contentHeading}
+          description={description}
+          className={
+            ctaInlineOnDesktop && showCTA ? "text-section lg:text-left" : undefined
+          }
+          descriptionClassName={
+            ctaInlineOnDesktop && showCTA ? "large-text lg:text-left" : undefined
+          }
+        />
+
+        {ctaInlineOnDesktop && showCTA && (
+          <div class="hidden lg:flex items-center">
+            <Button
+              client:visible
+              href={ctaHref ?? collectionUrl}
+              rightIcon="lu:arrow-right"
+              variant="secondary"
+            >
+              {ctaText ?? `View All ${(ctaCollectionLabel ?? collectionTitle ?? "").trim()}`}
+            </Button>
+          </div>
+        )}
+      </div>
     )}
 
     <CardRenderer
@@ -105,11 +155,8 @@ const gridMarginClass = showHeader ? "mt-12" : "";
       featureCardProps={featureCardPropOverrides}
     />
 
-    {showButtonSection &&
-      shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
-      (ctaText || ctaCollectionLabel || collectionTitle) &&
-      (ctaHref || collectionUrl) && (
-      <div class="buttons-section-center">
+    {showCTA && (
+      <div class={`buttons-section-center ${ctaInlineOnDesktop ? "lg:hidden" : ""}`.trim()}>
         <Button
           client:visible
           href={ctaHref ?? collectionUrl}

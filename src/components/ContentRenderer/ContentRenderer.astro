@@ -65,6 +65,7 @@ const {
   variant = "CardVariant", // Which variant to render (defaults to CardVariant)
   title: titleOverride, // Manual title override
   description: descriptionOverride, // Manual description override
+  heading: headingOverride, // Manual heading override (supports segmented headings)
   id: manualId, // Manual ID override (skips auto-generation)
   ...restProps // All other props (passed to variant)
 } = Astro.props as SectionProps;
@@ -126,6 +127,9 @@ if (queryProp) {
       description:
         descriptionOverride ??
         (isOnCollectionPage ? undefined : meta.description),
+      heading:
+        headingOverride ??
+        (isOnCollectionPage ? undefined : meta.heading),
       featuredImage: meta.featuredImage,
 
       // Only show "View All" link if:
@@ -171,6 +175,7 @@ if (queryProp) {
       items: preparedItems,
       title: titleOverride,
       description: descriptionOverride,
+      heading: headingOverride,
       // No collectionUrl or collectionTitle for multi-collection
       ...restProps,
     };
@@ -189,6 +194,9 @@ if (queryProp) {
   // ──────────────────────────────────────────────────────────────────────────
   // Useful for hero sections, featured content, or any non-collection data
   data = restProps.items ? restProps : { items: [], ...restProps };
+  if (headingOverride !== undefined) {
+    data.heading = headingOverride;
+  }
 }
 
 // Skip rendering entirely if there are no items to show

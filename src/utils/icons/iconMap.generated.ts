@@ -3,7 +3,7 @@
 
 import type { IconType } from 'react-icons';
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuCheck, LuCode, LuContact, LuGithub, LuGlobe, LuInstagram, LuLayers, LuLinkedin, LuMail, LuMinus, LuPhone, LuPlus } from 'react-icons/lu';
-import { FaArrowsRotate, FaArrowsUpToLine, FaAws, FaBellConcierge, FaBlender, FaBolt, FaBook, FaBorderAll, FaBorderTopLeft, FaBox, FaBoxArchive, FaBoxOpen, FaBoxesStacked, FaBrain, FaBriefcase, FaBroom, FaBug, FaBuilding, FaBullhorn, FaBurger, FaCakeCandles, FaCalculator, FaCalendar, FaCalendarCheck, FaCapsules, FaCartShopping, FaCashRegister, FaChampagneGlasses, FaChartLine, FaChartPie, FaClipboardCheck, FaClockRotateLeft, FaCloudflare, FaCode, FaCookieBite, FaCouch, FaCss3Alt, FaCubes, FaDatabase, FaDiagramProject, FaDoorOpen, FaDumbbell, FaEnvelope, FaExplosion, FaFaucetDrip, FaFeather, FaFigma, FaFileLines, FaGaugeHigh, FaGear, FaGears, FaGem, FaGithub, FaGlobe, FaGoogle, FaGoogleDrive, FaGraduationCap, FaHammer, FaHandHoldingHeart, FaHands, FaHandshake, FaHeadset, FaHeartPulse, FaHouse, FaHouseChimney, FaHouseChimneyWindow, FaHtml5, FaIdCard, FaJs, FaLanguage, FaLaptop, FaLayerGroup, FaLifeRing, FaLightbulb, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMartiniGlassCitrus, FaMicrophone, FaMugHot, FaNetworkWired, FaNodeJs, FaPaintRoller, FaPaintbrush, FaPalette, FaPenNib, FaPenRuler, FaPenToSquare, FaPeopleGroup, FaPersonChalkboard, FaPhp, FaPlug, FaPlus, FaPuzzlePiece, FaPython, FaReact, FaRobot, FaRocket, FaRoute, FaScaleBalanced, FaScissors, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShirt, FaShopify, FaSolarPanel, FaSpa, FaSprayCanSparkles, FaStar, FaStethoscope, FaStore, FaTable, FaTags, FaTemperatureHalf, FaTree, FaTruck, FaTruckFast, FaTruckRampBox, FaUmbrella, FaUniversalAccess, FaUsers, FaUsersGear, FaUtensils, FaWandMagicSparkles, FaWarehouse, FaWordpress } from 'react-icons/fa6';
+import { FaArrowsRotate, FaArrowsUpToLine, FaAws, FaBellConcierge, FaBlender, FaBolt, FaBook, FaBorderAll, FaBorderTopLeft, FaBox, FaBoxArchive, FaBoxOpen, FaBoxesStacked, FaBrain, FaBriefcase, FaBroom, FaBug, FaBuilding, FaBullhorn, FaBurger, FaCakeCandles, FaCalculator, FaCalendar, FaCalendarCheck, FaCapsules, FaCartShopping, FaCashRegister, FaChampagneGlasses, FaChartLine, FaClockRotateLeft, FaCloudflare, FaCode, FaCookieBite, FaCouch, FaCss3Alt, FaCubes, FaDatabase, FaDiagramProject, FaDoorOpen, FaDumbbell, FaEnvelope, FaExplosion, FaFaucetDrip, FaFeather, FaFigma, FaFileLines, FaGaugeHigh, FaGear, FaGears, FaGem, FaGithub, FaGlobe, FaGoogle, FaGoogleDrive, FaGraduationCap, FaHammer, FaHandHoldingHeart, FaHands, FaHandshake, FaHeadset, FaHeartPulse, FaHouse, FaHouseChimney, FaHouseChimneyWindow, FaHtml5, FaIdCard, FaJs, FaLanguage, FaLaptop, FaLayerGroup, FaLifeRing, FaLightbulb, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMartiniGlassCitrus, FaMicrophone, FaMugHot, FaNetworkWired, FaNodeJs, FaPaintRoller, FaPaintbrush, FaPalette, FaPenNib, FaPenRuler, FaPeopleGroup, FaPersonChalkboard, FaPhp, FaPlug, FaPlus, FaPuzzlePiece, FaPython, FaReact, FaRobot, FaRocket, FaRoute, FaScaleBalanced, FaScissors, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShirt, FaShopify, FaSolarPanel, FaSpa, FaSprayCanSparkles, FaStar, FaStethoscope, FaStore, FaTable, FaTags, FaTemperatureHalf, FaTree, FaTruck, FaTruckFast, FaTruckRampBox, FaUmbrella, FaUniversalAccess, FaUsers, FaUsersGear, FaUtensils, FaWandMagicSparkles, FaWarehouse, FaWordpress } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiVercel, SiWebflow } from 'react-icons/si';
 
 export const iconMap = {
@@ -36,8 +36,6 @@ export const iconMap = {
   'fa6:cash-register': FaCashRegister,
   'fa6:champagne-glasses': FaChampagneGlasses,
   'fa6:chart-line': FaChartLine,
-  'fa6:chart-pie': FaChartPie,
-  'fa6:clipboard-check': FaClipboardCheck,
   'fa6:clock-rotate-left': FaClockRotateLeft,
   'fa6:cloudflare': FaCloudflare,
   'fa6:code': FaCode,
@@ -94,7 +92,6 @@ export const iconMap = {
   'fa6:palette': FaPalette,
   'fa6:pen-nib': FaPenNib,
   'fa6:pen-ruler': FaPenRuler,
-  'fa6:pen-to-square': FaPenToSquare,
   'fa6:people-group': FaPeopleGroup,
   'fa6:person-chalkboard': FaPersonChalkboard,
   'fa6:php': FaPhp,

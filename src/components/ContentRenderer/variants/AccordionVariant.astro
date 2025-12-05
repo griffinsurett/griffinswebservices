@@ -13,6 +13,7 @@ import Button from "@/components/Button/Button";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import { toArray } from "@/utils/array";
+import type { HeadingContent } from "@/content/schema";
 
 interface Props extends BaseVariantProps {
   allowMultiple?: boolean;
@@ -34,9 +35,25 @@ const {
   ctaText,
   ctaCollectionLabel,
   showButtonSection = true,
+  heading,
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
+const fallbackHeading = title ?? collectionTitle;
+const headingSource = heading ?? fallbackHeading;
+const isSegmentedHeading =
+  typeof headingSource === "object" && headingSource !== null;
+const contentHeading = isSegmentedHeading ? (headingSource as HeadingContent) : undefined;
+const resolvedHeading =
+  typeof headingSource === "string"
+    ? headingSource
+    : contentHeading?.text ?? fallbackHeading;
+const showHeader = Boolean(
+  (ctaCollectionLabel ?? collectionTitle ?? "").trim() ||
+    resolvedHeading ||
+    contentHeading ||
+    description,
+);
 ---
 
 <section
@@ -46,10 +63,11 @@ const safeItems = toArray(items);
   <div class="section-dim-border"></div>
 
   <div class="inner-section">
-    {(title || collectionTitle || description) && (
+    {showHeader && (
       <SectionHeader
         title={(ctaCollectionLabel ?? collectionTitle ?? "").trim() || title || collectionTitle}
-        heading={title ?? collectionTitle}
+        heading={contentHeading ? undefined : resolvedHeading}
+        contentHeading={contentHeading}
         description={description}
         className="text-center max-w-3xl mx-auto"
         titleClassName="tracking-[0.25em]"
