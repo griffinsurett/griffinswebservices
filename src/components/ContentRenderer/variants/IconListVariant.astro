@@ -26,6 +26,8 @@ const {
   heading,
   description,
   className = "",
+  headingClassName = "h3 text-heading",
+  headingTag = "h2",
   columns = 2,
   gap = "md",
   id,
@@ -85,9 +87,10 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
           <SectionHeader
             title={headingTitle}
             heading={headingValue}
+            headingTag={headingTag}
             description={headingDescription}
             className="space-y-4 text-left"
-            headingClassName="h2 text-heading"
+            headingClassName={headingClassName}
             descriptionClassName="text-lg text-muted leading-relaxed"
             titleVisibleRootMargin={0}
           />

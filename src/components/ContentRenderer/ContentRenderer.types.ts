@@ -20,6 +20,8 @@ export interface BaseVariantProps {
   heading?: string | HeadingContent | null; // Optional segmented heading content
   description?: string;        // Section description/subtitle
   className?: string;          // Additional CSS classes
+  headingClassName?: string;   // Custom heading CSS classes (overrides variant default)
+  headingTag?: string;         // Custom heading tag (h1-h6, overrides variant default)
   collectionUrl?: string;      // URL to collection index page (for "View All" links)
   collectionTitle?: string;    // Display name for collection (for "View All" text)
   id?: string;                 // Manual ID override (auto-generated if not provided)
