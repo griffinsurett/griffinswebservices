@@ -10,7 +10,6 @@ import { toArray } from "@/utils/array";
 interface Props extends BaseVariantProps {
   ctaHref?: string;
   ctaText?: string;
-  ctaCollectionLabel?: string;
 }
 
 const {
@@ -24,7 +23,6 @@ const {
   showButtonSection = true,
   ctaHref,
   ctaText,
-  ctaCollectionLabel,
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
@@ -39,7 +37,7 @@ const safeItems = toArray(items);
   <div class="inner-section">
     {(title || collectionTitle || description) && (
       <SectionHeader
-        title={ctaCollectionLabel ?? collectionTitle ?? title}
+        title={collectionTitle ?? title}
         heading={title ?? collectionTitle}
         description={description}
         className="text-section"
@@ -58,7 +56,7 @@ const safeItems = toArray(items);
 
     {showButtonSection &&
       shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
-      (ctaText || ctaCollectionLabel || collectionTitle) &&
+      (ctaText || title || collectionTitle) &&
       (ctaHref || collectionUrl) && (
       <div class="buttons-section-center">
         <Button
@@ -67,7 +65,7 @@ const safeItems = toArray(items);
           rightIcon="lu:arrow-right"
           variant="secondary"
         >
-          {ctaText ?? `View All ${(ctaCollectionLabel ?? collectionTitle ?? "").trim()}`}
+          {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
         </Button>
       </div>
     )}

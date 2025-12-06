@@ -498,7 +498,7 @@ body {
   }
 
   .h4 {
-    @apply font-semibold text-xl md:text-2xl lg:text-3xl text-heading;
+    @apply font-semibold text-xl text-heading;
   }
 
   .h5 {

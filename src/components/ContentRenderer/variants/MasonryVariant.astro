@@ -14,7 +14,6 @@ import { toArray } from "@/utils/array";
 interface Props extends BaseVariantProps {
   ctaHref?: string;
   ctaText?: string;
-  ctaCollectionLabel?: string;
 }
 
 const {
@@ -28,7 +27,6 @@ const {
   showButtonSection = true,
   ctaHref,
   ctaText,
-  ctaCollectionLabel,
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
@@ -72,7 +70,7 @@ const getRingDuration = (item: Record<string, any>) =>
 
   {showButtonSection &&
     shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
-    (ctaText || ctaCollectionLabel || collectionTitle) &&
+    (ctaText || title || collectionTitle) &&
     (ctaHref || collectionUrl) && (
     <div class="buttons-section-center">
       <Button
@@ -81,7 +79,7 @@ const getRingDuration = (item: Record<string, any>) =>
         rightIcon="lu:arrow-right"
         variant="primary"
       >
-        {ctaText ?? `View All ${(ctaCollectionLabel ?? collectionTitle ?? "").trim()}`}
+        {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
       </Button>
     </div>
   )}

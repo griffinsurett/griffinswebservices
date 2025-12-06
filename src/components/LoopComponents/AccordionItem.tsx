@@ -30,7 +30,7 @@ export default function AccordionItem({
   children,
   isExpanded,
   onToggle,
-  headerClassName = "",
+  headerClassName = "h5",
   headerSlot,
   showIndicator = true,
   indicatorIcons,

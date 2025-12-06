@@ -13,7 +13,6 @@ import { toArray } from "@/utils/array";
 interface Props extends BaseVariantProps {
   ctaHref?: string;
   ctaText?: string;
-  ctaCollectionLabel?: string;
 }
 
 const {
@@ -27,7 +26,6 @@ const {
   showButtonSection = true,
   ctaHref,
   ctaText,
-  ctaCollectionLabel,
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
@@ -37,9 +35,9 @@ const safeItems = toArray(items);
   {(title || description) && (
     <div class="mb-2">
       {title && <h2 class="h4 text-heading">{title}</h2>}
-      {description && (
+      {/* {description && (
         <p class="text-text max-w-3xl">{description}</p>
-      )}
+      )} */}
     </div>
   )}
 
@@ -55,11 +53,11 @@ const safeItems = toArray(items);
 
   {showButtonSection &&
     shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
-    (ctaText || ctaCollectionLabel || collectionTitle) &&
+    (ctaText || title || collectionTitle) &&
     (ctaHref || collectionUrl) && (
     <div class="mt-12">
       <Button client:visible href={ctaHref ?? collectionUrl} variant="tertiary">
-        {ctaText ?? `View All ${(ctaCollectionLabel ?? collectionTitle ?? "").trim()}`}
+        {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
         <svg
           class="ml-2 w-5 h-5"
           fill="none"

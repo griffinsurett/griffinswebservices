@@ -19,7 +19,6 @@ interface Props extends BaseVariantProps {
   autoAdvanceDelay?: number;
   ctaHref?: string;
   ctaText?: string;
-  ctaCollectionLabel?: string;
 }
 
 const {
@@ -34,7 +33,6 @@ const {
   showButtonSection = true,
   ctaHref,
   ctaText,
-  ctaCollectionLabel,
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
@@ -66,7 +64,7 @@ const accordionItems = contentItems.map((item: any, index: number) => {
   <div class="inner-section">
     {showHeader && (
       <SectionHeader
-        title={ctaCollectionLabel ?? collectionTitle ?? title}
+        title={collectionTitle ?? title}
         heading={title ?? collectionTitle}
         description={description}
         className="text-center max-w-3xl mx-auto"
@@ -88,7 +86,7 @@ const accordionItems = contentItems.map((item: any, index: number) => {
 
     {showButtonSection &&
       shouldShowCollectionCTA(collectionUrl, contentItems.length) &&
-      (ctaText || ctaCollectionLabel || collectionTitle) &&
+      (ctaText || title || collectionTitle) &&
       (ctaHref || collectionUrl) && (
       <div class="buttons-section-center">
         <Button
@@ -97,7 +95,7 @@ const accordionItems = contentItems.map((item: any, index: number) => {
           rightIcon="lu:arrow-right"
           variant="secondary"
         >
-          {ctaText ?? `View All ${(ctaCollectionLabel ?? collectionTitle ?? "").trim()}`}
+          {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
         </Button>
       </div>
     )}

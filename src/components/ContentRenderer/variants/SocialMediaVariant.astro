@@ -5,6 +5,7 @@
  * Features: Horizontal/vertical layout, size variants, left/center/right alignment
  */
 
+import Heading from "@/components/Heading";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import SocialIcon from "@/components/LoopComponents/SocialIcon";
 import { toArray } from "@/utils/array";
@@ -44,9 +45,9 @@ const layoutClasses = {
   {(title || description) && (
     <div class={`mb-6`}>
       {title && (
-        <h3 class="text-2xl text-heading text-left font-bold">
+        <Heading className="h4 text-heading text-left font-bold">
           {title}
-        </h3>
+        </Heading>
       )}
       {description && <p class="text-text">{description}</p>}
     </div>

@@ -17,7 +17,6 @@ interface Props extends BaseVariantProps {
   columns?: 1 | 2 | 3;
   ctaHref?: string;
   ctaText?: string;
-  ctaCollectionLabel?: string;
 }
 
 const {
@@ -32,7 +31,6 @@ const {
   showButtonSection = true,
   ctaHref,
   ctaText,
-  ctaCollectionLabel,
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
@@ -59,7 +57,7 @@ const columnClasses = {
 
       {showButtonSection &&
         shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
-        (ctaText || ctaCollectionLabel || collectionTitle) &&
+        (ctaText || title || collectionTitle) &&
         (ctaHref || collectionUrl) && (
         <div class="mt-12 text-left">
           <Button
@@ -69,7 +67,7 @@ const columnClasses = {
             variant="primary"
             size="lg"
           >
-            {ctaText ?? `View All ${(ctaCollectionLabel ?? collectionTitle ?? "").trim()}`}
+            {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
           </Button>
         </div>
       )}

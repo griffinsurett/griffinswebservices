@@ -19,7 +19,6 @@ interface Props extends BaseVariantProps {
   allowMultiple?: boolean;
   ctaHref?: string;
   ctaText?: string;
-  ctaCollectionLabel?: string;
 }
 
 const {
@@ -33,7 +32,6 @@ const {
   id,
   ctaHref,
   ctaText,
-  ctaCollectionLabel,
   showButtonSection = true,
   heading,
 } = Astro.props as Props;
@@ -43,14 +41,16 @@ const fallbackHeading = title ?? collectionTitle;
 const headingSource = heading ?? fallbackHeading;
 const isSegmentedHeading =
   typeof headingSource === "object" && headingSource !== null;
-const segmentedHeading = isSegmentedHeading ? (headingSource as HeadingContent) : undefined;
+const segmentedHeading = isSegmentedHeading
+  ? (headingSource as HeadingContent)
+  : undefined;
 const resolvedHeading =
   typeof headingSource === "string"
     ? headingSource
-    : segmentedHeading?.text ?? fallbackHeading;
+    : (segmentedHeading?.text ?? fallbackHeading);
 const headingPayload = segmentedHeading ?? resolvedHeading;
 const showHeader = Boolean(
-  (ctaCollectionLabel ?? collectionTitle ?? "").trim() ||
+  (title ?? collectionTitle ?? "").trim() ||
     headingPayload ||
     description,
 );
@@ -63,56 +63,57 @@ const showHeader = Boolean(
   <div class="section-dim-border"></div>
 
   <div class="inner-section">
-    {showHeader && (
+    {
+      showHeader && (
         <SectionHeader
-          title={(ctaCollectionLabel ?? collectionTitle ?? "").trim() || title || collectionTitle}
+          title={title ?? collectionTitle}
           heading={headingPayload}
           description={description}
           className="text-center max-w-3xl mx-auto"
           titleClassName="tracking-[0.25em]"
           headingClassName="h2 mb-4 text-4xl sm:text-[2.75rem] font-semibold text-heading"
-        descriptionClassName="large-text text-text/80"
-      />
-    )}
+          descriptionClassName="large-text text-text/80"
+        />
+      )
+    }
 
-    {safeItems.length > 0 && (
-      <ContentBridge
-        items={safeItems}
-        bridgeId={id}
-        className="mt-12"
-      >
-        <Fragment slot="default">
-          <Accordion
-            items={safeItems.map((item, index) => ({
-              slug: item.slug,
-              title: item.title || "Untitled",
-              description: item.description,
-              contentSlotId: `${id}-slot-${index}`,
-            }))}
-            allowMultiple={allowMultiple}
-            className="space-y-4"
-            client:visible
-          />
-        </Fragment>
-      </ContentBridge>
-    )}
+    {
+      safeItems.length > 0 && (
+        <ContentBridge items={safeItems} bridgeId={id} className="mt-12">
+          <Fragment slot="default">
+            <Accordion
+              items={safeItems.map((item, index) => ({
+                slug: item.slug,
+                title: item.title || "Untitled",
+                description: item.description,
+                contentSlotId: `${id}-slot-${index}`,
+              }))}
+              allowMultiple={allowMultiple}
+              className="space-y-4"
+              client:visible
+            />
+          </Fragment>
+        </ContentBridge>
+      )
+    }
 
-    {showButtonSection &&
-      shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
-      (ctaText || ctaCollectionLabel || collectionTitle) &&
-      (ctaHref || collectionUrl) && (
-      <div class="buttons-section-center">
-        <Button
-          client:visible
-          href={ctaHref ?? collectionUrl}
-          rightIcon="lu:arrow-right"
-          variant="secondary"
-          size="lg"
-        >
-          {ctaText ??
-            `View All ${(ctaCollectionLabel ?? collectionTitle ?? "").trim()}`}
-        </Button>
-      </div>
-    )}
+    {
+      showButtonSection &&
+        shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+        (ctaText || title || collectionTitle) &&
+        (ctaHref || collectionUrl) && (
+          <div class="buttons-section-center">
+            <Button
+              client:visible
+              href={ctaHref ?? collectionUrl}
+              rightIcon="lu:arrow-right"
+              variant="secondary"
+              size="lg"
+            >
+              {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+            </Button>
+          </div>
+        )
+    }
   </div>
 </section>
