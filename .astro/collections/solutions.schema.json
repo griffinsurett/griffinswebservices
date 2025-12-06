@@ -464,9 +464,6 @@
             "type": "string"
           },
           "default": []
-        },
-        "$schema": {
-          "type": "string"
         }
       },
       "required": [

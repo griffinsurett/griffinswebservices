@@ -454,9 +454,6 @@
         },
         "highlight": {
           "type": "boolean"
-        },
-        "$schema": {
-          "type": "string"
         }
       },
       "required": [
