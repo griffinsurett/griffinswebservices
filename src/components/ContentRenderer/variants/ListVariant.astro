@@ -33,18 +33,18 @@ const {
 const safeItems = toArray(items);
 ---
 
-<section id={id} class={`py-16 ${className}`}>
+<section id={id} class={`${className}`}>
   {(title || description) && (
-    <div class="mb-12">
-      {title && <h2 class="text-4xl text-heading font-bold mb-4">{title}</h2>}
+    <div class="mb-2">
+      {title && <h2 class="h4 text-heading">{title}</h2>}
       {description && (
-        <p class="text-lg text-text max-w-3xl">{description}</p>
+        <p class="text-text max-w-3xl">{description}</p>
       )}
     </div>
   )}
 
   {safeItems.length > 0 && (
-    <nav class="flex flex-wrap gap-2 list-none">
+    <nav class="flex flex-col gap-2 list-none">
       {safeItems.map((item) => (
         <Button client:visible href={item.url} className="text-text" variant="link">
           {item.title}

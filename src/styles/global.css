@@ -498,13 +498,18 @@ body {
   }
 
   .h4 {
+    @apply font-semibold text-xl md:text-2xl lg:text-3xl text-heading;
+  }
+
+  .h5 {
     @apply font-semibold text-lg text-heading;
   }
 
   .h1,
   .h2,
   .h3,
-  .h4 {
+  .h4,
+  .h5 {
     @apply font-header;
   }
 

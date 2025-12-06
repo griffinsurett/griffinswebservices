@@ -18,7 +18,9 @@ import PreferencesLayout from "./PreferencesLayout.astro";
 
 <footer class="mt-auto border-t border-accent/10 bg-bg2/60">
   <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-    <div class="grid gap-10 text-center sm:text-left sm:grid-cols-2 lg:grid-cols-3 py-10">
+    <div
+      class="grid gap-10 text-center sm:text-left sm:grid-cols-2 lg:grid-cols-3 py-10"
+    >
       {/* Column 1: Brand summary */}
       <div class="flex flex-col items-center gap-4 sm:items-start">
         <p class="text-2xl font-bold text-heading">{siteData.title}</p>
@@ -28,25 +30,26 @@ import PreferencesLayout from "./PreferencesLayout.astro";
       </div>
 
       {/* Column 2: Legal links & preferences */}
-      <div class="flex flex-col items-center gap-4 text-sm sm:items-start">
-        <p class="font-semibold uppercase tracking-wider text-muted text-xs">
-          Resources
-        </p>
-        <ContentRenderer
-          query={query("menu-items")
-            .where((entry) => {
-              const menus = entry.data.menu;
-              if (Array.isArray(menus)) {
-                return menus.some((m) => m.id === "footer-menu");
-              }
-              return menus?.id === "footer-menu";
-            })
-            .orderBy(sortBy("order", "asc"))}
-          variant="ListVariant"
-          className="text-bg flex flex-col justify-center gap-3 sm:justify-start"
-        />
-
-        <PreferencesLayout />
+      <div class="flex flex-col items-center gap-8 text-sm sm:items-start">
+        <div class="flex flex-col items-center gap-2 text-sm sm:items-start">
+          <ContentRenderer
+            query={query("menu-items")
+              .where((entry) => {
+                const menus = entry.data.menu;
+                if (Array.isArray(menus)) {
+                  return menus.some((m) => m.id === "footer-menu");
+                }
+                return menus?.id === "footer-menu";
+              })
+              .orderBy(sortBy("order", "asc"))}
+            variant="ListVariant"
+            title="Resources"
+            className="text-bg flex flex-col justify-center sm:justify-start"
+          />
+        </div>
+        <div class="flex flex-col items-center gap-2 text-sm sm:items-start">
+          <PreferencesLayout />
+        </div>
       </div>
 
       {/* Column 3: Social links */}
@@ -64,7 +67,9 @@ import PreferencesLayout from "./PreferencesLayout.astro";
       </div>
     </div>
 
-    <div class="flex flex-col items-center border-t border-accent/10 text-center text-text text-sm sm:flex-row sm:justify-between sm:text-left py-6">
+    <div
+      class="flex flex-col items-center border-t border-accent/10 text-center text-text text-sm sm:flex-row sm:justify-between sm:text-left py-6"
+    >
       <p>
         &copy; {new Date().getFullYear()}
         {siteData.legalName}. All rights reserved.
