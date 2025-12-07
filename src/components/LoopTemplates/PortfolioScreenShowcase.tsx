@@ -20,6 +20,7 @@ interface PortfolioMediaEntry {
   loading?: "eager" | "lazy";
   decoding?: "sync" | "async";
   fetchPriority?: "high" | "low" | "auto";
+  desktopEager?: boolean;
 }
 
 interface PortfolioScreenShowcaseProps {
@@ -36,6 +37,7 @@ interface ScreenProps {
   onCycleComplete: () => void;
   autoplayEnabled?: boolean;
   isActive: boolean;
+  shouldUseDesktopEager: boolean;
 }
 
 const AUTO_SCROLL_START_DELAY_MS = 700;
@@ -49,6 +51,29 @@ const CONTENT_READY_TIMEOUT_MS = 2200;
 const BETWEEN_SLIDE_PAUSE_MS = 450;
 const SLIDE_TRANSITION_DURATION_MS = 750;
 
+function useDesktopEagerPreference() {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia === "undefined") {
+      return;
+    }
+    const matcher = window.matchMedia("(min-width: 1024px)");
+    const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
+      setIsDesktop(event.matches);
+    };
+    handleChange(matcher);
+    if (typeof matcher.addEventListener === "function") {
+      matcher.addEventListener("change", handleChange);
+      return () => matcher.removeEventListener("change", handleChange);
+    }
+    matcher.addListener(handleChange);
+    return () => matcher.removeListener(handleChange);
+  }, []);
+
+  return isDesktop;
+}
+
 function ComputerScreen({
   item,
   mediaEntry,
@@ -57,6 +82,7 @@ function ComputerScreen({
   onCycleComplete,
   autoplayEnabled = true,
   isActive,
+  shouldUseDesktopEager,
 }: ScreenProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [mediaReady, setMediaReady] = useState(false);
@@ -300,6 +326,14 @@ function ComputerScreen({
     getImageSrc(item.bannerImage) ||
     getImageSrc(item.image) ||
     "";
+  const wantsDesktopEager =
+    Boolean(mediaEntry?.desktopEager && shouldUseDesktopEager);
+  const resolvedLoading = wantsDesktopEager
+    ? "eager"
+    : mediaEntry?.loading ?? "lazy";
+  const resolvedFetchPriority = wantsDesktopEager
+    ? "high"
+    : mediaEntry?.fetchPriority ?? "auto";
 
   const renderMedia = () => {
     if (mediaEntry?.sources?.length) {
@@ -320,9 +354,9 @@ function ComputerScreen({
             alt={mediaEntry.alt || item.alt || item.title || "Project preview"}
             width={mediaEntry.width}
             height={mediaEntry.height}
-            loading={mediaEntry.loading ?? "lazy"}
+            loading={resolvedLoading}
             decoding={mediaEntry.decoding ?? "async"}
-            fetchPriority={mediaEntry.fetchPriority}
+            fetchPriority={resolvedFetchPriority}
             draggable={false}
             className="block h-auto min-h-full w-full select-none object-cover object-top"
           />
@@ -338,9 +372,9 @@ function ComputerScreen({
           alt={mediaEntry.alt || item.alt || item.title || "Project preview"}
           width={mediaEntry.width}
           height={mediaEntry.height}
-          loading={mediaEntry.loading ?? "lazy"}
+          loading={resolvedLoading}
           decoding={mediaEntry.decoding ?? "async"}
-          fetchPriority={mediaEntry.fetchPriority}
+          fetchPriority={resolvedFetchPriority}
           draggable={false}
           className="block h-auto min-h-full w-full select-none object-cover object-top"
         />
@@ -358,10 +392,11 @@ function ComputerScreen({
       <img
         src={fallbackSrc}
         alt={item.alt || item.title || "Project preview"}
-        loading="eager"
+        loading={wantsDesktopEager ? "eager" : "lazy"}
         draggable={false}
         className="block h-auto min-h-full w-full select-none object-cover object-top"
         decoding="async"
+        fetchPriority={wantsDesktopEager ? "high" : "auto"}
       />
     );
   };
@@ -421,6 +456,7 @@ export default function PortfolioScreenShowcase({
   const [transitionStage, setTransitionStage] = useState<"idle" | "pre" | "animating">("idle");
   const transitionTimerRef = useRef<number | null>(null);
   const transitionFrameRef = useRef<number | null>(null);
+  const preferDesktopEager = useDesktopEagerPreference();
 
   useEffect(() => {
     if (!slides.length) {
@@ -534,6 +570,7 @@ export default function PortfolioScreenShowcase({
                 onCycleComplete={handleCycleComplete}
                 autoplayEnabled={isActive && transitionStage === "idle"}
                 isActive={isActive}
+                shouldUseDesktopEager={preferDesktopEager}
               />
             </div>
           );
