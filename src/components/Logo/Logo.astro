@@ -12,7 +12,6 @@ export interface Props {
   animateOutText?: boolean;
   class?: string;
   useLottie?: boolean;
-  scale?: number;
 }
 
 const {
@@ -22,7 +21,6 @@ const {
   animateOutText = false,
   class: className = "",
   useLottie = true,
-  scale = 1,
 } = Astro.props;
 
 const shouldUseLottie =
@@ -31,28 +29,9 @@ const shouldUseLottie =
     trigger === "visible" ||
     trigger === "load");
 
-// Base sizes scaled by the scale prop
-const baseSize = 45;
-const scaledSize = Math.round(baseSize * scale);
-const baseMobileSize = 43;
-const scaledMobileSize = Math.round(baseMobileSize * scale);
-
-const LOGO_WIDTHS = [scaledMobileSize, Math.round(80 * scale), scaledSize];
-const LOGO_SIZES = `(min-width: 1024px) ${scaledSize}px, ${scaledMobileSize}px`;
-
-// Logo class with dynamic sizing via CSS custom properties
-const logoClasses = "block object-contain logo-scaled";
-
-// Text size classes based on scale
-const textClasses = scale >= 1.5
-  ? {
-      firstClass: "text-4xl lg:text-5xl -ml-[0.1rem] leading-wide font-bold",
-      restClass: "font-light text-accent uppercase text-sm lg:text-base p-0 m-0 tracking-wider",
-    }
-  : {
-      firstClass: "text-3xl -ml-[0.1rem] leading-wide font-bold",
-      restClass: "font-light text-accent uppercase text-xs lg:text-sm p-0 m-0 tracking-wider",
-    };
+const LOGO_WIDTHS = [45, 80, 90];
+const LOGO_SIZES = "(min-width: 1024px) 45px, 40px";
+const logoClasses = "block w-[43px] h-[43px] lg:w-[45px] lg:h-[45px] object-contain";
 ---
 
 <a href="/" class={`flex justify-center items-center gap-1.5 ${className}`}>
@@ -145,8 +124,6 @@ const textClasses = scale >= 1.5
     <TextLogo
       title={siteData.title}
       className="flex flex-col p-0 m-0"
-      firstClass={textClasses.firstClass}
-      restClass={textClasses.restClass}
       fadeDuration={textFadeMs}
       animateOutText={animateOutText}
       client:load={loading === "eager"}
@@ -154,16 +131,3 @@ const textClasses = scale >= 1.5
     />
   </div>
 </a>
-
-<style define:vars={{ scaledMobileSize: `${scaledMobileSize}px`, scaledSize: `${scaledSize}px` }}>
-  .logo-scaled {
-    width: var(--scaledMobileSize);
-    height: var(--scaledMobileSize);
-  }
-  @media (min-width: 1024px) {
-    .logo-scaled {
-      width: var(--scaledSize);
-      height: var(--scaledSize);
-    }
-  }
-</style>

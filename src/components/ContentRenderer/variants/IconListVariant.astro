@@ -73,7 +73,7 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
         >
             {
                 showHeader && (
-                    <div class="w-full lg:w-1/3 lg:sticky lg:top-0 lg:self-start">
+                    <div class="w-full lg:w-1/2 sticky-section lg:self-start">
                         <SectionHeader
                             title={headingTitle}
                             heading={headingText ?? headingTitle}
@@ -94,7 +94,7 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
             {
                 safeItems.length > 0 && (
                     <div
-                        class={`w-full py-6 lg:py-0 ${showHeader ? "lg:w-2/3" : ""}`.trim()}
+                        class={`w-full py-6 lg:py-0 ${showHeader ? "lg:w-1/2" : ""}`.trim()}
                     >
                         <ul
                             class={`flex flex-col gap-4 list-none`.trim()}
@@ -134,6 +134,7 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
                                                     className={`text-left gap-1 w-full ${route ? "group-hover/icon-card:opacity-90 transition-opacity duration-300" : ""}`}
                                                     iconClassName="icon-large card-icon-color"
                                                     iconSize="xl"
+                                                    titleTag="h3"
                                                     titleClassName="text-heading h3 my-4"
                                                     descriptionClassName="text-lg text-text"
                                                 />,

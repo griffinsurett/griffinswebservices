@@ -1,80 +1,90 @@
 ---
 title: "E-Commerce Websites"
-description: "Full-featured online stores with product management, secure payments, and marketing automations to sell products and services online. We handle fulfillment connections, taxes, testing, and data syncs so your launch is confident from day one."
+description: "Online stores built to sell. We create fast, secure e-commerce websites with seamless checkout, inventory management, and the tools you need to grow revenue."
 heading:
-  before: "Conversion-ready"
-  text: "e-commerce stores"
-  after: "with automation."
+  before: "Online stores"
+  text: "built to sell"
+  after: "and scale."
 order: 5
 icon: "fa6-solid:cart-shopping"
 price: "Starting from $3,000"
 features:
-  - "Product catalog"
-  - "Shopping cart"
-  - "Secure checkout"
-  - "Payment processing"
-  - "Inventory management"
-  - "Order tracking"
-  - "Customer accounts"
+  - title: "Seamless checkout experience"
+    description: "Friction-free purchasing that works on any device. Multiple payment options, guest checkout, and saved carts included."
+  - title: "Product management made easy"
+    description: "Add products, manage inventory, and update prices without touching code. Bulk imports supported."
+  - title: "Secure payment processing"
+    description: "PCI-compliant payment integration with Stripe, PayPal, or your preferred processor. Your customers' data stays safe."
+  - title: "Mobile-first shopping"
+    description: "Over 70% of online shopping happens on phones. Your store will look and work perfectly on every device."
+  - title: "Shipping and tax automation"
+    description: "Real-time shipping rates, automatic tax calculation, and integration with your fulfillment process."
+  - title: "Marketing integrations"
+    description: "Abandoned cart emails, discount codes, and customer segments to drive repeat purchases."
+  - title: "Analytics and reporting"
+    description: "Know your best-selling products, customer behavior, and revenue trends at a glance."
 ---
 import ContentSection from "@/layouts/ContentSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
+import {
+  query,
+} from "@/utils/query";
 
 <ContentSection
   heading={{
-    title: "Commerce builds that scale with ops",
-    before: "E-commerce stores engineered for",
-    text: "repeatable revenue",
-    after: "not just launch day.",
+    title: "Your products deserve a store that sells",
+    before: "Stop losing sales to",
+    text: "clunky checkout experiences.",
+    after: "Start growing revenue.",
     description:
-      "Catalog architecture, fulfillment workflows, and lifecycle automations are wired together so you can focus on merchandising."
+      "Every extra click, slow load, or confusing step costs you sales. We build stores that make buying effortless and keep customers coming back."
   }}
   primaryCTA={{
-    text: "Plan my store build",
+    text: "Get Your Free Quote",
     href: "#services-quote-hero",
     rightIcon: "lu:arrow-right"
   }}
   secondaryCTA={{
-    text: "See commerce projects",
-    href: "/projects"
+    text: "See our work",
+    href: "#services-projects"
   }}
   sidebar={{
-    icon: "fa6-solid:cart-shopping",
-    title: "Checkout + operations + marketing",
-    eyebrow: "All under one roof",
+    icon: frontmatter.icon,
+    title: "Everything you need to sell online",
+    eyebrow: "Why our stores convert",
     description:
-      "We configure Shopify, custom stacks, or headless builds, connect ERPs/POS, and stand up customer journeys so marketing and operations stay in sync.",
-    footIcon: "🛒",
-    footTitle: "Zero-anxiety go-live",
+      "Fast load times, intuitive navigation, and a checkout process so smooth customers forget they're buying online.",
+    footIcon: "📈",
+    footTitle: "Built to grow with you",
     footDescription:
-      "Launch checklists and monitoring keep payment, tax, and shipping rules tight."
+      "From your first sale to your millionth, your store scales without rebuilding from scratch.",
+    features: frontmatter.features
   }}
 >
   <div slot="text" class="space-y-6 text-lg text-muted">
     <p>
-      Together we audit SKUs, options, fulfillment steps, and customer service flows to
-      build a storefront that handles real-life complexity. Product templates and bundles
-      remain easy for your team to maintain without breaking downstream systems.
+      Most e-commerce sites fail because they focus on looking good instead of making sales. A beautiful store means nothing if customers abandon their carts because checkout is confusing, pages load slowly, or they can't find what they're looking for.
     </p>
     <p>
-      Performance-tuned storefronts pair with marketing automations, abandoned cart flows,
-      and loyalty campaigns so every visit is nurtured across channels. We also set up
-      analytics, data layers, and dashboards to track what messaging or promotions
-      actually drive contribution margin.
+      We build stores optimized for conversions. That means fast load times that don't lose impatient shoppers, intuitive navigation that helps customers find products, and a checkout process so smooth they'll actually complete their purchase.
+    </p>
+    <p>
+      Behind the scenes, you get the tools to actually run your business: easy product management, inventory tracking, shipping automation, and the analytics to understand what's working. Whether you're selling 10 products or 10,000, we build stores that grow with you.
     </p>
   </div>
 
   <div slot="quick-facts" class="grid gap-4 md:grid-cols-3">
     <div class="p-4 rounded-2xl border border-muted/20 bg-bg">
       <p class="text-xs uppercase tracking-[0.2em] text-muted">Timeline</p>
-      <p class="text-heading font-semibold">6-8 week build</p>
+      <p class="text-heading font-semibold">4-8 weeks to launch</p>
     </div>
     <div class="p-4 rounded-2xl border border-muted/20 bg-bg">
-      <p class="text-xs uppercase tracking-[0.2em] text-muted">Stack</p>
-      <p class="text-heading font-semibold">Shopify, headless, or custom</p>
+      <p class="text-xs uppercase tracking-[0.2em] text-muted">What's included</p>
+      <p class="text-heading font-semibold">Design, store setup, training</p>
     </div>
     <div class="p-4 rounded-2xl border border-muted/20 bg-bg">
-      <p class="text-xs uppercase tracking-[0.2em] text-muted">Automation</p>
-      <p class="text-heading font-semibold">Lifecycle email + SMS + CRM</p>
+      <p class="text-xs uppercase tracking-[0.2em] text-muted">Platform</p>
+      <p class="text-heading font-semibold">Shopify or custom build</p>
     </div>
   </div>
 
@@ -82,21 +92,33 @@ import ContentSection from "@/layouts/ContentSection.astro";
     <li class="flex items-start gap-3">
       <span aria-hidden="true" class="text-accent mt-1">✓</span>
       <p class="text-sm text-muted">
-        Robust product data imports, matrix inventory, and multi-location fulfillment
-        included.
+        Conversion-optimized checkout with multiple payment options and guest checkout.
       </p>
     </li>
     <li class="flex items-start gap-3">
       <span aria-hidden="true" class="text-accent mt-1">✓</span>
       <p class="text-sm text-muted">
-        Conversion tracking, server-side pixels, and data layers power accurate ROAS.
+        Mobile-first design because most of your customers are shopping on their phones.
       </p>
     </li>
     <li class="flex items-start gap-3">
       <span aria-hidden="true" class="text-accent mt-1">✓</span>
       <p class="text-sm text-muted">
-        CX automations for replenishment, loyalty tiers, and post-purchase surveys.
+        Automated shipping rates, tax calculation, and inventory management included.
+      </p>
+    </li>
+    <li class="flex items-start gap-3">
+      <span aria-hidden="true" class="text-accent mt-1">✓</span>
+      <p class="text-sm text-muted">
+        Abandoned cart recovery and email marketing integrations to capture lost sales.
       </p>
     </li>
   </ul>
+
+  <div slot="bottom-section">
+    <ContentRenderer
+      query={query("stats")}
+      variant="StatsVariant"
+    />
+  </div>
 </ContentSection>

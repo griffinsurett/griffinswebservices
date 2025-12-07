@@ -1,82 +1,91 @@
 ---
 title: "Standard Websites"
-description: "Professional multi-page websites for service businesses, personal brands, and local teams with tailored navigation, conversion paths, and SEO foundations. We choreograph messaging, flows, and lead capture so prospects see your value instantly."
+description: "Professional websites that establish credibility and generate leads. We build fast, modern sites that make your business look as good online as you are in person."
 heading:
-  before: "Modern"
-  text: "multi-page sites"
-  after: "for service brands."
+  before: "Professional websites"
+  text: "that win trust"
+  after: "and generate leads."
 order: 2
 icon: "fa6-solid:laptop"
 price: "Starting from $999"
 featured: true
 features:
-  - "Small Business Sites"
-  - "Personal Portfolios"
-  - "Professional Websites"
-  - "Multiple pages"
-  - "Contact forms"
-  - "Mobile responsive"
-  - "SEO optimized"
+  - title: "Custom design that fits your brand"
+    description: "No cookie-cutter templates. We design a unique look that reflects your business and stands out from competitors."
+  - title: "Built for speed and SEO"
+    description: "Lightning-fast load times and search-engine-friendly architecture so customers can actually find you on Google."
+  - title: "Mobile-first responsive design"
+    description: "Looks and works perfectly on phones, tablets, and desktops. Because over half your visitors are on mobile."
+  - title: "Easy content management"
+    description: "Update text, images, and pages yourself without calling a developer. We train you and provide documentation."
+  - title: "Lead capture forms that work"
+    description: "Contact forms, quote requests, and newsletter signups that route directly to your inbox or CRM."
+  - title: "Analytics and tracking included"
+    description: "Know exactly how many people visit, where they come from, and what they do on your site."
+  - title: "Ongoing support available"
+    description: "We don't disappear after launch. Hosting, maintenance, and updates available so you're never stuck."
 ---
 import ContentSection from "@/layouts/ContentSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
+import {
+  query,
+} from "@/utils/query";
 
 <ContentSection
   heading={{
-    title: "Multi-page presence playbook",
-    before: "Standard websites that prioritize",
-    text: "trust-building journeys",
-    after: "for service brands.",
+    title: "Your business deserves a real website",
+    before: "Stop losing customers to",
+    text: "outdated, slow websites.",
+    after: "Start converting visitors.",
     description:
-      "We choreograph navigation, copy, and CMS controls so every page educates, reassures, and invites the next conversation."
+      "First impressions happen online. If your website looks dated, loads slowly, or doesn't work on mobile, you're losing customers before they ever contact you."
   }}
   primaryCTA={{
-    text: "Plan your standard site",
+    text: "Get Your Free Quote",
     href: "#services-quote-hero",
     rightIcon: "lu:arrow-right"
   }}
   secondaryCTA={{
-    text: "See recent launches",
-    href: "/projects"
+    text: "See our work",
+    href: "#services-projects"
   }}
   sidebar={{
-    icon: "fa6-solid:sitemap",
-    title: "Structure, content, follow-up",
-    eyebrow: "Navigation designed with intent",
+    icon: frontmatter.icon,
+    title: "Everything you need to grow",
+    eyebrow: "Why choose us",
     description:
-      "We map every screen, message, and conversion trigger before design so content updates stay easy and measurable.",
-    footIcon: "🧭",
-    footTitle: "Always know the next update",
+      "We handle the technical complexity so you can focus on running your business. Design, development, hosting, and support—all from one team.",
+    footIcon: "🚀",
+    footTitle: "Launch with confidence",
     footDescription:
-      "Documentation, Loom walk-throughs, and optional care plans keep enhancements shipping."
+      "Training, documentation, and ongoing support included so you're never left wondering what to do next.",
+    features: frontmatter.features
   }}
 >
   <div slot="text" class="space-y-6 text-lg text-muted">
     <p>
-      Our standard builds deliver complete multi-page ecosystems for service businesses
-      that need credibility, clarity, and consistent lead capture. We blend positioning
-      workshops with UX planning to translate your process into page flows that answer
-      objections before prospects even schedule a call.
+      Your website is often the first interaction potential customers have with your business. A slow, outdated, or confusing site tells them you don't care about the details. And if you don't care about your own website, why would they trust you with their business?
     </p>
     <p>
-      Design explorations, tailored component libraries, and optimized content blocks make
-      it simple to launch new service pages or campaign hubs without recreating the wheel.
-      Every form routes to the right place, analytics are pre-configured, and performance
-      budgets keep the site loading instantly on any device.
+      We build websites that do the opposite. Fast-loading pages that work flawlessly on any device. Clean, professional designs that match your brand. Clear messaging that tells visitors exactly what you do and why they should choose you. And lead capture that actually gets those visitors to take action.
+    </p>
+    <p>
+      Whether you're replacing an old site or building your first one, we make the process painless. You tell us about your business, we handle the technical work, and you end up with a website you're proud to share.
     </p>
   </div>
 
   <div slot="quick-facts" class="grid gap-4 md:grid-cols-3">
     <div class="p-4 rounded-2xl border border-muted/20 bg-bg">
       <p class="text-xs uppercase tracking-[0.2em] text-muted">Timeline</p>
-      <p class="text-heading font-semibold">4-6 week sprint</p>
+      <p class="text-heading font-semibold">3-5 weeks to launch</p>
     </div>
     <div class="p-4 rounded-2xl border border-muted/20 bg-bg">
-      <p class="text-xs uppercase tracking-[0.2em] text-muted">Deliverables</p>
-      <p class="text-heading font-semibold">Up to 12 custom pages</p>
+      <p class="text-xs uppercase tracking-[0.2em] text-muted">What's included</p>
+      <p class="text-heading font-semibold">Design, development, training</p>
     </div>
     <div class="p-4 rounded-2xl border border-muted/20 bg-bg">
-      <p class="text-xs uppercase tracking-[0.2em] text-muted">Toolkit</p>
-      <p class="text-heading font-semibold">CMS + CRM + analytics</p>
+      <p class="text-xs uppercase tracking-[0.2em] text-muted">After launch</p>
+      <p class="text-heading font-semibold">Hosting + support available</p>
     </div>
   </div>
 
@@ -84,20 +93,33 @@ import ContentSection from "@/layouts/ContentSection.astro";
     <li class="flex items-start gap-3">
       <span aria-hidden="true" class="text-accent mt-1">✓</span>
       <p class="text-sm text-muted">
-        Conversion copy, social proof, and lead routing wired in from day one.
+        Custom design tailored to your brand—no templates or cookie-cutter layouts.
       </p>
     </li>
     <li class="flex items-start gap-3">
       <span aria-hidden="true" class="text-accent mt-1">✓</span>
       <p class="text-sm text-muted">
-        Performance budgets and accessibility reviews keep you compliant and fast.
+        SEO foundation included: fast hosting, proper structure, and search-friendly code.
       </p>
     </li>
     <li class="flex items-start gap-3">
       <span aria-hidden="true" class="text-accent mt-1">✓</span>
       <p class="text-sm text-muted">
-        Training handoff plus recorded CMS walkthroughs empower internal teams.
+        Mobile-responsive design that works perfectly on phones, tablets, and desktops.
+      </p>
+    </li>
+    <li class="flex items-start gap-3">
+      <span aria-hidden="true" class="text-accent mt-1">✓</span>
+      <p class="text-sm text-muted">
+        Training and documentation so you can update content without calling us.
       </p>
     </li>
   </ul>
+
+  <div slot="bottom-section">
+    <ContentRenderer
+      query={query("stats")}
+      variant="StatsVariant"
+    />
+  </div>
 </ContentSection>

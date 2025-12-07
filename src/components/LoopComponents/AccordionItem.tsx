@@ -70,6 +70,7 @@ export default function AccordionItem({
               layout="horizontal"
               alignment="left"
               className="gap-4 flex-1"
+              titleTag="h3"
               showDescription={false}
             />
           )}

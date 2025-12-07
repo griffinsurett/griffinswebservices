@@ -66,7 +66,7 @@ export default function IconListItem({
   imageClassName = "w-12 h-12 rounded-full object-cover flex-shrink-0",
   imageLoading = "lazy",
   titleClassName = "h4",
-  titleTag = "h4",
+  titleTag = "h3",
   descriptionClassName = "text-text text-sm",
   descriptionTag = "p",
   showIcon = true,

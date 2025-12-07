@@ -176,5 +176,7 @@ export default new Map([
 ["src/content/industries/therapists-counselors.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Findustries%2Ftherapists-counselors.mdx&astroContentModuleFlag=true")],
 ["src/content/industries/web-production-support.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Findustries%2Fweb-production-support.mdx&astroContentModuleFlag=true")],
 ["src/content/industries/white-label-development.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Findustries%2Fwhite-label-development.mdx&astroContentModuleFlag=true")],
-["src/content/industries/window-door-installation.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Findustries%2Fwindow-door-installation.mdx&astroContentModuleFlag=true")]]);
+["src/content/industries/window-door-installation.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Findustries%2Fwindow-door-installation.mdx&astroContentModuleFlag=true")],
+["src/content/faq/_meta.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Ffaq%2F_meta.mdx&astroContentModuleFlag=true")],
+["src/content/capabilities/webmaster-services.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fcapabilities%2Fwebmaster-services.mdx&astroContentModuleFlag=true")]]);
 		

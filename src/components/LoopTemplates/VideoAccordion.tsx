@@ -221,7 +221,7 @@ export default function VideoAccordion({
           })}
         </div>
 
-        <div className="hidden lg:block lg:w-1/2 min-w-0 lg:sticky lg:top-0">
+        <div className="hidden lg:block lg:w-1/2 min-w-0 sticky-section">
           <VideoPlayer
             key={`desktop-${activeItem?.key ?? activeIndex}`}
             ref={desktopVideoRef}
