@@ -56,7 +56,7 @@ const logoClasses = "block w-[43px] h-[43px] lg:w-[45px] lg:h-[45px] object-cont
             sizes={LOGO_SIZES}
             quality={90}
             class={logoClasses}
-            fetchpriority={loading === "eager" ? "high" : undefined}
+            fetchpriority={loading === "eager" ? "high" : "low"}
           />
         </LottieLogo>
       ) : trigger === "visible" ? (
