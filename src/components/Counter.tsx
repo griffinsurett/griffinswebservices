@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 
 interface CounterProps {
   start?: number;
   end: number;
   duration?: number;
   className?: string;
+  style?: CSSProperties;
   decimals?: number;
   onComplete?: () => void;
 }
@@ -23,6 +24,7 @@ export default function Counter({
   end,
   duration = 2000,
   className = "",
+  style,
   decimals,
   onComplete,
 }: CounterProps) {
@@ -61,5 +63,20 @@ export default function Counter({
     return () => cancelAnimationFrame(rafId);
   }, [start, end, duration, onComplete]);
 
-  return <span className={className}>{formatValue(displayValue, resolvedDecimals)}</span>;
+  const formattedTarget = formatValue(end, resolvedDecimals);
+  const minWidthCh = Math.max(1, formattedTarget.length);
+  const baseClasses = ["counter-value", "tabular-nums", className]
+    .filter(Boolean)
+    .join(" ");
+  const mergedStyles: CSSProperties = {
+    display: "inline-block",
+    minWidth: `calc(${minWidthCh}ch)`,
+    ...style,
+  };
+
+  return (
+    <span className={baseClasses} style={mergedStyles}>
+      {formatValue(displayValue, resolvedDecimals)}
+    </span>
+  );
 }
