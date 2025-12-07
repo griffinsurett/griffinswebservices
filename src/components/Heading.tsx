@@ -83,17 +83,17 @@ export default function Heading({
   const TagComponent = Tag as HeadingTag;
 
   return (
-    <TagComponent className={finalClassName} {...props}>
+    <TagComponent className={`${finalClassName} capitalize`} {...props}>
       {hasSegmented ? (
         <>
           {segmented?.before !== undefined && (
             <span {...mergeProps(beforeId, beforeClass, beforeProps)}>
-              {segmented.before}
+              {`${segmented.before} `}
             </span>
           )}
           {segmented?.text !== undefined && (
             <span {...mergeProps(textId, textClass, textProps)}>
-              {segmented.text}
+              {`${segmented.text} `}
             </span>
           )}
           {segmented?.after !== undefined && (

@@ -29,7 +29,7 @@ const {
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
-const { title, description, price, features = [], parent } = data;
+const { title, description, price, features = [], parent, heading } = data;
 
 // Get related items (siblings with same parent, excluding current item)
 const relatedQuery = parent
@@ -49,7 +49,7 @@ const heroDescription = price
     {/* Quote Hero Section */}
     <QuoteHero
       title={title}
-      headingBefore={title}
+      heading={heading}
       description={heroDescription}
       primaryCTA={{
         text: `View All ${collectionMeta?.data?.title || 'Services'}`,

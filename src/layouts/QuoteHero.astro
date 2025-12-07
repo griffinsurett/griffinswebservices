@@ -1,11 +1,11 @@
 ---
 // src/layouts/QuoteHero.astro
-import Button from "@/components/Button/Button";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
 import { query } from "@/utils/query";
 import { siteData } from "@/content/siteData";
+import type { HeadingContent } from "@/content/schema";
 
 interface CTA {
   text: string;
@@ -19,9 +19,7 @@ interface CTA {
 
 export interface Props {
   title?: string;
-  headingBefore?: string;
-  headingEmphasis?: string;
-  headingAfter?: string;
+  heading?: string | HeadingContent | null;
   description?: string;
   primaryCTA?: CTA;
   className?: string;
@@ -33,9 +31,7 @@ const defaultDescription =
 
 const {
   title,
-  headingBefore,
-  headingEmphasis,
-  headingAfter,
+  heading: incomingHeading,
   description = siteData.description ?? defaultDescription,
   primaryCTA: incomingPrimaryCTA = {
     text: "Book An Intro Call",
@@ -53,6 +49,9 @@ const primaryCTA = {
     incomingPrimaryCTA.icon ??
     "lu:arrow-right",
 };
+
+const resolvedHeading =
+  incomingHeading === undefined || incomingHeading === null ? title : incomingHeading;
 ---
 
 <section
@@ -64,14 +63,12 @@ const primaryCTA = {
   <div class="relative z-10 min-h-screen inner-section  mx-auto flex flex-col lg:flex-row justify-between items-center lg:gap-12 space-y-8">
 
       <div
-        class="flex-1 flex flex-col gap-2 lg:gap-6 justify-center items-start min-h-screen hero-spacing w-full"
+        class="flex-[1.3] flex flex-col gap-2 lg:gap-6 justify-center items-start min-h-screen hero-spacing w-full"
       >
         <SectionHeader
           className="text-left w-full hero-spacing"
           title={title}
-          headingBefore={headingBefore}
-          headingEmphasis={headingEmphasis}
-          headingAfter={headingAfter}
+          heading={resolvedHeading}
           headingTag="h1"
           headingClassName="text-4xl lg:text-5xl leading-tight"
           description={description ?? defaultDescription}

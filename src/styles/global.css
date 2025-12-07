@@ -5,6 +5,15 @@
 @import "@/styles/system.css";
 @import "@/styles/animation.css";
 
+@font-face {
+  font-family: "TikTok Sans";
+  src: url("/fonts/TikTok_Sans/TikTokSans-VariableFont_opsz%2Cslnt%2Cwdth%2Cwght.ttf")
+    format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ============================================================
  * 1. COLOR MODES & TOKENS
  * ============================================================ */
@@ -71,11 +80,12 @@
 
     /* Extras */
   --color-border-dim: rgba(255, 255, 255, 0.2);
-  --font-header: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-body: "Open Sans", Helvetica, Arial, sans-serif;
+  --font-header: "TikTok Sans", Helvetica, Arial, sans-serif;
+  --font-body: "TikTok Sans", Helvetica, Arial, sans-serif;
 }
 
 body {
+  font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
   @apply overflow-x-hidden;
 }
 
@@ -111,7 +121,7 @@ body {
 
   /* Link base styles */
   .link-base {
-    @apply inline-flex items-center gap-1;
+    @apply inline-flex items-center gap-1 tracking-wide;
     @apply text-primary hover:text-primary-700 hover:underline;
     @apply bg-transparent font-normal;
     @apply transition-colors duration-200;
@@ -174,6 +184,7 @@ body {
   }
 
   body {
+    font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
     @apply bg-bg overflow-x-hidden;
   }
 
@@ -334,6 +345,10 @@ body {
     @apply space-y-5 lg:space-y-3;
   }
 
+  @utility menu-item-spacing {
+    @apply space-y-5;
+  }
+
 /* ============================================================
  * 4. COMPONENT PATTERNS
  * ============================================================ */
@@ -393,6 +408,10 @@ body {
 
   .emphasized-text {
     @apply font-bold text-transparent secondary-gradient bg-clip-text;
+  }
+
+  .hover-emphasis-text {
+    @apply font-bold text-heading hover:text-transparent hover:secondary-gradient hover:bg-clip-text
   }
 
   /* Card shells */
@@ -510,7 +529,7 @@ body {
   .h3,
   .h4,
   .h5 {
-    @apply font-header;
+    @apply font-header tracking-wide;
   }
 
   p {

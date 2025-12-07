@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/utils/icons/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuCheck, LuCode, LuContact, LuGithub, LuGlobe, LuInstagram, LuLayers, LuLinkedin, LuMail, LuMinus, LuPhone, LuPlus } from 'react-icons/lu';
+import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuCheck, LuChevronRight, LuCode, LuContact, LuGithub, LuGlobe, LuInstagram, LuLayers, LuLinkedin, LuMail, LuMinus, LuPhone, LuPlus } from 'react-icons/lu';
 import { FaArrowsRotate, FaArrowsUpToLine, FaAws, FaBellConcierge, FaBlender, FaBolt, FaBook, FaBorderAll, FaBorderTopLeft, FaBox, FaBoxArchive, FaBoxOpen, FaBoxesStacked, FaBrain, FaBriefcase, FaBroom, FaBug, FaBuilding, FaBullhorn, FaBurger, FaCakeCandles, FaCalculator, FaCapsules, FaCartShopping, FaChampagneGlasses, FaChartLine, FaClockRotateLeft, FaCloudflare, FaCode, FaCouch, FaCss3Alt, FaCubes, FaDatabase, FaDoorOpen, FaDumbbell, FaExplosion, FaFaucetDrip, FaFeather, FaFigma, FaFileLines, FaGaugeHigh, FaGear, FaGears, FaGem, FaGithub, FaGraduationCap, FaHammer, FaHandHoldingHeart, FaHands, FaHandshake, FaHeadset, FaHeartPulse, FaHouse, FaHouseChimney, FaHouseChimneyWindow, FaHtml5, FaIdCard, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLightbulb, FaMagnifyingGlassChart, FaMartiniGlassCitrus, FaMicrophone, FaMugHot, FaNetworkWired, FaNodeJs, FaPaintRoller, FaPaintbrush, FaPalette, FaPenNib, FaPenRuler, FaPeopleGroup, FaPersonChalkboard, FaPhp, FaPlus, FaPuzzlePiece, FaPython, FaReact, FaRocket, FaRoute, FaScaleBalanced, FaScissors, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShirt, FaShopify, FaSolarPanel, FaSpa, FaSprayCanSparkles, FaStar, FaStethoscope, FaStore, FaTags, FaTemperatureHalf, FaTree, FaTruck, FaTruckFast, FaTruckRampBox, FaUmbrella, FaUniversalAccess, FaUsers, FaUtensils, FaWandMagicSparkles, FaWarehouse, FaWordpress } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiVercel, SiWebflow } from 'react-icons/si';
 
@@ -121,6 +121,7 @@ export const iconMap = {
   'lu:arrow-right': LuArrowRight,
   'lu:arrow-up-right': LuArrowUpRight,
   'lu:check': LuCheck,
+  'lu:chevron-right': LuChevronRight,
   'lu:code': LuCode,
   'lu:contact': LuContact,
   'lu:github': LuGithub,
