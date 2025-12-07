@@ -122,10 +122,11 @@ const processedItems = await Promise.all(
         width: defaultImage.attributes.width as number,
         height: defaultImage.attributes.height as number,
         alt: altText,
-        loading: isFirst ? "eager" as const : "lazy" as const,
+        loading: "lazy" as const,
         decoding: "async" as const,
-        fetchPriority: isFirst ? "high" as const : "auto" as const,
+        fetchPriority: "auto" as const,
         sources: pictureSources,
+        desktopEager: isFirst,
       },
     };
   })
