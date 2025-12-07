@@ -96,7 +96,7 @@ export default function MobileMenuDrawer({
           className={`${className} h-full w-full flex flex-col justify-center items-center overflow-y-auto p-6`}
           aria-label="Mobile navigation"
         >
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-sm">
             <div className="relative w-full overflow-hidden">
               <div
                 className="flex transition-transform duration-300 ease-in-out"

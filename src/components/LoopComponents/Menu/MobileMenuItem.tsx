@@ -46,10 +46,10 @@ export default function MobileMenuItem({
   if (hasChildren) {
     return (
       <li>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Button
             variant="menuItemButton"
-            className="hover-emphasis-text flex-1 text-left"
+            className="hover-emphasis-text inline-flex items-center gap-2 text-left"
             onClick={handleParentClick}
             {...(url
               ? {
@@ -66,12 +66,12 @@ export default function MobileMenuItem({
             type="button"
             onClick={openSubmenu}
             aria-label={`View submenu for ${title}`}
-            className="p-2 text-text"
+            className="text-text"
           >
             <Icon
               icon="lu:chevron-right"
               size="md"
-              className="w-7 h-7"
+              className="w-6 h-6"
             />
           </button>
         </div>
