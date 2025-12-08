@@ -5,13 +5,17 @@
  *
  * Now expects items to be passed with potential parent relationships.
  * Builds tree structure from flat items.
+ *
+ * Mobile menu uses deferred hydration:
+ * 1. Static hamburger button renders immediately (no JS)
+ * 2. Menu content lazy-loads only when button is clicked
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import MenuList from "@/components/LoopTemplates/Menu/MenuList.astro";
-import MobileMenuDrawer from "@/components/LoopTemplates/Menu/HamburgerMenuDrawer";
+import StaticHamburgerButton from "@/components/Menu/StaticHamburgerButton.astro";
+import LazyMobileMenu from "@/components/LoopTemplates/Menu/LazyMobileMenu";
 import { buildMenuTree } from "@/utils/menuQueries";
-import { isTopLevelPlacement } from "@/utils/navigation/topLevelCheck";
 import { toArray } from "@/utils/array";
 
 type MenuMode = "responsive" | "flat-only" | "hamburger-only";
@@ -46,15 +50,8 @@ const showMobile = mode === "responsive" || mode === "hamburger-only";
 const desktopClasses = mode === "responsive" ? "hidden md:block" : "";
 const mobileClasses = showMobile && mode === "responsive" ? "md:hidden" : "";
 
-const inferredTopLevel = isTopLevelPlacement({
-  id,
-  className,
-});
-
-const useClientLoad = mode === "hamburger-only" ? inferredTopLevel : false;
-
-const mobileHydrationStrategy =
-  mode === "hamburger-only" ? (useClientLoad ? "load" : "visible") : "media";
+// Generate unique button ID for this menu instance
+const buttonId = id ? `${id}-menu-toggle` : "mobile-menu-toggle";
 ---
 
 <div id={id} class={`menu-variant ${className}`}>
@@ -72,30 +69,17 @@ const mobileHydrationStrategy =
   {
     showMobile && (
       <div class={`menu-mobile ${mobileClasses}`}>
-        {mobileHydrationStrategy === "load" && (
-          <MobileMenuDrawer
-            items={menuTree}
-            closeButton={closeButton}
-            hamburgerTransform={hamburgerTransform}
-            client:idle
-          />
-        )}
-        {mobileHydrationStrategy === "visible" && (
-          <MobileMenuDrawer
-            items={menuTree}
-            closeButton={closeButton}
-            hamburgerTransform={hamburgerTransform}
-            client:visible
-          />
-        )}
-        {mobileHydrationStrategy === "media" && (
-          <MobileMenuDrawer
-            items={menuTree}
-            closeButton={closeButton}
-            hamburgerTransform={hamburgerTransform}
-            client:media="(max-width: 768px)"
-          />
-        )}
+        {/* Static button - no JS required for initial render */}
+        <StaticHamburgerButton id={buttonId} />
+
+        {/* Lazy-loaded menu - only hydrates on first click */}
+        <LazyMobileMenu
+          client:idle
+          items={menuTree}
+          buttonId={buttonId}
+          closeButton={closeButton}
+          hamburgerTransform={hamburgerTransform}
+        />
       </div>
     )
   }
