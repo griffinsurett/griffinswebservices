@@ -18,6 +18,7 @@ interface Props extends BaseVariantProps {
     columns?: 1 | 2 | 3;
     gap?: "sm" | "md" | "lg";
     heading?: HeadingContent;
+    itemLayout?: "vertical" | "horizontal" | "horizontal-reverse";
 }
 
 const {
@@ -32,6 +33,7 @@ const {
     columns = 2,
     gap = "lg",
     id,
+    itemLayout = "horizontal",
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
@@ -81,7 +83,7 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
                             headingEmphasis={headingText}
                             headingAfter={headingAfter}
                             description={headingDescription}
-                            className="space-y-4 text-left"
+                            className="space-y-4 text-left w-full"
                             headingTag={headingTag}
                             headingClassName={headingClassName}
                             descriptionClassName="large-text leading-relaxed"
@@ -129,10 +131,10 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
                                             {clickableWrapper(
                                                 <IconListItem
                                                     data={item}
-                                                    layout="vertical"
+                                                    layout={itemLayout}
                                                     alignment="left"
-                                                    className={`text-left gap-1 w-full ${route ? "group-hover/icon-card:opacity-90 transition-opacity duration-300" : ""}`}
-                                                    iconClassName="icon-large card-icon-color"
+                                                    className={`text-left gap-1 w-full flex items-start ${route ? "group-hover/icon-card:opacity-90 transition-opacity duration-300" : ""}`}
+                                                    iconClassName="icon-large card-icon-color mr-4"
                                                     iconSize="xl"
                                                     titleTag="h3"
                                                     titleClassName="text-heading h3 my-4"

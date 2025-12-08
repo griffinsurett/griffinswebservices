@@ -14,7 +14,7 @@ import PortfolioItemComponent, {
 } from "@/components/LoopComponents/PortfolioItemComponent";
 import { LeftArrow, RightArrow } from "@/components/Carousels/CarouselArrows";
 import useCarouselAutoplay from "@/components/Carousels/useCarouselAutoplay";
-import { useSideDragNavigation } from "@/hooks/animations/useInteractions";
+import { useSideDragNavigation } from "@/hooks/interactions/useSideDragNavigation";
 import { useAnimatedElement } from "@/hooks/animations/useViewAnimation";
 
 interface PortfolioCarouselProps {

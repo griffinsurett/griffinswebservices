@@ -11,9 +11,9 @@ import { useVisibility } from "@/hooks/animations/useVisibility";
 import {
   useHoverInteraction,
   type HoverIntentOptions,
-} from "@/hooks/animations/useInteractions";
+} from "@/hooks/interactions/useHoverInteraction";
 
-export type { HoverIntentOptions } from "@/hooks/animations/useInteractions";
+export type { HoverIntentOptions } from "@/hooks/interactions/useHoverInteraction";
 
 export type TriggerToken = "hover" | "visible" | "always" | "controlled" | string;
 export type TriggerInput = TriggerToken | TriggerToken[];

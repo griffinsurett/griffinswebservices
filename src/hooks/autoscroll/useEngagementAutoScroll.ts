@@ -1,11 +1,9 @@
 // src/hooks/autoscroll/useEngagementAutoScroll.ts
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useVisibility } from "@/hooks/animations/useVisibility";
-import {
-  useTouchInteraction,
-  useScrollInteraction,
-  usePointerInteraction,
-} from "@/hooks/animations/useInteractions";
+import { useTouchInteraction } from "@/hooks/interactions/useTouchInteraction";
+import { useScrollInteraction } from "@/hooks/interactions/useScrollInteraction";
+import { usePointerInteraction } from "@/hooks/interactions/usePointerInteraction";
 import { useAutoScroll } from "./useAutoScroll";
 
 interface UseEngagementAutoScrollOptions {

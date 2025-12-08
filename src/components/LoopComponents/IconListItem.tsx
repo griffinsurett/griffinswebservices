@@ -163,7 +163,7 @@ export default function IconListItem({
       const { icon: iconName, size, className: customClass = "", color, ariaLabel } =
         icon as IconRenderConfig;
       return (
-        <div className={resolvedIconClassName}>
+        <div className={`shrink-0 ${resolvedIconClassName}`}>
           <Icon
             icon={iconName}
             size={size ?? iconSize}
@@ -177,13 +177,13 @@ export default function IconListItem({
 
     if (isRenderableIcon) {
       return (
-        <div className={resolvedIconClassName}>
+        <div className={`shrink-0 ${resolvedIconClassName}`}>
           <Icon icon={icon as IconType} size={iconSize} />
         </div>
       );
     }
 
-    return <div className={resolvedIconClassName}>{icon}</div>;
+    return <div className={`shrink-0 ${resolvedIconClassName}`}>{icon}</div>;
   })();
 
   return (

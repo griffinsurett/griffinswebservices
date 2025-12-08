@@ -2,10 +2,8 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import useAutoplay from "./useAutoplay";
 import { usePauseableState } from "./usePauseableState";
-import {
-  useClickInteraction,
-  useScrollInteraction,
-} from "@/hooks/animations/useInteractions";
+import { useClickInteraction } from "@/hooks/interactions/useClickInteraction";
+import { useScrollInteraction } from "@/hooks/interactions/useScrollInteraction";
 
 interface UseEngagementAutoplayOptions {
   totalItems: number;

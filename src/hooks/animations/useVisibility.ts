@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type MutableRefObject } from "react";
-import { useScrollInteraction } from "./useInteractions";
+import { useScrollInteraction } from "@/hooks/interactions/useScrollInteraction";
 import { useIntersectionObserver } from "@/utils/IntersectionObserver";
 
 interface VisibilityOptions {

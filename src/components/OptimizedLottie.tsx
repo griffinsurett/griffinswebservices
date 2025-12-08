@@ -4,7 +4,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useVisibility } from "../hooks/animations/useVisibility";
-import { useScrollInteraction } from "../hooks/animations/useInteractions";
+import { useScrollInteraction } from "@/hooks/interactions/useScrollInteraction";
 
 // Helper: run after the browser is idle (fallback to setTimeout)
 const onIdle = (cb) => {

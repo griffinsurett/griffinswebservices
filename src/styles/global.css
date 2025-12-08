@@ -359,7 +359,7 @@ body {
   }
 
   @utility sticky-section {
-    @apply lg:sticky lg:top-20;
+    @apply lg:sticky lg:top-30;
   }
 
 /* ============================================================
