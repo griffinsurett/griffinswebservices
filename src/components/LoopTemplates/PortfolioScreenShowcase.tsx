@@ -27,6 +27,10 @@ interface PortfolioScreenShowcaseProps {
   items?: PortfolioItemData[];
   className?: string;
   mediaEntries?: (PortfolioMediaEntry | undefined)[];
+  /** ID of the static placeholder to remove on hydration */
+  staticContainerId?: string;
+  /** ID of this carousel's container to reveal on hydration */
+  carouselContainerId?: string;
 }
 
 interface ScreenProps {
@@ -401,11 +405,6 @@ function ComputerScreen({
     );
   };
 
-  const clientLabel = item.client || item.title || "Project";
-  const slideCounter = `${String(activeIndex + 1).padStart(2, "0")}/${String(
-    totalSlides,
-  ).padStart(2, "0")}`;
-
   return (
     <div className="relative h-full w-full">
       <div className="relative h-full bg-bg3">
@@ -444,6 +443,8 @@ export default function PortfolioScreenShowcase({
   items = [],
   className = "",
   mediaEntries: mediaEntriesProp = [],
+  staticContainerId,
+  carouselContainerId,
 }: PortfolioScreenShowcaseProps) {
   const slides = useMemo(() => (Array.isArray(items) ? items : []), [items]);
   const mediaEntries = useMemo(
@@ -451,17 +452,25 @@ export default function PortfolioScreenShowcase({
     [mediaEntriesProp],
   );
   const [activeIndex, setActiveIndex] = useState(0);
-  const [cycleCount, setCycleCount] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [transitionStage, setTransitionStage] = useState<"idle" | "pre" | "animating">("idle");
   const transitionTimerRef = useRef<number | null>(null);
   const transitionFrameRef = useRef<number | null>(null);
   const preferDesktopEager = useDesktopEagerPreference();
 
+  // Handle hydration: remove static placeholder and reveal carousel
+  useEffect(() => {
+    if (staticContainerId) {
+      document.getElementById(staticContainerId)?.remove();
+    }
+    if (carouselContainerId) {
+      document.getElementById(carouselContainerId)?.classList.remove("hidden");
+    }
+  }, [staticContainerId, carouselContainerId]);
+
   useEffect(() => {
     if (!slides.length) {
       setActiveIndex(0);
-      setCycleCount(0);
       setPrevIndex(null);
       setTransitionStage("idle");
       return;
@@ -509,7 +518,6 @@ export default function PortfolioScreenShowcase({
       transitionTimerRef.current = window.setTimeout(() => {
         setTransitionStage("idle");
         setPrevIndex(null);
-        setCycleCount((count) => count + 1);
       }, SLIDE_TRANSITION_DURATION_MS);
     },
     [activeIndex],
@@ -524,7 +532,6 @@ export default function PortfolioScreenShowcase({
 
   if (!slides.length) return null;
 
-  const activeItem = slides[activeIndex];
   const baseTransitionClass =
     "absolute inset-0 transition-transform transition-opacity duration-[750ms] ease-[cubic-bezier(0.4,0,0.2,1)]";
   const viewportHeightClasses = "h-[420px] sm:h-[500px]";
