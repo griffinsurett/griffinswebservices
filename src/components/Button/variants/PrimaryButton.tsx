@@ -32,7 +32,7 @@ export default function PrimaryButton({
   const baseShell = getButtonBaseClasses(props.size);
   const variantClasses = [
     baseShell,
-    "primary-button-transition border-2 border-primary primary-gradient gradient-disappear-on-hover text-bg hover:text-heading",
+    "primary-button-transition border-2 border-primary primary-gradient gradient-disappear-on-hover text-bg",
   ]
     .filter(Boolean)
     .join(" ");

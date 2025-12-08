@@ -93,11 +93,11 @@ export default function MobileMenuDrawer({
         ssr={false}
       >
         <nav
-          className={`${className} h-full w-full flex flex-col justify-center items-center overflow-hidden p-6`}
+          className={`${className} h-full w-full flex flex-col justify-center overflow-hidden`}
           aria-label="Mobile navigation"
         >
           <div
-            className="w-full max-w-sm my-auto py-4"
+            className="inner-section my-auto py-4"
             style={{ maxHeight: "calc(100vh - 6rem)" }}
           >
             <div className="relative w-full h-full overflow-hidden">

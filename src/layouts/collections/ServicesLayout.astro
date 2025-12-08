@@ -12,9 +12,11 @@
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import QuoteHero from '@/layouts/QuoteHero.astro';
+import AboutSection from '@/layouts/AboutSection.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import CTASection from '@/layouts/CTASection.astro';
 import { query, sortByOrder, related } from '@/utils/query';
+import { capitalizeWords } from '@/utils/string';
 import type { CollectionLayoutProps } from './types';
     
 const {
@@ -28,7 +30,7 @@ const {
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
-const { title, description, price, features = [], parent, heading } = data;
+const { title, description, price, features = [], benefits = [], parent, heading } = data;
 
 // Get the current entry's slug for filtering related capabilities
 const currentSlug = entry?.id;
@@ -50,6 +52,10 @@ const relatedCapabilitiesQuery = currentSlug
 const heroDescription = price
   ? `${description} ${price}`
   : description;
+
+// Capitalize the slug for display (e.g., "standard-websites" -> "Standard-Websites")
+const displayTitle = title || capitalizeWords(entry?.slug?.replace(/-/g, ' ') || '');
+const capitalizedSlug = capitalizeWords(entry?.slug?.replace(/-/g, ' ') || '');
 ---
 <BaseLayout {...seoProps}>
   <main class="flex-1">
@@ -65,16 +71,11 @@ const heroDescription = price
       }}
       id='services-quote-hero'
     />
-
-    {/* MDX Content */}
-    {Content && (
-      <Content />
-    )}
-
-    <ContentRenderer
+      <div class="min-h-screen flex flex-col justify-center">
+      <ContentRenderer
       query={query("projects")}
       id="services-projects"
-      variant="PortfolioVariant"
+      variant="PortfolioScreenVariant"
       title="Our Work"
       heading={{
         before: "Websites we've",
@@ -85,25 +86,47 @@ const heroDescription = price
       ctaHref="#services-quote-hero"
       ctaText="Get Your Free Quote"
     />
+</div>
 
+    {benefits.length > 0 && (
       <ContentRenderer
-      query={query("testimonials")}
-      variant="TestimonialCarouselVariant"
-      />
-
-      <ContentRenderer
-        query={related("capabilities", "solutions", currentSlug)}
+        items={benefits}
         variant="CardVariant"
-        title="What You Get"
+        title="Benefits"
         heading={{
-          before: "Everything included in your",
+          before: "Why choose",
           text: title,
-          after: "build.",
+          after: "for your business.",
         }}
-        description={`No surprises, no upsells—just the full package to get your ${title?.toLowerCase()} live and performing.`}
+        description="Real results that matter for your bottom line."
         ctaHref="#services-quote-hero"
         ctaText="Get Your Free Quote"
+        columns={3}
       />
+    )}
+
+        {/* MDX Content */}
+    {Content && <Content />}
+
+        <ContentRenderer
+      query={related("capabilities", "solutions", currentSlug)}
+      variant="ChecklistVariant"
+      title="What's Included"
+      heading={{
+        before: "Everything included in your",
+        text: displayTitle,
+        after: "build.",
+      }}
+      description={`No surprises, no upsells—just the full package to get your ${displayTitle.toLowerCase()} live and performing.`}
+      ctaHref="#services-quote-hero"
+      ctaText="Get Your Free Quote"
+      columns={2}
+    />
+
+    <ContentRenderer
+      query={query("testimonials")}
+      variant="TestimonialCarouselVariant"
+    />
 
     <CTASection
       id="services-page-cta"

@@ -19,6 +19,7 @@ interface Props extends BaseVariantProps {
     gap?: "sm" | "md" | "lg";
     heading?: HeadingContent;
     itemLayout?: "vertical" | "horizontal" | "horizontal-reverse";
+    slotContainerClassName?: string;
 }
 
 const {
@@ -34,7 +35,10 @@ const {
     gap = "lg",
     id,
     itemLayout = "horizontal",
+    slotContainerClassName = "",
 } = Astro.props as Props;
+
+const hasSlotContent = Astro.slots.has("default");
 
 const safeItems = toArray(items);
 const headingTitle = heading?.title ?? title ?? collectionTitle;
@@ -78,7 +82,6 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
                     <div class="w-full lg:w-1/2 sticky-section lg:self-start">
                         <SectionHeader
                             title={headingTitle}
-                            heading={headingText ?? headingTitle}
                             headingBefore={headingBefore}
                             headingEmphasis={headingText}
                             headingAfter={headingAfter}
@@ -159,5 +162,11 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
                 )
             }
         </div>
+
+        {hasSlotContent && (
+            <div class={`mt-8 ${slotContainerClassName}`.trim()}>
+                <slot />
+            </div>
+        )}
     </div>
 </section>

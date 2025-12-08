@@ -193,10 +193,13 @@ if (queryProp) {
   // STATIC MODE: No query, using manually provided items
   // ──────────────────────────────────────────────────────────────────────────
   // Useful for hero sections, featured content, or any non-collection data
-  data = restProps.items ? restProps : { items: [], ...restProps };
-  if (headingOverride !== undefined) {
-    data.heading = headingOverride;
-  }
+  data = {
+    items: restProps.items ?? [],
+    title: titleOverride,
+    description: descriptionOverride,
+    heading: headingOverride,
+    ...restProps,
+  };
 }
 
 // Skip rendering entirely if there are no items to show

@@ -141,6 +141,15 @@ export const collections = {
             ]),
           )
           .default([]),
+        benefits: z
+          .array(
+            z.object({
+              title: z.string(),
+              description: z.string().optional(),
+              icon: z.string().optional(),
+            }),
+          )
+          .default([]),
       }),
   }),
 

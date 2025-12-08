@@ -1,0 +1,99 @@
+---
+// TwoColumnImageVariant.astro
+/**
+ * Two Column Image Variant - Side-by-side layout with image and content
+ * Features: Configurable image position (left/right), sticky image, slot for additional content
+ * Perfect for feature sections, about sections, and storytelling layouts
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import SectionHeader from "@/components/SectionHeader.astro";
+import type { HeadingContent } from "@/content/schema";
+
+interface Props extends BaseVariantProps {
+  imagePosition?: "left" | "right";
+  imagePlaceholder?: string;
+  imageAlt?: string;
+  imageSrc?: string;
+  stickyImage?: boolean;
+  heading?: string | HeadingContent | null;
+  bgClass?: string;
+  borderClass?: string;
+  contentClassName?: string;
+  imageClassName?: string;
+}
+
+const {
+  title,
+  description,
+  heading,
+  className = "",
+  id,
+  imagePosition = "left",
+  imagePlaceholder = "🖼️",
+  imageAlt = "Section image",
+  imageSrc,
+  stickyImage = true,
+  bgClass = "bg-bg2",
+  borderClass = "section-color-border",
+  contentClassName = "",
+  imageClassName = "",
+} = Astro.props as Props;
+
+const hasSlotContent = Astro.slots.has("default");
+const showHeader = Boolean(title || heading || description);
+
+// Determine order classes based on image position
+const imageOrderClass = imagePosition === "left"
+  ? "order-2 lg:order-1"
+  : "order-2 lg:order-2";
+const contentOrderClass = imagePosition === "left"
+  ? "order-1 lg:order-2"
+  : "order-1 lg:order-1";
+---
+
+<section id={id} class={`outer-section ${bgClass} relative ${className}`.trim()}>
+  {borderClass && <div class={borderClass}></div>}
+
+  <div class="inner-section">
+    <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
+      {/* Image Column */}
+      <div class={`lg:flex-1 w-full sticky-section ${imageOrderClass} ${imageClassName}`.trim()}>
+        <div class={`aspect-[4/3] rounded-3xl bg-muted/10 border border-muted/20 flex items-center justify-center ${stickyImage ? "sticky-section" : ""}`.trim()}>
+          {imageSrc ? (
+            <img
+              src={imageSrc}
+              alt={imageAlt}
+              class="w-full h-full object-cover rounded-3xl"
+            />
+          ) : (
+            <div class="text-center p-8">
+              <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center">
+                <span class="text-accent text-2xl">{imagePlaceholder}</span>
+              </div>
+              <p class="text-muted text-sm">{imageAlt}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Content Column */}
+      <div class={`lg:flex-1 space-y-8 ${contentOrderClass} ${contentClassName}`.trim()}>
+        {showHeader && (
+          <SectionHeader
+            title={title}
+            heading={heading}
+            description={description}
+            className="text-left"
+          />
+        )}
+
+        {hasSlotContent && (
+          <div class="slot-content">
+            <slot />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
