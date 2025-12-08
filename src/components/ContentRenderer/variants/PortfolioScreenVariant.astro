@@ -211,10 +211,10 @@ const slideCounter = `01/${String(totalSlides).padStart(2, "0")}`;
       </div>
     </div>
 
-    {/* React carousel - hidden until hydrated, then takes over */}
+    {/* React carousel - only loads JS on larger screens, hidden until hydrated */}
     <div id="portfolio-carousel-container" class="hidden">
       <PortfolioScreenShowcase
-        client:idle
+        client:media="(min-width: 640px)"
         items={portfolioItems}
         mediaEntries={showcaseMedia}
         className="w-full mx-auto"
