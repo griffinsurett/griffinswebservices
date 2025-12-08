@@ -6,7 +6,7 @@
  * Used for primary actions like form submissions, main CTAs.
  */
 
-import { useAnimatedElement } from "@/hooks/animations/useViewAnimation";
+import { animationProps } from "@/utils/animationProps";
 import { ButtonBase, type ButtonProps } from "../Button";
 import { getButtonBaseClasses, renderButtonIcon } from "../utils";
 
@@ -22,13 +22,6 @@ export default function PrimaryButton({
   fullWidth = false,
   ...props
 }: ButtonProps) {
-  const anim = useAnimatedElement<HTMLSpanElement>({
-    duration: 100,
-    delay: 0,
-    threshold: 0,
-    rootMargin: "0px 0px -15% 0px",
-  });
-
   const baseShell = getButtonBaseClasses(props.size);
   const variantClasses = [
     baseShell,
@@ -46,7 +39,6 @@ export default function PrimaryButton({
     />
   );
 
-
   const wrapperClasses = [
     "inline-flex",
     fullWidth ? "w-full" : "w-full lg:w-auto",
@@ -61,9 +53,8 @@ export default function PrimaryButton({
 
   return (
     <span
-      ref={anim.ref}
-      className={`${wrapperClasses} animated-element zoom-in`.trim()}
-      {...anim.props}
+      {...animationProps("zoom-in", { once: true })}
+      className={wrapperClasses}
     >
       {buttonContent}
     </span>

@@ -6,7 +6,7 @@ import TestimonialCard, {
 import { LeftArrow, RightArrow } from "@/components/Carousels/CarouselArrows";
 import useCarouselAutoplay from "@/components/Carousels/useCarouselAutoplay";
 import { useSideDragNavigation } from "@/hooks/interactions/useSideDragNavigation";
-import AnimatedElementWrapper from "@/components/AnimatedElementWrapper";
+import { staggeredAnimationProps } from "@/utils/animationProps";
 
 type SlidesPerViewConfig = {
   base?: number;
@@ -168,17 +168,15 @@ export default function TestimonialCarousel({
                   }}
                 >
                   {page.map((testimonial, itemIdx) => (
-                    <div key={`testimonial-${pageIdx}-${itemIdx}`} className="min-w-0">
-                      <AnimatedElementWrapper
-                        variant="scale-in"
-                        animationDuration={600}
-                        animationDelay={(pageIdx * slidesPerViewValue + itemIdx) * STAGGER_MS}
-                        threshold={0.2}
-                        rootMargin="0px 0px -50px 0px"
-                        once={false}
-                      >
-                        <TestimonialCard item={testimonial} />
-                      </AnimatedElementWrapper>
+                    <div
+                      key={`testimonial-${pageIdx}-${itemIdx}`}
+                      className="min-w-0"
+                      {...staggeredAnimationProps("scale-in", pageIdx * slidesPerViewValue + itemIdx, {
+                        once: true,
+                        staggerDelay: STAGGER_MS,
+                      })}
+                    >
+                      <TestimonialCard item={testimonial} />
                     </div>
                   ))}
                 </div>

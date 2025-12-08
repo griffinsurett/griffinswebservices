@@ -1,7 +1,6 @@
 // src/components/LoopTemplates/PortfolioCarousel.tsx
 import {
   Children,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -15,7 +14,7 @@ import PortfolioItemComponent, {
 import { LeftArrow, RightArrow } from "@/components/Carousels/CarouselArrows";
 import useCarouselAutoplay from "@/components/Carousels/useCarouselAutoplay";
 import { useSideDragNavigation } from "@/hooks/interactions/useSideDragNavigation";
-import { useAnimatedElement } from "@/hooks/animations/useViewAnimation";
+import { animationProps } from "@/utils/animationProps";
 
 interface PortfolioCarouselProps {
   items?: PortfolioItemData[];
@@ -76,15 +75,6 @@ export default function PortfolioCarousel({
       window.removeEventListener("resize", update);
     };
   }, [containerW]);
-
-  const carouselAnimProps = useAnimatedElement<HTMLDivElement>({
-    ref: containerRef,
-    duration: 500,
-    delay: 0,
-    easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-    threshold: 0.1,
-    rootMargin: "0px 0px -20% 0px",
-  });
 
   const { scopeId } = useCarouselAutoplay({
     containerRef,
@@ -168,11 +158,11 @@ export default function PortfolioCarousel({
   return (
     <div
       ref={containerRef}
+      {...animationProps("fade-in", { once: true })}
       data-carousel-container
       data-autoplay-scope={scopeId}
       suppressHydrationWarning
       className={`w-full ${className}`.trim()}
-      {...carouselAnimProps.props}
     >
       {ready && (
         <>

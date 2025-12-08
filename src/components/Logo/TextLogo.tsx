@@ -14,7 +14,7 @@ export default function TextLogo({
   title,
   className = "",
   firstClass = "text-3xl -ml-[0.1rem] leading-wide font-bold",
-  restClass = "font-light text-accent uppercase text-xs lg:text-sm p-0 m-0 tracking-wider",
+  restClass = "font-light emphasized-text uppercase text-xs lg:text-sm p-0 m-0 tracking-[0.2em]",
   fadeDuration = 1200,
   animateOutText = false,
 }: TextLogoProps) {

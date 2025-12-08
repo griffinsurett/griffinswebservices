@@ -10,8 +10,9 @@ import {
 import EnhancedAccordionItem from "@/components/LoopComponents/EnhancedAccordionItem";
 import VideoPlayer from "@/components/VideoPlayer";
 import Button from "@/components/Button/Button";
-import { useAnimatedElement } from "@/hooks/animations/useViewAnimation";
+import { useVisibility } from "@/hooks/animations/useVisibility";
 import useEngagementAutoplay from "@/hooks/autoplay/useEngagementAutoplay";
+import { animationProps } from "@/utils/animationProps";
 export interface VideoAccordionItem {
   key?: string;
   title: string;
@@ -56,9 +57,8 @@ export default function VideoAccordion({
   const rawId = useId();
   const instanceId = useMemo(() => sanitizeId(rawId), [rawId]);
 
-  const wrapAnim = useAnimatedElement<HTMLDivElement>({
-    duration: 500,
-    delay: 0,
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const inView = useVisibility(wrapRef, {
     threshold: 0,
     rootMargin: "0px 0px -20% 0px",
   });
@@ -94,7 +94,7 @@ export default function VideoAccordion({
     resumeDelay: 5000,
     containerSelector: `[data-video-accordion="${instanceId}"]`,
     itemSelector: `[data-video-accordion="${instanceId}"] [data-accordion-item]`,
-    inView: wrapAnim.inView,
+    inView,
     engageOnlyOnActiveItem: true,
     activeItemAttr: "data-active",
   });
@@ -155,8 +155,6 @@ export default function VideoAccordion({
     engageUser();
   }, [engageUser]);
 
-  const { style: animStyle, ...animProps } = wrapAnim.props;
-
   if (safeItems.length === 0) {
     return null;
   }
@@ -165,11 +163,10 @@ export default function VideoAccordion({
 
   return (
     <div
-      ref={wrapAnim.ref}
-      className={`animated-element fade-in relative ${className}`.trim()}
+      ref={wrapRef}
+      {...animationProps("fade-in", { once: true })}
+      className={`relative ${className}`.trim()}
       data-video-accordion={instanceId}
-      {...animProps}
-      style={animStyle}
     >
       <div className="flex flex-col lg:flex-row lg:items-start gap-12 max-2-primary">
         <div

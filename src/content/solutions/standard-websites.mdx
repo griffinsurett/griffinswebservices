@@ -57,7 +57,7 @@ import { query, sortByOrder } from "@/utils/query";
 
 <section class="outer-section bg-bg2 relative">
   <div class="section-color-border"></div>
-  <div class="inner-section">
+  <div class="inner-section space-y-8">
     <div class="max-w-4xl mx-auto space-y-8">
       <SectionHeader
         title="Imagine this..."
@@ -94,6 +94,13 @@ import { query, sortByOrder } from "@/utils/query";
         </Button>
       </div>
     </div>
+    {/* ═══════════════════════════════════════════════════════════════════════════
+    SECTION 4C: STATS
+═══════════════════════════════════════════════════════════════════════════ */}
+    <ContentRenderer
+  query={query("stats")}
+  variant="StatsVariant"
+/>
   </div>
 </section>
 
@@ -200,28 +207,8 @@ import { query, sortByOrder } from "@/utils/query";
     items={frontmatter.features}
     columns={1}
     className="bg-transparent p-0"
-    showButtonSection={false}
   />
 
-  <div class="flex flex-wrap items-start justify-left gap-4">
-    <Button
-      client:visible
-      href="#services-quote-hero"
-      variant="primary"
-      size="lg"
-      rightIcon="lu:arrow-right"
-    >
-      Get Your Free Quote
-    </Button>
-    <Button
-      client:visible
-      href="#services-projects"
-      variant="secondary"
-      size="lg"
-    >
-      See Our Work
-    </Button>
-  </div>
 </TwoColumnImageVariant>
 
 {/* ═══════════════════════════════════════════════════════════════════════════
@@ -250,11 +237,16 @@ import { query, sortByOrder } from "@/utils/query";
   <div class="section-dim-border"></div>
   <div class="inner-section">
     {/* Quick Facts Row */}
-    <div class="grid gap-4 md:grid-cols-3 mb-16">
+    <div class="grid gap-4 md:grid-cols-4 mb-12">
+      <div class="p-6 rounded-2xl border border-primary/30 bg-primary/10 text-center">
+        <p class="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-1">Online In</p>
+        <p class="text-heading text-2xl font-bold">Week 1</p>
+        <p class="text-muted text-sm">starter site live</p>
+      </div>
       <div class="p-6 rounded-2xl border border-accent/20 bg-accent/5 text-center">
-        <p class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-1">Timeline</p>
+        <p class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-1">Full Site</p>
         <p class="text-heading text-2xl font-bold">3-5 weeks</p>
-        <p class="text-muted text-sm">to launch</p>
+        <p class="text-muted text-sm">custom build</p>
       </div>
       <div class="p-6 rounded-2xl border border-accent/20 bg-accent/5 text-center">
         <p class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-1">Investment</p>
@@ -267,16 +259,22 @@ import { query, sortByOrder } from "@/utils/query";
         <p class="text-muted text-sm">hosting + support</p>
       </div>
     </div>
+
+    {/* Week 1 Promise Callout */}
+    <div class="max-w-4xl mx-auto p-8 rounded-3xl border-2 border-primary/30 bg-primary/5">
+      <div class="text-center space-y-4">
+        <p class="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Our Promise</p>
+        <h3 class="text-2xl md:text-3xl font-bold text-heading">You'll be online within your first week.</h3>
+        <p class="text-lg text-muted leading-relaxed max-w-2xl mx-auto">
+          Don't have a website yet? We won't make you wait 5 weeks to start reaching customers. Within your first week, we'll launch a professional AI-generated starter site so you can begin building credibility immediately—while we craft your custom website in the background.
+        </p>
+        <p class="text-heading font-medium">
+          No more "coming soon." No more missed opportunities. You're live from day one.
+        </p>
+      </div>
+    </div>
   </div>
 </section>
-
-{/* ═══════════════════════════════════════════════════════════════════════════
-    SECTION 4C: STATS
-═══════════════════════════════════════════════════════════════════════════ */}
-    <ContentRenderer
-  query={query("stats")}
-  variant="StatsVariant"
-/>
 
 {/* ═══════════════════════════════════════════════════════════════════════════
     SECTION 5: QUALIFIER - Is this for you?
@@ -303,7 +301,7 @@ import { query, sortByOrder } from "@/utils/query";
   rightTitle="This is NOT for you if..."
   rightItems={[
     { title: "You're looking for the cheapest option", description: "We're not Fiverr. Quality work requires real investment." },
-    { title: "You need it done yesterday", description: "Good websites take time. If you need something in 48 hours, we're not the right fit." },
+    { title: "You expect perfection in 48 hours", description: "We'll get you online in week 1 with a starter site, but your custom build takes 3-5 weeks to do right." },
     { title: "You want to micromanage every pixel", description: "Trust the process. We'll collaborate, but design-by-committee kills results." },
     { title: "You're not ready to provide content", description: "We can help, but we need your input on messaging, photos, and details." },
     { title: "You think a website is a one-time thing", description: "Websites need maintenance. If you want to build and forget, we'll both be frustrated." },
@@ -322,51 +320,61 @@ import { query, sortByOrder } from "@/utils/query";
   <div class="inner-section">
     <SectionHeader
       title="The Process"
-      headingBefore="From first call to"
-      headingEmphasis="live website"
+      headingBefore="Online in week 1."
+      headingEmphasis="Custom site"
       headingAfter="in 3-5 weeks."
       description="No mystery. No surprises. Here's exactly how we'll work together."
       className="text-section"
     />
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
+    <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mt-12">
       <div class="space-y-4">
         <div class="flex items-center gap-3">
           <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent font-bold">1</span>
           <h3 class="font-semibold text-heading">Discovery Call</h3>
         </div>
         <p class="text-muted text-sm leading-relaxed">
-          We learn about your business, goals, and customers. You learn about our process and pricing. No pressure—just a conversation to see if we're a fit.
+          We learn about your business, goals, and customers. You learn about our process and pricing. No pressure—just a conversation.
         </p>
       </div>
 
       <div class="space-y-4">
         <div class="flex items-center gap-3">
-          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent font-bold">2</span>
-          <h3 class="font-semibold text-heading">Strategy & Design</h3>
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary font-bold">2</span>
+          <h3 class="font-semibold text-heading">Week 1: Go Live</h3>
         </div>
         <p class="text-muted text-sm leading-relaxed">
-          We map out your site structure, create wireframes, and design your custom look. You'll see mockups and provide feedback before we build anything.
+          Don't have a site? We launch an AI-generated starter site within days so you can start reaching customers immediately while we build your custom site.
         </p>
       </div>
 
       <div class="space-y-4">
         <div class="flex items-center gap-3">
           <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent font-bold">3</span>
-          <h3 class="font-semibold text-heading">Development</h3>
+          <h3 class="font-semibold text-heading">Strategy & Design</h3>
         </div>
         <p class="text-muted text-sm leading-relaxed">
-          We build your site with clean code, fast hosting, and SEO best practices. You'll have access to a staging site to review progress and request changes.
+          We map out your site structure, create wireframes, and design your custom look. You'll see mockups and provide feedback.
         </p>
       </div>
 
       <div class="space-y-4">
         <div class="flex items-center gap-3">
           <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent font-bold">4</span>
+          <h3 class="font-semibold text-heading">Development</h3>
+        </div>
+        <p class="text-muted text-sm leading-relaxed">
+          We build your custom site with clean code, fast hosting, and SEO best practices. Review progress on your staging site.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent font-bold">5</span>
           <h3 class="font-semibold text-heading">Launch & Support</h3>
         </div>
         <p class="text-muted text-sm leading-relaxed">
-          We go live, train you on updates, and provide documentation. Then we stick around—hosting, maintenance, and support whenever you need it.
+          Your custom site goes live, replacing the starter. We train you, provide docs, and stick around for ongoing support.
         </p>
       </div>
     </div>

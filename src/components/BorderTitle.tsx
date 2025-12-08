@@ -3,7 +3,6 @@ import AnimatedBorder, {
   type VisibleRootMargin,
 } from "@/components/AnimatedBorder/AnimatedBorder";
 import Heading from "@/components/Heading";
-import { useAnimatedElement } from "@/hooks/animations/useViewAnimation";
 import type { ReactNode } from "react";
 
 export interface BorderTitleProps {
@@ -23,13 +22,6 @@ export default function BorderTitle({
   pillClassName = "text-sm px-5 py-2.5 tracking-wider",
   visibleRootMargin,
 }: BorderTitleProps) {
-  const anim = useAnimatedElement<HTMLSpanElement>({
-    duration,
-    delay: 0,
-    threshold: 0,
-    rootMargin: "0px 0px -15px 0px",
-  });
-
   return (
     <div className="inline-block mb-3">
       <div className="relative inline-block">
@@ -49,9 +41,10 @@ export default function BorderTitle({
             className={`uppercase tracking-wider font-semibold text-heading ${className}`}
           >
             <span
-              ref={anim.ref}
-              className="animated-element color-text-fade"
-              {...anim.props}
+              data-animate="color-text-fade"
+              data-animate-once="true"
+              className="color-text-fade"
+              style={{ "--animation-duration": `${duration}ms` } as React.CSSProperties}
             >
               {children}
             </span>

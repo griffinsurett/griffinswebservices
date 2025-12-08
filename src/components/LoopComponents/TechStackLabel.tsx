@@ -1,6 +1,6 @@
 // src/components/LoopComponents/TechStackLabel.tsx
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import AnimatedElementWrapper from "@/components/AnimatedElementWrapper";
+import { staggeredAnimationProps } from "@/utils/animationProps";
 
 interface TechStackLabelProps {
   name: string;
@@ -52,52 +52,44 @@ export default function TechStackLabel({
   };
 
   return (
-    <AnimatedElementWrapper
-      variant="fade-in"
-      animationDuration={600}
-      animationDelay={300}
-      threshold={0.2}
-      rootMargin="0px 0px -50px 0px"
-      once={false}
+    <div
+      {...staggeredAnimationProps("fade-in", index, { once: true, staggerDelay: 50 })}
+      data-tech-item
+      data-tech-name={name}
+      data-index={index}
+      className={`group flex flex-col items-center flex-shrink-0 ${className}`.trim()}
+      role="button"
+      tabIndex={0}
+      aria-label={name}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleMouseEnter}
+      onBlur={handleMouseLeave}
+      onTouchStart={handleTouch}
     >
-      <div
-        data-tech-item
-        data-tech-name={name}
-        data-index={index}
-        className={`group flex flex-col items-center flex-shrink-0 ${className}`.trim()}
-        role="button"
-        tabIndex={0}
-        aria-label={name}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onFocus={handleMouseEnter}
-        onBlur={handleMouseLeave}
-        onTouchStart={handleTouch}
-      >
-        <div className="relative p-2 transition-all duration-300 group-hover:scale-110 cursor-pointer select-none">
-          <div
-            className={`relative text-heading transition-opacity duration-300 ${
-              isMobileActive ? "opacity-100" : "opacity-70 group-hover:opacity-100"
-            }`}
-          >
-            {children}
-          </div>
+      <div className="relative p-2 transition-all duration-300 group-hover:scale-110 cursor-pointer select-none">
+        <div
+          className={`relative text-heading transition-opacity duration-300 ${
+            isMobileActive ? "opacity-100" : "opacity-70 group-hover:opacity-100"
+          }`}
+        >
+          {children}
         </div>
-
-        {showName ? (
-          <div
-            className={`mt-2 text-xs md:text-sm text-muted transition-all duration-300 whitespace-nowrap ${
-              isMobileActive
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
-            }`}
-          >
-            {name}
-          </div>
-        ) : (
-          <span className="sr-only">{name}</span>
-        )}
       </div>
-    </AnimatedElementWrapper>
+
+      {showName ? (
+        <div
+          className={`mt-2 text-xs md:text-sm text-muted transition-all duration-300 whitespace-nowrap ${
+            isMobileActive
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+          }`}
+        >
+          {name}
+        </div>
+      ) : (
+        <span className="sr-only">{name}</span>
+      )}
+    </div>
   );
 }
