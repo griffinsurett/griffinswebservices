@@ -26,7 +26,14 @@ export default defineConfig({
       cssCodeSplit: true,
       cssMinify: 'esbuild',
       rollupOptions: {
-        output: { assetFileNames, manualChunks },
+        output: {
+          assetFileNames,
+          manualChunks,
+          // Inline small modules (< 15KB) with their importers instead of creating
+          // separate chunks. This prevents useLazyLoad and lazy wrappers from
+          // creating dependency chains. Trade-off: slight duplication for faster loading.
+          experimentalMinChunkSize: 15000,
+        },
       },
     },
     css: {

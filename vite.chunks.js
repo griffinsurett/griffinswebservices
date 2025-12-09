@@ -9,6 +9,16 @@ export function manualChunks(id) {
   ) {
     return 'react-core';
   }
+
+  // Bundle useLazyLoad and localStorage utils together with their consumers
+  // This eliminates dependency chains for lazy-loaded components
+  if (
+    id.includes('hooks/useLazyLoad') ||
+    id.includes('utils/storage') ||
+    (id.includes('/Lazy') && id.includes('components'))
+  ) {
+    return 'lazy-utils';
+  }
 }
 
 export function assetFileNames(assetInfo) {

@@ -1,1 +1,0 @@
-import{r as t}from"./react-core.lhpfgRL0.js";import{getCookie as C,setCookie as a,clearCookie as c}from"./cookies.DgVslZYe.js";function n(){const r=t.useCallback(o=>C(o),[]),s=t.useCallback((o,e,k={})=>{a(o,e,k)},[]),i=t.useCallback((o,e="/")=>{c(o,{path:e})},[]);return{getCookie:r,setCookie:s,deleteCookie:i}}export{n as u};

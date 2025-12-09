@@ -1,2 +1,0 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["_astro/scriptManager.BD4IB_K7.js","_astro/consent.DxmPqNt6.js","_astro/cookies.DgVslZYe.js"])))=>i.map(i=>d[i]);
-import{_ as i}from"./preload-helper.BlTxHScW.js";document.cookie.includes("cookie-consent=")&&("requestIdleCallback"in window?requestIdleCallback(()=>{i(()=>import("./scriptManager.BD4IB_K7.js"),__vite__mapDeps([0,1,2])).then(e=>e.initScriptManager())},{timeout:2e3}):setTimeout(()=>{i(()=>import("./scriptManager.BD4IB_K7.js"),__vite__mapDeps([0,1,2])).then(e=>e.initScriptManager())},100));
