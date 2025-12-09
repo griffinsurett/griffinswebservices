@@ -33,7 +33,7 @@
   --main-accent: #5e76f6;
 
   /* ───── ACCENT – secondary / interactive ───── */
-  --color-accent: var(--color-main-accent);  /* complementary accent color */
+  --color-accent: #5e76f6;  /* complementary accent color */
 
   /* ───── PRIMARY – change ONLY this one line for the brand ───── */
   --color-primary: var(--color-accent);   /* keep in sync with accent picker */
