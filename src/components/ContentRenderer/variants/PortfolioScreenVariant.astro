@@ -3,7 +3,7 @@
 import { getImage } from "astro:assets";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import PortfolioScreenShowcase from "@/components/LoopTemplates/PortfolioScreenShowcase";
-import { getImageAlt, resolveImageMetadata } from "@/utils/images";
+import { getImageAlt, resolveImageMetadata, generateCroppedPreview } from "@/utils/images";
 import { toArray } from "@/utils/array";
 
 interface Props extends BaseVariantProps {}
@@ -35,6 +35,9 @@ const IMAGE_FORMATS: { format: OptimizedFormat; quality: number }[] = [
   { format: "webp", quality: 65 },
 ];
 
+// Height of the visible showcase viewport (matches h-[420px] sm:h-[500px] minus header)
+const PREVIEW_VIEWPORT_HEIGHT = 460;
+
 // Process items and generate optimized images
 const processedItems = await Promise.all(
   safeItems.map(async (item, index) => {
@@ -51,7 +54,7 @@ const processedItems = await Promise.all(
     const isFirst = index === 0;
 
     if (!metadata) {
-      return { data: item, mediaEntry: undefined };
+      return { data: item, mediaEntry: undefined, croppedPreview: undefined };
     }
 
     // Generate optimized images for each requested format + width combo
@@ -90,12 +93,12 @@ const processedItems = await Promise.all(
       optimizedByFormat[optimizedByFormat.length - 1];
 
     if (!fallbackFormatEntry) {
-      return { data: item, mediaEntry: undefined };
+      return { data: item, mediaEntry: undefined, croppedPreview: undefined };
     }
 
     const fallbackImages = fallbackFormatEntry.images;
     if (!fallbackImages.length) {
-      return { data: item, mediaEntry: undefined };
+      return { data: item, mediaEntry: undefined, croppedPreview: undefined };
     }
 
     const fallbackSrcSet = fallbackImages
@@ -113,6 +116,30 @@ const processedItems = await Promise.all(
         sizes: SIZES,
       }));
 
+    // For the first item, generate a cropped "above the fold" preview
+    // This is a small image showing just the top portion - fast to load
+    let croppedPreview = undefined;
+    if (isFirst) {
+      const previewResults = await generateCroppedPreview(metadata, [
+        { width: 860, height: PREVIEW_VIEWPORT_HEIGHT, format: "avif", quality: 55 },
+        { width: 860, height: PREVIEW_VIEWPORT_HEIGHT, format: "webp", quality: 75 },
+      ]);
+
+      const avifPreview = previewResults.find(r => r.config.format === "avif");
+      const webpPreview = previewResults.find(r => r.config.format === "webp");
+
+      croppedPreview = {
+        src: webpPreview?.image.src ?? previewResults[0]?.image.src,
+        width: 860,
+        height: PREVIEW_VIEWPORT_HEIGHT,
+        alt: altText,
+        sources: avifPreview ? [{
+          type: "image/avif",
+          srcSet: avifPreview.image.src,
+        }] : [],
+      };
+    }
+
     return {
       data: item,
       mediaEntry: {
@@ -128,6 +155,7 @@ const processedItems = await Promise.all(
         sources: pictureSources,
         desktopEager: isFirst,
       },
+      croppedPreview,
     };
   })
 );
@@ -135,8 +163,8 @@ const processedItems = await Promise.all(
 const portfolioItems = processedItems.map((entry) => entry.data);
 const showcaseMedia = processedItems.map((entry) => entry.mediaEntry);
 
-// Extract first item data for the inline script (desktop static image)
-const firstMedia = showcaseMedia[0];
+// Extract first item's cropped preview for static rendering
+const firstPreview = processedItems[0]?.croppedPreview;
 const firstItem = portfolioItems[0];
 ---
 
@@ -162,56 +190,32 @@ const firstItem = portfolioItems[0];
             </div>
           </div>
           <figure class="relative h-full overflow-y-auto overscroll-contain bg-black/40">
-            {/* Desktop static image container - image cloned from template on lg+ screens */}
-            <div id="portfolio-static-image-container" class="h-full w-full"></div>
+            {/* Cropped "above the fold" preview - lightweight, loads fast */}
+            {firstPreview?.src ? (
+              <picture>
+                {firstPreview.sources?.map((source) => (
+                  <source
+                    srcset={source.srcSet}
+                    type={source.type}
+                  />
+                ))}
+                <img
+                  src={firstPreview.src}
+                  alt={firstPreview.alt || firstItem?.title || "Project preview"}
+                  width={firstPreview.width}
+                  height={firstPreview.height}
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="high"
+                  draggable="false"
+                  class="block h-auto min-h-full w-full select-none object-cover object-top"
+                />
+              </picture>
+            ) : null}
           </figure>
         </div>
       </div>
     </div>
-
-    {/* Template: image NOT downloaded until cloned. Server-rendered but inert. */}
-    {firstMedia?.src && (
-      <template id="portfolio-desktop-image-template">
-        {firstMedia.sources?.length ? (
-          <picture>
-            {firstMedia.sources.map((source) => (
-              <source
-                srcset={source.srcSet}
-                sizes={source.sizes ?? firstMedia.sizes}
-                type={source.type}
-              />
-            ))}
-            <img
-              src={firstMedia.src}
-              srcset={firstMedia.srcSet}
-              sizes={firstMedia.sizes}
-              alt={firstMedia.alt || firstItem?.title || "Project preview"}
-              width={firstMedia.width}
-              height={firstMedia.height}
-              loading="eager"
-              decoding="async"
-              fetchpriority="high"
-              draggable="false"
-              class="block h-auto min-h-full w-full select-none object-cover object-top"
-            />
-          </picture>
-        ) : (
-          <img
-            src={firstMedia.src}
-            srcset={firstMedia.srcSet}
-            sizes={firstMedia.sizes}
-            alt={firstMedia.alt || firstItem?.title || "Project preview"}
-            width={firstMedia.width}
-            height={firstMedia.height}
-            loading="eager"
-            decoding="async"
-            fetchpriority="high"
-            draggable="false"
-            class="block h-auto min-h-full w-full select-none object-cover object-top"
-          />
-        )}
-      </template>
-    )}
 
     {/* React carousel - hidden until hydrated, loads when browser idle */}
     <div id="portfolio-carousel-container" class="hidden">
@@ -225,15 +229,4 @@ const firstItem = portfolioItems[0];
       />
     </div>
   </div>
-
-  {/* Tiny inline script: clone template content only on desktop */}
-  <script is:inline>
-    (function() {
-      if (window.matchMedia('(min-width: 1024px)').matches) {
-        var t = document.getElementById('portfolio-desktop-image-template');
-        var c = document.getElementById('portfolio-static-image-container');
-        if (t && c) c.appendChild(t.content.cloneNode(true));
-      }
-    })();
-  </script>
 </section>
