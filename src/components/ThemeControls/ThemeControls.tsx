@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import DarkLightToggle from "./DarkLightToggle";
 import AccentPicker from "./AccentPicker";
-import { useLazyLoad } from "@/hooks/useLazyLoad";
+import LanguageDropdown from "./LanguageDropdown";
 
 interface ThemeControlsProps {
   className?: string;
@@ -10,12 +10,6 @@ interface ThemeControlsProps {
 export default function ThemeControls({ className = "" }: ThemeControlsProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [hidden] = useState(false);
-
-  // Lazy load LanguageDropdown - not needed immediately
-  const { Component: LanguageDropdown } = useLazyLoad(
-    () => import("./LanguageDropdown"),
-    { delay: 2000 }
-  );
 
   return (
     <div
@@ -32,7 +26,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
         .filter(Boolean)
         .join(" ")}
     >
-      {LanguageDropdown && <LanguageDropdown />}
+      <LanguageDropdown />
       <DarkLightToggle />
       <AccentPicker />
     </div>
