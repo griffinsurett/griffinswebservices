@@ -29,10 +29,9 @@ export default defineConfig({
         output: {
           assetFileNames,
           manualChunks,
-          // Inline small modules (< 15KB) with their importers instead of creating
-          // separate chunks. This prevents useLazyLoad and lazy wrappers from
-          // creating dependency chains. Trade-off: slight duplication for faster loading.
-          experimentalMinChunkSize: 15000,
+          // Merge very small modules (< 5KB) to reduce chunk count without
+          // over-bundling unrelated components together.
+          experimentalMinChunkSize: 5000,
         },
       },
     },
