@@ -100,25 +100,30 @@ const resolveImage = (face: any) => {
 </a>
 
 <script is:inline>
-  const initTestimonialsPulse = () => {
-    const circles = document.querySelectorAll(".testimonials .circle");
-    if (!circles.length) return;
+  (function() {
+    if (window.__testimonialsPulseInitialized) return;
+    window.__testimonialsPulseInitialized = true;
 
-    let idx = 0;
-    const pulse = () => {
-      const prev = (idx - 1 + circles.length) % circles.length;
-      circles[prev]?.classList.remove("heartbeat");
-      circles[idx]?.classList.add("heartbeat");
-      idx = (idx + 1) % circles.length;
+    const initTestimonialsPulse = () => {
+      const circles = document.querySelectorAll(".testimonials .circle");
+      if (!circles.length) return;
+
+      let idx = 0;
+      const pulse = () => {
+        const prev = (idx - 1 + circles.length) % circles.length;
+        circles[prev]?.classList.remove("heartbeat");
+        circles[idx]?.classList.add("heartbeat");
+        idx = (idx + 1) % circles.length;
+      };
+
+      pulse();
+      setInterval(pulse, 1600);
     };
 
-    pulse();
-    setInterval(pulse, 1600);
-  };
-
-  if ("requestIdleCallback" in window) {
-    requestIdleCallback(initTestimonialsPulse);
-  } else {
-    window.addEventListener("load", initTestimonialsPulse, { once: true });
-  }
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(initTestimonialsPulse);
+    } else {
+      window.addEventListener("load", initTestimonialsPulse, { once: true });
+    }
+  })();
 </script>
