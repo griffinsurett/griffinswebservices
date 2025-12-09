@@ -267,11 +267,13 @@ const firstItem = portfolioItems[0];
                   srcset={firstPreview.srcSet}
                   sizes={firstPreview.sizes}
                   alt={firstPreview.alt || firstItem?.title || "Project preview"}
+                  width={firstPreview.width}
+                  height={firstPreview.height}
                   loading="eager"
                   decoding="async"
                   fetchpriority="high"
                   draggable="false"
-                  class="block h-auto min-h-full w-full select-none object-cover object-top"
+                  class="block w-full select-none"
                 />
               </picture>
             ) : null}
