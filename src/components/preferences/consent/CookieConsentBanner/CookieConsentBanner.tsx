@@ -8,20 +8,28 @@
  * After consent is given, enables scripts via scriptManager.
  */
 
-import { useState, useEffect, lazy, Suspense, useTransition } from "react";
+import { useState, useEffect, useTransition, useRef, type ComponentType } from "react";
 import { useCookieStorage } from "@/hooks/useCookieStorage";
 import { enableConsentedScripts } from "@/utils/scriptManager";
 import Modal from "@/components/Modal";
 import type { CookieConsent } from "../types";
 import Button from "@/components/Button/Button";
 
-const CookiePreferencesModal = lazy(() => import("../CookiePreferencesModal"));
+interface PreferencesModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
 export default function CookieConsentBanner() {
   const [showBanner, setShowBanner] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const { getCookie, setCookie } = useCookieStorage();
+  const { setCookie } = useCookieStorage();
+
+  // Deferred loading of preferences modal
+  const [PreferencesModal, setPreferencesModal] =
+    useState<ComponentType<PreferencesModalProps> | null>(null);
+  const modalLoadStarted = useRef(false);
 
   useEffect(() => {
     // Quick inline check - if consent exists, don't show banner
@@ -82,9 +90,15 @@ export default function CookieConsentBanner() {
   };
 
   const handleOpenSettings = () => {
-    startTransition(() => {
+    if (!modalLoadStarted.current) {
+      modalLoadStarted.current = true;
+      import("../CookiePreferencesModal").then((m) => {
+        setPreferencesModal(() => m.default);
+        setShowModal(true);
+      });
+    } else {
       setShowModal(true);
-    });
+    }
   };
 
   return (
@@ -153,13 +167,11 @@ export default function CookieConsentBanner() {
         </div>
       </Modal>
 
-      {showModal && (
-        <Suspense fallback={null}>
-          <CookiePreferencesModal
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
-          />
-        </Suspense>
+      {PreferencesModal && (
+        <PreferencesModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </>
   );
