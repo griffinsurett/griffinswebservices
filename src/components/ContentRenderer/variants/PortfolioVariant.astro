@@ -111,13 +111,13 @@ const showHeader = Boolean(sectionTitle || headingPayload || description);
         autoAdvanceDelay={autoAdvanceDelay}
         className={showHeader ? "mt-12" : ""}
       >
-        {carouselMedia.map((media) =>
+        {carouselMedia.map((media, index) =>
           media ? (
             <Image
               data-portfolio-media
               src={media.metadata}
               alt={media.alt}
-              loading="lazy"
+              loading={index === 0 ? "eager" : "lazy"}
               widths={[480, 640, 860, 1024, 1280, 1600]}
               sizes="(max-width: 640px) 90vw, (max-width: 1024px) 70vw, 860px"
               class="block w-full h-auto min-h-full select-none object-cover object-top"

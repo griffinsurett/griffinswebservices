@@ -496,10 +496,59 @@ export default function PortfolioScreenShowcase({
   // This prevents both images from loading simultaneously
   const [shouldLoadFirstImage, setShouldLoadFirstImage] = useState(false);
 
-  // Load first image immediately - the lazy wrapper handles the LCP delay
+  // Wait for the static preview to load before starting the full image download.
+  // This prevents LCP regression from double-loading both cropped preview AND full image.
   useEffect(() => {
-    setShouldLoadFirstImage(true);
-  }, []);
+    if (!staticContainerId) {
+      // No preview to wait for - load immediately
+      setShouldLoadFirstImage(true);
+      return;
+    }
+
+    const staticEl = document.getElementById(staticContainerId);
+    if (!staticEl) {
+      setShouldLoadFirstImage(true);
+      return;
+    }
+
+    // Find the preview image inside the static container
+    const previewImg = staticEl.querySelector("img") as HTMLImageElement | null;
+    if (!previewImg) {
+      setShouldLoadFirstImage(true);
+      return;
+    }
+
+    // If preview is already loaded, start full image after a brief delay
+    // to ensure the preview has been painted to screen
+    if (previewImg.complete && previewImg.naturalHeight > 0) {
+      const timer = requestAnimationFrame(() => {
+        setShouldLoadFirstImage(true);
+      });
+      return () => cancelAnimationFrame(timer);
+    }
+
+    // Wait for preview to load before starting full image
+    const handleLoad = () => {
+      // Small delay to ensure preview is painted before we start loading full image
+      requestAnimationFrame(() => {
+        setShouldLoadFirstImage(true);
+      });
+    };
+
+    previewImg.addEventListener("load", handleLoad, { once: true });
+    previewImg.addEventListener("error", handleLoad, { once: true });
+
+    // Fallback timeout in case something goes wrong
+    const fallbackTimer = setTimeout(() => {
+      setShouldLoadFirstImage(true);
+    }, 3000);
+
+    return () => {
+      previewImg.removeEventListener("load", handleLoad);
+      previewImg.removeEventListener("error", handleLoad);
+      clearTimeout(fallbackTimer);
+    };
+  }, [staticContainerId]);
 
   // Callback when first image finishes loading - triggers the swap
   const handleFirstImageLoad = useCallback(() => {
