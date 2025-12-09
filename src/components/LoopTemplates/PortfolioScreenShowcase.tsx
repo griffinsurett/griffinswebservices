@@ -482,15 +482,20 @@ export default function PortfolioScreenShowcase({
     const staticEl = staticContainerId ? document.getElementById(staticContainerId) : null;
     const carouselEl = carouselContainerId ? document.getElementById(carouselContainerId) : null;
 
-    // Instant swap: show carousel, hide preview in same frame
-    if (carouselEl) {
-      carouselEl.classList.remove("opacity-0", "pointer-events-none", "absolute", "inset-0");
-    }
-    if (staticEl) {
-      staticEl.style.display = "none";
-    }
-
-    setFirstImageLoaded(true);
+    // Use requestAnimationFrame to ensure layout is stable before swap
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Show carousel (it's already positioned absolutely over the preview)
+        if (carouselEl) {
+          carouselEl.classList.remove("opacity-0", "pointer-events-none");
+        }
+        // Hide preview after carousel is visible
+        if (staticEl) {
+          staticEl.style.visibility = "hidden";
+        }
+        setFirstImageLoaded(true);
+      });
+    });
   }, [staticContainerId, carouselContainerId]);
 
   useEffect(() => {

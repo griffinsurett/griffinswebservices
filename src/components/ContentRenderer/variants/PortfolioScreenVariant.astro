@@ -35,9 +35,38 @@ const IMAGE_FORMATS: { format: OptimizedFormat; quality: number }[] = [
   { format: "webp", quality: 65 },
 ];
 
-// Container max width (from Tailwind max-w-4xl)
-const CONTAINER_MAX_WIDTH = 896;
+// Container dimensions (from Tailwind classes)
+const CONTAINER_MAX_WIDTH = 896; // max-w-4xl
+const CONTAINER_HEIGHT_DESKTOP = 500; // h-[500px] on sm+
+const HEADER_BAR_HEIGHT = 48;
+// Visible figure height on desktop (container - header)
+const VISIBLE_HEIGHT_DESKTOP = CONTAINER_HEIGHT_DESKTOP - HEADER_BAR_HEIGHT; // 452px
 const PREVIEW_WIDTHS = [320, 480, 640, CONTAINER_MAX_WIDTH];
+
+/**
+ * Calculate the exact crop height for a preview image.
+ *
+ * When CSS `object-cover object-top` is applied:
+ * 1. Image scales to COVER the container (smallest scale that fills both dimensions)
+ * 2. For tall screenshots (height >> width), image scales to fit WIDTH
+ * 3. Scale factor = targetWidth / sourceWidth
+ * 4. Visible source pixels in height = visibleContainerHeight / scaleFactor
+ *
+ * This gives us the exact number of source image pixels visible "above the fold"
+ */
+function calculateVisibleSourceHeight(
+  sourceWidth: number,
+  sourceHeight: number,
+  containerWidth: number,
+  visibleContainerHeight: number
+): number {
+  // Scale factor when fitting to container width
+  const scaleFactor = containerWidth / sourceWidth;
+  // How many source pixels are visible in the container height
+  const visibleSourceHeight = Math.ceil(visibleContainerHeight / scaleFactor);
+  // Don't exceed source height (for images shorter than container)
+  return Math.min(visibleSourceHeight, sourceHeight);
+}
 
 // Toggle to disable carousel for debugging the static preview
 const ENABLE_CAROUSEL = true;
@@ -120,18 +149,27 @@ const processedItems = await Promise.all(
         sizes: SIZES,
       }));
 
-    // For the first item, generate an optimized preview at the same aspect ratio
-    // This maintains visual consistency - the preview scales identically to the full image
+    // For the first item, generate a cropped "above the fold" preview
+    // This shows just the visible top portion - much smaller than the full tall image
     let croppedPreview = undefined;
     if (isFirst) {
-      const aspectRatio = metadata.height / metadata.width;
+      // Calculate exactly how many source pixels are visible in the container
+      // This uses the actual source image dimensions for pixel-perfect cropping
+      const visibleSourceHeight = calculateVisibleSourceHeight(
+        metadata.width,
+        metadata.height,
+        CONTAINER_MAX_WIDTH,
+        VISIBLE_HEIGHT_DESKTOP
+      );
 
-      // Generate multiple widths for each format, height preserves original aspect ratio
+      // Generate responsive widths, each cropped to show the same visual area
       const previewConfigs: { width: number; height: number; format: "avif" | "webp"; quality: number }[] = [];
       for (const width of PREVIEW_WIDTHS) {
-        const height = Math.round(width * aspectRatio);
-        previewConfigs.push({ width, height, format: "avif", quality: 55 });
-        previewConfigs.push({ width, height, format: "webp", quality: 75 });
+        // Scale the crop height proportionally for each responsive width
+        // This maintains the same aspect ratio across all breakpoints
+        const scaledCropHeight = Math.round(visibleSourceHeight * (width / CONTAINER_MAX_WIDTH));
+        previewConfigs.push({ width, height: scaledCropHeight, format: "avif", quality: 55 });
+        previewConfigs.push({ width, height: scaledCropHeight, format: "webp", quality: 75 });
       }
 
       const previewResults = await generateCroppedPreview(metadata, previewConfigs);
@@ -147,14 +185,13 @@ const processedItems = await Promise.all(
         .join(", ");
 
       const defaultWebp = webpResults[webpResults.length - 1];
-      const defaultHeight = Math.round(CONTAINER_MAX_WIDTH * aspectRatio);
 
       croppedPreview = {
         src: defaultWebp?.image.src ?? previewResults[0]?.image.src,
         srcSet: webpSrcSet,
         sizes: SIZES,
         width: CONTAINER_MAX_WIDTH,
-        height: defaultHeight,
+        height: visibleSourceHeight, // Use calculated height based on source dimensions
         alt: altText,
         sources: avifSrcSet ? [{
           type: "image/avif",
@@ -214,8 +251,8 @@ const firstItem = portfolioItems[0];
               </span>
             </div>
           </div>
-          <figure class="relative h-full overflow-hidden bg-black/40">
-            {/* Cropped "above the fold" preview - matches full image styling exactly */}
+          <figure class="relative h-full overflow-y-auto overscroll-contain bg-black/40">
+            {/* Cropped "above the fold" preview - matches carousel figure styling exactly */}
             {firstPreview?.src ? (
               <picture>
                 {firstPreview.sources?.map((source) => (
@@ -234,7 +271,7 @@ const firstItem = portfolioItems[0];
                   decoding="async"
                   fetchpriority="high"
                   draggable="false"
-                  class="block w-full select-none"
+                  class="block h-auto min-h-full w-full select-none object-cover object-top"
                 />
               </picture>
             ) : null}
