@@ -171,22 +171,24 @@ const firstItem = portfolioItems[0];
                     type={source.type}
                   />
                 ))}
+                {/* Lazy by default (mobile below fold), desktop upgrades via script */}
                 <img
+                  id="portfolio-static-img"
                   src={firstMedia.src}
                   srcset={firstMedia.srcSet}
                   sizes={firstMedia.sizes}
                   alt={firstMedia.alt || firstItem?.title || "Project preview"}
                   width={firstMedia.width}
                   height={firstMedia.height}
-                  loading="eager"
+                  loading="lazy"
                   decoding="async"
-                  fetchpriority="high"
                   draggable="false"
                   class="block h-auto min-h-full w-full select-none object-cover object-top"
                 />
               </picture>
             ) : firstMedia?.src ? (
               <img
+                id="portfolio-static-img"
                 src={firstMedia.src}
                 srcset={firstMedia.srcSet}
                 sizes={firstMedia.sizes}
@@ -195,7 +197,6 @@ const firstItem = portfolioItems[0];
                 height={firstMedia.height}
                 loading="lazy"
                 decoding="async"
-                fetchpriority="low"
                 draggable="false"
                 class="block h-auto min-h-full w-full select-none object-cover object-top"
               />
@@ -222,3 +223,14 @@ const firstItem = portfolioItems[0];
     </div>
   </div>
 </section>
+
+{/* On desktop (lg+), the portfolio is visible in hero, so eager load the static image */}
+<script>
+  if (typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches) {
+    const img = document.getElementById("portfolio-static-img") as HTMLImageElement | null;
+    if (img && !img.complete) {
+      img.loading = "eager";
+      img.fetchPriority = "high";
+    }
+  }
+</script>

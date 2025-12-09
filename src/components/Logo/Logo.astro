@@ -121,13 +121,22 @@ const logoClasses = "block w-[43px] h-[43px] lg:w-[45px] lg:h-[45px] object-cont
   )}
 
   <div>
-    <TextLogo
-      title={siteData.title}
-      className="flex flex-col p-0 m-0"
-      fadeDuration={textFadeMs}
-      animateOutText={animateOutText}
-      client:load={loading === "eager"}
-      client:visible={loading !== "eager"}
-    />
+    {loading === "eager" ? (
+      <TextLogo
+        title={siteData.title}
+        className="flex flex-col p-0 m-0"
+        fadeDuration={textFadeMs}
+        animateOutText={animateOutText}
+        client:load
+      />
+    ) : (
+      <TextLogo
+        title={siteData.title}
+        className="flex flex-col p-0 m-0"
+        fadeDuration={textFadeMs}
+        animateOutText={animateOutText}
+        client:visible
+      />
+    )}
   </div>
 </a>
