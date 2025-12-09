@@ -162,47 +162,47 @@ const firstItem = portfolioItems[0];
             </div>
           </div>
           <figure class="relative h-full overflow-y-auto overscroll-contain bg-black/40">
+            {/* Desktop: render image immediately (visible in hero) */}
             {firstMedia?.sources?.length ? (
-              <picture id="portfolio-static-picture">
+              <picture class="hidden lg:block">
                 {firstMedia.sources.map((source, idx) => (
                   <source
-                    data-srcset={source.srcSet}
-                    data-sizes={source.sizes ?? firstMedia.sizes}
+                    srcset={source.srcSet}
+                    sizes={source.sizes ?? firstMedia.sizes}
                     type={source.type}
                   />
                 ))}
-                {/* No src on mobile - loaded via IO; desktop loads eagerly via script */}
                 <img
-                  id="portfolio-static-img"
-                  data-src={firstMedia.src}
-                  data-srcset={firstMedia.srcSet}
-                  data-sizes={firstMedia.sizes}
+                  src={firstMedia.src}
+                  srcset={firstMedia.srcSet}
+                  sizes={firstMedia.sizes}
                   alt={firstMedia.alt || firstItem?.title || "Project preview"}
                   width={firstMedia.width}
                   height={firstMedia.height}
+                  loading="eager"
                   decoding="async"
+                  fetchpriority="high"
                   draggable="false"
                   class="block h-auto min-h-full w-full select-none object-cover object-top"
                 />
               </picture>
             ) : firstMedia?.src ? (
               <img
-                id="portfolio-static-img"
-                data-src={firstMedia.src}
-                data-srcset={firstMedia.srcSet}
-                data-sizes={firstMedia.sizes}
+                src={firstMedia.src}
+                srcset={firstMedia.srcSet}
+                sizes={firstMedia.sizes}
                 alt={firstMedia.alt || firstItem?.title || "Project preview"}
                 width={firstMedia.width}
                 height={firstMedia.height}
+                loading="eager"
                 decoding="async"
+                fetchpriority="high"
                 draggable="false"
-                class="block h-auto min-h-full w-full select-none object-cover object-top"
+                class="hidden lg:block h-auto min-h-full w-full select-none object-cover object-top"
               />
-            ) : (
-              <div class="flex h-full w-full items-center justify-center bg-gradient-to-b from-bg2 via-bg to-bg/80 text-white/30">
-                Preview coming soon
-              </div>
-            )}
+            ) : null}
+            {/* Mobile: empty placeholder, React hydrates with IO-gated loading */}
+            <div class="lg:hidden h-full w-full bg-bg3"></div>
           </figure>
         </div>
       </div>
@@ -221,52 +221,3 @@ const firstItem = portfolioItems[0];
     </div>
   </div>
 </section>
-
-<script>
-  // Load portfolio image: immediately on desktop (in viewport), via IO on mobile (below fold)
-  const img = document.getElementById("portfolio-static-img") as HTMLImageElement | null;
-  const picture = document.getElementById("portfolio-static-picture");
-
-  function loadImage() {
-    if (!img || img.src) return; // Already loaded
-
-    // Load sources first
-    if (picture) {
-      picture.querySelectorAll("source[data-srcset]").forEach((source) => {
-        const srcset = source.getAttribute("data-srcset");
-        const sizes = source.getAttribute("data-sizes");
-        if (srcset) source.setAttribute("srcset", srcset);
-        if (sizes) source.setAttribute("sizes", sizes);
-      });
-    }
-
-    // Load img
-    const src = img.dataset.src;
-    const srcset = img.dataset.srcset;
-    const sizes = img.dataset.sizes;
-    if (src) img.src = src;
-    if (srcset) img.srcset = srcset;
-    if (sizes) img.sizes = sizes;
-  }
-
-  if (typeof window !== "undefined" && img) {
-    const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
-
-    if (isDesktop) {
-      // Desktop: load immediately (visible in hero)
-      loadImage();
-    } else {
-      // Mobile: wait for IO (below fold, gated by data-animate)
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0]?.isIntersecting) {
-            loadImage();
-            observer.disconnect();
-          }
-        },
-        { rootMargin: "100px" }
-      );
-      observer.observe(img);
-    }
-  }
-</script>
