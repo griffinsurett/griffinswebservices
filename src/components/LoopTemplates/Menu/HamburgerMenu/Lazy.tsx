@@ -1,9 +1,4 @@
-/**
- * LazyHamburgerMenu
- * Loads on first click, manages open/close toggle state
- */
-
-import { useCallback, useEffect, useRef, useState, type ComponentType } from "react";
+import { useLazyLoad } from "@/hooks/useLazyLoad";
 
 interface ContentProps {
   items: any[];
@@ -26,39 +21,10 @@ export default function LazyHamburgerMenu({
   className = "",
   closeButton = false,
 }: Props) {
-  const [Component, setComponent] = useState<ComponentType<ContentProps> | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const started = useRef(false);
-
-  const close = useCallback(() => {
-    setIsOpen(false);
-    document.getElementById(buttonId)?.setAttribute("aria-expanded", "false");
-  }, [buttonId]);
-
-  useEffect(() => {
-    const btn = document.getElementById(buttonId);
-    if (!btn) return;
-
-    const onClick = () => {
-      if (!started.current) {
-        started.current = true;
-        import("./HamburgerMenuContent").then((m) => {
-          setComponent(() => m.default);
-          setIsOpen(true);
-          btn.setAttribute("aria-expanded", "true");
-        });
-      } else {
-        setIsOpen((prev) => {
-          const next = !prev;
-          btn.setAttribute("aria-expanded", String(next));
-          return next;
-        });
-      }
-    };
-
-    btn.addEventListener("click", onClick);
-    return () => btn.removeEventListener("click", onClick);
-  }, [buttonId]);
+  const { Component, isOpen, close } = useLazyLoad<ContentProps>(
+    () => import("./HamburgerMenuContent"),
+    { triggerId: buttonId, toggle: true }
+  );
 
   if (!Component) return null;
 
