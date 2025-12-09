@@ -145,7 +145,7 @@ const firstItem = portfolioItems[0];
   class={`relative overflow-hidden p-6 ${className}`.trim()}
 >
   <div class="relative w-full mx-auto">
-    {/* Static first slide - visible until JS hydrates */}
+    {/* Static first slide - visible until JS hydrates (desktop only) */}
     <div
       id="portfolio-static-first"
       class="relative mx-auto w-full max-w-4xl overflow-hidden rounded-lg h-[420px] sm:h-[500px]"
@@ -162,20 +162,26 @@ const firstItem = portfolioItems[0];
             </div>
           </div>
           <figure class="relative h-full overflow-y-auto overscroll-contain bg-black/40">
-            {/* Desktop: render image immediately (visible in hero) */}
+            {/* Mobile: empty placeholder only, no image loaded */}
+            <div class="lg:hidden h-full w-full bg-bg3"></div>
+            {/* Desktop: render image immediately via media query that blocks mobile download */}
             {firstMedia?.sources?.length ? (
-              <picture class="hidden lg:block">
+              <picture class="hidden lg:contents">
                 {firstMedia.sources.map((source, idx) => (
                   <source
                     srcset={source.srcSet}
                     sizes={source.sizes ?? firstMedia.sizes}
                     type={source.type}
+                    media="(min-width: 1024px)"
                   />
                 ))}
-                <img
-                  src={firstMedia.src}
+                <source
                   srcset={firstMedia.srcSet}
                   sizes={firstMedia.sizes}
+                  media="(min-width: 1024px)"
+                />
+                <img
+                  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                   alt={firstMedia.alt || firstItem?.title || "Project preview"}
                   width={firstMedia.width}
                   height={firstMedia.height}
@@ -183,26 +189,29 @@ const firstItem = portfolioItems[0];
                   decoding="async"
                   fetchpriority="high"
                   draggable="false"
-                  class="block h-auto min-h-full w-full select-none object-cover object-top"
+                  class="hidden lg:block h-auto min-h-full w-full select-none object-cover object-top"
                 />
               </picture>
             ) : firstMedia?.src ? (
-              <img
-                src={firstMedia.src}
-                srcset={firstMedia.srcSet}
-                sizes={firstMedia.sizes}
-                alt={firstMedia.alt || firstItem?.title || "Project preview"}
-                width={firstMedia.width}
-                height={firstMedia.height}
-                loading="eager"
-                decoding="async"
-                fetchpriority="high"
-                draggable="false"
-                class="hidden lg:block h-auto min-h-full w-full select-none object-cover object-top"
-              />
+              <picture class="hidden lg:contents">
+                <source
+                  srcset={firstMedia.srcSet || firstMedia.src}
+                  sizes={firstMedia.sizes}
+                  media="(min-width: 1024px)"
+                />
+                <img
+                  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                  alt={firstMedia.alt || firstItem?.title || "Project preview"}
+                  width={firstMedia.width}
+                  height={firstMedia.height}
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="high"
+                  draggable="false"
+                  class="hidden lg:block h-auto min-h-full w-full select-none object-cover object-top"
+                />
+              </picture>
             ) : null}
-            {/* Mobile: empty placeholder, React hydrates with IO-gated loading */}
-            <div class="lg:hidden h-full w-full bg-bg3"></div>
           </figure>
         </div>
       </div>
