@@ -162,15 +162,56 @@ const firstItem = portfolioItems[0];
             </div>
           </div>
           <figure class="relative h-full overflow-y-auto overscroll-contain bg-black/40">
-            {/* Desktop: static image rendered server-side, loads eagerly */}
-            {/* Mobile: empty placeholder, no image in initial HTML */}
-            <div id="portfolio-static-image-container">
-              {/* Image injected by inline script only on desktop */}
-            </div>
+            {/* Desktop static image container - image cloned from template on lg+ screens */}
+            <div id="portfolio-static-image-container" class="h-full w-full"></div>
           </figure>
         </div>
       </div>
     </div>
+
+    {/* Template: image NOT downloaded until cloned. Server-rendered but inert. */}
+    {firstMedia?.src && (
+      <template id="portfolio-desktop-image-template">
+        {firstMedia.sources?.length ? (
+          <picture>
+            {firstMedia.sources.map((source) => (
+              <source
+                srcset={source.srcSet}
+                sizes={source.sizes ?? firstMedia.sizes}
+                type={source.type}
+              />
+            ))}
+            <img
+              src={firstMedia.src}
+              srcset={firstMedia.srcSet}
+              sizes={firstMedia.sizes}
+              alt={firstMedia.alt || firstItem?.title || "Project preview"}
+              width={firstMedia.width}
+              height={firstMedia.height}
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+              draggable="false"
+              class="block h-auto min-h-full w-full select-none object-cover object-top"
+            />
+          </picture>
+        ) : (
+          <img
+            src={firstMedia.src}
+            srcset={firstMedia.srcSet}
+            sizes={firstMedia.sizes}
+            alt={firstMedia.alt || firstItem?.title || "Project preview"}
+            width={firstMedia.width}
+            height={firstMedia.height}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            draggable="false"
+            class="block h-auto min-h-full w-full select-none object-cover object-top"
+          />
+        )}
+      </template>
+    )}
 
     {/* React carousel - hidden until hydrated, loads when browser idle */}
     <div id="portfolio-carousel-container" class="hidden">
@@ -185,43 +226,13 @@ const firstItem = portfolioItems[0];
     </div>
   </div>
 
-  {/* Inline script to inject image only on desktop - runs before paint */}
-  <script is:inline define:vars={{ firstMedia, firstItem }}>
+  {/* Tiny inline script: clone template content only on desktop */}
+  <script is:inline>
     (function() {
-      if (window.matchMedia('(min-width: 1024px)').matches && firstMedia?.src) {
-        const container = document.getElementById('portfolio-static-image-container');
-        if (!container) return;
-
-        const picture = document.createElement('picture');
-
-        // Add AVIF/WebP sources
-        if (firstMedia.sources) {
-          firstMedia.sources.forEach(function(source) {
-            const sourceEl = document.createElement('source');
-            sourceEl.srcset = source.srcSet;
-            if (source.sizes) sourceEl.sizes = source.sizes;
-            else if (firstMedia.sizes) sourceEl.sizes = firstMedia.sizes;
-            if (source.type) sourceEl.type = source.type;
-            picture.appendChild(sourceEl);
-          });
-        }
-
-        // Add fallback img
-        const img = document.createElement('img');
-        img.src = firstMedia.src;
-        if (firstMedia.srcSet) img.srcset = firstMedia.srcSet;
-        if (firstMedia.sizes) img.sizes = firstMedia.sizes;
-        img.alt = firstMedia.alt || (firstItem?.title) || 'Project preview';
-        if (firstMedia.width) img.width = firstMedia.width;
-        if (firstMedia.height) img.height = firstMedia.height;
-        img.loading = 'eager';
-        img.decoding = 'async';
-        img.fetchPriority = 'high';
-        img.draggable = false;
-        img.className = 'block h-auto min-h-full w-full select-none object-cover object-top';
-
-        picture.appendChild(img);
-        container.appendChild(picture);
+      if (window.matchMedia('(min-width: 1024px)').matches) {
+        var t = document.getElementById('portfolio-desktop-image-template');
+        var c = document.getElementById('portfolio-static-image-container');
+        if (t && c) c.appendChild(t.content.cloneNode(true));
       }
     })();
   </script>
