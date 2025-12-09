@@ -159,7 +159,7 @@ function ComputerScreen({
       return;
     }
 
-    if (imageEl.complete && imageEl.naturalHeight > 0) {
+  if (imageEl.complete && imageEl.naturalHeight > 0) {
       setMediaReady(true);
       return;
     }

@@ -764,7 +764,9 @@ npm run build                  # Build for production
 npm run preview                # Preview production build
 
 # Maintenance
-rm -rf .astro node_modules/.astro dist  # Clear all caches
+rm -rf .astro node_modules/.astro dist  
+# Clear all caches
+git rm -r --cached .
 npx astro sync                 # Regenerate TypeScript types
 
 # Utilities
