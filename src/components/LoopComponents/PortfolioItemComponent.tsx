@@ -327,8 +327,7 @@ export default function PortfolioItemComponent({
       height: `${sideH}px`,
       transform: `${translateBase} translateX(-${tx}px) scale(0.9) rotateY(22deg)`,
       zIndex: 20,
-      opacity: 0.5,
-      filter: "brightness(0.75)",
+      opacity: 0.4,
     };
   } else if (position === "right") {
     style = {
@@ -336,8 +335,7 @@ export default function PortfolioItemComponent({
       height: `${sideH}px`,
       transform: `${translateBase} translateX(${tx}px) scale(0.9) rotateY(-22deg)`,
       zIndex: 20,
-      opacity: 0.5,
-      filter: "brightness(0.75)",
+      opacity: 0.4,
     };
   }
 
