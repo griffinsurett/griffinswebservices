@@ -55,8 +55,7 @@ const processedItems = safeItems.map((item, index) => {
       ...item,
       ...(altText ? { alt: altText } : {}),
     },
-    media: metadata
-      ? {
+    media: metadata ? {
           metadata,
           alt: altText,
           key: item.slug ?? item.id ?? `portfolio-${index}`,
