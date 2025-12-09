@@ -112,11 +112,15 @@ if (!hasHeroSlot) {
         </div>
       </div>
 
-      <div class="flex-1 w-full md:mb-0 mb-20 order-last lg:order-none">
-        <!-- <ContentRenderer
+      <div
+        class="flex-1 w-full md:mb-0 mb-20 order-last lg:order-none"
+        data-animate="fade-in"
+        data-animate-once="true"
+      >
+        <ContentRenderer
           query={query("projects")}
           variant="PortfolioScreenVariant"
-        /> -->
+        />
       </div>
     </div>
   </div>
