@@ -28,8 +28,8 @@ import DividerHeading from "@/components/DividerHeading/DividerHeading";
 {/* Consent Script - Inline initialization, runs immediately */}
 <ConsentScript />
 
-{/* Browser Translation Script - Uses native API when available, Google fallback otherwise */}
-<BrowserTranslateScript />
+{/* Browser Translation Script - Testing Google Translate only (native disabled) */}
+<BrowserTranslateScript enableNative={false} enableGoogle={true} />
 
 <DividerHeading title="Preferences" className="mb-4" />
 
