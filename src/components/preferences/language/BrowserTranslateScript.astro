@@ -11,12 +11,32 @@
  * - Google Translate SDK fallback for mobile & other browsers (requires consent)
  * - MutationObserver to translate dynamically added content (React components)
  * - Original text storage for reversion
+ *
+ * Props:
+ * - enableNative: boolean (default: true) - Enable Chrome/Edge native Translator API
+ * - enableGoogle: boolean (default: true) - Enable Google Translate SDK fallback
  */
+
+export interface Props {
+  enableNative?: boolean;
+  enableGoogle?: boolean;
+}
+
+const {
+  enableNative = true,
+  enableGoogle = true
+} = Astro.props;
 ---
-<script is:inline>
+<script is:inline define:vars={{ enableNative, enableGoogle }}>
 (function() {
   var STORAGE_KEY = "user-language";
   var CONSENT_COOKIE = "cookie-consent";
+
+  // Configuration from props
+  var CONFIG = {
+    enableNative: enableNative,
+    enableGoogle: enableGoogle
+  };
 
   var state = {
     currentLanguage: "en",
@@ -31,6 +51,7 @@
     googleInitialized: false,
     googleScriptRequested: false,
     pendingGoogleLanguage: null,
+    config: CONFIG,
   };
 
   window.__browserTranslation = state;
@@ -70,7 +91,8 @@
   // ============================================
 
   function hasTranslatorAPI() {
-    return typeof window !== "undefined" && "Translator" in window;
+    // Check if native is enabled via config AND browser supports it
+    return CONFIG.enableNative && typeof window !== "undefined" && "Translator" in window;
   }
 
   async function checkLanguageSupport(targetLang) {
@@ -120,6 +142,8 @@
   }
 
   function ensureGoogleTranslateScript() {
+    // Check if Google Translate is enabled via config
+    if (!CONFIG.enableGoogle) return;
     if (state.googleScriptRequested || state.googleInitialized) return;
     if (!hasFunctionalConsent()) return;
 
@@ -468,7 +492,7 @@
     }
 
     // Fall back to Google Translate SDK (requires functional consent)
-    if (hasFunctionalConsent()) {
+    if (CONFIG.enableGoogle && hasFunctionalConsent()) {
       state.pendingGoogleLanguage = targetLang;
       persistGoogleCookie(targetLang);
 
@@ -477,33 +501,21 @@
       } else {
         ensureGoogleTranslateScript();
       }
-    } else {
-      // No consent - dispatch event so UI can prompt user
+    } else if (CONFIG.enableGoogle && !hasFunctionalConsent()) {
+      // Google enabled but no consent - dispatch event so UI can prompt user
       window.dispatchEvent(new CustomEvent('translation-needs-consent', {
         detail: { language: targetLang }
       }));
     }
+    // If neither native nor Google is available/enabled, translation silently fails
   }
 
-  // Initialize on load if user has a saved preference
+  // Initialize - page always loads in English first
+  // Translation only happens when user explicitly changes language
   function init() {
-    var savedLang = getStoredLanguage();
-    if (savedLang && savedLang !== "en") {
-      // Wait for React hydration (client:visible components may take longer)
-      setTimeout(function() {
-        translatePage(savedLang);
-      }, 300);
-
-      // Do a second pass after more components have hydrated (for native only)
-      setTimeout(function() {
-        if (state.translationMethod === 'native' && state.translator) {
-          var newNodes = getTranslatableNodes();
-          if (newNodes.length > 0) {
-            translateNodesNative(newNodes);
-          }
-        }
-      }, 2000);
-    }
+    // Don't auto-translate on page load - let page render in English first
+    // User's saved preference will be applied when they interact with the dropdown
+    // This prevents the flicker/blocking that Google Translate causes
   }
 
   // Expose changeLanguage globally
@@ -523,12 +535,23 @@
 
   // Expose helpers for UI components
   window.translationNeedsConsent = function() {
-    // Returns true if translation will need Google (i.e., no native API)
+    // Returns true if translation will need Google (i.e., no native API available/enabled)
     return !hasTranslatorAPI();
   };
 
   window.getTranslationMethod = function() {
     return state.translationMethod;
+  };
+
+  window.getTranslationConfig = function() {
+    return CONFIG;
+  };
+
+  window.isTranslationAvailable = function() {
+    // Returns true if at least one translation method is enabled and available
+    var nativeAvailable = CONFIG.enableNative && typeof window !== "undefined" && "Translator" in window;
+    var googleAvailable = CONFIG.enableGoogle;
+    return nativeAvailable || googleAvailable;
   };
 
   window.hasFunctionalConsent = hasFunctionalConsent;

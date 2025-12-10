@@ -41,12 +41,15 @@ type ModalComponent = React.ComponentType<{ isOpen: boolean; onClose: () => void
 
 export default function LanguageDropdown() {
   const [open, setOpen] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState<Language>(getStoredLanguage);
+  // Always start with defaultLanguage to avoid hydration mismatch
+  // localStorage is read in useEffect after hydration
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(defaultLanguage);
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [ConsentModal, setConsentModal] = useState<ModalComponent | null>(null);
-  const [hasFunctionalConsent, setHasFunctionalConsent] = useState(hasFunctionalConsentFast);
+  const [hasFunctionalConsent, setHasFunctionalConsent] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  // Read from localStorage after hydration to avoid SSR mismatch
   useEffect(() => {
     setCurrentLanguage(getStoredLanguage());
     setHasFunctionalConsent(hasFunctionalConsentFast());
