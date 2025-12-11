@@ -7,11 +7,11 @@ import {
   sortByOrder,
 } from "@/utils/query";
 import TextHero from "@/layouts/TextHero.astro";
-import PortfolioShowcaseSection from "@/layouts/PortfolioShowcaseSection.astro";
 import { siteData } from "@/content/siteData";
 import { roots } from "@/utils/query/snippets";
 import CTASection from "@/layouts/CTASection.astro";
 import Video from "@/components/Video/Video.astro";
+import PortfolioShowcaseSection from "@/layouts/PortfolioShowcaseSection.astro";
 import GradientLayout from "@/layouts/GradientLayout.astro";
 
 const heroHeading = {
@@ -39,10 +39,10 @@ const heroDescription =
         }}
       />
 
-      <!-- Portfolio showcase - loads only when scrolled into view -->
-      <PortfolioShowcaseSection />
+    <!-- Under-hero portfolio showcase -->
+    <PortfolioShowcaseSection />
     </GradientLayout>
-   
+
     <ContentRenderer
       query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
       variant="CardVariant"

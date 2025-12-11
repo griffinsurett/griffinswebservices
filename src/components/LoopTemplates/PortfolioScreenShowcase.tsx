@@ -110,8 +110,11 @@ function ComputerScreen({
     viewportRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [isActive, autoScroll.resetPosition]);
 
-  // Check when image is ready
+  // Check when image is ready (must re-run after hydration when images actually render)
   useEffect(() => {
+    // Wait for hydration before checking for images
+    if (!isHydrated) return;
+
     const host = viewportRef.current;
     if (!host) return;
 
@@ -138,7 +141,7 @@ function ComputerScreen({
       imageEl.removeEventListener("load", handleReady);
       imageEl.removeEventListener("error", handleReady);
     };
-  }, [item, mediaEntry]);
+  }, [item, mediaEntry, isHydrated]);
 
   // Wait for content to stabilize before auto-scrolling
   useEffect(() => {

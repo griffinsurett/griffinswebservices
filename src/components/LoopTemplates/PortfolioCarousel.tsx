@@ -1,12 +1,11 @@
 // src/components/LoopTemplates/PortfolioCarousel.tsx
 import {
-  Children,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
-  type ReactNode,
 } from "react";
 import PortfolioItemComponent, {
   type PortfolioItemData,
@@ -16,8 +15,19 @@ import useCarouselAutoplay from "@/components/Carousels/useCarouselAutoplay";
 import { useSideDragNavigation } from "@/hooks/interactions/useSideDragNavigation";
 import { animationProps } from "@/utils/animationProps";
 
+interface PortfolioMediaEntry {
+  src: string;
+  srcSet?: string;
+  sizes?: string;
+  width?: number;
+  height?: number;
+  alt?: string;
+  sources?: { type?: string; srcSet: string; sizes?: string }[];
+}
+
 interface PortfolioCarouselProps {
   items?: PortfolioItemData[];
+  mediaEntries?: (PortfolioMediaEntry | undefined)[];
   defaultIndex?: number;
   autoplay?: boolean;
   autoAdvanceDelay?: number;
@@ -25,11 +35,11 @@ interface PortfolioCarouselProps {
   showDots?: boolean;
   drag?: boolean;
   className?: string;
-  children?: ReactNode;
 }
 
 export default function PortfolioCarousel({
   items = [],
+  mediaEntries: mediaEntriesProp = [],
   defaultIndex = 0,
   autoplay = true,
   autoAdvanceDelay = 5000,
@@ -37,20 +47,25 @@ export default function PortfolioCarousel({
   showDots = true,
   drag = false,
   className = "",
-  children,
 }: PortfolioCarouselProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(defaultIndex);
   const [containerW, setContainerW] = useState(0);
+  // Prevent images from rendering during SSR - only show after hydration
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const slides = useMemo(
     () => (Array.isArray(items) ? items : []),
     [items]
   );
 
-  const mediaChildren = useMemo(
-    () => Children.toArray(children ?? []),
-    [children]
+  const mediaEntries = useMemo(
+    () => (Array.isArray(mediaEntriesProp) ? mediaEntriesProp : []),
+    [mediaEntriesProp]
   );
 
   const ready = containerW > 0;
@@ -183,7 +198,7 @@ export default function PortfolioCarousel({
                 sideH={sideH}
                 tx={tx}
                 onSelect={setIndex}
-                mediaChild={mediaChildren[slideIndex]}
+                mediaEntry={isHydrated ? mediaEntries[slideIndex] : undefined}
               />
             ))}
 

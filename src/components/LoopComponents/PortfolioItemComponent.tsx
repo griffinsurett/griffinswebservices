@@ -1,7 +1,5 @@
 // src/components/LoopComponents/PortfolioItemComponent.tsx
 import {
-  isValidElement,
-  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -32,6 +30,16 @@ export interface PortfolioItemData {
   };
 }
 
+interface PortfolioMediaEntry {
+  src: string;
+  srcSet?: string;
+  sizes?: string;
+  width?: number;
+  height?: number;
+  alt?: string;
+  sources?: { type?: string; srcSet: string; sizes?: string }[];
+}
+
 interface PortfolioItemComponentProps {
   item: PortfolioItemData;
   i: number;
@@ -43,7 +51,7 @@ interface PortfolioItemComponentProps {
   sideH: number;
   tx: number;
   onSelect: (index: number) => void;
-  mediaChild?: ReactNode;
+  mediaEntry?: PortfolioMediaEntry;
 }
 
 const AUTO_SCROLL_START_DELAY_MS = 1500;
@@ -68,7 +76,7 @@ export default function PortfolioItemComponent({
   sideH,
   tx,
   onSelect,
-  mediaChild,
+  mediaEntry,
 }: PortfolioItemComponentProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const diff = i - activeIndex;
@@ -379,16 +387,75 @@ export default function PortfolioItemComponent({
   };
 
   const imageSrc = getImageSrcForPosition();
-  const altText = item.alt || item.title || "Project preview";
-  const providedMedia = useMemo(() => {
-    if (!mediaChild) return undefined;
-    if (!isValidElement(mediaChild)) return mediaChild;
-    const props = mediaChild.props as {
-      ["data-portfolio-placeholder"]?: unknown;
-    };
-    if (props?.["data-portfolio-placeholder"]) return undefined;
-    return mediaChild;
-  }, [mediaChild]);
+  const altText = mediaEntry?.alt || item.alt || item.title || "Project preview";
+
+  // Render optimized image from mediaEntry (client-side only, passed after hydration)
+  const renderMedia = () => {
+    // If mediaEntry provided, use picture element with srcset for optimized loading
+    if (mediaEntry?.sources?.length) {
+      return (
+        <picture>
+          {mediaEntry.sources.map((source, idx) => (
+            <source
+              key={`source-${idx}`}
+              srcSet={source.srcSet}
+              sizes={source.sizes ?? mediaEntry.sizes}
+              type={source.type}
+            />
+          ))}
+          <img
+            src={mediaEntry.src}
+            srcSet={mediaEntry.srcSet}
+            sizes={mediaEntry.sizes}
+            alt={altText}
+            width={mediaEntry.width}
+            height={mediaEntry.height}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+            className="block w-full h-auto min-h-full select-none object-cover object-top"
+          />
+        </picture>
+      );
+    }
+
+    if (mediaEntry?.src) {
+      return (
+        <img
+          src={mediaEntry.src}
+          srcSet={mediaEntry.srcSet}
+          sizes={mediaEntry.sizes}
+          alt={altText}
+          width={mediaEntry.width}
+          height={mediaEntry.height}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          className="block w-full h-auto min-h-full select-none object-cover object-top"
+        />
+      );
+    }
+
+    // Fallback to item's direct image sources
+    if (imageSrc) {
+      return (
+        <img
+          src={imageSrc}
+          alt={altText}
+          loading={i === 0 ? "eager" : "lazy"}
+          draggable={false}
+          className="block w-full h-auto min-h-full select-none"
+          style={getImageStyle()}
+          decoding="async"
+        />
+      );
+    }
+
+    // No image available - show placeholder
+    return (
+      <div className="flex h-full w-full bg-gradient-to-b from-bg2 via-bg to-bg/80" />
+    );
+  };
 
   useEffect(() => {
     if (!isActive) {
@@ -422,7 +489,7 @@ export default function PortfolioItemComponent({
       imageEl.removeEventListener("load", markReady);
       imageEl.removeEventListener("error", markReady);
     };
-  }, [isActive, providedMedia, imageSrc]);
+  }, [isActive, mediaEntry, imageSrc]);
 
   return (
     <div
@@ -442,21 +509,7 @@ export default function PortfolioItemComponent({
         aria-hidden={isActive ? "false" : "true"}
         tabIndex={isActive ? 0 : -1}
       >
-        {providedMedia ? (
-          providedMedia
-        ) : imageSrc ? (
-          <img
-            src={imageSrc}
-            alt={altText}
-            loading={i === 0 ? "eager" : "lazy"}
-            draggable={false}
-            className="block w-full h-auto min-h-full select-none"
-            style={getImageStyle()}
-            decoding="async"
-          />
-        ) : (
-          <div className="flex h-full w-full bg-gradient-to-b from-bg2 via-bg to-bg/80" />
-        )}
+        {renderMedia()}
       </figure>
 
       {import.meta.env.DEV && isActive && (
