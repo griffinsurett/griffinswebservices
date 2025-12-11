@@ -22,7 +22,7 @@ const {
   items = [],
   className = "",
   id,
-  loadingStrategy = "static-preview",
+  loadingStrategy = "client-only",
 } = Astro.props as Props;
 
 const safeItems = toArray(items);

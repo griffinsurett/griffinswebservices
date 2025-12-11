@@ -45,21 +45,6 @@ const primaryCTA = {
   rightIcon:
     incomingPrimaryCTA.rightIcon ?? incomingPrimaryCTA.icon ?? "lu:arrow-right",
 };
-
-const hasHeroSlot = Astro.slots.has("default");
-
-let heroProjects: any[] = [];
-if (!hasHeroSlot) {
-  const heroProjectsResult = await query("projects")
-    .orderBy(sortByOrder())
-    .limit(3)
-    .get();
-
-  heroProjects = heroProjectsResult.entries.map((entry, index) => ({
-    ...entry.data,
-    slug: entry.slug ?? entry.id ?? `hero-project-${index}`,
-  }));
-}
 ---
 
 <section
