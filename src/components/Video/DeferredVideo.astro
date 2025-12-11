@@ -1,0 +1,345 @@
+---
+// src/components/Video/DeferredVideo.astro
+/**
+ * DeferredVideo Component
+ *
+ * Displays an Astro-optimized thumbnail immediately, while deferring the
+ * actual video loading (and playback) to the client. Greatly reduces LCP
+ * impact from heavy MP4/MOV files.
+ */
+import { getImage } from "astro:assets";
+import type { ImageInput } from "@/content/schema";
+import { resolveImageMetadata, getImageAlt } from "@/utils/images";
+import { ensureVideoThumbnail } from "@/utils/videoThumbnails";
+
+type VideoSource = {
+  src: string;
+  type?: string;
+  media?: string;
+};
+
+interface Props extends Record<string, any> {
+  /** Primary video source string ("/video.mp4") */
+  src?: string;
+  /** Additional <source> entries */
+  sources?: VideoSource[];
+  /** Optional manual poster */
+  poster?: ImageInput | string;
+  /** Alt text for the generated poster */
+  alt?: string;
+  /** Outer wrapper utility classes */
+  wrapperClass?: string;
+  /** Aspect ratio utility (e.g., "aspect-video") */
+  aspectClass?: string;
+  /** Custom class for the poster picture */
+  posterClass?: string;
+  /** Custom class for the <video> element */
+  videoClass?: string;
+  /** Display a play icon overlay */
+  showPlayButton?: boolean;
+  /** Disable lazy loading (load immediately) */
+  lazy?: boolean;
+  /** Poster responsive widths */
+  posterWidths?: number[];
+  /** Poster sizes attribute */
+  posterSizes?: string;
+  /** Seconds into the video to sample (default: 0) */
+  timecodeSeconds?: number;
+}
+
+const {
+  src: videoSrc,
+  sources: videoSources = [],
+  poster,
+  alt = "Video preview",
+  wrapperClass = "",
+  aspectClass = "aspect-video",
+  posterClass = "",
+  videoClass = "",
+  showPlayButton = true,
+  lazy = true,
+  muted = true,
+  autoplay = false,
+  controls = true,
+  loop = false,
+  playsinline = true,
+  preload,
+  posterWidths = [320, 640, 960, 1280, 1600],
+  posterSizes = "(max-width: 640px) 100vw, (max-width: 1024px) 85vw, 960px",
+  timecodeSeconds = 0,
+  ...rest
+} = Astro.props as Props;
+
+const normalizedSources: VideoSource[] = [];
+if (typeof videoSrc === "string" && videoSrc.length > 0) {
+  normalizedSources.push({ src: videoSrc });
+}
+if (Array.isArray(videoSources)) {
+  for (const source of videoSources) {
+    if (source && typeof source.src === "string" && source.src.length > 0) {
+      normalizedSources.push(source);
+    }
+  }
+}
+
+if (!normalizedSources.length) {
+  throw new Error("[DeferredVideo] Missing video source. Provide `src` or `sources`.");
+}
+
+const primarySource = normalizedSources[0];
+const posterAlt = getImageAlt(poster as ImageInput, alt);
+
+const POSTER_FORMATS = [
+  { format: "avif", quality: 50 },
+  { format: "webp", quality: 70 },
+];
+
+type PosterPicture = {
+  img: {
+    src: string;
+    width: number;
+    height: number;
+    srcSet: string;
+    sizes: string;
+  };
+  sources: {
+    type: string;
+    srcSet: string;
+    sizes: string;
+  }[];
+  placeholderSrc?: string;
+  alt: string;
+};
+
+type PosterSource = ImageInput | URL | string;
+type PosterDimensions = { width: number; height: number } | undefined;
+
+function normalizePosterSource(source: PosterSource): ImageInput | string {
+  if (source instanceof URL) {
+    return source.href;
+  }
+  return source;
+}
+
+async function buildPosterPicture(
+  source: PosterSource,
+  widths: number[],
+  sizes: string,
+  altText: string,
+  dimensions?: PosterDimensions
+): Promise<PosterPicture> {
+  const normalizedSource = normalizePosterSource(source);
+  const aspectRatio =
+    dimensions && dimensions.width > 0 ? dimensions.height / dimensions.width : undefined;
+
+  const optimizedByFormat = await Promise.all(
+    POSTER_FORMATS.map(async ({ format, quality }) => {
+      const images = await Promise.all(
+        widths.map((width) =>
+          getImage({
+            src: normalizedSource,
+            width,
+            height: aspectRatio ? Math.round(width * aspectRatio) : undefined,
+            format,
+            quality,
+          })
+        )
+      );
+      return { format, images };
+    })
+  );
+
+  const fallback = optimizedByFormat[optimizedByFormat.length - 1];
+  const fallbackSrcSet = fallback.images
+    .map((img, idx) => `${img.src} ${widths[idx]}w`)
+    .join(", ");
+  const defaultImage = fallback.images[fallback.images.length - 1];
+
+  const placeholder = await getImage({
+    src: normalizedSource,
+    width: 32,
+    height: aspectRatio ? Math.round(32 * aspectRatio) : undefined,
+    format: "webp",
+    quality: 30,
+  });
+
+  return {
+    alt: altText,
+    img: {
+      src: defaultImage.src,
+      width: defaultImage.attributes.width as number,
+      height: defaultImage.attributes.height as number,
+      srcSet: fallbackSrcSet,
+      sizes,
+    },
+    sources: optimizedByFormat
+      .filter((entry) => entry !== fallback)
+      .map((entry) => ({
+        type: `image/${entry.format}`,
+        srcSet: entry.images
+          .map((img, idx) => `${img.src} ${widths[idx]}w`)
+          .join(", "),
+        sizes,
+      })),
+    placeholderSrc: placeholder.src,
+  };
+}
+
+let posterPicture: PosterPicture | null = null;
+let manualPosterUrl: string | undefined = undefined;
+
+const metadataPoster = resolveImageMetadata(poster as ImageInput);
+if (metadataPoster) {
+  posterPicture = await buildPosterPicture(
+    metadataPoster,
+    posterWidths,
+    posterSizes,
+    posterAlt,
+    { width: metadataPoster.width, height: metadataPoster.height }
+  );
+} else if (typeof poster === "string" && poster.length > 0) {
+  manualPosterUrl = poster;
+}
+
+if (!posterPicture && !manualPosterUrl) {
+  const frame = await ensureVideoThumbnail(primarySource.src, {
+    timecodeSeconds,
+  });
+  posterPicture = await buildPosterPicture(
+    frame.filePath,
+    posterWidths,
+    posterSizes,
+    posterAlt,
+    { width: frame.width, height: frame.height }
+  );
+}
+
+const videoPoster = posterPicture?.img.src ?? manualPosterUrl;
+const dataAttrs = {
+  "data-video-shell": "true",
+};
+
+const finalPreload =
+  preload ?? (lazy ? "metadata" : undefined);
+---
+
+<figure
+  class={`deferred-video ${wrapperClass}`.trim()}
+  {...dataAttrs}
+>
+  <div class={`relative overflow-hidden rounded-3xl bg-bg2/40 border border-white/5 ${aspectClass}`.trim()}>
+    {posterPicture && (
+      <div
+        class={`absolute inset-0 z-10 poster ${posterClass}`.trim()}
+        data-video-poster
+        style={posterPicture.placeholderSrc ? `background-image: url(${posterPicture.placeholderSrc});` : undefined}
+      >
+        <picture>
+          {posterPicture.sources.map((source) => (
+            <source srcset={source.srcSet} sizes={source.sizes} type={source.type} />
+          ))}
+          <img
+            src={posterPicture.img.src}
+            srcset={posterPicture.img.srcSet}
+            sizes={posterPicture.img.sizes}
+            alt={posterPicture.alt}
+            width={posterPicture.img.width}
+            height={posterPicture.img.height}
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-cover"
+          />
+        </picture>
+
+        {showPlayButton && (
+          <button
+            type="button"
+            class="play-button"
+            aria-label="Play video"
+            data-video-trigger
+          >
+            <span class="sr-only">Play video</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="w-12 h-12 text-white drop-shadow-lg">
+              <path
+                d="M8 5v14l11-7z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+        )}
+      </div>
+    )}
+
+    <video
+      class={`h-full w-full object-cover ${videoClass}`.trim()}
+      muted={muted}
+      autoplay={autoplay}
+      controls={controls}
+      loop={loop}
+      playsinline={playsinline}
+      poster={videoPoster}
+      preload={finalPreload}
+      data-video-src={lazy ? primarySource.src : undefined}
+      {...rest}
+    >
+      {normalizedSources.map((source) => (
+        <source
+          src={!lazy ? source.src : undefined}
+          data-video-src={lazy ? source.src : undefined}
+          type={source.type}
+          media={source.media}
+        />
+      ))}
+
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</figure>
+
+<script type="module" is:inline>
+  import { setupLazyVideo } from "@/components/Video/videoLazyLoader";
+  const root = document.currentScript?.closest("[data-video-shell]");
+  if (root) {
+    setupLazyVideo(root);
+  }
+</script>
+
+<style>
+  .deferred-video {
+    position: relative;
+    width: 100%;
+  }
+
+  .deferred-video .poster {
+    display: grid;
+    place-items: center;
+    transition: opacity 350ms ease, visibility 350ms ease;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .deferred-video[data-video-loaded="true"] .poster {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .deferred-video .play-button {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    border: 0;
+    border-radius: 9999px;
+    padding: 1rem;
+    background: rgba(15, 15, 15, 0.55);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    transition: transform 200ms ease, background 200ms ease;
+  }
+
+  .deferred-video .play-button:hover,
+  .deferred-video .play-button:focus-visible {
+    transform: translate(-50%, -50%) scale(1.05);
+    background: rgba(15, 15, 15, 0.7);
+  }
+</style>

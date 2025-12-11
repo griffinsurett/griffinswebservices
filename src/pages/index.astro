@@ -12,7 +12,7 @@ import { siteData } from "@/content/siteData";
 import { roots } from "@/utils/query/snippets";
 import CTASection from "@/layouts/CTASection.astro";
 import SpeedScrollVideo from "/speed-site.mov"
-import speedScrollImage from "@/assets/speed-scroll.png";
+import DeferredVideo from "@/components/Video/DeferredVideo.astro";
 
 const heroHeading = {
   before: "Launch a website that works.",
@@ -23,12 +23,6 @@ const heroHeading = {
 const heroDescription =
   "We're a US-based web development company creating fast, engaging websites built to grow your business. We handle hosting, maintenance, and security — and provide full SEO services to help you get found and stay ahead.";
 
-const speedScrollPoster = await getImage({
-  src: speedScrollImage,
-  format: "webp",
-  width: 1920,
-  quality: 80,
-});
 ---
 
 <BaseLayout title="Home" description={siteData.description}>
@@ -78,16 +72,17 @@ const speedScrollPoster = await getImage({
       contentType="text"
       borderClass=""
     >
-      <video
-        data-animate="fade-in"
+      <DeferredVideo
         src={SpeedScrollVideo}
-        poster={speedScrollPoster.src}
+        alt="Speed site walkthrough"
+        data-animate="fade-in"
+        wrapperClass="h-full w-full"
+        aspectClass="h-full w-full"
+        videoClass="block w-full h-full max-w-full object-cover"
         muted
         loop
         controls
         playsinline
-        class="block w-full h-full max-w-full object-cover"
-        title="Speed site walkthrough"
       />
     </ContentRenderer>
 
