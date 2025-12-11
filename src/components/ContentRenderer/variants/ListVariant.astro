@@ -47,7 +47,7 @@ const safeItems = toArray(items);
   {safeItems.length > 0 && (
     <nav class="flex flex-col gap-2 list-none">
       {safeItems.map((item) => (
-        <Button client:visible href={item.url} className="text-text" variant="link">
+        <Button href={item.url} className="text-text" variant="link">
           {item.title}
         </Button>
       ))}
@@ -59,7 +59,7 @@ const safeItems = toArray(items);
     (ctaText || title || collectionTitle) &&
     (ctaHref || collectionUrl) && (
     <div class="mt-12">
-      <Button client:visible href={ctaHref ?? collectionUrl} variant="tertiary">
+      <Button href={ctaHref ?? collectionUrl} variant="tertiary">
         {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
         <svg
           class="ml-2 w-5 h-5"

@@ -2,7 +2,7 @@
 // PortfolioScreenVariant.astro
 import { getImage } from "astro:assets";
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import PortfolioScreenShowcase from "@/components/LoopTemplates/PortfolioScreenShowcase/PortfolioScreenShowcase";
+import PortfolioScreenShowcase from "@/components/LoopTemplates/PortfolioScreenShowcase";
 import { getImageAlt, resolveImageMetadata, generateCroppedPreview } from "@/utils/images";
 import { toArray } from "@/utils/array";
 
@@ -13,10 +13,19 @@ import { toArray } from "@/utils/array";
  * - "responsive": Desktop uses static-preview, mobile uses client-only (uses media queries to prevent mobile loading)
  */
 type LoadingStrategy = "static-preview" | "client-only" | "responsive";
+type HydrationMode = "visible" | "idle" | "load" | "media";
 
 interface Props extends BaseVariantProps {
   /** How to load images - "static-preview" for LCP, "client-only" for simple, "responsive" for auto-switch */
   loadingStrategy?: LoadingStrategy;
+  /**
+   * Controls when the interactive React carousel hydrates.
+   * Default "visible" keeps existing behavior, but you can opt into "idle" to
+   * delay hydration until after LCP, or "media" to hydrate only on matching screens.
+   */
+  hydrateOn?: HydrationMode;
+  /** Media query string for hydrateOn="media" */
+  hydrateMedia?: string;
 }
 
 const {
@@ -24,6 +33,8 @@ const {
   className = "",
   id,
   loadingStrategy = "responsive",
+  hydrateOn = "visible",
+  hydrateMedia = "(min-width: 768px)",
 } = Astro.props as Props;
 
 // For responsive mode, we generate static preview but use media queries to only load on desktop
@@ -251,6 +262,14 @@ const firstPreview = useStaticPreviewMode ? processedItems[0]?.croppedPreview : 
 const firstItem = portfolioItems[0];
 const hasPreview = useStaticPreviewMode && firstPreview?.src;
 const staticContainerId = hasPreview ? "portfolio-static-first" : undefined;
+
+const showcaseProps = {
+  items: portfolioItems,
+  mediaEntries: showcaseMedia,
+  className: "w-full mx-auto",
+  staticContainerId,
+  loadingStrategy,
+};
 ---
 
 <section
@@ -260,14 +279,15 @@ const staticContainerId = hasPreview ? "portfolio-static-first" : undefined;
   <div class="relative w-full max-w-4xl mx-auto h-[420px] sm:h-[500px]">
     {/* React carousel */}
     <div class={hasPreview ? "absolute inset-0 z-0" : "relative h-full"}>
-      <PortfolioScreenShowcase
-        client:visible
-        items={portfolioItems}
-        mediaEntries={showcaseMedia}
-        className="w-full mx-auto"
-        staticContainerId={staticContainerId}
-        loadingStrategy={loadingStrategy}
-      />
+      {hydrateOn === "idle" ? (
+        <PortfolioScreenShowcase client:idle {...showcaseProps} />
+      ) : hydrateOn === "load" ? (
+        <PortfolioScreenShowcase client:load {...showcaseProps} />
+      ) : hydrateOn === "media" ? (
+        <PortfolioScreenShowcase client:media={hydrateMedia} {...showcaseProps} />
+      ) : (
+        <PortfolioScreenShowcase client:visible {...showcaseProps} />
+      )}
     </div>
 
     {/* Static preview - only rendered on desktop for responsive mode */}
