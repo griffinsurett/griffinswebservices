@@ -1,0 +1,42 @@
+---
+// src/layouts/PortfolioShowcaseSection.astro
+// Full-viewport portfolio showcase section - loads only when scrolled into view
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { query } from "@/utils/query";
+import type { HeadingContent } from "@/content/schema";
+
+export interface Props {
+  heading?: HeadingContent;
+  description?: string;
+  title?: string;
+  className?: string;
+  id?: string;
+}
+
+const {
+  className = "",
+  id = "portfolio-showcase",
+} = Astro.props as Props;
+---
+
+<section
+  id={id}
+  class={`min-h-screen flex items-center justify-center relative overflow-hidden ${className}`}
+>
+
+  <div class="relative z-10 inner-section py-16 lg:py-20">
+    <div class="lg:flex lg:flex-row lg:items-center lg:gap-12 xl:gap-16">
+
+      <!-- Right: Portfolio showcase - only hydrates when visible -->
+      <div class="flex-1 w-full">
+        <ContentRenderer
+          query={query("projects")}
+          variant="PortfolioScreenVariant"
+          hydrateOn="visible"
+          loadingStrategy="client-only"
+        />
+      </div>
+    </div>
+  </div>
+</section>

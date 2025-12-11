@@ -20,21 +20,16 @@ interface PortfolioMediaEntry {
   loading?: "eager" | "lazy";
   decoding?: "sync" | "async";
   fetchPriority?: "high" | "low" | "auto";
-  desktopEager?: boolean;
 }
-
-type LoadingStrategy = "static-preview" | "client-only" | "responsive";
 
 interface PortfolioScreenShowcaseProps {
   items?: PortfolioItemData[];
   className?: string;
   mediaEntries?: (PortfolioMediaEntry | undefined)[];
-  /** ID of the static placeholder to remove on hydration */
+  /** @deprecated No longer used - kept for backwards compatibility */
   staticContainerId?: string;
-  /** ID of this carousel's container to reveal on hydration */
-  carouselContainerId?: string;
-  /** Loading strategy - affects when images start loading */
-  loadingStrategy?: LoadingStrategy;
+  /** @deprecated No longer used - kept for backwards compatibility */
+  loadingStrategy?: string;
 }
 
 interface ScreenProps {
@@ -43,13 +38,7 @@ interface ScreenProps {
   totalSlides: number;
   activeIndex: number;
   onCycleComplete: () => void;
-  autoplayEnabled?: boolean;
   isActive: boolean;
-  shouldUseDesktopEager: boolean;
-  /** Called when the image finishes loading (for first slide swap) */
-  onImageLoad?: () => void;
-  /** Delay rendering the image until this becomes true (prevents double-loading with preview) */
-  deferImageRender?: boolean;
 }
 
 const AUTO_SCROLL_START_DELAY_MS = 700;
@@ -63,55 +52,17 @@ const CONTENT_READY_TIMEOUT_MS = 2200;
 const BETWEEN_SLIDE_PAUSE_MS = 450;
 const SLIDE_TRANSITION_DURATION_MS = 750;
 
-function useDesktopEagerPreference() {
-  const [isDesktop, setIsDesktop] = useState<boolean | null>(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia === "undefined") {
-      return null;
-    }
-    return window.matchMedia("(min-width: 1024px)").matches;
-  });
-
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia === "undefined") {
-      return;
-    }
-    const matcher = window.matchMedia("(min-width: 1024px)");
-    const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
-      setIsDesktop(event.matches);
-    };
-    handleChange(matcher);
-    if (typeof matcher.addEventListener === "function") {
-      matcher.addEventListener("change", handleChange);
-      return () => matcher.removeEventListener("change", handleChange);
-    }
-    matcher.addListener(handleChange);
-    return () => matcher.removeListener(handleChange);
-  }, []);
-
-  return isDesktop;
-}
-
 function ComputerScreen({
   item,
   mediaEntry,
   totalSlides,
-  activeIndex,
   onCycleComplete,
-  autoplayEnabled = true,
   isActive,
-  shouldUseDesktopEager,
-  onImageLoad,
-  deferImageRender = false,
 }: ScreenProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [mediaReady, setMediaReady] = useState(false);
-  const hasCalledOnLoadRef = useRef(false);
   const [contentReady, setContentReady] = useState(false);
-  const [scrollDurationMs, setScrollDurationMs] = useState(
-    AUTO_SCROLL_DEFAULT_CYCLE_MS,
-  );
-  // Only track scroll progress in dev mode
-  const scrollProgressRef = useRef(0);
+  const [scrollDurationMs, setScrollDurationMs] = useState(AUTO_SCROLL_DEFAULT_CYCLE_MS);
 
   const resolveAutoScrollSpeed = useCallback((host: HTMLElement) => {
     const maxScrollable = Math.max(0, host.scrollHeight - host.clientHeight);
@@ -140,7 +91,7 @@ function ComputerScreen({
 
   const autoScroll = useEngagementAutoScroll({
     ref: viewportRef,
-    active: autoplayEnabled && contentReady,
+    active: isActive && contentReady,
     speed: resolveAutoScrollSpeed,
     loop: false,
     startDelay: AUTO_SCROLL_START_DELAY_MS,
@@ -150,18 +101,15 @@ function ComputerScreen({
     resetOnInactive: false,
   });
 
+  // Reset scroll position when becoming active
   useEffect(() => {
-    if (!autoplayEnabled) return;
+    if (!isActive) return;
     autoScroll.resetPosition(0);
     viewportRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [autoplayEnabled, autoScroll.resetPosition]);
-  useEffect(() => {
-    // Don't check for image if rendering is deferred - wait until image is actually rendered
-    if (deferImageRender) {
-      setMediaReady(false);
-      return;
-    }
+  }, [isActive, autoScroll.resetPosition]);
 
+  // Check when image is ready
+  useEffect(() => {
     const host = viewportRef.current;
     if (!host) return;
 
@@ -170,7 +118,6 @@ function ComputerScreen({
       (host.querySelector("img") as HTMLImageElement | null);
 
     if (!imageEl) {
-      // No image element yet, keep waiting
       setMediaReady(false);
       return;
     }
@@ -189,16 +136,9 @@ function ComputerScreen({
       imageEl.removeEventListener("load", handleReady);
       imageEl.removeEventListener("error", handleReady);
     };
-  }, [item, mediaEntry, deferImageRender]);
+  }, [item, mediaEntry]);
 
-  // Notify parent when image loads (for swap from preview to full carousel)
-  useEffect(() => {
-    if (mediaReady && onImageLoad && !hasCalledOnLoadRef.current) {
-      hasCalledOnLoadRef.current = true;
-      onImageLoad();
-    }
-  }, [mediaReady, onImageLoad]);
-
+  // Wait for content to stabilize before auto-scrolling
   useEffect(() => {
     if (!mediaReady) {
       setContentReady(false);
@@ -284,9 +224,7 @@ function ComputerScreen({
       markReady();
     }
 
-    const timeoutId = window.setTimeout(() => {
-      markReady();
-    }, CONTENT_READY_TIMEOUT_MS);
+    const timeoutId = window.setTimeout(markReady, CONTENT_READY_TIMEOUT_MS);
 
     return () => {
       stabilityCleanup?.();
@@ -294,8 +232,9 @@ function ComputerScreen({
     };
   }, [mediaReady]);
 
+  // Measure scroll duration when content is ready
   useEffect(() => {
-    if (!contentReady || !autoplayEnabled) {
+    if (!contentReady || !isActive) {
       setScrollDurationMs(AUTO_SCROLL_DEFAULT_CYCLE_MS);
       return;
     }
@@ -314,74 +253,24 @@ function ComputerScreen({
     observer?.observe(host);
 
     return () => observer?.disconnect();
-  }, [contentReady, measureScrollDuration]);
+  }, [contentReady, isActive, measureScrollDuration]);
 
+  // Trigger slide advance after scroll completes
   useEffect(() => {
-    if (!contentReady || !autoplayEnabled || totalSlides <= 1 || autoScroll.paused) return;
+    if (!contentReady || !isActive || totalSlides <= 1 || autoScroll.paused) return;
     const totalDuration =
       AUTO_SCROLL_START_DELAY_MS + scrollDurationMs + BETWEEN_SLIDE_PAUSE_MS;
     const timer = window.setTimeout(() => onCycleComplete(), totalDuration);
     return () => window.clearTimeout(timer);
-  }, [
-    autoplayEnabled,
-    contentReady,
-    onCycleComplete,
-    scrollDurationMs,
-    totalSlides,
-    autoScroll.paused,
-  ]);
-
-  // Only track scroll progress in dev mode to avoid continuous RAF in production
-  useEffect(() => {
-    if (!import.meta.env.DEV) return;
-    if (!contentReady || !isActive) {
-      scrollProgressRef.current = 0;
-      return;
-    }
-
-    const host = viewportRef.current;
-    if (!host) return;
-
-    const updateProgress = () => {
-      const max = Math.max(0, host.scrollHeight - host.clientHeight);
-      const pct = max > 0 ? (host.scrollTop / max) * 100 : 0;
-      scrollProgressRef.current = Math.round(pct);
-    };
-
-    host.addEventListener("scroll", updateProgress, { passive: true });
-    updateProgress();
-
-    return () => {
-      host.removeEventListener("scroll", updateProgress);
-    };
-  }, [contentReady, isActive]);
+  }, [isActive, contentReady, onCycleComplete, scrollDurationMs, totalSlides, autoScroll.paused]);
 
   const fallbackSrc =
     getImageSrc(item.featuredImage) ||
     getImageSrc(item.bannerImage) ||
     getImageSrc(item.image) ||
     "";
-  const wantsDesktopEager =
-    Boolean(mediaEntry?.desktopEager && shouldUseDesktopEager);
-  const resolvedLoading = wantsDesktopEager
-    ? "eager"
-    : mediaEntry?.loading ?? "lazy";
-  // Use the fetchPriority from mediaEntry directly - Astro sets "low" for first slide
-  // to ensure full image loads gently behind the preview without affecting LCP
-  const resolvedFetchPriority = wantsDesktopEager
-    ? "high"
-    : mediaEntry?.fetchPriority ?? "low";
 
   const renderMedia = () => {
-    // Don't render image yet if deferred - prevents double-loading with static preview
-    if (deferImageRender) {
-      return (
-        <div className="flex h-full w-full items-center justify-center bg-black/40">
-          {/* Placeholder while waiting for preview to be viewed */}
-        </div>
-      );
-    }
-
     if (mediaEntry?.sources?.length) {
       return (
         <picture>
@@ -400,15 +289,16 @@ function ComputerScreen({
             alt={mediaEntry.alt || item.alt || item.title || "Project preview"}
             width={mediaEntry.width}
             height={mediaEntry.height}
-            loading={resolvedLoading}
-            decoding={mediaEntry.decoding ?? "async"}
-            fetchPriority={resolvedFetchPriority}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="auto"
             draggable={false}
             className="block h-auto min-h-full w-full select-none object-cover object-top"
           />
         </picture>
       );
     }
+
     if (mediaEntry?.src) {
       return (
         <img
@@ -418,14 +308,15 @@ function ComputerScreen({
           alt={mediaEntry.alt || item.alt || item.title || "Project preview"}
           width={mediaEntry.width}
           height={mediaEntry.height}
-          loading={resolvedLoading}
-          decoding={mediaEntry.decoding ?? "async"}
-          fetchPriority={resolvedFetchPriority}
+          loading="lazy"
+          decoding="async"
+          fetchPriority="auto"
           draggable={false}
           className="block h-auto min-h-full w-full select-none object-cover object-top"
         />
       );
     }
+
     if (!fallbackSrc) {
       return (
         <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-bg2 via-bg to-bg/80 text-white/30">
@@ -438,11 +329,11 @@ function ComputerScreen({
       <img
         src={fallbackSrc}
         alt={item.alt || item.title || "Project preview"}
-        loading={wantsDesktopEager ? "eager" : "lazy"}
+        loading="lazy"
+        decoding="async"
+        fetchPriority="auto"
         draggable={false}
         className="block h-auto min-h-full w-full select-none object-cover object-top"
-        decoding="async"
-        fetchPriority={wantsDesktopEager ? "high" : "auto"}
       />
     );
   };
@@ -466,16 +357,6 @@ function ComputerScreen({
         >
           {renderMedia()}
         </figure>
-        {import.meta.env.DEV && isActive && (
-          <div className="absolute right-3 top-3 z-50 space-y-1 rounded-lg border border-white/10 bg-zinc-900/95 p-3 text-xs text-white/90 opacity-80 shadow-lg">
-            <div>Slide {activeIndex + 1} / {totalSlides}</div>
-            <div>Progress: {scrollProgressRef.current}%</div>
-            <div>In View: {autoScroll.inView ? "✅" : "❌"}</div>
-            <div>Paused: {autoScroll.paused ? "✅" : "❌"}</div>
-            <div>Engaged: {autoScroll.engaged ? "✅" : "❌"}</div>
-            <div>Resume Pending: {autoScroll.resumeScheduled ? "✅" : "❌"}</div>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -485,8 +366,6 @@ export default function PortfolioScreenShowcase({
   items = [],
   className = "",
   mediaEntries: mediaEntriesProp = [],
-  staticContainerId,
-  loadingStrategy = "static-preview",
 }: PortfolioScreenShowcaseProps) {
   const slides = useMemo(() => (Array.isArray(items) ? items : []), [items]);
   const mediaEntries = useMemo(
@@ -498,107 +377,6 @@ export default function PortfolioScreenShowcase({
   const [transitionStage, setTransitionStage] = useState<"idle" | "pre" | "animating">("idle");
   const transitionTimerRef = useRef<number | null>(null);
   const transitionFrameRef = useRef<number | null>(null);
-  const preferDesktopEager = useDesktopEagerPreference();
-
-  // Determine effective loading behavior:
-  // - "client-only": always load client-side immediately
-  // - "static-preview": always wait for preview, defer full image
-  // - "responsive": desktop uses static-preview behavior, mobile uses client-only
-  const isClientOnly = loadingStrategy === "client-only" ||
-    (loadingStrategy === "responsive" && preferDesktopEager === false);
-
-  // Track when the first full image has loaded and we can swap from preview
-  // For client-only mode, we consider it already loaded (no preview to swap)
-  const [firstImageLoaded, setFirstImageLoaded] = useState(false);
-  const hasSwappedRef = useRef(false);
-
-  // Defer first image render until preview has had time to display
-  // For client-only mode, load immediately (no preview to wait for)
-  const [shouldLoadFirstImage, setShouldLoadFirstImage] = useState(false);
-
-  // Sync state when isClientOnly changes (e.g., responsive mode detecting screen size)
-  useEffect(() => {
-    if (isClientOnly) {
-      setFirstImageLoaded(true);
-      hasSwappedRef.current = true;
-      setShouldLoadFirstImage(true);
-    } else {
-      setFirstImageLoaded(false);
-      hasSwappedRef.current = false;
-      setShouldLoadFirstImage(false);
-    }
-  }, [isClientOnly]);
-
-  // Wait for the page to be fully idle before loading the full carousel image.
-  // Only applies to static-preview mode - client-only loads immediately.
-  useEffect(() => {
-    // Client-only mode: load immediately
-    if (isClientOnly) {
-      setShouldLoadFirstImage(true);
-      return;
-    }
-
-    if (!staticContainerId) {
-      // No preview to wait for - load immediately
-      setShouldLoadFirstImage(true);
-      return;
-    }
-
-    // Use requestIdleCallback to wait until browser is idle, with a generous timeout
-    // This ensures LCP (preview) is fully complete before we start the large full image
-    const IDLE_TIMEOUT_MS = 4000; // Max wait before starting anyway
-    const MIN_DELAY_MS = 1500; // Minimum delay to ensure preview is painted and LCP measured
-
-    let cancelled = false;
-
-    const startLoading = () => {
-      if (!cancelled) {
-        setShouldLoadFirstImage(true);
-      }
-    };
-
-    // Always wait at least MIN_DELAY_MS to ensure preview is painted
-    const minDelayTimer = setTimeout(() => {
-      if ("requestIdleCallback" in window) {
-        // Wait for browser idle after minimum delay
-        (window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback(
-          startLoading,
-          { timeout: IDLE_TIMEOUT_MS - MIN_DELAY_MS }
-        );
-      } else {
-        // Fallback for Safari - just use the timeout
-        setTimeout(startLoading, 500);
-      }
-    }, MIN_DELAY_MS);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(minDelayTimer);
-    };
-  }, [staticContainerId, isClientOnly]);
-
-  // Callback when first image finishes loading - triggers the swap
-  const handleFirstImageLoad = useCallback(() => {
-    if (hasSwappedRef.current) return;
-    hasSwappedRef.current = true;
-
-    const staticEl = staticContainerId ? document.getElementById(staticContainerId) : null;
-
-    // Use requestAnimationFrame to ensure layout is stable before fade
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        // Fade out the preview to reveal carousel underneath
-        if (staticEl) {
-          staticEl.classList.add("opacity-0", "pointer-events-none");
-          // Remove from DOM after fade completes
-          setTimeout(() => {
-            staticEl.style.display = "none";
-          }, 500);
-        }
-        setFirstImageLoaded(true);
-      });
-    });
-  }, [staticContainerId]);
 
   useEffect(() => {
     if (!slides.length) {
@@ -675,7 +453,6 @@ export default function PortfolioScreenShowcase({
           const isPrev = slideIndex === prevIndex;
           const isVisible = isActive || (isPrev && transitionStage !== "idle");
 
-          // Only mount active slide and previous during transition
           const shouldMount = isActive || (isPrev && transitionStage !== "idle");
           if (!shouldMount) return null;
 
@@ -706,11 +483,7 @@ export default function PortfolioScreenShowcase({
                 totalSlides={slides.length || 1}
                 activeIndex={slideIndex}
                 onCycleComplete={handleCycleComplete}
-                autoplayEnabled={isActive && transitionStage === "idle" && firstImageLoaded}
-                isActive={isActive}
-                shouldUseDesktopEager={preferDesktopEager ?? false}
-                onImageLoad={slideIndex === 0 ? handleFirstImageLoad : undefined}
-                deferImageRender={slideIndex === 0 && !shouldLoadFirstImage}
+                isActive={isActive && transitionStage === "idle"}
               />
             </div>
           );
