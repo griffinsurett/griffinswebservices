@@ -64,4 +64,8 @@ export default defineConfig({
   
   compressHTML: true,
   redirects,
+
+  experimental: {
+    clientPrerender: false,
+  },
 });
