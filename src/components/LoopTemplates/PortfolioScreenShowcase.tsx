@@ -64,7 +64,12 @@ const BETWEEN_SLIDE_PAUSE_MS = 450;
 const SLIDE_TRANSITION_DURATION_MS = 750;
 
 function useDesktopEagerPreference() {
-  const [isDesktop, setIsDesktop] = useState(false);
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia === "undefined") {
+      return null;
+    }
+    return window.matchMedia("(min-width: 1024px)").matches;
+  });
 
   useEffect(() => {
     if (typeof window === "undefined" || typeof window.matchMedia === "undefined") {
@@ -500,7 +505,7 @@ export default function PortfolioScreenShowcase({
   // - "static-preview": always wait for preview, defer full image
   // - "responsive": desktop uses static-preview behavior, mobile uses client-only
   const isClientOnly = loadingStrategy === "client-only" ||
-    (loadingStrategy === "responsive" && !preferDesktopEager);
+    (loadingStrategy === "responsive" && preferDesktopEager === false);
 
   // Track when the first full image has loaded and we can swap from preview
   // For client-only mode, we consider it already loaded (no preview to swap)
@@ -517,6 +522,10 @@ export default function PortfolioScreenShowcase({
       setFirstImageLoaded(true);
       hasSwappedRef.current = true;
       setShouldLoadFirstImage(true);
+    } else {
+      setFirstImageLoaded(false);
+      hasSwappedRef.current = false;
+      setShouldLoadFirstImage(false);
     }
   }, [isClientOnly]);
 
@@ -699,7 +708,7 @@ export default function PortfolioScreenShowcase({
                 onCycleComplete={handleCycleComplete}
                 autoplayEnabled={isActive && transitionStage === "idle" && firstImageLoaded}
                 isActive={isActive}
-                shouldUseDesktopEager={preferDesktopEager}
+                shouldUseDesktopEager={preferDesktopEager ?? false}
                 onImageLoad={slideIndex === 0 ? handleFirstImageLoad : undefined}
                 deferImageRender={slideIndex === 0 && !shouldLoadFirstImage}
               />
