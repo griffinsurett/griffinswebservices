@@ -108,27 +108,22 @@ import Button from "@/components/Button/Button";
         </div>
 
         {/* Column 1: Legal links & preferences */}
-        <div class="flex flex-col items-start gap-8 text-sm">
           <ContentRenderer
             query={roots("capabilities")}
             variant="ListVariant"
             showButtonSection={false}
             showHeadingDivider
           />
-        </div>
 
         {/* Column 2: Legal links & preferences */}
-        <div class="flex flex-col items-start gap-8 text-sm">
           <ContentRenderer
             query={roots("solutions")}
             variant="ListVariant"
             showButtonSection={false}
             showHeadingDivider
           />
-        </div>
 
         {/* Column 2: Legal links & preferences */}
-        <div class="flex flex-col items-start gap-8 text-sm">
           {/* Column 3: Contact-Us */}
           <ContentRenderer
             query={roots("industries")}
@@ -136,7 +131,6 @@ import Button from "@/components/Button/Button";
             showButtonSection={false}
             showHeadingDivider
           />
-        </div>
       </section>
       <div class="section-color-border absolute bottom-0 top-auto"></div>
     </div>
