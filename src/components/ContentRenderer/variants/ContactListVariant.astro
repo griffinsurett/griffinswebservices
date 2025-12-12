@@ -60,13 +60,13 @@ const contactLinks = normalizeContactLinks(safeItems);
             {href ? (
               <a
                 href={href}
-                class="flex items-center gap-1.5 group hover:text-primary transition-colors"
+                class="flex items-center gap-1 group hover:text-primary transition-colors"
               >
-                <span class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-bg transition-colors">
+                <span class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-colors">
                   <Icon
                     icon={iconName}
                     size="md"
-                    className="w-5 h-5"
+                    className="w-7 h-7 text-primary"
                   />
                 </span>
                 <span class="flex flex-col">
@@ -82,7 +82,7 @@ const contactLinks = normalizeContactLinks(safeItems);
               </a>
             ) : (
               <div class="flex items-center gap-3">
-                <span class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <span class="w-12 h-12 rounded-full flex items-center justify-center text-primary shrink-0">
                   <Icon
                     icon={iconName}
                     size="md"
