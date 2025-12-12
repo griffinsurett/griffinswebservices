@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import Icon from "@/components/Icon";
 import {
   supportedLanguages,
   getLanguageByCode,
   defaultLanguage,
 } from "@/utils/languageTranslation/languages";
+import { requestCookiePreferencesModal } from "@/utils/consent/events";
 
 interface Props {
   open: boolean;
@@ -41,16 +41,12 @@ const isGoogleTranslateEnabled = () => {
   return config?.enableGoogle !== false;
 };
 
-type ModalComponent = React.ComponentType<{ isOpen: boolean; onClose: () => void }>;
-
 export default function LanguageDropdownContent({ open, onClose, onLanguageChange }: Props) {
   const [currentLanguage, setCurrentLanguage] = useState(() => {
     if (typeof window === "undefined") return defaultLanguage;
     const code = localStorage.getItem("user-language") || defaultLanguage.code;
     return getLanguageByCode(code) || defaultLanguage;
   });
-  const [showConsentModal, setShowConsentModal] = useState(false);
-  const [ConsentModal, setConsentModal] = useState<ModalComponent | null>(null);
   const [hasFunctionalConsent, setHasFunctionalConsent] = useState(() => hasFunctionalConsentFast());
 
   useEffect(() => {
@@ -59,21 +55,16 @@ export default function LanguageDropdownContent({ open, onClose, onLanguageChang
     }
   }, [open]);
 
-  const handleOpenConsentModal = () => {
-    if (!ConsentModal) {
-      import("@/components/preferences/consent/CookiePreferencesModal").then((m) => {
-        setConsentModal(() => m.default);
-        setShowConsentModal(true);
-      });
-    } else {
-      setShowConsentModal(true);
-    }
-    onClose();
-  };
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleConsentChange = () => setHasFunctionalConsent(hasFunctionalConsentFast());
+    window.addEventListener("consent-changed", handleConsentChange);
+    return () => window.removeEventListener("consent-changed", handleConsentChange);
+  }, []);
 
-  const handleCloseConsentModal = () => {
-    setShowConsentModal(false);
-    setHasFunctionalConsent(hasFunctionalConsentFast());
+  const handleOpenConsentModal = () => {
+    requestCookiePreferencesModal();
+    onClose();
   };
 
   const handleLanguageChange = (code: string) => {
@@ -104,7 +95,7 @@ export default function LanguageDropdownContent({ open, onClose, onLanguageChang
     onClose();
   };
 
-  if (!open && !showConsentModal) return null;
+  if (!open) return null;
 
   return (
     <>
@@ -158,7 +149,18 @@ export default function LanguageDropdownContent({ open, onClose, onLanguageChang
                   </span>
                   {isActive && (
                     <span className="text-primary" aria-label="Currently selected language">
-                      <Icon icon="lucide:check" size="sm" className="text-primary" />
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 12l4 4L19 7" />
+                      </svg>
                     </span>
                   )}
                 </button>
@@ -166,10 +168,6 @@ export default function LanguageDropdownContent({ open, onClose, onLanguageChang
             })}
           </div>
         </div>
-      )}
-
-      {showConsentModal && ConsentModal && (
-        <ConsentModal isOpen={showConsentModal} onClose={handleCloseConsentModal} />
       )}
     </>
   );

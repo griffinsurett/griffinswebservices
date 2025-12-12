@@ -15,9 +15,11 @@
 
 import SpeedInsights from "@vercel/speed-insights/astro";
 import Analytics from '@vercel/analytics/astro';
+import CookiePreferencesPortal from "@/components/preferences/consent/CookiePreferencesPortal";
 ---
 
 <!-- Analytics, tracking scripts, or other body elements can be added here -->
 <!-- Example: Google Analytics, chat widgets, etc. -->
 <SpeedInsights />
 <Analytics />
+<CookiePreferencesPortal client:idle />
