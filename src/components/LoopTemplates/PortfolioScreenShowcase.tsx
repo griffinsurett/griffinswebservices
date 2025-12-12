@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import { useEngagementAutoScroll } from "@/hooks/autoscroll/useEngagementAutoScroll";
+import { useClickToScroll } from "@/hooks/interactions/useClickToScroll";
 import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
 import type { PortfolioItemData } from "@/components/LoopComponents/PortfolioItemComponent";
 
@@ -101,6 +102,13 @@ function ComputerScreen({
     resumeOnUserInput: true,
     threshold: 0.05,
     resetOnInactive: false,
+  });
+
+  // Click-to-scroll: manual scroll only enabled after click, resets when resume timer fires
+  const { enabled: manualScrollEnabled, enableScroll } = useClickToScroll({
+    ref: viewportRef,
+    active: isActive,
+    resumeScheduled: autoScroll.resumeScheduled,
   });
 
   // Reset scroll position when becoming active
@@ -351,7 +359,7 @@ function ComputerScreen({
   };
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full" onClick={enableScroll}>
       <div className="relative h-full bg-bg3">
         <div className="flex flex-col gap-3 border-b border-white/10 px-4 py-3 text-white/70 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-white/50">
@@ -364,8 +372,13 @@ function ComputerScreen({
         </div>
         <figure
           ref={viewportRef}
-          className="relative h-full overflow-y-auto overscroll-contain bg-black/40"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          className={`relative h-full overflow-y-scroll bg-black/40 ${
+            manualScrollEnabled ? "overscroll-contain touch-pan-y" : "touch-none"
+          }`}
+          style={{
+            WebkitOverflowScrolling: manualScrollEnabled ? "touch" : "auto",
+            overscrollBehaviorY: manualScrollEnabled ? "contain" : "none",
+          }}
         >
           {renderMedia()}
         </figure>

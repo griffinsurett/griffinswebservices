@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { useEngagementAutoScroll } from "@/hooks/autoscroll/useEngagementAutoScroll";
+import { useClickToScroll } from "@/hooks/interactions/useClickToScroll";
 import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
 
 export interface PortfolioImageSources {
@@ -85,6 +86,7 @@ export default function PortfolioItemComponent({
   const [scrollDurationMs, setScrollDurationMs] = useState(
     AUTO_SCROLL_DEFAULT_CYCLE_MS
   );
+  const isActive = (diff === 0);
 
   const position = useMemo(() => {
     if (diff === 0) return "center";
@@ -92,8 +94,6 @@ export default function PortfolioItemComponent({
     if (diff === 1 || diff === -(itemsLength - 1)) return "right";
     return "hidden";
   }, [diff, itemsLength]);
-
-  const isActive = position === "center";
   const translateBase = isActive ? "translate(-50%, 0)" : "translate(-50%, -50%)";
 
   const resolveAutoScrollSpeed = useCallback((host: HTMLElement) => {
@@ -137,6 +137,13 @@ export default function PortfolioItemComponent({
     resumeOnUserInput: true,
     threshold: 0.1,
     resetOnInactive: true,
+  });
+
+  // Click-to-scroll: manual scroll only enabled after click, resets when resume timer fires
+  const { enabled: manualScrollEnabled, enableScroll } = useClickToScroll({
+    ref: viewportRef,
+    active: isActive,
+    resumeScheduled: autoScroll.resumeScheduled,
   });
 
   const [progressPct, setProgressPct] = useState(0);
@@ -347,13 +354,20 @@ export default function PortfolioItemComponent({
     };
   }
 
-  const viewportClassesActive =
-    "w-full h-full bg-gray-900 overflow-y-auto overscroll-auto touch-pan-y m-0 p-0 relative";
+  // Auto-scroll always works, but manual scroll only after user clicks
+  // We use overflow-y-scroll so auto-scroll can programmatically scroll
+  // But touch-action and pointer-events control manual interaction
+  const viewportClassesActive = manualScrollEnabled
+    ? "w-full h-full bg-gray-900 overflow-y-scroll overscroll-auto touch-pan-y m-0 p-0 relative"
+    : "w-full h-full bg-gray-900 overflow-y-scroll touch-none m-0 p-0 relative";
   const viewportClassesInactive =
     "w-full h-full bg-gray-900 overflow-hidden pointer-events-none select-none m-0 p-0 relative";
 
   const viewportInlineStyle = isActive
-    ? ({ WebkitOverflowScrolling: "touch", overscrollBehaviorY: "auto" } satisfies React.CSSProperties)
+    ? ({
+        WebkitOverflowScrolling: manualScrollEnabled ? "touch" : "auto",
+        overscrollBehaviorY: manualScrollEnabled ? "auto" : "none",
+      } satisfies React.CSSProperties)
     : undefined;
 
   const getImageSrcForPosition = () => {
@@ -499,7 +513,11 @@ export default function PortfolioItemComponent({
       data-index={i}
       data-active={isActive ? "true" : "false"}
       onClick={() => {
-        if (!isActive) onSelect(i);
+        if (!isActive) {
+          onSelect(i);
+        } else {
+          enableScroll();
+        }
       }}
     >
       <figure
