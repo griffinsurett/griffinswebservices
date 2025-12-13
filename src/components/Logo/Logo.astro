@@ -67,22 +67,26 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
       loop={loop}
       client:idle
     >
-      <img
-        src={POSTER_SRC.src}
+      <Image
+        src={POSTER_SRC}
         alt="Griffin's Web Services Logo"
         loading={loading}
         decoding="async"
         class={logoClasses}
+        widths={LOGO_WIDTHS}
+        sizes={LOGO_SIZES}
         fetchpriority={loading === "eager" ? "high" : "low"}
       />
     </LottieLogo>
   ) : (
-    <img
-      src={POSTER_SRC.src}
+    <Image
+      src={POSTER_SRC}
       alt="Griffin's Web Services Logo"
       loading={loading}
       decoding="async"
       class={logoClasses}
+      widths={LOGO_WIDTHS}
+      sizes={LOGO_SIZES}
       fetchpriority={loading === "eager" ? "high" : undefined}
     />
   )}
