@@ -1,6 +1,7 @@
 ---
 import LottieLogo from "./LottieLogo";
 import LazyScrollLottieLogo from "./LazyScrollLottieLogo";
+import LottieLogoScrollTrigger from "./LottieLogoScrollTrigger.astro";
 import TextLogoStatic from "./TextLogoStatic.astro";
 import { Image } from "astro:assets";
 import POSTER_SRC from "@/assets/GWS-animated.png";
@@ -61,24 +62,14 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
   {shouldUseLottie ? (
     <>
       {trigger === "scroll" ? (
-        <LazyScrollLottieLogo
+        <LottieLogoScrollTrigger
           alt="Griffin's Web Services Animated Logo"
-          loading={loading}
-          trigger={trigger}
           className="logo-class"
-          mediaClasses={logoClasses}
+          logoClasses={logoClasses}
+          svgSrc={SVG_LOGO.src}
+          loading={loading}
           loop={loop}
-          client:idle
-        >
-          <img
-            src={SVG_LOGO.src}
-            alt="Griffin's Web Services Logo"
-            loading={loading}
-            decoding="async"
-            class={logoClasses}
-            fetchpriority={loading === "eager" ? "high" : "low"}
-          />
-        </LazyScrollLottieLogo>
+        />
       ) : trigger === "visible" ? (
         <LottieLogo
           alt="Griffin's Web Services Animated Logo"

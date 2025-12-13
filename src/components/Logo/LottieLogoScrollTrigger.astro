@@ -1,0 +1,134 @@
+---
+/**
+ * Pure vanilla JS scroll-triggered Lottie logo loader
+ * Zero React overhead - loads LottieLogo only when user scrolls
+ * Uses data attributes and vanilla JS for maximum performance
+ */
+interface Props {
+  alt?: string;
+  className?: string;
+  logoClasses?: string;
+  svgSrc: string;
+  loading?: "lazy" | "eager";
+  loop?: boolean;
+}
+
+const {
+  alt = "Griffin's Web Services Animated Logo",
+  className = "logo-class",
+  logoClasses = "block w-[43px] h-[43px] lg:w-[45px] lg:h-[45px] object-contain",
+  svgSrc,
+  loading = "eager",
+  loop = true,
+} = Astro.props;
+
+// Generate unique ID for this instance
+const uniqueId = `lottie-scroll-${Date.now()}`;
+---
+
+<!-- Static SVG - zero JS cost initially -->
+<div
+  id={uniqueId}
+  class={`${className} relative ${logoClasses}`}
+  data-lottie-scroll-trigger
+  data-lottie-loop={loop}
+  data-lottie-loading={loading}
+  aria-label={alt}
+>
+  <img
+    src={svgSrc}
+    alt={alt}
+    loading={loading}
+    decoding="async"
+    class={logoClasses}
+    fetchpriority={loading === "eager" ? "high" : "low"}
+  />
+</div>
+
+<!-- Ultra-lightweight scroll trigger - runs once per logo instance -->
+<script>
+  // IIFE to avoid polluting global scope
+  (function() {
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+    function init() {
+      // Find all scroll-triggered lottie containers
+      const containers = document.querySelectorAll('[data-lottie-scroll-trigger]');
+
+      containers.forEach(container => {
+        let scrollHandled = false;
+
+        const handleFirstScroll = () => {
+          if (scrollHandled) return;
+          scrollHandled = true;
+
+          // Clean up listeners immediately
+          window.removeEventListener('scroll', handleFirstScroll, { passive: true });
+          window.removeEventListener('wheel', handleFirstScroll, { passive: true });
+
+          // Get SVG element
+          const img = container.querySelector('img');
+          if (!img) return;
+
+          // Extract props from data attributes
+          const loop = container.dataset.lottieLoop === 'true';
+          const loadingType = container.dataset.lottieLoading || 'eager';
+
+          // Load React + LottieLogo dynamically
+          const loadLottie = async () => {
+            try {
+              const [
+                { createElement },
+                { createRoot },
+                { default: LottieLogo }
+              ] = await Promise.all([
+                import('react'),
+                import('react-dom/client'),
+                import('./LottieLogo')
+              ]);
+
+              // Create React root and render
+              const root = createRoot(container);
+
+              root.render(
+                createElement(LottieLogo, {
+                  alt: container.getAttribute('aria-label') || '',
+                  className: 'logo-class',
+                  mediaClasses: img.className,
+                  loading: loadingType as "lazy" | "eager",
+                  trigger: 'scroll',
+                  loop: loop,
+                }, createElement('img', {
+                  src: img.src,
+                  alt: img.alt,
+                  loading: loadingType,
+                  decoding: 'async',
+                  className: img.className,
+                  fetchpriority: img.getAttribute('fetchpriority')
+                }))
+              );
+            } catch (err) {
+              console.warn('Failed to load Lottie logo:', err);
+            }
+          };
+
+          // Use requestIdleCallback for non-blocking load
+          if ('requestIdleCallback' in window) {
+            (window as any).requestIdleCallback(loadLottie, { timeout: 500 });
+          } else {
+            setTimeout(loadLottie, 50);
+          }
+        };
+
+        // Listen for scroll events (passive for best performance)
+        window.addEventListener('scroll', handleFirstScroll, { passive: true });
+        window.addEventListener('wheel', handleFirstScroll, { passive: true });
+      });
+    }
+  })();
+</script>
