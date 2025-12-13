@@ -1,7 +1,5 @@
 ---
 import LottieLogo from "./LottieLogo";
-import LazyScrollLottieLogo from "./LazyScrollLottieLogo";
-import LottieLogoScrollTrigger from "./LottieLogoScrollTrigger.astro";
 import TextLogoStatic from "./TextLogoStatic.astro";
 import { Image } from "astro:assets";
 import POSTER_SRC from "@/assets/GWS-animated.png";
@@ -60,56 +58,24 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
   class={`notranslate flex justify-center items-center gap-1.5 ${className}`}
 >
   {shouldUseLottie ? (
-    <>
-      {trigger === "scroll" ? (
-        <LottieLogoScrollTrigger
-          alt="Griffin's Web Services Animated Logo"
-          className="logo-class"
-          logoClasses={logoClasses}
-          svgSrc={SVG_LOGO.src}
-          loading={loading}
-          loop={loop}
-        />
-      ) : trigger === "visible" ? (
-        <LottieLogo
-          alt="Griffin's Web Services Animated Logo"
-          loading={loading}
-          trigger={trigger}
-          className="logo-class"
-          mediaClasses={logoClasses}
-          loop={loop}
-          client:visible
-        >
-          <img
-            src={SVG_LOGO.src}
-            alt="Griffin's Web Services Logo"
-            loading={loading}
-            decoding="async"
-            class={logoClasses}
-            fetchpriority={loading === "eager" ? "high" : undefined}
-          />
-        </LottieLogo>
-      ) : (
-        <LottieLogo
-          alt="Griffin's Web Services Animated Logo"
-          loading={loading}
-          trigger={trigger}
-          className="logo-class"
-          mediaClasses={logoClasses}
-          loop={loop}
-          client:load
-        >
-          <img
-            src={SVG_LOGO.src}
-            alt="Griffin's Web Services Logo"
-            loading={loading}
-            decoding="async"
-            class={logoClasses}
-            fetchpriority={loading === "eager" ? "high" : undefined}
-          />
-        </LottieLogo>
-      )}
-    </>
+    <LottieLogo
+      alt="Griffin's Web Services Animated Logo"
+      loading={loading}
+      trigger={trigger}
+      className="logo-class"
+      mediaClasses={logoClasses}
+      loop={loop}
+      client:idle
+    >
+      <img
+        src={SVG_LOGO.src}
+        alt="Griffin's Web Services Logo"
+        loading={loading}
+        decoding="async"
+        class={logoClasses}
+        fetchpriority={loading === "eager" ? "high" : "low"}
+      />
+    </LottieLogo>
   ) : (
     <img
       src={SVG_LOGO.src}
