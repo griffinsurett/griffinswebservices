@@ -4,6 +4,7 @@ import AccentPickerContent from "./AccentPickerContent";
 
 export default function AccentPicker() {
   const [open, setOpen] = useState(false);
+  const [hasOpened, setHasOpened] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   // Close on outside click
@@ -18,6 +19,7 @@ export default function AccentPicker() {
   }, [open]);
 
   const handleToggle = () => {
+    if (!hasOpened) setHasOpened(true);
     setOpen((v) => !v);
   };
 
@@ -37,7 +39,7 @@ export default function AccentPicker() {
         </svg>
       </CircleCheckbox>
 
-      {open && <AccentPickerContent open={open} onClose={() => setOpen(false)} />}
+      {hasOpened && <AccentPickerContent open={open} onClose={() => setOpen(false)} />}
     </div>
   );
 }
