@@ -14,10 +14,10 @@ import { related } from "@/utils/query/snippets";
       <!-- Logo -->
       <Logo loading="eager" trigger="scroll" animateOutText={true} />
       
-      <ThemeControls className="hidden sm:flex" client:media="(min-width: 768px)" />
+      <ThemeControls className="hidden sm:flex" client:idle />
 
       <div class="flex items-center gap-4">
-        <ThemeControls className="sm:hidden" client:media="(max-width: 768px)" />
+        <ThemeControls className="sm:hidden" client:idle />
 
         <div class="flex items-center justify-center sm:gap-4">
           <!-- Navigation Menu using query -->
