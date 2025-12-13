@@ -74,7 +74,7 @@ const buttonId = id ? `${id}-menu-toggle` : "mobile-menu-toggle";
 
         {/* Lazy-loaded menu - only hydrates on first click */}
         <LazyHamburgerMenu
-          client:idle
+          client:click={{ selector: `#${buttonId}` }}
           items={menuTree}
           buttonId={buttonId}
           closeButton={closeButton}
