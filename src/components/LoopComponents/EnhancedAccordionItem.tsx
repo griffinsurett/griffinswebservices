@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
 import Icon from "@/components/Icon";
 import type { IconType } from "@/content/schema";
-import Button from "../Button/Button";
 
 interface EnhancedAccordionItemProps {
   icon?: string;
@@ -43,13 +42,19 @@ export default function EnhancedAccordionItem({
         className="transition-all duration-200"
         innerClassName="card-bg"
       >
-        <Button
-          variant="link"
-          type="button"
+        <div
           className="w-full text-left flex items-center justify-between p-5 hover:bg-card/50 transition-colors duration-300 cursor-pointer relative z-20"
           onClick={onToggle}
           onMouseDown={(event) => event.preventDefault()}
+          role="button"
+          tabIndex={0}
           aria-expanded={isActive}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onToggle();
+            }
+          }}
         >
           <div className="flex items-center gap-4">
             {icon && (
@@ -66,7 +71,8 @@ export default function EnhancedAccordionItem({
             </div>
           </div>
 
-          <div
+          <button
+            type="button"
             className={`
               w-8 h-8 rounded-full flex items-center justify-center
               transition-all duration-[600ms] text-xl font-semibold
@@ -76,11 +82,15 @@ export default function EnhancedAccordionItem({
                   : "bg-primary/15 text-accent group-hover:bg-primary/25"
               }
             `}
-            aria-hidden="true"
+            aria-label={isActive ? "Collapse" : "Expand"}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
           >
             <span>{isActive ? "−" : "+"}</span>
-          </div>
-        </Button>
+          </button>
+        </div>
 
         <div
           className={`overflow-hidden transition-all duration-500 ease-in-out relative z-20 ${
