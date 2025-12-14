@@ -21,6 +21,7 @@ export interface Props {
   primaryCTA?: CTA;
   className?: string;
   id?: string;
+  scrollToSection?: string;
 }
 
 const defaultDescription =
@@ -36,6 +37,7 @@ const {
   },
   className = "",
   id = "hero",
+  scrollToSection,
 } = Astro.props as Props;
 ---
 
@@ -80,5 +82,5 @@ const {
     </div>
   </div>
 
-  <ScrollIndicator />
+  <ScrollIndicator href={scrollToSection} />
 </section>

@@ -37,6 +37,7 @@ const heroDescription =
           text: "Get Started",
           link: "/contact-us",
         }}
+        scrollToSection="#portfolio-showcase"
       />
 
     <!-- Under-hero portfolio showcase -->
@@ -46,6 +47,7 @@ const heroDescription =
     <ContentRenderer
       query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
       variant="CardVariant"
+      id="website-services"
       title="Website Services"
       heading={{
         before: "Websites aren't just something we do.",
