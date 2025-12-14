@@ -102,7 +102,7 @@ export default function Input({
       required={required}
       aria-required={required || undefined}
       aria-describedby={describedBy}
-      className={`form-field ${enabled ? 'border-transparent! focus:border-transparent!' : ''} ${inputClassName}`.trim()}
+      className={`form-field ${inputClassName}`.trim()}
       onFocus={handleFocus}
       onBlur={handleBlur}
       {...inputProps}

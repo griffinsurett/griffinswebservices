@@ -34,6 +34,10 @@ const handleSubmit = async (values: any) => {
     errorMessage="There was an error submitting your form. Please try again."
     resetOnSuccess={true}
     className="group section-box card-bg outer-card-transition md:mx-5 lg:mx-10 xl:mx-15 flex flex-col relative overflow-hidden"
+    submitButton={{
+      text: "Submit Form",
+      className: "w-full md:w-auto"
+    }}
   >
     <div class="inner-card-style inner-card-transition inner-card-color" aria-hidden="true"></div>
 
@@ -107,30 +111,6 @@ const handleSubmit = async (values: any) => {
         containerClassName="md:col-span-2"
         showLabel={false}
       />
-    </div>
-
-    <Checkbox
-      name="privacy"
-      required
-      containerClassName="relative z-10 flex items-center gap-2 md:col-span-2 my-4"
-      labelClassName="flex items-start gap-2 text-sm text-text"
-      checkboxClassName="h-4 w-4 rounded border-muted/60 accent-primary"
-    >
-      I have read and agree to the{" "}
-      <a
-        href="/privacy-policy"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="link-base link-md"
-      >
-        Privacy Policy
-      </a>
-    </Checkbox>
-
-    <div class="text-center relative z-10 pt-4">
-      <Button variant="primary" type="submit" className="w-full md:w-auto">
-        Submit Form
-      </Button>
     </div>
   </FormWrapper>
 </div>

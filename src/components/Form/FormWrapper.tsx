@@ -16,6 +16,16 @@ import SuccessMessage from "./messages/SuccessMessage";
 import ErrorMessage from "./messages/ErrorMessage";
 import LoadingMessage from "./messages/LoadingMessage";
 import { FormContext } from "./FormContext";
+import Checkbox from "./inputs/Checkbox";
+import Button from "@/components/Button/Button";
+
+export interface SubmitButtonConfig {
+  text?: string;
+  className?: string;
+  variant?: "primary" | "secondary" | "tertiary" | "ghost" | "link";
+  disabled?: boolean;
+  loadingText?: string;
+}
 
 export interface FormWrapperProps {
   children: ReactNode;
@@ -27,6 +37,16 @@ export interface FormWrapperProps {
   className?: string;
   onSuccess?: () => void;
   onError?: (error: Error) => void;
+
+  // Terms checkbox configuration
+  includeTermsCheckbox?: boolean;
+  termsCheckboxLabel?: ReactNode;
+  termsCheckboxName?: string;
+  privacyPolicyUrl?: string;
+  termsOfServiceUrl?: string;
+
+  // Submit button configuration
+  submitButton?: SubmitButtonConfig;
 }
 
 export default function FormWrapper({
@@ -39,6 +59,12 @@ export default function FormWrapper({
   className = "",
   onSuccess,
   onError,
+  includeTermsCheckbox = true,
+  termsCheckboxLabel,
+  termsCheckboxName = "terms-agreement",
+  privacyPolicyUrl = "/privacy-policy",
+  termsOfServiceUrl = "/terms-of-service",
+  submitButton,
 }: FormWrapperProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<
@@ -136,6 +162,29 @@ export default function FormWrapper({
     return children;
   };
 
+  const defaultTermsLabel = (
+    <>
+      I agree to the{" "}
+      <a
+        href={termsOfServiceUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-accent hover:underline"
+      >
+        Terms of Service
+      </a>{" "}
+      and{" "}
+      <a
+        href={privacyPolicyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-accent hover:underline"
+      >
+        Privacy Policy
+      </a>
+    </>
+  );
+
   const contextValue = useMemo(
     () => ({
       isMultiStep,
@@ -167,6 +216,33 @@ export default function FormWrapper({
         )}
 
         {renderContent()}
+
+        {/* Terms checkbox - show on last step for multi-step, or always for single-step */}
+        {includeTermsCheckbox && (!isMultiStep || currentStep === totalSteps - 1) && (
+          <Checkbox
+            name={termsCheckboxName}
+            required
+            containerClassName="mt-6"
+          >
+            {termsCheckboxLabel ?? defaultTermsLabel}
+          </Checkbox>
+        )}
+
+        {/* Submit button for single-step forms */}
+        {!isMultiStep && submitButton && (
+          <div className="mt-6">
+            <Button
+              type="submit"
+              variant={submitButton.variant ?? "primary"}
+              disabled={isSubmitting || submitButton.disabled}
+              className={submitButton.className}
+            >
+              {isSubmitting
+                ? (submitButton.loadingText ?? "Submitting...")
+                : (submitButton.text ?? "Submit")}
+            </Button>
+          </div>
+        )}
 
         {isMultiStep && (
           <div className="flex items-center justify-between mt-6 pt-6 border-t">

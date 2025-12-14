@@ -98,7 +98,7 @@ export default function Textarea({
       required={required}
       aria-required={required || undefined}
       aria-describedby={describedBy}
-      className={`form-field resize-none ${enabled ? 'border-transparent! focus:border-transparent!' : ''} ${textareaClassName}`.trim()}
+      className={`form-field resize-none ${textareaClassName}`.trim()}
       onFocus={handleFocus}
       onBlur={handleBlur}
       {...textareaProps}

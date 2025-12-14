@@ -24,8 +24,8 @@ export default function Checkbox({
   children,
   required = false,
   containerClassName = "mb-4",
-  labelClassName = "flex items-center cursor-pointer",
-  checkboxClassName = "w-4 h-4 text-primary border-surface rounded",
+  labelClassName = "flex items-start gap-2 cursor-pointer",
+  checkboxClassName = "w-4 h-4 text-primary border-surface rounded mt-0.5",
   ...checkboxProps
 }: CheckboxProps) {
   const labelContent = children ?? label;
@@ -42,7 +42,7 @@ export default function Checkbox({
           {...checkboxProps}
         />
         {labelContent && (
-          <span className="ml-2 text-text">
+          <span className="text-text">
             {labelContent}
             {required && <span className="text-red-500 ml-1">*</span>}
           </span>
