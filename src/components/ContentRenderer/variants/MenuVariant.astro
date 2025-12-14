@@ -69,13 +69,14 @@ const buttonId = id ? `${id}-menu-toggle` : "mobile-menu-toggle";
       <div class={`menu-mobile ${mobileClasses}`}>
         <StaticHamburgerButton id={buttonId} />
         <HamburgerMenuDrawer
-          client:click={{ selector: `#${buttonId}` }}
+          client:click={{ selector: `#${buttonId}`, handlerKey: buttonId }}
           items={menuTree}
           className="menu-mobile-inner"
           closeButton={closeButton}
           hamburgerTransform={hamburgerTransform}
           triggerId={buttonId}
           useExternalTrigger
+          clientClickHandlerKey={buttonId}
         />
       </div>
     )
