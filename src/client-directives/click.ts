@@ -1,6 +1,6 @@
 // Click Directive
 import type { ClientDirective } from 'astro';
-import { queuePendingClientClick, waitForClientClickHandlerReady } from './shared/clientClickBridge';
+import { waitForClientClickHandlerReady } from './shared/clientClickBridge';
 
 type EventName = keyof HTMLElementEventMap | (string & {});
 type DirectiveConfig =
@@ -163,9 +163,6 @@ const clickDirective: ClientDirective = (load, options, el) => {
     }
 
     hydrated = true;
-    if (handlerKey) {
-      queuePendingClientClick(handlerKey);
-    }
     const hydrate = await load();
     controller.abort();
     await hydrate();

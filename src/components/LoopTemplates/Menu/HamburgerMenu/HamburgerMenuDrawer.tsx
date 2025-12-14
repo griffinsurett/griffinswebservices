@@ -6,11 +6,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  CLIENT_CLICK_PENDING_EVENT,
-  consumePendingClientClicks,
-  markClientClickHandlerReady,
-} from "@/client-directives/shared/clientClickBridge";
+import { markClientClickHandlerReady } from "@/client-directives/shared/clientClickBridge";
 import Modal from "@/components/Modal";
 import MobileMenuItem from "@/components/LoopComponents/Menu/MobileMenuItem";
 import HamburgerButton from "@/components/Menu/HamburgerButton";
@@ -89,45 +85,13 @@ export default function MobileMenuDrawer({
 
     const handleClick = () => toggleMenu();
     button.addEventListener("click", handleClick);
+
+    if (clientClickHandlerKey) {
+      markClientClickHandlerReady(clientClickHandlerKey);
+    }
+
     return () => button.removeEventListener("click", handleClick);
-  }, [triggerId, toggleMenu, useExternalTrigger]);
-
-  useEffect(() => {
-    if (!clientClickHandlerKey) {
-      return;
-    }
-
-    const runPending = () => {
-      const pending = consumePendingClientClicks(clientClickHandlerKey);
-      if (pending > 0) {
-        toggleMenu(true);
-      }
-    };
-
-    runPending();
-    markClientClickHandlerReady(clientClickHandlerKey);
-
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const handlePending = (event: Event) => {
-      if (!(event instanceof CustomEvent)) return;
-      if (event.detail?.key !== clientClickHandlerKey) return;
-      runPending();
-    };
-
-    window.addEventListener(
-      CLIENT_CLICK_PENDING_EVENT,
-      handlePending as EventListener
-    );
-    return () => {
-      window.removeEventListener(
-        CLIENT_CLICK_PENDING_EVENT,
-        handlePending as EventListener
-      );
-    };
-  }, [clientClickHandlerKey, toggleMenu]);
+  }, [clientClickHandlerKey, triggerId, toggleMenu, useExternalTrigger]);
 
   const handleNavigate = () => {
     toggleMenu(false);

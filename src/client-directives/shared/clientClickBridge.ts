@@ -1,52 +1,12 @@
-export const CLIENT_CLICK_PENDING_STORE_KEY = '__GWS_CLIENT_CLICK_PENDING__';
-export const CLIENT_CLICK_PENDING_EVENT = 'gws:client-click-pending';
 export const CLIENT_CLICK_READY_STORE_KEY = '__GWS_CLIENT_CLICK_READY__';
 export const CLIENT_CLICK_READY_EVENT = 'gws:client-click-ready';
 
-type PendingStoreTarget = typeof globalThis & {
-  [CLIENT_CLICK_PENDING_STORE_KEY]?: Map<string, number>;
+type ReadyStoreTarget = typeof globalThis & {
   [CLIENT_CLICK_READY_STORE_KEY]?: Set<string>;
 };
 
-const getPendingStore = (): Map<string, number> => {
-  const target = globalThis as PendingStoreTarget;
-  if (!target[CLIENT_CLICK_PENDING_STORE_KEY]) {
-    target[CLIENT_CLICK_PENDING_STORE_KEY] = new Map();
-  }
-
-  return target[CLIENT_CLICK_PENDING_STORE_KEY]!;
-};
-
-export const queuePendingClientClick = (key: string | undefined | null) => {
-  if (!key) return;
-
-  const store = getPendingStore();
-  const count = store.get(key) ?? 0;
-  store.set(key, count + 1);
-
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(
-      new CustomEvent(CLIENT_CLICK_PENDING_EVENT, {
-        detail: { key },
-      })
-    );
-  }
-};
-
-export const consumePendingClientClicks = (key: string | undefined | null): number => {
-  if (!key) return 0;
-
-  const store = getPendingStore();
-  const count = store.get(key) ?? 0;
-  if (count > 0) {
-    store.delete(key);
-  }
-
-  return count;
-};
-
 const getReadyStore = (): Set<string> => {
-  const target = globalThis as PendingStoreTarget;
+  const target = globalThis as ReadyStoreTarget;
   if (!target[CLIENT_CLICK_READY_STORE_KEY]) {
     target[CLIENT_CLICK_READY_STORE_KEY] = new Set();
   }
