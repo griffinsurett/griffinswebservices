@@ -7,21 +7,21 @@ const rootDir = resolve(__dirname, '../..');
 const customClientDirectives = [
   {
     name: 'click',
-    entrypoint: resolve(rootDir, 'src/client-directives/click.ts'),
+    entrypoint: resolve(rootDir, 'src/integrations/client-directives/click.ts'),
   },
   {
     name: 'scroll',
-    entrypoint: resolve(rootDir, 'src/client-directives/scroll.ts'),
+    entrypoint: resolve(rootDir, 'src/integrations/client-directives/scroll.ts'),
   },
   {
     name: 'hover',
-    entrypoint: resolve(rootDir, 'src/client-directives/hover.ts'),
+    entrypoint: resolve(rootDir, 'src/integrations/client-directives/hover.ts'),
   },
 ];
 
 export default function clientDirectivesIntegration() {
   return {
-    name: 'gws-client-directives',
+    name: 'greastro-client-directives',
     hooks: {
       'astro:config:setup'({ addClientDirective }) {
         for (const directive of customClientDirectives) {

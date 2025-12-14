@@ -6,7 +6,10 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { markClientClickHandlerReady } from "@/client-directives/shared/clientClickBridge";
+import {
+  registerClientClickHandler,
+  unregisterClientClickHandler,
+} from "@/integrations/client-directives/shared/clientClickBridge";
 import Modal from "@/components/Modal";
 import MobileMenuItem from "@/components/LoopComponents/Menu/MobileMenuItem";
 import HamburgerButton from "@/components/Menu/HamburgerButton";
@@ -86,12 +89,24 @@ export default function MobileMenuDrawer({
     const handleClick = () => toggleMenu();
     button.addEventListener("click", handleClick);
 
-    if (clientClickHandlerKey) {
-      markClientClickHandlerReady(clientClickHandlerKey);
+    return () => button.removeEventListener("click", handleClick);
+  }, [triggerId, toggleMenu, useExternalTrigger]);
+
+  useEffect(() => {
+    if (!clientClickHandlerKey) {
+      return;
     }
 
-    return () => button.removeEventListener("click", handleClick);
-  }, [clientClickHandlerKey, triggerId, toggleMenu, useExternalTrigger]);
+    const handler = () => {
+      toggleMenu();
+      return true;
+    };
+
+    registerClientClickHandler(clientClickHandlerKey, handler);
+    return () => {
+      unregisterClientClickHandler(clientClickHandlerKey, handler);
+    };
+  }, [clientClickHandlerKey, toggleMenu]);
 
   const handleNavigate = () => {
     toggleMenu(false);

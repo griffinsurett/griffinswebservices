@@ -1,6 +1,9 @@
 // Click Directive
 import type { ClientDirective } from 'astro';
-import { waitForClientClickHandlerReady } from './shared/clientClickBridge';
+import {
+  enqueuePendingClientClickInvocation,
+  getRegisteredClientClickHandler,
+} from './shared/clientClickBridge';
 
 type EventName = keyof HTMLElementEventMap | (string & {});
 type DirectiveConfig =
@@ -167,9 +170,69 @@ const clickDirective: ClientDirective = (load, options, el) => {
     controller.abort();
     await hydrate();
     await waitForHydrationReady();
+
     if (handlerKey) {
-      await waitForClientClickHandlerReady(handlerKey);
+      const context = {
+        event,
+        target: event.target instanceof EventTarget ? event.target : null,
+        replay: () => replayEvent(event),
+      };
+
+      const invokeHandler = (handler: ReturnType<typeof getRegisteredClientClickHandler>) => {
+        if (!handler) {
+          return false;
+        }
+
+        try {
+          const result = handler(context);
+          if (result === false) {
+            return false;
+          }
+          return true;
+        } catch {
+          return false;
+        }
+      };
+
+      const immediateHandler = getRegisteredClientClickHandler(handlerKey);
+      if (immediateHandler && invokeHandler(immediateHandler)) {
+        return;
+      }
+
+      let cancelled = false;
+      const cancelPending = enqueuePendingClientClickInvocation(
+        handlerKey,
+        (readyHandler) => {
+          if (cancelled) return;
+          cancelled = true;
+          if (typeof fallbackTimer !== 'undefined') {
+            window.clearTimeout(fallbackTimer);
+          }
+
+          const handlerToUse = readyHandler ?? getRegisteredClientClickHandler(handlerKey);
+          if (invokeHandler(handlerToUse)) {
+            return;
+          }
+          replayEvent(event);
+        }
+      );
+
+      const fallbackTimer =
+        typeof window !== 'undefined'
+          ? window.setTimeout(() => {
+              if (!cancelled) {
+                cancelled = true;
+                const removed = cancelPending();
+                if (removed) {
+                  replayEvent(event);
+                }
+              }
+            }, 2000)
+          : undefined;
+
+      return;
     }
+
     replayEvent(event);
   };
 

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import useLocalStorage from "./useLocalStorage";
-import { ACCENT_COLORS, type AccentColor } from "@/constants/theme";
+import { ACCENT_COLORS, type AccentColor } from "@/utils/theme";
 
 export function useAccentColor() {
   const getDefaultAccent = (): AccentColor => ACCENT_COLORS[0];
@@ -26,5 +26,5 @@ export function useAccentColor() {
   } as const;
 }
 
-export { ACCENT_COLORS } from "@/constants/theme";
-export type { AccentColor } from "@/constants/theme";
+export { ACCENT_COLORS } from "@/utils/theme";
+export type { AccentColor } from "@/utils/theme";
