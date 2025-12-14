@@ -11,8 +11,8 @@ import useLocalStorage from "./useLocalStorage";
 import {
   defaultLanguage,
   getLanguageByCode,
-} from "@/utils/languageTranslation/languages";
-import type { Language } from "@/utils/languageTranslation/languages";
+} from "@/integrations/preferences/language/utils/languages";
+import type { Language } from "@/integrations/preferences/language/utils/languages";
 
 export function useLanguage() {
   const defaultCode = defaultLanguage?.code || "en";

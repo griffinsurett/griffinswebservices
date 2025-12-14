@@ -2,7 +2,7 @@
 import { isValidElement, type ElementType, type ReactNode } from "react";
 import Icon from "@/components/Icon";
 import type { IconType } from "@/content/schema";
-import type { IconSize } from "@/utils/icons/iconLoader";
+import type { IconSize } from "@/integrations/icons/utils/iconLoader";
 
 type Layout = "vertical" | "horizontal" | "horizontal-reverse";
 type Alignment = "center" | "left" | "right";

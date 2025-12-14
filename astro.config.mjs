@@ -7,7 +7,7 @@ import react from '@astrojs/react';
 import partytown from '@astrojs/partytown';
 import { buildRedirectConfig } from './src/utils/redirects';
 import { manualChunks, assetFileNames } from './vite.chunks.js';
-import iconGeneratorIntegration from './src/utils/icons/icon-generator.integration.mjs';
+import iconGeneratorIntegration from './src/integrations/icons/utils/icon-generator.integration.mjs';
 import clientDirectivesIntegration from './src/integrations/client-directives/client-directives.integration.mjs';
 
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');

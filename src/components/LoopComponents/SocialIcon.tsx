@@ -2,7 +2,7 @@
 import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
 import Icon from "@/components/Icon";
 import type { IconType } from "@/content/schema";
-import type { IconSize } from "@/utils/icons/iconLoader";
+import type { IconSize } from "@/integrations/icons/utils/iconLoader";
 
 type SocialIconSize = "sm" | "md" | "lg";
 

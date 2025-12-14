@@ -3,8 +3,8 @@ import {
   supportedLanguages,
   getLanguageByCode,
   defaultLanguage,
-} from "@/utils/languageTranslation/languages";
-import { requestCookiePreferencesModal } from "@/utils/consent/events";
+} from "@/integrations/preferences/language/utils/languages";
+import { requestCookiePreferencesModal } from "@/integrations/preferences/consent/utils/events";
 
 interface Props {
   open: boolean;

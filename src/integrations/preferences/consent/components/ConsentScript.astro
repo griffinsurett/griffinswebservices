@@ -1,0 +1,25 @@
+---
+// src/components/preferences/consent/ConsentScript.astro
+/**
+ * Consent Script Initialization
+ *
+ * Deferred script that only loads script manager if consent exists.
+ * Uses dynamic import to avoid adding to initial bundle.
+ */
+---
+
+<script>
+  // Quick inline check - only import heavy modules if consent exists
+  if (document.cookie.includes('cookie-consent=')) {
+    // Defer to idle to not block rendering
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        import('@/integrations/preferences/consent/scripts/scriptManager').then(m => m.initScriptManager());
+      }, { timeout: 2000 });
+    } else {
+      setTimeout(() => {
+        import('@/integrations/preferences/consent/scripts/scriptManager').then(m => m.initScriptManager());
+      }, 100);
+    }
+  }
+</script>
