@@ -46,13 +46,17 @@ export function manualChunks(id) {
     return 'lazy-utils';
   }
 
-  // Shared UI primitives used by both accordion and feature-cards
+  // IconListItem - used in above-fold IconListVariant, separate from below-fold components
+  // MUST come BEFORE ui-primitives to prevent early loading of accordion/carousel deps
+  if (id.includes('LoopComponents/IconListItem')) {
+    return 'icon-list';
+  }
+
+  // Shared UI primitives used by accordion and feature-cards (BELOW-FOLD ONLY)
   // This MUST come BEFORE accordion and feature-cards rules
-  // AnimatedBorder, IconListItem, and Icon are shared deps - put them in their own chunk
-  // so they don't cause accordion to pull in feature-cards or vice versa
+  // AnimatedBorder and Icon are shared deps for below-fold components
   if (
     id.includes('AnimatedBorder/') ||
-    id.includes('LoopComponents/IconListItem') ||
     id.includes('/components/Icon.tsx') ||
     id.includes('/components/Icon/index')
   ) {
