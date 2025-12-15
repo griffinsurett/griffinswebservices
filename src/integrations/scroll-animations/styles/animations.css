@@ -540,6 +540,20 @@
   }
 }
 
+/* Spin animation for logo */
+.animate-spin-once {
+  animation: spin-once 1s ease-in-out both;
+}
+
+@keyframes spin-once {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════════ */
 /* ACCESSIBILITY: REDUCED MOTION                                         */
 /* ═══════════════════════════════════════════════════════════════════ */
@@ -577,7 +591,8 @@
 
   /* Disable on-load animations */
   .animate-fade-in,
-  .animate-fade-up {
+  .animate-fade-up,
+  .animate-spin-once {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
