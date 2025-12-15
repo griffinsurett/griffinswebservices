@@ -243,7 +243,9 @@ if (!VariantComponent) {
 }
 ---
 
-<!-- Render the selected variant with all prepared data and pass through slot content -->
+<!-- Render the selected variant with all prepared data and pass through named slots -->
 <VariantComponent {...data}>
   <slot />
+  <slot name="under-text" slot="under-text" />
+  <slot name="under-button" slot="under-button" />
 </VariantComponent>

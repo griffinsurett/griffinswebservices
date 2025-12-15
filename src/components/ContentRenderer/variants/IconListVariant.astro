@@ -92,6 +92,12 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
                             descriptionClassName="large-text leading-relaxed"
                             titleVisibleRootMargin={0}
                         />
+
+                        {Astro.slots.has("under-text") && (
+                            <div class="mt-8">
+                                <slot name="under-text" />
+                            </div>
+                        )}
                     </div>
                 )
             }

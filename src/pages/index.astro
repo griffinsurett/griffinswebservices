@@ -69,7 +69,19 @@ const heroDescription =
         before: "What Makes",
         text: "Our Websites Different",
       }}
-    />
+    >
+    <div slot="under-text" class="aspect-5/3 rounded-3xl bg-muted/10 border border-muted/20 flex items-center justify-center overflow-hidden">
+      <Video
+        src="/speed-site.mov"
+        alt="Speed site walkthrough"
+        controls
+        clientLoadPlaceholder={true}
+      />
+      <!-- <p class="large-text text-white/80">
+        Watch how on our sites a user may even be done booking before the average site loads.
+      </p> -->
+    </div>
+  </ContentRenderer>
 
     <!-- About Us Two-Column Section -->
     <ContentRenderer
@@ -82,12 +94,14 @@ const heroDescription =
       borderClass=""
       ctaText="Learn More About Us"
     >
+    <div class="aspect-5/3 rounded-3xl bg-muted/10 border border-muted/20 flex items-center justify-center overflow-hidden">
       <Video
         src="/speed-site.mov"
         alt="Speed site walkthrough"
         controls
         clientLoadPlaceholder={true}
       />
+    </div>
     </ContentRenderer>
 
     <!-- <ContentRenderer query={query("projects")} variant="PortfolioVariant" /> -->
@@ -103,7 +117,18 @@ const heroDescription =
       title="Website Services"
       description="We design top-tier websites for businesses in every industry — from local services to global brands. Every site is custom-built for your goals, lightning-fast, secure, and easy to manage. No templates, no bloat — just a powerful online presence that looks sharp, performs flawlessly, and grows with you."
       autoAdvanceDelay={2000}
-    />
+    >
+      <div slot="under-text" class="aspect-5/3 rounded-3xl bg-muted/10 border border-muted/20 overflow-hidden">
+        <Video
+          src="/speed-site.mov"
+          alt="Speed site walkthrough"
+          controls
+          clientLoadPlaceholder={true}
+          class="w-full h-full object-cover rounded-3xl"
+        />
+      </div>
+    </ContentRenderer>
+
 
     <ContentRenderer
       query={query("solutions")}
