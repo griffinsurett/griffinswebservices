@@ -16,9 +16,13 @@ const {
 ---
 <section
   id={id}
-  class={`flex items-center justify-left relative overflow-hidden ${className}`}
+  class={`flex items-center justify-left relative ${className}`}
 >
-  <div class="relative min-h-screen z-10 inner-section">
+  <div
+    class="relative min-h-screen z-10 inner-section"
+    data-animate="zoom-in"
+    data-animate-once="true"
+  >
         <ContentRenderer
           query={query("projects")}
           variant="PortfolioScreenVariant"
