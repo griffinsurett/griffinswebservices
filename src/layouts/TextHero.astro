@@ -46,7 +46,11 @@ const {
   class={`min-h-screen flex items-center justify-center relative overflow-hidden ${className}`}
 >
   <div class="relative z-10 min-h-screen inner-section flex items-center">
-    <div class="mx-auto px-2 lg:px-0 max-w-6xl space-y-3 lg:space-y-8 py-20">
+    <div
+      class="mx-auto px-2 lg:px-0 max-w-6xl space-y-3 lg:space-y-8 py-20 hero-content"
+      data-animate="fade-in-up"
+      data-animate-once="false"
+    >
       <SectionHeader
         className="text-left lg:text-center w-full"
         heading={heading}
@@ -86,3 +90,17 @@ const {
     <ScrollIndicator href={scrollToSection} />
   </span>
 </section>
+
+<style>
+  /* Very fast animation on mobile for better Speed Index */
+  .hero-content {
+    --animation-duration: 150ms;
+  }
+
+  /* Normal animation on desktop */
+  @media (min-width: 1024px) {
+    .hero-content {
+      --animation-duration: 600ms;
+    }
+  }
+</style>
