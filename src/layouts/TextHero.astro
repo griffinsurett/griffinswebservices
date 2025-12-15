@@ -8,6 +8,7 @@ import ScrollIndicator from "@/components/ScrollIndicator.astro";
 import { query } from "@/utils/query";
 import { siteData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
+import { animationProps } from "@/integrations/scroll-animations";
 
 interface CTA {
   text: string;
@@ -46,7 +47,10 @@ const {
   class={`min-h-screen flex items-center justify-center relative overflow-hidden ${className}`}
 >
   <div class="relative z-10 min-h-screen inner-section flex items-center">
-    <div class="mx-auto px-2 lg:px-0 max-w-6xl space-y-3 lg:space-y-8 py-20">
+    <div
+      class="mx-auto px-2 lg:px-0 max-w-6xl space-y-3 lg:space-y-8 py-20"
+      {...animationProps("fade-in-up", { once: false, duration: 300 })}
+    >
       <SectionHeader
         className="text-left lg:text-center w-full"
         heading={heading}
