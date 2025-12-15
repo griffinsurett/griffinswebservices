@@ -15,6 +15,7 @@ import LinkButton from './variants/LinkButton';
 import TertiaryButton from './variants/TertiaryButton';
 import ArrowLinkButton from './variants/ArrowLinkButton';
 import MenuItemButton from './variants/MenuItemButton';
+import LogoLinkButton from './variants/LogoLinkButton';
 
 /**
  * Base props shared by all button variants
@@ -121,6 +122,7 @@ const VARIANT_MAP = {
   menuItemButton: MenuItemButton,
   tertiary: TertiaryButton,
   arrowLink: ArrowLinkButton,
+  logoLink: LogoLinkButton,
 };
 
 export type ButtonVariant = keyof typeof VARIANT_MAP;

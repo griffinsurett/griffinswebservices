@@ -132,6 +132,39 @@ body {
   .link-lg {
     @apply text-lg;
   }
+
+  /* Logo Link styles */
+  .logo-link-base {
+    @apply inline-flex items-center gap-1 tracking-wide;
+    @apply text-primary hover:text-primary-700;
+    @apply bg-transparent font-normal;
+    @apply transition-colors duration-200;
+    @apply focus:outline-none focus:ring-0 focus:ring-offset-0;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .logo-link-icon {
+    @apply inline-flex items-center justify-center;
+    @apply w-0 opacity-0 overflow-hidden;
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .logo-link-icon img {
+    @apply transition-transform duration-300 ease-out;
+    transform: rotate(0deg);
+  }
+
+  .logo-link-text {
+    @apply inline-block transition-all duration-300 ease-out;
+  }
+
+  .logo-link-base:hover .logo-link-icon {
+    @apply w-5 opacity-100 mr-1;
+  }
+
+  .logo-link-base:hover .logo-link-icon img {
+    transform: rotate(-720deg);
+  }
 }
 
 @layer utilities {
