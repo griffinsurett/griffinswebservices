@@ -1,7 +1,7 @@
 ---
 // src/components/Logo/TextLogoStatic.astro
-// Lightweight Astro version of TextLogo using data-animate system
-// No React required - uses vanilla JS scroll observer
+// CSS-only scroll-driven text fade animation
+// Zero JavaScript required - uses modern CSS scroll timeline API
 
 interface Props {
   title?: string;
@@ -27,9 +27,8 @@ const restOfTitle = words.slice(1).join(" ");
 ---
 
 <div
-  class={`${className} transform transition-opacity transition-transform ease-in-out`}
-  style={`--fade-duration: ${fadeDuration}ms;`}
-  data-scroll-fade={animateOutText ? "true" : undefined}
+  class={className}
+  data-scroll-fade-css={animateOutText ? "true" : undefined}
 >
   <span class={firstClass} style="line-height: normal;">
     {firstWord}
@@ -42,58 +41,40 @@ const restOfTitle = words.slice(1).join(" ");
 </div>
 
 <style>
-  /* Scroll-aware fade animation */
-  [data-scroll-fade] {
-    opacity: 1;
-    transform: translateY(0);
-    transition:
-      opacity var(--fade-duration, 1200ms) ease-in-out,
-      transform var(--fade-duration, 1200ms) ease-in-out;
+  /* CSS-only scroll-driven fade animation - Zero JavaScript */
+  @supports (animation-timeline: scroll()) {
+    [data-scroll-fade-css] {
+      animation: text-fade-out linear forwards;
+      animation-timeline: scroll(root);
+      animation-range: 0px 50px;
+    }
+
+    @keyframes text-fade-out {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-1rem);
+      }
+    }
   }
 
-  [data-scroll-fade][data-scrolled="true"] {
-    opacity: 0;
-    transform: translateY(-1rem);
+  /* Fallback for older browsers - text stays visible */
+  @supports not (animation-timeline: scroll()) {
+    [data-scroll-fade-css] {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    [data-scroll-fade-css] {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
   }
 </style>
-
-<script>
-  // Lightweight scroll observer for fade-out behavior
-  // Only runs if data-scroll-fade elements exist
-  (function initScrollFade() {
-    if (typeof window === "undefined") return;
-
-    const elements = document.querySelectorAll("[data-scroll-fade]");
-    if (!elements.length) return;
-
-    let ticking = false;
-    let lastScrollY = 0;
-    const threshold = 50; // Pixels to scroll before fading
-
-    const updateElements = () => {
-      const scrolled = window.scrollY > threshold;
-      elements.forEach((el) => {
-        if (scrolled) {
-          el.setAttribute("data-scrolled", "true");
-        } else {
-          el.removeAttribute("data-scrolled");
-        }
-      });
-      ticking = false;
-    };
-
-    const onScroll = () => {
-      lastScrollY = window.scrollY;
-      if (!ticking) {
-        requestAnimationFrame(updateElements);
-        ticking = true;
-      }
-    };
-
-    // Initial check
-    updateElements();
-
-    // Listen for scroll
-    window.addEventListener("scroll", onScroll, { passive: true });
-  })();
-</script>

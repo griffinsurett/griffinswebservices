@@ -12,7 +12,7 @@ import VideoPlayer from "@/components/VideoPlayer";
 import Button from "@/components/Button/Button";
 import { useVisibility } from "@/hooks/animations/useVisibility";
 import useEngagementAutoplay from "@/hooks/autoplay/useEngagementAutoplay";
-import { animationProps } from "@/integrations/scroll-animations/animationProps";
+import { animationProps } from "@/integrations/scroll-animations";
 export interface VideoAccordionItem {
   key?: string;
   title: string;
@@ -69,8 +69,8 @@ export default function VideoAccordion({
 
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const inView = useVisibility(wrapRef, {
-    threshold: 0,
-    rootMargin: "0px 0px -20% 0px",
+    threshold: 0.3,
+    rootMargin: "0px 0px -30% 0px",
   });
 
   const autoplayTime = useCallback(() => {

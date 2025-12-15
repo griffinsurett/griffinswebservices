@@ -1,6 +1,6 @@
 // src/components/LoopComponents/TechStackLabel.tsx
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { staggeredAnimationProps } from "@/integrations/scroll-animations/animationProps";
+import { staggeredAnimationProps } from "@/integrations/scroll-animations";
 
 interface TechStackLabelProps {
   name: string;

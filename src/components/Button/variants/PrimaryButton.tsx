@@ -6,7 +6,7 @@
  * Used for primary actions like form submissions, main CTAs.
  */
 
-import { animationProps } from "@/integrations/scroll-animations/animationProps";
+import { animationProps } from "@/integrations/scroll-animations";
 import { ButtonBase, type ButtonProps } from "../Button";
 import { getButtonBaseClasses, renderButtonIcon } from "../utils";
 

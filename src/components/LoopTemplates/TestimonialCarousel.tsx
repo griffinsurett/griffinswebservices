@@ -6,7 +6,7 @@ import TestimonialCard, {
 import { LeftArrow, RightArrow } from "@/components/Carousels/CarouselArrows";
 import useCarouselAutoplay from "@/components/Carousels/useCarouselAutoplay";
 import { useSideDragNavigation } from "@/hooks/interactions/useSideDragNavigation";
-import { staggeredAnimationProps } from "@/integrations/scroll-animations/animationProps";
+import { staggeredAnimationProps } from "@/integrations/scroll-animations";
 
 type SlidesPerViewConfig = {
   base?: number;

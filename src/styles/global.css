@@ -1,9 +1,9 @@
 /* src/styles/global.css */
 @import "tailwindcss";
-@import "@/styles/language-switcher.css";
+@import "@/integrations/preferences/language/language-switcher.css";
+@import "@/integrations/preferences/styles/preferences.css";
 @import "@/styles/legal.css";
 @import "@/styles/system.css";
-@import "@/styles/animation.css";
 
 /* ============================================================
  * 1. COLOR MODES & TOKENS

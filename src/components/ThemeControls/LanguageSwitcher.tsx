@@ -16,7 +16,7 @@ import {
   getLanguageByCode,
 } from "@/integrations/preferences/language/utils/languages";
 import { useConsent } from "@/hooks/useConsent";
-import "@/styles/language-switcher.css";
+import "@/integrations/preferences/language/language-switcher.css";
 
 export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
