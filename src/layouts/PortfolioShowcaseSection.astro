@@ -3,6 +3,8 @@
 // Full-viewport portfolio showcase section - loads only when scrolled into view
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query } from "@/utils/query";
+import Heading from "@/components/Heading";
+import Video from "@/components/Video/Video.astro";
 
 interface Props {
   className?: string;
@@ -13,19 +15,103 @@ const {
   className = "",
   id = "portfolio-showcase",
 } = Astro.props as Props;
+
 ---
 <section
   id={id}
-  class={`flex items-center justify-left relative ${className}`}
+  class={`portfolio-showcase-section flex items-start justify-left relative overflow-hidden pt-0 ${className}`}
 >
   <div
-    class="relative min-h-screen z-10 inner-section"
-    data-animate="zoom-in"
+    class="portfolio-showcase-section__arc"
+    aria-hidden="true"
+    data-animate="fade-in"
     data-animate-once="true"
-  >
-        <ContentRenderer
-          query={query("projects")}
-          variant="PortfolioScreenVariant"
-        />
+    data-animate-delay="600"
+  ></div>
+  <div class="relative z-10 w-full">
+    <div
+      class="relative min-h-screen inner-section flex flex-col gap-16 pt-0"
+      data-animate="zoom-in"
+      data-animate-once="true"
+    >
+      <ContentRenderer
+        query={query("projects")}
+        variant="PortfolioScreenVariant"
+        className="pt-0"
+      />
+    </div>
+
+    <div class="portfolio-process-section min-h-screen py-10 lg:py-16">
+      <div class="inner-section grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div class="space-y-6">
+          <Heading
+            tagName="h2"
+            className="text-3xl lg:text-4xl xl:text-4xl"
+            before="From the first strategy session"
+            text="to handoff, every detail matters."
+            beforeClass="text-muted"
+            textClass="text-gradient"
+          />
+        </div>
+        <div class="aspect-5/3 rounded-3xl bg-muted/10 border border-muted/20 flex items-center justify-center overflow-hidden">
+          <Video
+            src="/speed-site.mov"
+            alt="Prototype walkthrough"
+            controls
+            clientLoadPlaceholder={true}
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+
+<style lang="css">
+  .portfolio-showcase-section {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .portfolio-showcase-section__arc {
+    --arc-translate: translate(35%, -12%);
+    position: absolute;
+    width: clamp(48rem, 110vw, 120rem);
+    height: clamp(48rem, 110vw, 120rem);
+    border-radius: 9999px;
+    border: clamp(56px, 14vw, 180px) solid var(--color-heading);
+    background: transparent;
+    top: clamp(-42rem, -28vh, -14rem);
+    right: clamp(-36rem, -18vw, -12rem);
+    transform: var(--arc-translate);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+    transition:
+      opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0.4s;
+  }
+
+  @media (max-width: 768px) {
+    .portfolio-showcase-section__arc {
+      --arc-translate: translate(25%, -8%);
+      top: clamp(-32rem, -26vh, -10rem);
+      right: clamp(-24rem, -10vw, -8rem);
+      width: clamp(38rem, 160vw, 80rem);
+      height: clamp(38rem, 160vw, 80rem);
+      border-width: clamp(18px, 10vw, 48px);
+      transform: var(--arc-translate);
+    }
+  }
+
+  .portfolio-showcase-section
+    .portfolio-showcase-section__arc[data-visible="true"] {
+    opacity: 0.65;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .portfolio-showcase-section__arc {
+      opacity: 0.6;
+      transform: var(--arc-translate);
+    }
+  }
+</style>

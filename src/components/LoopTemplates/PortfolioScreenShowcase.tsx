@@ -47,6 +47,8 @@ const CONTENT_STABLE_DELTA_PX = 16;
 const CONTENT_READY_TIMEOUT_MS = 2200;
 const BETWEEN_SLIDE_PAUSE_MS = 450;
 const SLIDE_TRANSITION_DURATION_MS = 750;
+const SHOWCASE_READY_EVENT = "portfolio-showcase:ready";
+const SHOWCASE_READY_DELAY_MS = 800;
 
 function ComputerScreen({
   item,
@@ -402,6 +404,16 @@ export default function PortfolioScreenShowcase({
   const [transitionStage, setTransitionStage] = useState<"idle" | "pre" | "animating">("idle");
   const transitionTimerRef = useRef<number | null>(null);
   const transitionFrameRef = useRef<number | null>(null);
+  const readyEventSentRef = useRef(false);
+
+  useEffect(() => {
+    if (!slides.length || readyEventSentRef.current) return;
+    readyEventSentRef.current = true;
+    const timer = window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent(SHOWCASE_READY_EVENT));
+    }, SHOWCASE_READY_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [slides.length]);
 
   useEffect(() => {
     if (!slides.length) {

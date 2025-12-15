@@ -135,10 +135,10 @@ const showcaseProps = {
 
 <section
   id={id}
-  class={`relative overflow-hidden p-6 ${className}`.trim()}
+  class={`relative overflow-hidden z-10 ${className}`.trim()}
 >
   <div class="relative w-full max-w-4xl mx-auto h-[420px] sm:h-[520px] lg:h-[600px]">
-    <div class="relative h-full">
+    <div class="relative bg-bg h-full top-0">
       <PortfolioScreenShowcase client:visible {...showcaseProps} />
     </div>
   </div>
