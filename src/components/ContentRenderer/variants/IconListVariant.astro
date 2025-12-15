@@ -129,6 +129,8 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
                                 return (
                                     <li
                                         class={`relative h-full rounded-3xl p-6 lg:p-8 flex items-center gap-6 transition-colors duration-300 group/icon-card ${route ? "cursor-pointer hover:bg-bg3 hover:shadow-xl" : ""}`.trim()}
+                                        data-animate="fade-in-up"
+                                        data-animate-once="true"
                                     >
                                         <div class="flex-1 w-full">
                                             {clickableWrapper(

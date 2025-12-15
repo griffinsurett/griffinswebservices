@@ -2,6 +2,7 @@
 import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
 import { ButtonBase, type ButtonProps } from "../Button";
 import { getButtonBaseClasses, renderButtonIcon } from "../utils";
+import { animationProps } from "@/integrations/scroll-animations";
 
 const BORDER_RADIUS_CLASS = "rounded-full";
 const DEFAULT_WRAPPER_CLASSES =
@@ -26,11 +27,12 @@ export default function SecondaryButton({
 
   return (
     <AnimatedBorder
-      variant="solid"
-      triggers="always"
+      variant="progress-b-f"
+      triggers="visible"
       color="var(--color-accent)"
       borderWidth={2}
       borderRadius={BORDER_RADIUS_CLASS}
+      duration={800}
       className={
         [
           fullWidth ? "inline-flex w-full" : DEFAULT_WRAPPER_CLASSES,
@@ -41,6 +43,7 @@ export default function SecondaryButton({
           .join(" ")
       }
       innerClassName="p-0 shadow-none border-transparent justify-center items-center bg-transparent"
+      {...animationProps("fade-in-up", { once: true })}
     >
       <ButtonBase
         {...props}

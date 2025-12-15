@@ -241,15 +241,18 @@ export default function VideoAccordion({
             const key = item.key || item.title || `item-${index}`;
 
             return (
-              <EnhancedAccordionItem
+              <div
                 key={key}
-                icon={item.icon}
-                title={item.title}
-                description={item.description}
-                isActive={activeIndex === index}
-                progress={progress}
-                onToggle={() => handleSelect(index)}
+                {...animationProps("fade-in-up", { once: true })}
               >
+                <EnhancedAccordionItem
+                  icon={item.icon}
+                  title={item.title}
+                  description={item.description}
+                  isActive={activeIndex === index}
+                  progress={progress}
+                  onToggle={() => handleSelect(index)}
+                >
                 {activeIndex === index && (
                   <div className="lg:hidden mt-4">
                     <VideoPlayer
@@ -283,11 +286,15 @@ export default function VideoAccordion({
                   </div>
                 )}
               </EnhancedAccordionItem>
+              </div>
             );
           })}
         </div>
 
-        <div className="hidden lg:block lg:w-1/2 min-w-0 sticky-section">
+        <div
+          className="hidden lg:block lg:w-1/2 min-w-0 sticky-section"
+          {...animationProps("fade-in", { once: true })}
+        >
           <VideoPlayer
             key={`desktop-${activeItem?.key ?? activeIndex}`}
             ref={desktopVideoRef}

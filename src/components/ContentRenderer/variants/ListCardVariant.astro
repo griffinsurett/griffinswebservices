@@ -91,6 +91,11 @@ const featureCardProps: Partial<FeatureCardProps> = {
         columns={1}
         className={gridMarginClass}
         featureCardProps={featureCardProps}
+        disableStagger={true}
+        animation={{
+          type: (index) => index % 2 === 0 ? "fade-in-left" : "fade-in-right",
+          once: true,
+        }}
       />
 
     {showCTA && (

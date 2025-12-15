@@ -13,6 +13,10 @@ export interface CardRendererProps {
   featureCardProps?: Partial<FeatureCardProps>;
   getFeatureCardProps?: (item: FeatureCardData, index: number) => Partial<FeatureCardProps>;
   disableStagger?: boolean;
+  animation?: {
+    type?: string | ((index: number) => string);
+    once?: boolean;
+  };
 }
 
 const columnClasses: Record<ColumnCount, string> = {
@@ -31,12 +35,23 @@ export default function CardRenderer({
   featureCardProps = {},
   getFeatureCardProps,
   disableStagger = false,
+  animation,
 }: CardRendererProps) {
   const safeItems = Array.isArray(items) ? (items as FeatureCardData[]) : [];
 
   // Enable stagger when we have 3+ cards (will show multiple columns on larger screens)
   const shouldStagger = !disableStagger && safeItems.length >= 3;
   const staggerDelay = 100; // ms between each card animation
+
+  // Animation configuration
+  const defaultAnimationType = "fade-in-up";
+  const animationOnce = animation?.once ?? true;
+
+  const getAnimationType = (index: number): string => {
+    if (!animation?.type) return defaultAnimationType;
+    if (typeof animation.type === "function") return animation.type(index);
+    return animation.type;
+  };
 
   // Calculate delay based on position in row, not overall index
   const getStaggerDelay = (index: number): number => {
@@ -89,12 +104,14 @@ export default function CardRenderer({
             ? overrideRingDuration
             : resolveRingDuration(item, index);
 
+        const animationType = getAnimationType(index);
+
         return (
           <li
             key={index}
             className="h-full"
-            data-animate="fade-in-up"
-            data-animate-once="true"
+            data-animate={animationType}
+            data-animate-once={animationOnce ? "true" : undefined}
             data-animate-delay={shouldStagger ? String(delay) : undefined}
           >
             <FeatureCard

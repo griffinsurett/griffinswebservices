@@ -14,6 +14,10 @@ export interface TestimonialItemData {
   company?: string;
   rating?: number;
   featuredImage?: any;
+  url?: string;
+  href?: string;
+  slug?: string;
+  hasPage?: boolean;
 }
 
 interface TestimonialCardProps {
@@ -34,16 +38,32 @@ export default function TestimonialCard({
 
   const avatarSrc = getImageSrc(item.featuredImage) || PLACEHOLDER_PATH;
 
+  // Determine if this testimonial is interactive (has a page/link)
+  const cardUrl = item.url || item.href || (item.slug ? `/${item.slug}` : undefined);
+  const isInteractive = Boolean(item.hasPage && cardUrl);
+
+  const wrapperClassName = [
+    isInteractive ? "group" : "",
+    "text-left",
+    "outer-card-transition",
+    isInteractive ? "outer-card-hover-transition" : "",
+    "!duration-[900ms]",
+    "ease-out",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div className={className}>
       <AnimatedBorder
-        variant="progress-b-f"
-        triggers="hover"
+        variant={isInteractive ? "progress-b-f" : "none"}
+        triggers={isInteractive ? "hover" : []}
         duration={ringDuration}
         borderRadius="rounded-3xl"
         borderWidth={2}
-        className="group text-left outer-card-transition !duration-[900ms] ease-out"
+        className={wrapperClassName}
         innerClassName="h-100 md:h-90 lg:h-80 mx-auto px-10 flex flex-col justify-center items-start relative card-bg"
+        linkProps={isInteractive ? { href: cardUrl } : undefined}
       >
         <div className="inner-card-style inner-card-transition inner-card-color" />
 

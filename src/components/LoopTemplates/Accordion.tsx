@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import AccordionItem from "@/components/LoopComponents/AccordionItem";
 import type { IconType } from "@/content/schema";
+import { animationProps } from "@/integrations/scroll-animations";
 
 interface AccordionItemData {
   slug?: string;
@@ -81,31 +82,35 @@ export default function Accordion({
     <div className={`space-y-2 ${className}`}>
       {items.map((item, index) => {
         const itemId = item.slug || `item-${index}`;
-        
+
         return (
-          <AccordionItem
+          <div
             key={itemId}
-            id={itemId}
-            title={item.title}
-            description={item.description}
-            isExpanded={expandedItems.has(itemId)}
-            onToggle={() => toggleItem(itemId)}
-            headerSlot={
-              headerSlot
-                ? headerSlot({ item, id: itemId, expanded: expandedItems.has(itemId) })
-                : undefined
-            }
-            headerClassName={headerClassName}
-            showIndicator={showIndicator}
-            indicatorIcons={indicatorIcons}
+            {...animationProps("fade-in-up", { once: true })}
           >
-            {/* Simple container - content gets cloned here when panel opens */}
-            <div 
-              ref={(el) => {
-                if (el) panelRefs.current.set(itemId, el);
-              }}
-            />
-          </AccordionItem>
+            <AccordionItem
+              id={itemId}
+              title={item.title}
+              description={item.description}
+              isExpanded={expandedItems.has(itemId)}
+              onToggle={() => toggleItem(itemId)}
+              headerSlot={
+                headerSlot
+                  ? headerSlot({ item, id: itemId, expanded: expandedItems.has(itemId) })
+                  : undefined
+              }
+              headerClassName={headerClassName}
+              showIndicator={showIndicator}
+              indicatorIcons={indicatorIcons}
+            >
+              {/* Simple container - content gets cloned here when panel opens */}
+              <div
+                ref={(el) => {
+                  if (el) panelRefs.current.set(itemId, el);
+                }}
+              />
+            </AccordionItem>
+          </div>
         );
       })}
     </div>
