@@ -62,21 +62,12 @@ if (!clientLoadPlaceholder && placeholderUrl) {
 ---
 
 <figure class={`video-wrapper relative ${wrapperClass}`.trim()}>
-  {!clientLoadPlaceholder && placeholderImageSrc && (
-    <img
-      src={placeholderImageSrc}
-      alt={alt}
-      class={`absolute inset-0 w-full h-full object-cover ${className}`.trim()}
-      loading="lazy"
-      decoding="async"
-    />
-  )}
   <VideoClient
     client:visible
     className={className}
     src={src}
     poster={posterUrl}
-    placeholderSrc={clientLoadPlaceholder ? placeholderUrl : undefined}
+    placeholderSrc={clientLoadPlaceholder ? placeholderUrl : placeholderImageSrc}
     autoPlay={autoplay}
     muted={muted}
     loop={loop}

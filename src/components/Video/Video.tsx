@@ -77,19 +77,19 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
     }, [lazy, autoPlay]);
 
     return (
-      <>
-        {clientLoadPlaceholder && placeholderSrc && (
+      <div className="relative w-full h-full">
+        {placeholderSrc && (
           <img
             src={placeholderSrc}
             alt="Video placeholder"
-            className={`absolute inset-0 w-full h-full object-cover ${className}`.trim()}
-            loading="eager"
+            className={`absolute inset-0 w-full h-full object-cover z-0 ${className}`.trim()}
+            loading={clientLoadPlaceholder ? "eager" : "lazy"}
             decoding="async"
           />
         )}
         <video
           ref={assignRef}
-          className={`w-full h-full object-cover ${className}`.trim()}
+          className={`relative w-full h-full object-cover z-10 ${className}`.trim()}
           poster={poster}
           autoPlay={!lazy && autoPlay}
           muted={muted}
@@ -110,7 +110,7 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
           )}
           {children ?? "Your browser does not support the video tag."}
         </video>
-      </>
+      </div>
     );
   },
 );
