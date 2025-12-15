@@ -3,10 +3,11 @@
 /**
  * Secondary Hero Layout
  *
- * Full-width hero with optimized background media support.
- * Uses BackgroundMedia component for responsive image optimization.
+ * Full-width hero for index, about, and collection pages.
+ * Uses SectionHeader component for consistent heading structure.
  *
  * Features:
+ * - SectionHeader integration with support for heading/title props
  * - Responsive background images (mobile/tablet/desktop)
  * - Automatic LCP optimization with aboveTheFold
  * - Gradient overlay for text readability
@@ -15,10 +16,13 @@
 
 import { getAuthorName } from "@/layouts/collections/helpers/layoutHelpers";
 import BackgroundMedia from "@/components/BackgroundMedia.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
 import backgroundSvg from "@/assets/background.svg";
+import type { HeadingContent } from "@/content/schema";
 
 export interface Props {
-  title: string;
+  title?: string;
+  heading?: HeadingContent;
   description?: string;
   image?: any; // Astro image asset or public path
   publishDate?: Date | string;
@@ -30,6 +34,7 @@ export interface Props {
 
 const {
   title,
+  heading,
   description,
   image,
   publishDate,
@@ -61,19 +66,15 @@ const backgroundMedia = {
     {/* Hero content */}
     <div class="relative container mx-auto px-4 py-16 md:py-24 z-10">
       <div class="max-w-4xl mx-auto text-center text-bg">
-        <h1
-          class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg"
-        >
-          {title}
-        </h1>
-
-        {
-          description && (
-            <p class="text-xl md:text-2xl mb-8 opacity-95 drop-shadow-md leading-relaxed">
-              {description}
-            </p>
-          )
-        }
+        <SectionHeader
+          title={title}
+          heading={heading}
+          headingTag="h1"
+          headingClassName="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg"
+          description={description}
+          descriptionClassName="text-xl md:text-2xl mb-8 opacity-95 drop-shadow-md leading-relaxed"
+          className="text-center"
+        />
 
         {/* Metadata row with icons */}
         {

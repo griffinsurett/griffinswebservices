@@ -164,11 +164,12 @@ export default function FeatureCard({
       : "h-90 mx-auto px-10 flex flex-col justify-center items-center relative card-bg";
 
   const wrapperTextClass = resolvedLayout.includes("horizontal") ? "text-left" : "text-center";
+  const hoverLift = !resolvedLayout.includes("horizontal") && isInteractive ? "hover:-translate-y-3" : "";
   const wrapperClassName = [
     isInteractive ? "group" : "",
     wrapperTextClass,
     "outer-card-transition",
-    isInteractive ? "outer-card-hover-transition" : "",
+    hoverLift,
     "!duration-[900ms]",
     "ease-out",
   ]

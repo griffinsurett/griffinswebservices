@@ -2,9 +2,9 @@
 // IconListVariant.astro
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import IconListItem from "@/components/LoopComponents/IconListItem";
+import FeatureCard from "@/components/LoopComponents/FeatureCard";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { toArray } from "@/utils/array";
-import Button from "@/components/Button/Button";
 
 interface HeadingContent {
     title?: string;
@@ -113,49 +113,43 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
                                           ? item.heading
                                           : "Open link";
 
-                                const clickableWrapper = (content: any) =>
-                                    route ? (
-                                        <a
-                                            href={route}
-                                            class="block"
-                                            aria-label={linkLabel}
-                                        >
-                                            {content}
-                                        </a>
-                                    ) : (
-                                        content
-                                    );
-
                                 return (
                                     <li
-                                        class={`relative h-full rounded-3xl p-6 lg:p-8 flex items-center gap-6 transition-colors duration-300 group/icon-card ${route ? "cursor-pointer hover:bg-bg3 hover:shadow-xl" : ""}`.trim()}
+                                        class="relative"
                                         data-animate="fade-in-up"
                                         data-animate-once="true"
                                     >
-                                        <div class="flex-1 w-full">
-                                            {clickableWrapper(
+                                        {route ? (
+                                            <FeatureCard
+                                                client:visible
+                                                data={{ ...item, url: route }}
+                                                ringDuration={800}
+                                                listItemProps={{
+                                                    layout: itemLayout,
+                                                    alignment: "left",
+                                                    className: "gap-1 w-full flex items-start",
+                                                    iconClassName: "icon-large card-icon-color mr-4",
+                                                    iconSize: "xl",
+                                                    titleTag: "h3",
+                                                    titleClassName: "text-heading h3 my-4",
+                                                    descriptionClassName: "text-lg text-text",
+                                                }}
+                                            />
+                                        ) : (
+                                            <div class="p-6 lg:p-8">
                                                 <IconListItem
                                                     data={item}
                                                     layout={itemLayout}
                                                     alignment="left"
-                                                    className={`text-left gap-1 w-full flex items-start ${route ? "group-hover/icon-card:opacity-90 transition-opacity duration-300" : ""}`}
+                                                    className="text-left gap-1 w-full flex items-start"
                                                     iconClassName="icon-large card-icon-color mr-4"
                                                     iconSize="xl"
                                                     titleTag="h3"
                                                     titleClassName="text-heading h3 my-4"
                                                     descriptionClassName="text-lg text-text"
-                                                />,
-                                            )}
-                                        </div>
-
-                                        {route ? (
-                                            <Button
-                                                variant="arrowLink"
-                                                href={route}
-                                                className="shrink-0 ml-4 flex items-center justify-center opacity-0 pointer-events-none transition-opacity transition-transform duration-300 group-hover/icon-card:opacity-100 group-hover/icon-card:pointer-events-auto group-hover/icon-card:animate-bounce"
-                                                aria-label={`Open ${linkLabel}`}
-                                            />
-                                        ) : null}
+                                                />
+                                            </div>
+                                        )}
                                     </li>
                                 );
                             })}
