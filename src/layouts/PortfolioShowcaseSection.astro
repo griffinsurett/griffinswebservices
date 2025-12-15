@@ -3,6 +3,7 @@
 // Full-viewport portfolio showcase section - loads only when scrolled into view
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query } from "@/utils/query";
+import LogoCircle from "@/components/LogoCircle";
 import Heading from "@/components/Heading";
 import Video from "@/components/Video/Video.astro";
 
@@ -21,13 +22,12 @@ const {
   id={id}
   class={`portfolio-showcase-section flex items-start justify-left relative overflow-hidden pt-0 ${className}`}
 >
-  <div
-    class="portfolio-showcase-section__arc"
+  <LogoCircle
     aria-hidden="true"
     data-animate="fade-in"
     data-animate-once="true"
     data-animate-delay="600"
-  ></div>
+  />
   <div class="relative z-10 w-full">
     <div
       class="relative min-h-screen inner-section flex flex-col gap-16 pt-0"
@@ -54,12 +54,12 @@ const {
           />
         </div>
         <div class="aspect-5/3 rounded-3xl bg-muted/10 border border-muted/20 flex items-center justify-center overflow-hidden">
-          <Video
+          <!-- <Video
             src="/speed-site.mov"
             alt="Prototype walkthrough"
             controls
             clientLoadPlaceholder={true}
-          />
+          /> -->
         </div>
       </div>
     </div>

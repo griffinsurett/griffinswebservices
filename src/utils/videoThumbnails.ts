@@ -50,9 +50,10 @@ export interface PosterResult {
  */
 export async function generateVideoPoster(
   videoSrc: string,
-  options: { timecodeSeconds?: number; width?: number } = {}
+  options: { timecodeSeconds?: number; width?: number } = {},
 ): Promise<PosterResult> {
   const { timecodeSeconds = 0, width = 1600 } = options;
+  const targetWidth = Math.max(320, Math.round(width));
 
   const videoPath = resolveVideoPath(videoSrc);
   if (!fs.existsSync(videoPath)) {
@@ -63,7 +64,8 @@ export async function generateVideoPoster(
 
   const baseName = getBaseName(videoPath);
   const rawFrame = path.join(THUMB_DIR, `${baseName}-raw.jpg`);
-  const posterFile = path.join(THUMB_DIR, `${baseName}-poster.webp`);
+  const posterFileName = `${baseName}-w${targetWidth}-poster.webp`;
+  const posterFile = path.join(THUMB_DIR, posterFileName);
   const placeholderFile = path.join(THUMB_DIR, `${baseName}-placeholder.webp`);
 
   // Extract frame if not exists
@@ -84,12 +86,12 @@ export async function generateVideoPoster(
   }
 
   const aspectRatio = metadata.height / metadata.width;
-  const posterHeight = Math.round(width * aspectRatio);
+  const posterHeight = Math.round(targetWidth * aspectRatio);
 
   // Generate poster if not exists
   if (!fs.existsSync(posterFile)) {
     await sharp(rawFrame)
-      .resize(width, posterHeight, { fit: "cover" })
+      .resize(targetWidth, posterHeight, { fit: "cover" })
       .webp({ quality: 80 })
       .toFile(posterFile);
   }
@@ -104,9 +106,9 @@ export async function generateVideoPoster(
   }
 
   return {
-    src: `${THUMB_ROUTE}/${baseName}-poster.webp`,
+    src: `${THUMB_ROUTE}/${posterFileName}`,
     placeholderSrc: `${THUMB_ROUTE}/${baseName}-placeholder.webp`,
-    width,
+    width: targetWidth,
     height: posterHeight,
   };
 }
