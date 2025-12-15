@@ -61,11 +61,17 @@ const restOfTitle = words.slice(1).join(" ");
     }
   }
 
-  /* Fallback for older browsers - text stays visible */
+  /* Fallback for older browsers - uses JavaScript scroll observer */
   @supports not (animation-timeline: scroll()) {
     [data-scroll-fade-css] {
       opacity: 1;
       transform: translateY(0);
+      transition: opacity 300ms ease, transform 300ms ease;
+    }
+
+    [data-scroll-fade-css][data-scrolled="true"] {
+      opacity: 0;
+      transform: translateY(-1rem);
     }
   }
 
@@ -78,3 +84,45 @@ const restOfTitle = words.slice(1).join(" ");
     }
   }
 </style>
+
+<script>
+  // JavaScript fallback for browsers without animation-timeline support
+  // Only runs on older browsers (Safari < 17.5, Firefox, older Chrome)
+  (function initScrollFadeFallback() {
+    if (typeof window === "undefined") return;
+
+    // Feature detection - only run if animation-timeline is NOT supported
+    if (CSS.supports && CSS.supports('animation-timeline: scroll()')) {
+      return; // Modern browser - CSS handles everything
+    }
+
+    const element = document.querySelector('[data-scroll-fade-css]');
+    if (!element) return;
+
+    let ticking = false;
+    const threshold = 50; // Same as CSS animation-range: 0px 50px
+
+    const updateFade = () => {
+      const scrolled = window.scrollY > threshold;
+      if (scrolled) {
+        element.setAttribute('data-scrolled', 'true');
+      } else {
+        element.removeAttribute('data-scrolled');
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updateFade);
+        ticking = true;
+      }
+    };
+
+    // Initial check
+    updateFade();
+
+    // Listen for scroll
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>
