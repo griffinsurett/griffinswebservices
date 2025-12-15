@@ -295,9 +295,16 @@
 
 /* Base state for all animated elements - hidden by default */
 [data-animate] {
-  --animation-duration: 600ms;
+  --animation-duration: 300ms; /* Faster on mobile for better Speed Index */
   --animation-delay: 0ms;
   --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slower animations on desktop */
+@media (min-width: 1024px) {
+  [data-animate] {
+    --animation-duration: 600ms;
+  }
 }
 
 /* Support for delay attribute */
