@@ -510,6 +510,20 @@
 /* ON-LOAD ANIMATIONS (No scroll trigger - plays immediately)            */
 /* ═══════════════════════════════════════════════════════════════════ */
 
+/* Fade in animation */
+.animate-fade-in {
+  animation: fade-in 1.5s ease-out both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Fade up animation for hero sections */
 .animate-fade-up {
   animation: fade-up 0.5s ease-out both;
@@ -562,6 +576,7 @@
   }
 
   /* Disable on-load animations */
+  .animate-fade-in,
   .animate-fade-up {
     animation: none !important;
     opacity: 1 !important;
