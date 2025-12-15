@@ -44,6 +44,11 @@ const {
   minHeight = "60vh",
 } = Astro.props;
 
+// Default heading to title if no heading is provided
+const displayHeading = heading || title;
+// Only pass title to BorderTitle if it's a string (not a HeadingContent object)
+const displayTitle = typeof displayHeading === 'string' ? displayHeading : title;
+
 // Prepare optimized background media
 const backgroundMedia = {
   image: {
@@ -67,8 +72,8 @@ const backgroundMedia = {
     <div class="relative container mx-auto px-4 py-16 md:py-24 z-10">
       <div class="max-w-4xl mx-auto text-center text-bg">
         <SectionHeader
-          title={title}
-          heading={heading}
+          title={displayTitle}
+          heading={displayHeading}
           headingTag="h1"
           headingClassName="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg"
           description={description}
