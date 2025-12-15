@@ -41,7 +41,8 @@ export default function ToggleControl({
         ? { track: "h-5 w-9", thumb: "h-3.5 w-3.5", on: "translate-x-5", off: "translate-x-1" }
         : { track: "h-6 w-11", thumb: "h-4 w-4", on: "translate-x-6", off: "translate-x-1" };
 
-  const handleToggle = () => {
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent click from bubbling to parent elements
     if (disabled) return;
     onChange(!checked);
   };

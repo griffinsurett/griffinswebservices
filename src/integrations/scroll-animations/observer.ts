@@ -119,6 +119,13 @@ class ScrollAnimationObserver {
   private observeAll() {
     const elements = document.querySelectorAll("[data-animate]");
     elements.forEach((el) => this.observe(el as HTMLElement));
+
+    // Fallback for CSS-only animations in browsers that don't support animation-timeline
+    const supportsScrollTimeline = CSS.supports('animation-timeline: view()');
+    if (!supportsScrollTimeline) {
+      const cssElements = document.querySelectorAll("[data-animate-css]");
+      cssElements.forEach((el) => this.observeCSS(el as HTMLElement));
+    }
   }
 
   private observe(el: HTMLElement) {
@@ -156,7 +163,42 @@ class ScrollAnimationObserver {
     this.disconnectors.set(el, disconnect);
   }
 
+  private observeCSS(el: HTMLElement) {
+    if (this.observedElements.has(el)) {
+      return;
+    }
+
+    this.observedElements.add(el);
+
+    // Copy animation type from data-animate-css to data-animate
+    const animationType = el.dataset.animateCss;
+    if (animationType) {
+      el.dataset.animate = animationType;
+    }
+
+    // CSS animations are always "once"
+    const once = true;
+
+    const { disconnect } = createIntersectionObserver(el, {
+      threshold: this.defaultThreshold,
+      rootMargin: this.defaultRootMargin,
+      once,
+      onEnter: () => {
+        el.dataset.visible = "true";
+      },
+      onExit: () => {
+        if (!once) {
+          el.dataset.visible = "false";
+        }
+      },
+    });
+
+    this.disconnectors.set(el, disconnect);
+  }
+
   private setupMutationObserver() {
+    const supportsScrollTimeline = CSS.supports('animation-timeline: view()');
+
     const mutationObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
@@ -169,6 +211,16 @@ class ScrollAnimationObserver {
             node.querySelectorAll?.("[data-animate]").forEach((el) => {
               this.observe(el as HTMLElement);
             });
+
+            // Fallback for CSS-only animations
+            if (!supportsScrollTimeline) {
+              if (node.hasAttribute("data-animate-css")) {
+                this.observeCSS(node);
+              }
+              node.querySelectorAll?.("[data-animate-css]").forEach((el) => {
+                this.observeCSS(el as HTMLElement);
+              });
+            }
           }
         });
       });
