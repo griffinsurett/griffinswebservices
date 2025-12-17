@@ -185,6 +185,44 @@ if (responsivity?.show) {
 // Get first item's optimized thumbnail for SSR placeholder
 const firstMedia = showcaseMedia[0];
 const firstItem = portfolioItems[0];
+
+// Generate smaller placeholder image (640px width max for SSR)
+let placeholderMedia: typeof firstMedia | undefined;
+if (!clientLoadPlaceholder && firstMedia) {
+  const placeholderItem = processedItems[0];
+  const primaryImage = placeholderItem.data.featuredImage ?? placeholderItem.data.bannerImage;
+  const metadata = resolveImageMetadata(primaryImage);
+
+  if (metadata) {
+    const PLACEHOLDER_WIDTH = 640;
+    const aspectRatio = metadata.height / metadata.width;
+    const naturalHeight = Math.round(aspectRatio * PLACEHOLDER_WIDTH);
+    const constrainedHeight = Math.min(naturalHeight, MAX_RENDER_HEIGHT);
+    const shouldConstrain = constrainedHeight < naturalHeight;
+    const resizeOptions = shouldConstrain
+      ? {
+          height: constrainedHeight,
+          fit: "cover" as const,
+          position: "top" as const,
+        }
+      : {};
+
+    const placeholderImage = await getImage({
+      src: metadata,
+      width: PLACEHOLDER_WIDTH,
+      format: "webp",
+      quality: 75,
+      ...resizeOptions,
+    });
+
+    placeholderMedia = {
+      src: placeholderImage.src,
+      width: placeholderImage.attributes.width as number,
+      height: placeholderImage.attributes.height as number,
+      alt: firstMedia.alt,
+    };
+  }
+}
 ---
 
 <section
@@ -194,7 +232,7 @@ const firstItem = portfolioItems[0];
   <div class="relative w-full max-w-[920px] mx-auto h-[420px] sm:h-[520px] lg:h-[450px]">
     <div class="relative h-full top-0">
       <!-- SSR thumbnail placeholder for first item -->
-      {!clientLoadPlaceholder && firstMedia && (
+      {!clientLoadPlaceholder && placeholderMedia && (
         <div class="absolute inset-0 pointer-events-none" data-ssr-placeholder>
           <div class="relative h-full w-full">
             <div class="flex flex-col gap-3 border-b border-white/10 px-4 py-3 text-white/70 sm:flex-row sm:items-center sm:justify-between">
@@ -207,45 +245,17 @@ const firstItem = portfolioItems[0];
               </div>
             </div>
             <div class="relative h-full overflow-hidden bg-black/40 card-bg-2 rounded-lg">
-              {firstMedia.sources?.length ? (
-                <picture>
-                  {firstMedia.sources.map((source, idx) => (
-                    <source
-                      key={`${firstItem.slug ?? firstItem.id ?? idx}-source-${idx}`}
-                      srcSet={source.srcSet}
-                      sizes={source.sizes ?? firstMedia.sizes}
-                      type={source.type}
-                    />
-                  ))}
-                  <img
-                    src={firstMedia.src}
-                    srcSet={firstMedia.srcSet}
-                    sizes={firstMedia.sizes}
-                    alt={firstMedia.alt || firstItem.title || "Project preview"}
-                    width={firstMedia.width}
-                    height={firstMedia.height}
-                    loading="eager"
-                    decoding="sync"
-                    fetchpriority="high"
-                    draggable={false}
-                    class="block h-auto min-h-full w-full select-none object-cover object-top"
-                  />
-                </picture>
-              ) : firstMedia.src ? (
-                <img
-                  src={firstMedia.src}
-                  srcSet={firstMedia.srcSet}
-                  sizes={firstMedia.sizes}
-                  alt={firstMedia.alt || firstItem.title || "Project preview"}
-                  width={firstMedia.width}
-                  height={firstMedia.height}
-                  loading="eager"
-                  decoding="sync"
-                  fetchpriority="high"
-                  draggable={false}
-                  class="block h-auto min-h-full w-full select-none object-cover object-top"
-                />
-              ) : null}
+              <img
+                src={placeholderMedia.src}
+                alt={placeholderMedia.alt || firstItem.title || "Project preview"}
+                width={placeholderMedia.width}
+                height={placeholderMedia.height}
+                loading="eager"
+                decoding="sync"
+                fetchpriority="high"
+                draggable={false}
+                class="block h-auto min-h-full w-full select-none object-cover object-top"
+              />
             </div>
           </div>
         </div>
