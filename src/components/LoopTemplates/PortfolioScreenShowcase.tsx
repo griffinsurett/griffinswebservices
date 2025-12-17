@@ -36,6 +36,7 @@ interface ScreenProps {
   totalSlides: number;
   onCycleComplete: () => void;
   isActive: boolean;
+  isTransitioning?: boolean;
 }
 
 const AUTO_SCROLL_START_DELAY_MS = 700;
@@ -57,6 +58,7 @@ function ComputerScreen({
   totalSlides,
   onCycleComplete,
   isActive,
+  isTransitioning = false,
 }: ScreenProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   // Prevent images from rendering during SSR - only show after hydration
@@ -67,6 +69,7 @@ function ComputerScreen({
 
   // Mark as hydrated after mount (client-side only)
   useEffect(() => {
+    console.log('[Portfolio] ComputerScreen mounted', { isActive, item: item.title });
     setIsHydrated(true);
   }, []);
 
@@ -95,9 +98,11 @@ function ComputerScreen({
     [resolveAutoScrollSpeed],
   );
 
+  const autoScrollActive = isActive && contentReady && !isTransitioning;
+
   const autoScroll = useEngagementAutoScroll({
     ref: viewportRef,
-    active: isActive && contentReady,
+    active: autoScrollActive,
     speed: resolveAutoScrollSpeed,
     loop: false,
     startDelay: AUTO_SCROLL_START_DELAY_MS,
@@ -106,6 +111,20 @@ function ComputerScreen({
     threshold: 0.05,
     resetOnInactive: false,
   });
+
+  // Debug autoscroll state
+  useEffect(() => {
+    console.log('[Portfolio] AutoScroll state:', {
+      isActive,
+      contentReady,
+      isTransitioning,
+      autoScrollActive,
+      mediaReady,
+      isHydrated,
+      paused: autoScroll.paused,
+      inView: autoScroll.inView,
+    });
+  }, [isActive, contentReady, isTransitioning, autoScrollActive, mediaReady, isHydrated, autoScroll.paused, autoScroll.inView]);
 
   // Click-to-scroll: manual scroll only enabled after click, resets when resume timer fires
   const { enabled: manualScrollEnabled, enableScroll } = useClickToScroll({
@@ -124,33 +143,83 @@ function ComputerScreen({
   // Check when image is ready (must re-run after hydration when images actually render)
   useEffect(() => {
     // Wait for hydration before checking for images
-    if (!isHydrated) return;
+    if (!isHydrated) {
+      console.log('[Portfolio] Not hydrated yet, skipping media check');
+      return;
+    }
 
     const host = viewportRef.current;
-    if (!host) return;
+    if (!host) {
+      console.log('[Portfolio] No host element');
+      return;
+    }
 
-    const imageEl =
-      (host.querySelector("picture img") as HTMLImageElement | null) ??
-      (host.querySelector("img") as HTMLImageElement | null);
+    let cleanup: (() => void) | null = null;
 
-    if (!imageEl) {
+    const checkForImage = () => {
+      const imageEl =
+        (host.querySelector("picture img") as HTMLImageElement | null) ??
+        (host.querySelector("img") as HTMLImageElement | null);
+
+      if (!imageEl) {
+        console.log('[Portfolio] No image element found yet, will retry...');
+        return false;
+      }
+
+      console.log('[Portfolio] Image element found:', {
+        complete: imageEl.complete,
+        naturalHeight: imageEl.naturalHeight,
+        src: imageEl.src,
+      });
+
+      if (imageEl.complete && imageEl.naturalHeight > 0) {
+        console.log('[Portfolio] Image already loaded, setting mediaReady=true');
+        setMediaReady(true);
+        return true;
+      }
+
       setMediaReady(false);
-      return;
+      const handleReady = () => {
+        console.log('[Portfolio] Image load event fired, setting mediaReady=true');
+        setMediaReady(true);
+      };
+      imageEl.addEventListener("load", handleReady, { once: true });
+      imageEl.addEventListener("error", handleReady, { once: true });
+
+      cleanup = () => {
+        imageEl.removeEventListener("load", handleReady);
+        imageEl.removeEventListener("error", handleReady);
+      };
+
+      return true;
+    };
+
+    // Try immediately
+    if (checkForImage()) {
+      return () => cleanup?.();
     }
 
-    if (imageEl.complete && imageEl.naturalHeight > 0) {
-      setMediaReady(true);
-      return;
-    }
+    // If image not found, use MutationObserver to watch for it
+    const observer = new MutationObserver(() => {
+      if (checkForImage()) {
+        observer.disconnect();
+      }
+    });
 
-    setMediaReady(false);
-    const handleReady = () => setMediaReady(true);
-    imageEl.addEventListener("load", handleReady, { once: true });
-    imageEl.addEventListener("error", handleReady, { once: true });
+    observer.observe(host, {
+      childList: true,
+      subtree: true,
+    });
+
+    // Also try again after a short delay as fallback
+    const fallbackTimer = setTimeout(() => {
+      checkForImage();
+    }, 100);
 
     return () => {
-      imageEl.removeEventListener("load", handleReady);
-      imageEl.removeEventListener("error", handleReady);
+      observer.disconnect();
+      clearTimeout(fallbackTimer);
+      cleanup?.();
     };
   }, [item, mediaEntry, isHydrated]);
 
@@ -273,10 +342,18 @@ function ComputerScreen({
 
   // Trigger slide advance after scroll completes
   useEffect(() => {
-    if (!contentReady || !isActive || totalSlides <= 1 || autoScroll.paused) return;
+    if (!contentReady || !isActive || totalSlides <= 1) return;
+    // Don't start new cycle if autoscroll is paused by user interaction
+    if (autoScroll.paused) return;
+
     const totalDuration =
       AUTO_SCROLL_START_DELAY_MS + scrollDurationMs + BETWEEN_SLIDE_PAUSE_MS;
-    const timer = window.setTimeout(() => onCycleComplete(), totalDuration);
+    const timer = window.setTimeout(() => {
+      // Double-check we're still active before completing cycle
+      if (!autoScroll.paused) {
+        onCycleComplete();
+      }
+    }, totalDuration);
     return () => window.clearTimeout(timer);
   }, [isActive, contentReady, onCycleComplete, scrollDurationMs, totalSlides, autoScroll.paused]);
 
@@ -481,7 +558,8 @@ export default function PortfolioScreenShowcase({
                 mediaEntry={mediaEntries[slideIndex]}
                 totalSlides={slides.length || 1}
                 onCycleComplete={handleCycleComplete}
-                isActive={isActive && transitionStage === "idle"}
+                isActive={isActive}
+                isTransitioning={transitionStage !== "idle"}
               />
             </div>
           );
