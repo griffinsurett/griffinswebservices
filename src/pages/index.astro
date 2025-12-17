@@ -51,13 +51,14 @@ const heroDescription =
         scrollToSection="#portfolio-showcase"
         />
 
+        <div class="block md:hidden min-h-screen inner-section">
          <ContentRenderer
             query={query("projects")}
             variant="PortfolioScreenVariant"
             responsivity={{ hide: "md" }}
             clientLoadPlaceholder={false}
           />
-
+          </div>
     <!-- Under-hero portfolio showcase -->
     <!-- <PortfolioShowcaseSection /> -->
 

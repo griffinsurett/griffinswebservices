@@ -1,0 +1,85 @@
+---
+// src/components/LoopTemplates/ComputerScreen.astro
+/**
+ * Computer Screen Component - SSR Portfolio Screen Display
+ * Static server-rendered computer screen mockup for portfolio items
+ */
+
+export interface Props {
+  src?: string;
+  srcSet?: string;
+  sizes?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  sources?: { type?: string; srcSet: string; sizes?: string }[];
+  className?: string;
+  fetchPriority?: "high" | "low" | "auto";
+}
+
+const {
+  src,
+  srcSet,
+  sizes,
+  alt = "Project preview",
+  width,
+  height,
+  sources = [],
+  className = "",
+  fetchPriority = "high",
+} = Astro.props;
+---
+
+<div class={`relative h-full w-full ${className}`.trim()}>
+  <div class="relative h-full">
+    <!-- Browser chrome header -->
+    <div class="flex flex-col gap-3 border-b border-white/10 px-4 py-3 text-white/70 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-white/50">
+        <span class="flex items-center gap-1.5">
+          <span class="h-3 w-3 rounded-full bg-gray-800" />
+          <span class="h-3 w-3 rounded-full bg-gray-800" />
+          <span class="h-3 w-3 rounded-full bg-gray-800" />
+        </span>
+      </div>
+    </div>
+
+    <!-- Screen viewport -->
+    <figure class="relative h-full overflow-hidden bg-black/40">
+      {sources.length > 0 ? (
+        <picture>
+          {sources.map((source, idx) => (
+            <source
+              key={idx}
+              srcSet={source.srcSet}
+              sizes={source.sizes ?? sizes}
+              type={source.type}
+            />
+          ))}
+          <img
+            src={src}
+            srcSet={srcSet}
+            sizes={sizes}
+            alt={alt}
+            width={width}
+            height={height}
+            fetchpriority={fetchPriority}
+            draggable={false}
+            class="block h-auto min-h-full w-full select-none object-cover object-top"
+          />
+        </picture>
+      ) : (
+        <img
+          src={src}
+          srcSet={srcSet}
+          sizes={sizes}
+          alt={alt}
+          width={width}
+          height={height}
+          fetchpriority={fetchPriority}
+          draggable={false}
+          class="block h-auto min-h-full w-full select-none object-cover object-top"
+        />
+      )}
+    </figure>
+  </div>
+</div>
