@@ -18,6 +18,7 @@ interface ResponsivityConfig {
 interface Props extends BaseVariantProps {
   responsivity?: ResponsivityConfig;
   clientLoadPlaceholder?: boolean;
+  optimizeForLCP?: boolean;
 }
 
 const {
@@ -26,6 +27,7 @@ const {
   id,
   responsivity,
   clientLoadPlaceholder = true,
+  optimizeForLCP = false,
 } = Astro.props as Props;
 
 // Map Tailwind breakpoints to media queries
@@ -77,7 +79,7 @@ const IMAGE_FORMATS: { format: OptimizedFormat; quality: number }[] = [
 
 // Process items and generate optimized images
 const processedItems = await Promise.all(
-  safeItems.map(async (item) => {
+  safeItems.map(async (item, index) => {
     const primaryImage = item.featuredImage ?? item.bannerImage;
     const metadata = resolveImageMetadata(primaryImage);
     const altText = primaryImage
@@ -146,6 +148,10 @@ const processedItems = await Promise.all(
         sizes: SIZES,
       }));
 
+    // First item gets LCP optimization if enabled
+    const isFirstItem = index === 0;
+    const shouldOptimizeForLCP = optimizeForLCP && isFirstItem;
+
     return {
       data: item,
       mediaEntry: {
@@ -155,9 +161,9 @@ const processedItems = await Promise.all(
         width: defaultImage.attributes.width as number,
         height: defaultImage.attributes.height as number,
         alt: altText,
-        loading: "lazy" as const,
-        decoding: "async" as const,
-        fetchPriority: "auto" as const,
+        loading: (shouldOptimizeForLCP ? "eager" : "lazy") as const,
+        decoding: (shouldOptimizeForLCP ? "sync" : "async") as const,
+        fetchPriority: (shouldOptimizeForLCP ? "high" : "auto") as const,
         sources: pictureSources,
       },
     };
@@ -171,6 +177,7 @@ const showcaseProps = {
   items: portfolioItems,
   mediaEntries: showcaseMedia,
   className: "w-full mx-auto",
+  optimizeFirstImage: optimizeForLCP,
 };
 
 // Generate Tailwind classes for show/hide based on responsivity
@@ -240,7 +247,8 @@ if (!clientLoadPlaceholder && firstMedia) {
               alt={placeholderMedia.alt || firstItem?.title || "Project preview"}
               width={placeholderMedia.width}
               height={placeholderMedia.height}
-              fetchpriority="high"
+              loading={optimizeForLCP ? "eager" : "lazy"}
+              fetchpriority={optimizeForLCP ? "high" : "auto"}
               draggable={false}
               class="block h-auto min-h-full w-full select-none object-cover object-top"
             />

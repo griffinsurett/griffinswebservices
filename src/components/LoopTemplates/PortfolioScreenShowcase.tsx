@@ -28,6 +28,7 @@ interface PortfolioScreenShowcaseProps {
   items?: PortfolioItemData[];
   className?: string;
   mediaEntries?: (PortfolioMediaEntry | undefined)[];
+  optimizeFirstImage?: boolean;
 }
 
 interface ScreenProps {
@@ -347,6 +348,7 @@ function ComputerScreen({
     }
 
     // Use ClientImage for all image rendering (only renders on client)
+    // Use media entry's loading/fetch priority if set (for LCP optimization)
     return (
       <ClientImage
         src={mediaEntry?.src || fallbackSrc}
@@ -356,9 +358,9 @@ function ComputerScreen({
         alt={mediaEntry?.alt || item.alt || item.title || "Project preview"}
         width={mediaEntry?.width}
         height={mediaEntry?.height}
-        loading="lazy"
-        decoding="async"
-        fetchPriority="auto"
+        loading={mediaEntry?.loading || "lazy"}
+        decoding={mediaEntry?.decoding || "async"}
+        fetchPriority={mediaEntry?.fetchPriority || "auto"}
         draggable={false}
         className="block h-auto min-h-full w-full select-none object-cover object-top"
       />
