@@ -229,25 +229,31 @@ if (!clientLoadPlaceholder && firstMedia) {
   class={`relative overflow-hidden z-10 ${className} ${visibilityClasses}`.trim()}
 >
   <div class="relative w-full max-w-[920px] mx-auto h-[420px] sm:h-[520px] lg:h-[450px]">
-    <div class="relative h-full top-0">
-      <!-- SSR thumbnail placeholder for first item -->
-      {!clientLoadPlaceholder && placeholderMedia && (
-        <div class="absolute inset-0 pointer-events-none card-bg-2 rounded-lg" data-ssr-placeholder>
-          <ComputerScreen
-            src={placeholderMedia.src}
-            alt={placeholderMedia.alt || firstItem?.title || "Project preview"}
-            width={placeholderMedia.width}
-            height={placeholderMedia.height}
-            fetchPriority="high"
-          />
-        </div>
-      )}
+    <div class="relative h-full top-0 card-bg-2 rounded-lg">
+      <!-- ComputerScreen wrapper with client carousel inside -->
+      <ComputerScreen>
+        <!-- SSR thumbnail placeholder for first item -->
+        {!clientLoadPlaceholder && placeholderMedia && (
+          <figure class="absolute inset-0 pointer-events-none overflow-hidden bg-black/40" data-ssr-placeholder>
+            <img
+              src={placeholderMedia.src}
+              alt={placeholderMedia.alt || firstItem?.title || "Project preview"}
+              width={placeholderMedia.width}
+              height={placeholderMedia.height}
+              fetchpriority="high"
+              draggable={false}
+              class="block h-auto min-h-full w-full select-none object-cover object-top"
+            />
+          </figure>
+        )}
 
-      {mediaQuery ? (
-        <PortfolioScreenShowcase client:media={mediaQuery} {...showcaseProps} />
-      ) : (
-        <PortfolioScreenShowcase client:visible {...showcaseProps} />
-      )}
+        <!-- Client carousel loads here -->
+        {mediaQuery ? (
+          <PortfolioScreenShowcase client:media={mediaQuery} {...showcaseProps} />
+        ) : (
+          <PortfolioScreenShowcase client:visible {...showcaseProps} />
+        )}
+      </ComputerScreen>
     </div>
   </div>
 </section>

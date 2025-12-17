@@ -69,7 +69,6 @@ function ComputerScreen({
 
   // Mark as hydrated after mount (client-side only)
   useEffect(() => {
-    console.log('[Portfolio] ComputerScreen mounted', { isActive, item: item.title });
     setIsHydrated(true);
   }, []);
 
@@ -112,19 +111,6 @@ function ComputerScreen({
     resetOnInactive: false,
   });
 
-  // Debug autoscroll state
-  useEffect(() => {
-    console.log('[Portfolio] AutoScroll state:', {
-      isActive,
-      contentReady,
-      isTransitioning,
-      autoScrollActive,
-      mediaReady,
-      isHydrated,
-      paused: autoScroll.paused,
-      inView: autoScroll.inView,
-    });
-  }, [isActive, contentReady, isTransitioning, autoScrollActive, mediaReady, isHydrated, autoScroll.paused, autoScroll.inView]);
 
   // Click-to-scroll: manual scroll only enabled after click, resets when resume timer fires
   const { enabled: manualScrollEnabled, enableScroll } = useClickToScroll({
@@ -142,17 +128,10 @@ function ComputerScreen({
 
   // Check when image is ready (must re-run after hydration when images actually render)
   useEffect(() => {
-    // Wait for hydration before checking for images
-    if (!isHydrated) {
-      console.log('[Portfolio] Not hydrated yet, skipping media check');
-      return;
-    }
+    if (!isHydrated) return;
 
     const host = viewportRef.current;
-    if (!host) {
-      console.log('[Portfolio] No host element');
-      return;
-    }
+    if (!host) return;
 
     let cleanup: (() => void) | null = null;
 
@@ -161,28 +140,15 @@ function ComputerScreen({
         (host.querySelector("picture img") as HTMLImageElement | null) ??
         (host.querySelector("img") as HTMLImageElement | null);
 
-      if (!imageEl) {
-        console.log('[Portfolio] No image element found yet, will retry...');
-        return false;
-      }
-
-      console.log('[Portfolio] Image element found:', {
-        complete: imageEl.complete,
-        naturalHeight: imageEl.naturalHeight,
-        src: imageEl.src,
-      });
+      if (!imageEl) return false;
 
       if (imageEl.complete && imageEl.naturalHeight > 0) {
-        console.log('[Portfolio] Image already loaded, setting mediaReady=true');
         setMediaReady(true);
         return true;
       }
 
       setMediaReady(false);
-      const handleReady = () => {
-        console.log('[Portfolio] Image load event fired, setting mediaReady=true');
-        setMediaReady(true);
-      };
+      const handleReady = () => setMediaReady(true);
       imageEl.addEventListener("load", handleReady, { once: true });
       imageEl.addEventListener("error", handleReady, { once: true });
 
@@ -400,31 +366,19 @@ function ComputerScreen({
   };
 
   return (
-    <div className="relative h-full w-full" onClick={enableScroll}>
-      <div className="relative h-full">
-        <div className="flex flex-col gap-3 border-b border-white/10 px-4 py-3 text-white/70 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-white/50">
-            <span className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded-full bg-gray-800" />
-              <span className="h-3 w-3 rounded-full bg-gray-800" />
-              <span className="h-3 w-3 rounded-full bg-gray-800" />
-            </span>
-          </div>
-        </div>
-        <figure
-          ref={viewportRef}
-          className={`relative h-full overflow-y-scroll bg-black/40 ${
-            manualScrollEnabled ? "overscroll-contain touch-pan-y" : "touch-none"
-          }`}
-          style={{
-            WebkitOverflowScrolling: manualScrollEnabled ? "touch" : "auto",
-            overscrollBehaviorY: manualScrollEnabled ? "contain" : "none",
-          }}
-        >
-          {renderMedia()}
-        </figure>
-      </div>
-    </div>
+    <figure
+      ref={viewportRef}
+      onClick={enableScroll}
+      className={`relative h-full overflow-y-scroll bg-black/40 ${
+        manualScrollEnabled ? "overscroll-contain touch-pan-y" : "touch-none"
+      }`}
+      style={{
+        WebkitOverflowScrolling: manualScrollEnabled ? "touch" : "auto",
+        overscrollBehaviorY: manualScrollEnabled ? "contain" : "none",
+      }}
+    >
+      {renderMedia()}
+    </figure>
   );
 }
 
@@ -523,7 +477,7 @@ export default function PortfolioScreenShowcase({
 
   return (
     <div className={`relative h-full ${className}`.trim()}>
-      <div className="relative h-full w-full overflow-hidden card-bg-2 rounded-lg">
+      <div className="relative h-full w-full overflow-hidden">
         {slides.map((item, slideIndex) => {
           const isActive = slideIndex === activeIndex;
           const isPrev = slideIndex === prevIndex;
