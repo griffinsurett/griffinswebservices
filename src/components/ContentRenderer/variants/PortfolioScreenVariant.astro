@@ -49,8 +49,8 @@ if (responsivity?.show) {
   // Show only on this breakpoint and above
   mediaQuery = breakpointMap[responsivity.show];
 } else if (responsivity?.hide) {
-  // Hide on this breakpoint and below (show above it)
-  mediaQuery = breakpointMap[responsivity.hide];
+  // Hide on this breakpoint and above (show only below it)
+  mediaQuery = breakpointMaxMap[responsivity.hide];
 }
 
 const safeItems = toArray(items);
@@ -169,11 +169,21 @@ const showcaseProps = {
   mediaEntries: showcaseMedia,
   className: "w-full mx-auto",
 };
+
+// Generate Tailwind classes for show/hide based on responsivity
+let visibilityClasses = "";
+if (responsivity?.show) {
+  // Hidden by default, show only at breakpoint and above
+  visibilityClasses = `hidden ${responsivity.show}:block`;
+} else if (responsivity?.hide) {
+  // Visible by default, hide at breakpoint and above
+  visibilityClasses = `block ${responsivity.hide}:hidden`;
+}
 ---
 
 <section
   id={id}
-  class={`relative overflow-hidden z-10 ${className}`.trim()}
+  class={`relative overflow-hidden z-10 ${className} ${visibilityClasses}`.trim()}
 >
   <div class="relative w-full max-w-[920px] mx-auto h-[420px] sm:h-[520px] lg:h-[450px]">
     <div class="relative h-full top-0">
