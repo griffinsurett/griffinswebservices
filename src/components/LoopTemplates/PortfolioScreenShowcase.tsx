@@ -362,7 +362,7 @@ function ComputerScreen({
 
   return (
     <div className="relative h-full w-full" onClick={enableScroll}>
-      <div className="relative h-full bg-bg3">
+      <div className="relative h-full">
         <div className="flex flex-col gap-3 border-b border-white/10 px-4 py-3 text-white/70 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-white/50">
             <span className="flex items-center gap-1.5">
@@ -484,7 +484,7 @@ export default function PortfolioScreenShowcase({
 
   return (
     <div className={`relative h-full ${className}`.trim()}>
-      <div className="relative h-full w-full overflow-hidden card-bg rounded-lg">
+      <div className="relative h-full w-full overflow-hidden card-bg-2 rounded-lg">
         {slides.map((item, slideIndex) => {
           const isActive = slideIndex === activeIndex;
           const isPrev = slideIndex === prevIndex;

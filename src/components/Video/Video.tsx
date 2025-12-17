@@ -18,6 +18,7 @@ interface VideoProps extends VideoHTMLAttributes<HTMLVideoElement> {
   placeholderSrc?: string;
   clientPosterSrc?: string;
   clientPlaceholderSrc?: string;
+  wrapperClass?: string;
 }
 
 export const Video = forwardRef<HTMLVideoElement, VideoProps>(
@@ -38,17 +39,18 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
       placeholderSrc,
       clientPosterSrc,
       clientPlaceholderSrc,
+      wrapperClass = "",
       ...rest
     },
     ref,
   ) => {
     const internalRef = useRef<HTMLVideoElement | null>(null);
     const [resolvedPoster, setResolvedPoster] = useState<string | undefined>(
-      clientLoadPlaceholder ? undefined : poster,
+      poster,
     );
     const [resolvedPlaceholderSrc, setResolvedPlaceholderSrc] = useState<
       string | undefined
-    >(clientLoadPlaceholder ? undefined : placeholderSrc);
+    >(placeholderSrc);
 
     const assignRef = (node: HTMLVideoElement | null) => {
       internalRef.current = node;
@@ -87,39 +89,40 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
     }, [lazy, autoPlay]);
 
     useEffect(() => {
-      if (!clientLoadPlaceholder) {
-        setResolvedPoster(poster);
+      if (clientLoadPlaceholder && clientPosterSrc) {
+        setResolvedPoster(clientPosterSrc);
         return;
       }
-      if (clientPosterSrc) {
-        setResolvedPoster(clientPosterSrc);
-      }
+      setResolvedPoster(poster);
     }, [clientLoadPlaceholder, clientPosterSrc, poster]);
 
     useEffect(() => {
-      if (!clientLoadPlaceholder) {
-        setResolvedPlaceholderSrc(placeholderSrc);
+      if (clientLoadPlaceholder && clientPlaceholderSrc) {
+        setResolvedPlaceholderSrc(clientPlaceholderSrc);
         return;
       }
-      if (clientPlaceholderSrc) {
-        setResolvedPlaceholderSrc(clientPlaceholderSrc);
-      }
+      setResolvedPlaceholderSrc(placeholderSrc);
     }, [clientLoadPlaceholder, clientPlaceholderSrc, placeholderSrc]);
 
+    const wrapperClasses = `relative grid w-full h-full ${wrapperClass ?? ""}`.trim();
+    const mediaClasses = `w-full h-full object-cover ${className ?? ""}`.trim();
+    const stackClasses = "col-start-1 col-end-2 row-start-1 row-end-2";
+
     return (
-      <div className="relative w-full h-full">
+      <div className={wrapperClasses}>
         {resolvedPlaceholderSrc && (
           <img
             src={resolvedPlaceholderSrc}
             alt="Video placeholder"
-            className={`absolute inset-0 w-full h-full object-cover z-0 ${className}`.trim()}
-            loading={clientLoadPlaceholder ? "eager" : "lazy"}
+            className={`${mediaClasses} ${stackClasses}`.trim()}
+            loading="eager"
             decoding="async"
+            style={{ zIndex: 0 }}
           />
         )}
         <video
           ref={assignRef}
-          className={`relative w-full h-full object-cover z-10 ${className}`.trim()}
+          className={`${mediaClasses} ${stackClasses}`.trim()}
           poster={resolvedPoster}
           autoPlay={!lazy && autoPlay}
           muted={muted}
@@ -129,6 +132,7 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
           preload={lazy ? "metadata" : "auto"}
           data-video-src={lazy ? src : undefined}
           src={!lazy ? src : undefined}
+          style={{ zIndex: 1 }}
           {...rest}
         >
           {src && (

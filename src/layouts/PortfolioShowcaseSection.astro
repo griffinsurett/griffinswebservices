@@ -4,6 +4,7 @@
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query } from "@/utils/query";
 import LogoCircle from "@/components/LogoCircle";
+import DecorativeArc from "@/components/DecorativeArc";
 import Heading from "@/components/Heading";
 import Video from "@/components/Video/Video.astro";
 
@@ -12,12 +13,9 @@ interface Props {
   id?: string;
 }
 
-const {
-  className = "",
-  id = "portfolio-showcase",
-} = Astro.props as Props;
-
+const { className = "", id = "portfolio-showcase" } = Astro.props as Props;
 ---
+
 <section
   id={id}
   class={`portfolio-showcase-section flex items-start justify-left relative overflow-hidden pt-0 ${className}`}
@@ -26,11 +24,45 @@ const {
     aria-hidden="true"
     data-animate="fade-in"
     data-animate-once="true"
-    data-animate-delay="600"
+    className="hidden lg:block"
   />
-  <div class="relative z-10 w-full">
+
+  {/* Desktop arc - right aligned */}
+  <DecorativeArc
+    position="custom"
+    size="lg"
+    top="50%"
+    left="43%"
+    transform="translate(0%, -60%)"
+    visible={false}
+    aria-hidden="true"
+    data-animate="fade-in"
+    data-animate-once="true"
+    className="hidden lg:block"
+  />
+
+  {/* Mobile arc - left aligned */}
+  <DecorativeArc
+    position="custom"
+    size="custom"
+    top="65%"
+    left="10%"
+    transform="translate(0%, -50%)"
+    width="clamp(50rem, 180vw, 100rem)"
+    height="clamp(50rem, 180vw, 100rem)"
+    borderWidth="clamp(18px, 10vw, 48px)"
+    borderColor="var(--color-heading)"
+    borderStyle="solid"
+    visible={false}
+    aria-hidden="true"
+    data-animate="fade-in"
+    data-animate-once="true"
+    className="block lg:hidden"
+  />
+
+  <div class="relative z-10 w-full flex flex-wrap">
     <div
-      class="relative min-h-screen inner-section flex flex-col gap-16 pt-0"
+      class="relative lg:min-h-screen inner-section flex flex-col gap-16 pt-0"
       data-animate="zoom-in"
       data-animate-once="true"
     >
@@ -40,27 +72,37 @@ const {
         className="pt-0"
       />
     </div>
-
-    <div class="portfolio-process-section min-h-screen py-10 lg:py-16">
-      <div class="inner-section grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-        <div class="space-y-6">
+    <div class="inner-section min-h-screen space-y-12">
+      <div
+        class="portfolio-process-section relative flex flex-col-reverse lg:flex-row justify-center items-center gap-2 lg:gap-12"
+      >
+        <div class="flex items-start justify-center">
+          <span
+            class="inline-flex h-1 mt-3 mr-3 rounded-full primary-gradient w-20 shrink-0"
+            aria-hidden="true"></span>
           <Heading
             tagName="h2"
-            className="text-3xl lg:text-4xl xl:text-4xl"
-            before="From the first strategy session"
-            text="to handoff, every detail matters."
-            beforeClass="text-muted"
-            textClass="text-gradient"
-          />
+            className="text-3xl text-shadow-2xs lg:text-4xl xl:text-4xl"
+          >
+            From the first strategy session to handoff, every detail matters.
+          </Heading>
         </div>
-        <div class="aspect-5/3 rounded-3xl bg-muted/10 border border-muted/20 flex items-center justify-center overflow-hidden">
+        <div>
           <Video
             src="/speed-site.mov"
             alt="Prototype walkthrough"
             controls
-            clientLoadPlaceholder={true}
+            lazy={true}
+            autoplay={false}
+            clientLoadPlaceholder={false}
+            wrapperClass="video-shell"
           />
         </div>
+      </div>
+      <div>
+      <Heading />
+      <p></p>
+      <ContentRenderer query={query("stats")} variant="StatsVariant" />
       </div>
     </div>
   </div>
@@ -73,31 +115,30 @@ const {
   }
 
   .portfolio-showcase-section__arc {
-    --arc-translate: translate(35%, -12%);
+    --arc-translate: translate(0%, -60%);
     position: absolute;
-    width: clamp(48rem, 110vw, 120rem);
-    height: clamp(48rem, 110vw, 120rem);
+    width: clamp(64rem, 140vw, 160rem);
+    height: clamp(64rem, 140vw, 160rem);
     border-radius: 9999px;
     border: clamp(56px, 14vw, 180px) solid var(--color-heading);
     background: transparent;
-    top: clamp(-42rem, -28vh, -14rem);
-    right: clamp(-36rem, -18vw, -12rem);
+    top: 50%;
+    left: 43%;
     transform: var(--arc-translate);
     opacity: 0;
     pointer-events: none;
     z-index: 0;
-    transition:
-      opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
     transition-delay: 0.4s;
   }
 
   @media (max-width: 768px) {
     .portfolio-showcase-section__arc {
-      --arc-translate: translate(25%, -8%);
-      top: clamp(-32rem, -26vh, -10rem);
-      right: clamp(-24rem, -10vw, -8rem);
-      width: clamp(38rem, 160vw, 80rem);
-      height: clamp(38rem, 160vw, 80rem);
+      --arc-translate: translate(0%, -50%);
+      top: 50%;
+      left: 50%;
+      width: clamp(50rem, 180vw, 100rem);
+      height: clamp(50rem, 180vw, 100rem);
       border-width: clamp(18px, 10vw, 48px);
       transform: var(--arc-translate);
     }

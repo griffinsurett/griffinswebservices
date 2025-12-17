@@ -13,6 +13,7 @@ import CTASection from "@/layouts/CTASection.astro";
 import Video from "@/components/Video/Video.astro";
 import PortfolioShowcaseSection from "@/layouts/PortfolioShowcaseSection.astro";
 import GradientLayout from "@/layouts/GradientLayout.astro";
+import FrontPageHero from "@/layouts/FrontPageHero.astro";
 
 const heroHeading = {
   before: "Launch a website that works.",
@@ -21,7 +22,7 @@ const heroHeading = {
 };
 
 const heroDescription =
-  "We're a US-based web development company creating fast, engaging websites built to grow your business. We handle hosting, maintenance, and security — and provide full SEO services to help you get found and stay ahead.";
+  "We're a New Jersey based web development company creating fast, engaging websites built to grow your business. We handle hosting, maintenance, and security — and provide full SEO services to help you get found and stay ahead.";
 
 ---
 
@@ -30,7 +31,7 @@ const heroDescription =
 
     <GradientLayout>
       <!-- Lightweight text-only hero - zero carousel JS on initial load -->
-      <TextHero
+      <!-- <TextHero
         heading={heroHeading}
         description={heroDescription}
         primaryCTA={{
@@ -38,10 +39,20 @@ const heroDescription =
           link: "/contact-us",
         }}
         scrollToSection="#portfolio-showcase"
-      />
+      /> -->
+
+      <FrontPageHero
+      heading={heroHeading}
+        description={heroDescription}
+        primaryCTA={{
+          text: "Get Started",
+          link: "/contact-us",
+        }}
+        scrollToSection="#portfolio-showcase"
+        />
 
     <!-- Under-hero portfolio showcase -->
-    <PortfolioShowcaseSection />
+    <!-- <PortfolioShowcaseSection /> -->
 
     </GradientLayout>
 
@@ -71,17 +82,17 @@ const heroDescription =
         text: "Our Websites Different",
       }}
     >
-    <div slot="under-text" class="aspect-5/3 rounded-3xl bg-muted/10 border border-muted/20 flex items-center justify-center overflow-hidden">
-      <Video
-        src="/speed-site.mov"
-        alt="Speed site walkthrough"
-        controls
-        clientLoadPlaceholder={true}
-      />
-      <!-- <p class="large-text text-white/80">
-        Watch how on our sites a user may even be done booking before the average site loads.
-      </p> -->
-    </div>
+    <Video
+      slot="under-text"
+      src="/speed-site.mov"
+      alt="Speed site walkthrough"
+      controls
+      clientLoadPlaceholder={true}
+      wrapperClass="video-shell"
+    />
+    <!-- <p class="large-text text-white/80">
+      Watch how on our sites a user may even be done booking before the average site loads.
+    </p> -->
   </ContentRenderer>
 
     <!-- About Us Two-Column Section -->
@@ -95,14 +106,13 @@ const heroDescription =
       borderClass=""
       ctaText="Learn More About Us"
     >
-    <div class="aspect-5/3 rounded-3xl bg-muted/10 border border-muted/20 flex items-center justify-center overflow-hidden">
-      <Video
-        src="/speed-site.mov"
-        alt="Speed site walkthrough"
-        controls
-        clientLoadPlaceholder={true}
-      />
-    </div>
+    <Video
+      src="/speed-site.mov"
+      alt="Speed site walkthrough"
+      controls
+      clientLoadPlaceholder={true}
+      wrapperClass="video-shell"
+    />
     </ContentRenderer>
 
     <!-- <ContentRenderer query={query("projects")} variant="PortfolioVariant" /> -->

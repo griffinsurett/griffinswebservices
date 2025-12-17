@@ -7,13 +7,27 @@ import PortfolioScreenShowcase from "@/components/LoopTemplates/PortfolioScreenS
 import { getImageAlt, resolveImageMetadata } from "@/utils/images";
 import { toArray } from "@/utils/array";
 
-interface Props extends BaseVariantProps {}
+interface Props extends BaseVariantProps {
+  clientMedia?: "none" | "sm" | "md" | "lg" | "xl" | "2xl";
+}
 
 const {
   items = [],
   className = "",
   id,
+  clientMedia = "none",
 } = Astro.props as Props;
+
+// Map Tailwind breakpoints to media queries
+const breakpointMap: Record<string, string> = {
+  sm: "(min-width: 640px)",
+  md: "(min-width: 768px)",
+  lg: "(min-width: 1024px)",
+  xl: "(min-width: 1280px)",
+  "2xl": "(min-width: 1536px)",
+};
+
+const mediaQuery = clientMedia !== "none" ? breakpointMap[clientMedia] : undefined;
 
 const safeItems = toArray(items);
 
@@ -137,9 +151,13 @@ const showcaseProps = {
   id={id}
   class={`relative overflow-hidden z-10 ${className}`.trim()}
 >
-  <div class="relative w-full max-w-4xl mx-auto h-[420px] sm:h-[520px] lg:h-[600px]">
-    <div class="relative bg-bg h-full top-0">
-      <PortfolioScreenShowcase client:visible {...showcaseProps} />
+  <div class="relative w-full max-w-[920px] mx-auto h-[420px] sm:h-[520px] lg:h-[450px]">
+    <div class="relative h-full top-0">
+      {mediaQuery ? (
+        <PortfolioScreenShowcase client:media={mediaQuery} {...showcaseProps} />
+      ) : (
+        <PortfolioScreenShowcase client:visible {...showcaseProps} />
+      )}
     </div>
   </div>
 </section>

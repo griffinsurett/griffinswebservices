@@ -51,39 +51,35 @@ if (!posterUrl && src) {
   placeholderUrl = generated.placeholderSrc;
 }
 
-// Only include placeholder markup during SSR when explicitly enabled
-const placeholderImageSrc =
-  !clientLoadPlaceholder && placeholderUrl ? placeholderUrl : undefined;
-
-const ssrPoster = clientLoadPlaceholder ? undefined : posterUrl;
+// When clientLoadPlaceholder is true: show blurred placeholder, then swap to poster
+// When clientLoadPlaceholder is false: show poster directly as placeholder
+const ssrPoster = posterUrl;
 const deferredPosterSrc = clientLoadPlaceholder ? posterUrl : undefined;
-const ssrPlaceholder = placeholderImageSrc;
-const clientPlaceholderSrc =
-  clientLoadPlaceholder && placeholderUrl ? placeholderUrl : undefined;
+const ssrPlaceholder = clientLoadPlaceholder ? placeholderUrl : posterUrl;
+const clientPlaceholderSrc = clientLoadPlaceholder ? placeholderUrl : undefined;
 
 ---
 
-<figure class={`video-wrapper relative ${wrapperClass}`.trim()}>
-  <VideoClient
-    client:visible
-    className={className}
-    src={src}
-    poster={ssrPoster}
-    clientPosterSrc={deferredPosterSrc}
-    placeholderSrc={ssrPlaceholder}
-    clientPlaceholderSrc={clientPlaceholderSrc}
-    autoPlay={autoplay}
-    muted={muted}
-    loop={loop}
-    controls={controls}
-    playsInline={playsinline}
-    lazy={lazy}
-    clientLoadPlaceholder={clientLoadPlaceholder}
-    sourceType={src?.endsWith(".mov")
-      ? "video/quicktime"
-      : src?.endsWith(".webm")
-        ? "video/webm"
-        : "video/mp4"}
-    {...rest}
-  />
-</figure>
+<VideoClient
+  client:visible
+  className={className}
+  wrapperClass={wrapperClass}
+  src={src}
+  poster={ssrPoster}
+  clientPosterSrc={deferredPosterSrc}
+  placeholderSrc={ssrPlaceholder}
+  clientPlaceholderSrc={clientPlaceholderSrc}
+  autoPlay={autoplay}
+  muted={muted}
+  loop={loop}
+  controls={controls}
+  playsInline={playsinline}
+  lazy={lazy}
+  clientLoadPlaceholder={clientLoadPlaceholder}
+  sourceType={src?.endsWith(".mov")
+    ? "video/quicktime"
+    : src?.endsWith(".webm")
+      ? "video/webm"
+      : "video/mp4"}
+  {...rest}
+/>

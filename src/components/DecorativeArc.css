@@ -1,0 +1,121 @@
+/* DecorativeArc - Reusable decorative circle component */
+
+.decorative-arc {
+  --arc-opacity: 0.12;
+  position: absolute;
+  border-radius: 9999px;
+  background: transparent;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition:
+    opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0.4s;
+}
+
+/* Size variants */
+.decorative-arc--sm {
+  width: clamp(48rem, 100vw, 100rem);
+  height: clamp(48rem, 100vw, 100rem);
+  border-width: clamp(32px, 8vw, 100px);
+}
+
+.decorative-arc--md {
+  width: clamp(56rem, 120vw, 130rem);
+  height: clamp(56rem, 120vw, 130rem);
+  border-width: clamp(44px, 11vw, 140px);
+}
+
+.decorative-arc--lg {
+  width: clamp(64rem, 140vw, 160rem);
+  height: clamp(64rem, 140vw, 160rem);
+  border-width: clamp(56px, 14vw, 180px);
+}
+
+/* Position variants - shows quarter circle from different sides */
+.decorative-arc--right {
+  --arc-translate: translate(0%, -60%);
+  top: 50%;
+  left: 43%;
+  transform: var(--arc-translate);
+  border-color: rgb(from var(--color-heading) r g b / var(--arc-opacity));
+  border-style: solid;
+}
+
+.decorative-arc--left {
+  --arc-translate: translate(0%, -60%);
+  top: 50%;
+  right: 43%;
+  transform: var(--arc-translate);
+  border-color: rgb(from var(--color-heading) r g b / var(--arc-opacity));
+  border-style: solid;
+}
+
+.decorative-arc--center {
+  --arc-translate: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  transform: var(--arc-translate);
+  border-color: rgb(from var(--color-heading) r g b / var(--arc-opacity));
+  border-style: solid;
+}
+
+/* Visible state */
+.decorative-arc--visible {
+  opacity: 1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .decorative-arc--sm {
+    width: clamp(38rem, 140vw, 70rem);
+    height: clamp(38rem, 140vw, 70rem);
+    border-width: clamp(18px, 8vw, 36px);
+  }
+
+  .decorative-arc--md {
+    width: clamp(44rem, 160vw, 85rem);
+    height: clamp(44rem, 160vw, 85rem);
+    border-width: clamp(18px, 9vw, 42px);
+  }
+
+  .decorative-arc--lg {
+    width: clamp(50rem, 180vw, 100rem);
+    height: clamp(50rem, 180vw, 100rem);
+    border-width: clamp(18px, 10vw, 48px);
+  }
+
+  .decorative-arc--right {
+    --arc-translate: translate(0%, -50%);
+    top: 50%;
+    left: 50%;
+  }
+
+  .decorative-arc--left {
+    --arc-translate: translate(0%, -50%);
+    top: 50%;
+    right: 50%;
+  }
+
+  /* Support for CSS variable overrides on mobile */
+  .decorative-arc {
+    width: var(--mobile-width, inherit);
+    height: var(--mobile-height, inherit);
+    border-width: var(--mobile-border-width, inherit);
+    top: var(--mobile-top, inherit);
+    left: var(--mobile-left, inherit);
+    right: var(--mobile-right, inherit);
+    transform: var(--mobile-transform, inherit);
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .decorative-arc {
+    opacity: 1;
+  }
+
+  .decorative-arc--visible {
+    opacity: 1;
+  }
+}

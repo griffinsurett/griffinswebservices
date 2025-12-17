@@ -181,6 +181,10 @@ body {
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  .video-shell {
+    @apply rounded-3xl border border-muted/20 bg-muted/10 overflow-hidden;
+  }
 }
 
 @property --ab-progress {
