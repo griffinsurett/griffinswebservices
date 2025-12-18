@@ -1,6 +1,6 @@
 ---
 title: "About Us"
-description: "We're not another agency. We're your dedicated web team."
+description: "We’re a New Jersey–based web design and development agency building custom web solutions for businesses that want clarity, performance, and reliability. As a small team, we take a hands-on approach—working closely with our clients from planning to launch and beyond. Our focus is on creating fast, secure, and maintainable digital experiences that support real business goals."
 heading:
   before: "We're not another agency."
   text: "We're your dedicated web team."
@@ -17,9 +17,23 @@ addToMenu:
 ---
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortByOrder } from "@/utils/query";
+import Video from "@/components/Video/Video.astro";
 
-<ContentRenderer
-  query={query("about-us").orderBy(sortByOrder())}
-  variant="AccordionVariant"
-  columns={1}
-/>
+    <ContentRenderer
+      query={query("about-us").orderBy(sortByOrder())}
+      variant="TwoColumnImageVariant"
+      imagePosition="right"
+      imagePlaceholder="👨‍💻"
+      imageAlt="Griffin Surett - Founder"
+      contentType="text"
+      borderClass=""
+      ctaText="Learn More About Us"
+    >
+    <Video
+      src="/speed-site.mov"
+      alt="Speed site walkthrough"
+      controls
+      clientLoadPlaceholder={true}
+      wrapperClass="video-shell"
+    />
+    </ContentRenderer>
