@@ -7,6 +7,7 @@ import PortfolioScreenShowcase from "@/components/LoopTemplates/PortfolioScreenS
 import ComputerScreen from "@/components/LoopTemplates/ComputerScreen.astro";
 import { getImageAlt, resolveImageMetadata } from "@/utils/images";
 import { toArray } from "@/utils/array";
+import { animationProps } from "@/integrations/scroll-animations/props";
 
 type Breakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
 
@@ -207,6 +208,8 @@ const shouldShowPlaceholder = !clientLoadPlaceholder || optimizeForLCP;
 <div
   id={id}
   class={`relative overflow-hidden z-10 ${className} ${visibilityClasses}`.trim()}
+  {...animationProps("fade-in-up", { once: false, threshold: 0.4 })}
+  data-visible="true"
 >
   <div class="relative w-full max-w-[920px] mx-auto h-[420px] sm:h-[520px] lg:h-[450px]">
     <div class="relative h-full top-0 card-bg-2 rounded-lg">
