@@ -16,6 +16,8 @@ export interface CardRendererProps {
   animation?: {
     type?: string | ((index: number) => string);
     once?: boolean;
+    threshold?: number;
+    rootMargin?: string;
   };
 }
 
@@ -113,6 +115,8 @@ export default function CardRenderer({
             data-animate={animationType}
             data-animate-once={animationOnce ? "true" : undefined}
             data-animate-delay={shouldStagger ? String(delay) : undefined}
+            data-animate-threshold={animation?.threshold !== undefined ? String(animation.threshold) : undefined}
+            data-animate-root-margin={animation?.rootMargin}
           >
             <FeatureCard
               data={item}

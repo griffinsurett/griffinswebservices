@@ -98,6 +98,8 @@ class ScrollAnimationObserver {
   private disconnectors = new WeakMap<Element, () => void>();
   private defaultThreshold: number;
   private defaultRootMargin: string;
+  private lastScrollY: number = 0;
+  private scrollDirection: "up" | "down" = "down";
 
   constructor(options: AnimationObserverOptions = {}) {
     this.defaultThreshold = options.defaultThreshold ?? 0.1;
@@ -109,12 +111,22 @@ class ScrollAnimationObserver {
       return;
     }
 
+    // Track scroll direction
+    this.lastScrollY = window.scrollY;
+    window.addEventListener("scroll", this.handleScroll, { passive: true });
+
     // Observe initial elements
     this.observeAll();
 
     // Watch for dynamically added elements (React hydration, etc.)
     this.setupMutationObserver();
   }
+
+  private handleScroll = () => {
+    const currentScrollY = window.scrollY;
+    this.scrollDirection = currentScrollY > this.lastScrollY ? "down" : "up";
+    this.lastScrollY = currentScrollY;
+  };
 
   private observeAll() {
     const elements = document.querySelectorAll("[data-animate]");
@@ -138,9 +150,15 @@ class ScrollAnimationObserver {
     const once = el.dataset.animateOnce === "true";
     const delay = parseInt(el.dataset.animateDelay || "0", 10);
 
+    // Per-element overrides
+    const threshold = el.dataset.animateThreshold
+      ? parseFloat(el.dataset.animateThreshold)
+      : this.defaultThreshold;
+    const rootMargin = el.dataset.animateRootMargin || this.defaultRootMargin;
+
     const { disconnect } = createIntersectionObserver(el, {
-      threshold: this.defaultThreshold,
-      rootMargin: this.defaultRootMargin,
+      threshold,
+      rootMargin,
       once,
       onEnter: () => {
         handleVideoEnter(el);
@@ -155,6 +173,10 @@ class ScrollAnimationObserver {
       onExit: () => {
         if (!once) {
           el.dataset.visible = "false";
+          // Only set exit direction if element opts into directional exits
+          if (el.dataset.animateDirectional === "true") {
+            el.dataset.exitDirection = this.scrollDirection;
+          }
         }
         handleVideoExit(el);
       },

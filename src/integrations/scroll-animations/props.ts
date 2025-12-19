@@ -41,7 +41,7 @@ export type CSSAnimationType =
   | "slide-left"
   | "slide-right";
 
-export type AnimationRange = "default" | "delayed" | "cover" | "contain" | "exit";
+export type AnimationRange = "default" | "delayed" | "cover" | "cover-fast" | "contain" | "exit";
 
 export interface CSSAnimationOptions {
   /**
@@ -175,12 +175,21 @@ export interface AnimationOptions {
   delay?: number;
   /** Custom duration in milliseconds */
   duration?: number;
+  /** Custom IntersectionObserver threshold (0-1) */
+  threshold?: number;
+  /** Custom IntersectionObserver rootMargin (e.g., "-10% 0px -20% 0px") */
+  rootMargin?: string;
+  /** Enable direction-aware exit animations (default: false) */
+  directional?: boolean;
 }
 
 interface AnimationDataAttributes {
   "data-animate": AnimationType;
   "data-animate-once"?: string;
   "data-animate-delay"?: string;
+  "data-animate-threshold"?: string;
+  "data-animate-root-margin"?: string;
+  "data-animate-directional"?: string;
   style?: CSSProperties;
 }
 
@@ -191,7 +200,7 @@ export function animationProps(
   animation: AnimationType,
   options: AnimationOptions = {}
 ): AnimationDataAttributes {
-  const { once = true, delay, duration } = options;
+  const { once = true, delay, duration, threshold, rootMargin, directional } = options;
 
   const attrs: AnimationDataAttributes = {
     "data-animate": animation,
@@ -199,6 +208,18 @@ export function animationProps(
 
   if (once) {
     attrs["data-animate-once"] = "true";
+  }
+
+  if (threshold !== undefined) {
+    attrs["data-animate-threshold"] = String(threshold);
+  }
+
+  if (rootMargin !== undefined) {
+    attrs["data-animate-root-margin"] = rootMargin;
+  }
+
+  if (directional) {
+    attrs["data-animate-directional"] = "true";
   }
 
   if (delay !== undefined || duration !== undefined) {

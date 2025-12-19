@@ -268,6 +268,12 @@
     --animation-range-end: cover 100%;
   }
 
+  /* Cover fast - completes quickly in center of viewport */
+  [data-animate-css][data-animate-range="cover-fast"] {
+    --animation-range-start: cover 15%;
+    --animation-range-end: cover 35%;
+  }
+
   /* Contained - only animates when fully visible */
   [data-animate-css][data-animate-range="contain"] {
     --animation-range-start: contain 0%;
@@ -377,7 +383,7 @@
 
 /* Base state for all animated elements - hidden by default */
 [data-animate] {
-  --animation-duration: 300ms; /* Faster on mobile for better Speed Index */
+  --animation-duration: 500ms; /* Faster on mobile for better Speed Index */
   --animation-delay: 0ms;
   --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -385,7 +391,7 @@
 /* Slower animations on desktop */
 @media (min-width: 1024px) {
   [data-animate] {
-    --animation-duration: 600ms;
+    --animation-duration: 900ms;
   }
 }
 
@@ -416,6 +422,10 @@
 [data-animate="fade-in-up"][data-visible="true"] {
   opacity: 1;
   transform: translateY(0);
+}
+/* Exit going up when scrolling down (element leaves top of viewport) */
+[data-animate="fade-in-up"][data-visible="false"][data-exit-direction="down"] {
+  transform: translateY(-20px);
 }
 
 [data-animate="fade-in-down"] {

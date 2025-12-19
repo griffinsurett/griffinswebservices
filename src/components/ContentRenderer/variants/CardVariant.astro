@@ -151,6 +151,11 @@ const showCTA =
       getCardClassName={resolveCardClassName}
       getRingDuration={resolveRingDuration}
       featureCardProps={featureCardPropOverrides}
+      animation={{
+        once: false,
+        threshold: 0.15,
+        rootMargin: "-10% 0px -10% 0px",
+      }}
     />
 
     {showCTA && (
