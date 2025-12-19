@@ -64,17 +64,17 @@ if (!safeItems.length) {
   return;
 }
 
-// Target widths for responsive images - container is max-w-4xl (896px)
-const IMAGE_WIDTHS = [320, 480, 520, 640, 860];
-const SIZES = "(max-width: 640px) calc(100vw - 48px), (max-width: 1024px) min(calc(100vw - 48px), 896px), 896px";
+// Target widths for responsive images - actual display is ~570px on desktop
+const IMAGE_WIDTHS = [320, 400, 480, 580];
+const SIZES = "(max-width: 640px) calc(100vw - 48px), (max-width: 1024px) min(calc(100vw - 48px), 580px), 580px";
 // Clamp extremely tall screenshots
-const MAX_RENDER_HEIGHT = 3600;
+const MAX_RENDER_HEIGHT = 2500;
 
 type OptimizedFormat = "avif" | "webp";
 const FALLBACK_FORMAT: OptimizedFormat = "webp";
 const IMAGE_FORMATS: { format: OptimizedFormat; quality: number }[] = [
-  { format: "avif", quality: 45 },
-  { format: "webp", quality: 65 },
+  { format: "avif", quality: 35 },
+  { format: "webp", quality: 50 },
 ];
 
 // Process items and generate optimized images

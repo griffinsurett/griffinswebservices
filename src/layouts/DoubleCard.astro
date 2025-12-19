@@ -12,7 +12,7 @@ import { animationProps } from "@/integrations/scroll-animations/props";
     <div class="inner-section flex flex-wrap gap-6">
         <div
             class="group flex w-full lg:flex-1 flex-col min-h-[400px] rounded-3xl overflow-hidden relative card-bg"
-            {...animationProps("fade-in-up", { once: false, threshold: 0.35, rootMargin: "-10% 0px -25% 0px" })}
+            {...animationProps("fade-in-up", { once: false, threshold: 0.30, rootMargin: "-15% 0px -25% 0px" })}
         >
             <div class="flex flex-col p-6 space-y-2 relative z-10">
                 <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold">
@@ -31,8 +31,8 @@ import { animationProps } from "@/integrations/scroll-animations/props";
                             src: logoImg,
                             imageClass: "object-contain light:invert",
                             aboveTheFold: false,
-                            quality: 50,
-                            maxWidth: 800,
+                            quality: 40,
+                            maxWidth: 500,
                         },
                     }}
                 />
