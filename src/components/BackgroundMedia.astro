@@ -13,6 +13,8 @@ export interface Props {
       priority?: boolean;
       quality?: number;
       loading?: 'eager' | 'lazy';
+      // Size constraints for optimization
+      maxWidth?: number; // Max desktop width (default 1920)
     };
     video?: {
       src: string;
@@ -47,16 +49,21 @@ const qualitySettings = aboveTheFold
 // Allow manual quality override
 const customQuality = backgroundMedia?.image?.quality;
 
+// Allow custom max width (useful for smaller containers)
+const maxWidth = backgroundMedia?.image?.maxWidth ?? 1920;
+const tabletWidth = Math.min(1024, maxWidth);
+const mobileWidth = Math.min(640, maxWidth);
+
 // Generate responsive images
 let responsiveImages = null;
 
 if (backgroundMedia?.image?.src) {
   const rawSrc = backgroundMedia.image.src;
-  const isProcessedImage = 
-    typeof rawSrc === 'object' && 
+  const isProcessedImage =
+    typeof rawSrc === 'object' &&
     rawSrc !== null &&
     typeof rawSrc.src === 'string';
-  
+
   if (!isProcessedImage && typeof rawSrc !== 'string') {
     try {
       const [mobile, tablet, desktop] = await Promise.all([
@@ -64,19 +71,19 @@ if (backgroundMedia?.image?.src) {
           src: rawSrc,
           format: "webp",
           quality: customQuality ?? qualitySettings.mobile,
-          width: 640,
+          width: mobileWidth,
         }),
         getImage({
           src: rawSrc,
           format: "webp",
           quality: customQuality ?? qualitySettings.tablet,
-          width: 1024,
+          width: tabletWidth,
         }),
         getImage({
           src: rawSrc,
           format: "webp",
           quality: customQuality ?? qualitySettings.desktop,
-          width: 1920,
+          width: maxWidth,
         }),
       ]);
       

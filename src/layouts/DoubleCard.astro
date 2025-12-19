@@ -12,7 +12,7 @@ import { animationProps } from "@/integrations/scroll-animations/props";
     <div class="inner-section flex flex-wrap gap-6">
         <div
             class="group flex w-full lg:flex-1 flex-col min-h-[400px] rounded-3xl overflow-hidden relative card-bg"
-            {...animationProps("fade-in-up", { once: false, threshold: 0.15, rootMargin: "-10% 0px -20% 0px" })}
+            {...animationProps("fade-in-up", { once: false, threshold: 0.35, rootMargin: "-10% 0px -25% 0px" })}
         >
             <div class="flex flex-col p-6 relative z-10">
                 <h2 class="text-3xl lg:text-4xl xl:text-5xl font-bold">
@@ -31,7 +31,8 @@ import { animationProps } from "@/integrations/scroll-animations/props";
                             src: logoImg,
                             imageClass: "object-contain light:invert",
                             aboveTheFold: false,
-                            quality: 60,
+                            quality: 50,
+                            maxWidth: 800,
                         },
                     }}
                 />
@@ -39,7 +40,7 @@ import { animationProps } from "@/integrations/scroll-animations/props";
         </div>
         <div
             class="group flex w-full md:flex-1 lg:flex-2 flex-col md:flex-row min-h-[400px] rounded-3xl overflow-hidden card-bg relative"
-            {...animationProps("fade-in-right", { once: false, threshold: 0.15, rootMargin: "-10% 0px -10% 0px" })}
+            {...animationProps("fade-in-right", { once: false, threshold: 0.35, rootMargin: "-10% 0px -25% 0px", delay: 300 })}
         >
             <div
                 class="relative flex-1 lg:rounded-br-[250px] overflow-hidden md:w-1/2 lg:mb-5 z-0"
@@ -50,8 +51,8 @@ import { animationProps } from "@/integrations/scroll-animations/props";
                             src: meoncompImg,
                             imageClass: "object-cover",
                             aboveTheFold: false,
-                            quality: 70,
-                            
+                            quality: 55,
+                            maxWidth: 960,
                         },
                     }}
                 />
