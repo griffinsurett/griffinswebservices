@@ -138,6 +138,12 @@ const processedItems = await Promise.all(
       .join(", ");
     const defaultImage = fallbackImages[fallbackImages.length - 1];
 
+    // Calculate actual output dimensions (Astro's attributes may return source dimensions)
+    const defaultWidth = IMAGE_WIDTHS[IMAGE_WIDTHS.length - 1];
+    const aspectRatio = metadata.height / metadata.width;
+    const naturalHeight = Math.round(aspectRatio * defaultWidth);
+    const defaultHeight = Math.min(naturalHeight, MAX_RENDER_HEIGHT);
+
     const pictureSources = optimizedByFormat
       .filter((entry) => entry.format !== FALLBACK_FORMAT)
       .map((entry) => ({
@@ -158,8 +164,8 @@ const processedItems = await Promise.all(
         src: defaultImage.src,
         srcSet: fallbackSrcSet,
         sizes: SIZES,
-        width: defaultImage.attributes.width as number,
-        height: defaultImage.attributes.height as number,
+        width: defaultWidth,
+        height: defaultHeight,
         alt: altText,
         loading: (shouldOptimizeForLCP ? "eager" : "lazy") as const,
         decoding: (shouldOptimizeForLCP ? "sync" : "async") as const,
