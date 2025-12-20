@@ -19,6 +19,7 @@ interface Props extends BaseVariantProps {
   responsivity?: ResponsivityConfig;
   clientLoadPlaceholder?: boolean;
   optimizeForLCP?: boolean;
+  size?: "normal" | "large";
 }
 
 const {
@@ -28,6 +29,7 @@ const {
   responsivity,
   clientLoadPlaceholder = true,
   optimizeForLCP = false,
+  size = "normal",
 } = Astro.props as Props;
 
 // Map Tailwind breakpoints to media queries
@@ -202,13 +204,18 @@ const firstItem = portfolioItems[0];
 
 // Show placeholder when EITHER clientLoadPlaceholder is false OR optimizeForLCP is true
 const shouldShowPlaceholder = !clientLoadPlaceholder || optimizeForLCP;
+
+// Height classes based on size prop - same on mobile/tablet, different on lg+
+const heightClasses = size === "large"
+  ? "h-[420px] sm:h-[520px] lg:h-[600px]"
+  : "h-[420px] sm:h-[520px] lg:h-[450px]";
 ---
 
 <div
   id={id}
   class={`relative overflow-hidden z-10 ${className} ${visibilityClasses}`.trim()}
 >
-  <div class="relative w-full max-w-[920px] mx-auto h-[420px] sm:h-[520px] lg:h-[450px]">
+  <div class={`relative w-full max-w-[920px] mx-auto ${heightClasses}`}>
     <div class="relative h-full top-0 card-bg-2 rounded-lg">
       <!-- ComputerScreen wrapper with client carousel inside -->
       <ComputerScreen>

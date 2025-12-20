@@ -57,7 +57,7 @@ const sidebarFeatureKey = (feature: SidebarFeature, index: number) =>
   typeof feature === "string" ? feature : feature.title ?? `sidebar-feature-${index}`;
 ---
 
-<section id="about" class="outer-section bg-bg2 relative">
+<section id="about" class="outer-section relative">
   <div class="inner-section space-y-20">
     <div class="flex flex-col gap-12 lg:flex-row lg:items-start">
       <article class="space-y-8 lg:flex-[1.25] min-w-0 sticky-section">
@@ -100,7 +100,7 @@ const sidebarFeatureKey = (feature: SidebarFeature, index: number) =>
       </article>
 
       <aside class="sticky-section lg:flex-[0.85] w-full">
-        <div class="bg-bg rounded-3xl border border-accent/20 p-4 lg:p-10 shadow-2xl space-y-6">
+        <div class="rounded-3xl card-bg p-4 lg:p-8 shadow-2xl space-y-6">
           <IconListItem
             client:visible
             data={{

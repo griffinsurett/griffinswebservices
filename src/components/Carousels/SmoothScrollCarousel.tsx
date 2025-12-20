@@ -257,11 +257,11 @@ const SmoothScrollCarousel = forwardRef<
       {gradientMask && (
         <>
           <div
-            className="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-bg to-transparent z-10 pointer-events-none"
+            className="absolute left-0 top-0 bottom-0 z-10 pointer-events-none"
             style={{ width: `${gradientPx}px` }}
           />
           <div
-            className="absolute right-0 top-0 bottom-0 bg-gradient-to-l from-bg to-transparent z-10 pointer-events-none"
+            className="absolute right-0 top-0 bottom-0 z-10 pointer-events-none"
             style={{ width: `${gradientPx}px` }}
           />
         </>

@@ -16,10 +16,10 @@ const {
 const safeItems = toArray(items);
 
 const columnClasses: Record<1 | 2 | 3 | 4, string> = {
-  1: "grid grid-cols-1 gap-4",
-  2: "grid grid-cols-1 sm:grid-cols-2 gap-4",
-  3: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5",
-  4: "grid grid-cols-2 md:grid-cols-4 gap-4",
+  1: "grid grid-cols-1 gap-2",
+  2: "grid grid-cols-1 sm:grid-cols-2 gap-2",
+  3: "grid grid-cols-1 md:grid-cols-3 gap-2",
+  4: "grid grid-cols-2 md:grid-cols-4 gap-2",
 };
 
 const baseClass = columnClasses[columns] ?? columnClasses[2];
@@ -35,11 +35,11 @@ const combinedClass = `${baseClass} ${className}`.trim();
           : item ?? {};
 
       return (
-        <div class="rounded-2xl border card-bg border-accent/25 p-4">
+        <div class="p-2 rounded-2xl card-bg">
           <p class="text-xs uppercase tracking-[0.2em] text-muted">
             {record.title ?? record.label}
           </p>
-          <p class="text-heading text-xl font-semibold mt-2">
+          <p class="text-heading font-semibold">
             {record.description ?? record.value}
           </p>
         </div>
