@@ -203,7 +203,7 @@ body {
 
   body {
     font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
-    @apply bg-bg overflow-x-hidden;
+    @apply bg-gradient overflow-x-hidden;
   }
 
   ::selection {
@@ -331,6 +331,10 @@ body {
 
 @utility form-option {
   @apply bg-bg text-heading;
+}
+
+@utility bg-gradient {
+  @apply bg-linear-to-r from-bg3 to-bg;
 }
 
 @utility primary-gradient {

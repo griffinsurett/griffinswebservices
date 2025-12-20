@@ -43,22 +43,19 @@ import { animationProps } from "@/integrations/scroll-animations/props";
             {...animationProps("fade-in-right", { once: false, threshold: 0.35, rootMargin: "-10% 0px -25% 0px", delay: 300 })}
         >
             <div
-                class="relative flex-1 lg:rounded-br-[250px] overflow-hidden md:w-1/2 lg:mb-5 z-0"
+                class="relative flex-1 lg:rounded-br-[250px] overflow-hidden md:w-1/2 lg:mb-5 z-0 fade-image-shell"
             >
                 <BackgroundMedia
                     backgroundMedia={{
                         image: {
                             src: meoncompImg,
-                            imageClass: "object-cover",
+                            imageClass: "object-cover fade-card-media",
                             aboveTheFold: false,
                             quality: 25,
                             maxWidth: 600,
                         },
                     }}
                 />
-                <!-- Gradient fade overlay -->
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[var(--card-bg)] md:opacity-100 opacity-0"></div>
-                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--card-bg)] md:opacity-0 opacity-100"></div>
             </div>
             <div
                 class="flex-1 flex flex-col gap-6 justify-center items-end p-6 lg:px-6 relative z-10"
@@ -83,3 +80,71 @@ import { animationProps } from "@/integrations/scroll-animations/props";
         </div>
     </div>
 </section>
+
+<style>
+  /* Soft fade + faux shadow so the portrait melts into the card background */
+  .fade-image-shell {
+    isolation: isolate;
+    background-color: var(--card-bg);
+  }
+
+  .fade-image-shell::before,
+  .fade-image-shell::after {
+    content: "";
+    position: absolute;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .fade-image-shell::before {
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(8, 8, 10, 0) 58%, rgba(8, 8, 10, 0.45) 80%, rgba(8, 8, 10, 0.85) 100%),
+      linear-gradient(108deg, rgba(10, 10, 12, 0) 48%, rgba(10, 10, 12, 0.55) 68%, var(--card-bg) 90%);
+    opacity: 0.95;
+    transition: opacity 400ms ease;
+  }
+
+  .fade-image-shell::after {
+    inset: 6% 4% 10%;
+    box-shadow: 0 55px 120px rgba(5, 5, 5, 0.55);
+    opacity: 0.7;
+    filter: blur(12px);
+  }
+
+  .fade-card-media {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    -webkit-mask-image: radial-gradient(circle at 35% 50%, rgba(0, 0, 0, 1) 55%, rgba(0, 0, 0, 0.6) 75%, transparent 95%);
+    mask-image: radial-gradient(circle at 35% 50%, rgba(0, 0, 0, 1) 55%, rgba(0, 0, 0, 0.6) 75%, transparent 95%);
+    -webkit-mask-size: 140% 140%;
+    mask-size: 140% 140%;
+    -webkit-mask-position: 50% 50%;
+    mask-position: 50% 50%;
+    transition: transform 450ms ease, -webkit-mask-position 450ms ease, mask-position 450ms ease;
+  }
+
+  @media (min-width: 768px) {
+    .fade-card-media {
+      -webkit-mask-image: linear-gradient(105deg, rgba(0, 0, 0, 1) 58%, rgba(0, 0, 0, 0.4) 78%, transparent 100%);
+      mask-image: linear-gradient(105deg, rgba(0, 0, 0, 1) 58%, rgba(0, 0, 0, 0.4) 78%, transparent 100%);
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+    }
+  }
+
+  .fade-image-shell:hover .fade-card-media {
+    transform: scale(1.03);
+    -webkit-mask-position: 60% 50%;
+    mask-position: 60% 50%;
+  }
+
+  .fade-image-shell:hover::before {
+    opacity: 0.8;
+  }
+</style>

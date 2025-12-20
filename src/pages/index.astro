@@ -61,7 +61,6 @@ const heroDescription =
       />
     </div>
 
-    <DoubleCard />
     <!-- Under-hero portfolio showcase -->
     <!-- <PortfolioShowcaseSection /> -->
 
@@ -82,6 +81,9 @@ const heroDescription =
       showButtonSection={false}
       className="pt-35 lg:pt-20"
     />
+
+        <DoubleCard />
+
 
     <!-- Website Benefits -->
     <ContentRenderer
@@ -139,7 +141,7 @@ const heroDescription =
       description="We design top-tier websites for businesses in every industry — from local services to global brands. Every site is custom-built for your goals, lightning-fast, secure, and easy to manage. No templates, no bloat — just a powerful online presence that looks sharp, performs flawlessly, and grows with you."
       autoAdvanceDelay={2000}
     />
-    <ColorBorderLayout borderPosition="both">
+    <!-- <ColorBorderLayout borderPosition="both"> -->
       <ContentRenderer
         query={query("solutions")}
         variant="VideoAccordionVariant"
@@ -152,7 +154,7 @@ const heroDescription =
         className="pt-16"
         autoAdvanceDelay={3500}
       />
-    </ColorBorderLayout>
+    <!-- </ColorBorderLayout> -->
 
     <!-- Testimonials with rating filter -->
     <ContentRenderer

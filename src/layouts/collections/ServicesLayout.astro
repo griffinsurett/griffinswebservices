@@ -13,11 +13,13 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import QuoteHero from '@/layouts/QuoteHero.astro';
 import AboutSection from '@/layouts/AboutSection.astro';
+import { animationProps } from '@/integrations/scroll-animations/props';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import CTASection from '@/layouts/CTASection.astro';
 import { query, sortByOrder, related } from '@/utils/query';
 import { capitalizeWords } from '@/utils/string';
 import type { CollectionLayoutProps } from './types';
+import DoubleCard from '../DoubleCard.astro';
     
 const {
   entry,
@@ -71,23 +73,16 @@ const capitalizedSlug = capitalizeWords(entry?.slug?.replace(/-/g, ' ') || '');
       }}
       id='services-quote-hero'
     />
-      <div class="min-h-screen flex flex-col justify-center">
+        <div
+      class="block min-h-screen inner-section"
+      {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
+    >
       <ContentRenderer
-      query={query("projects")}
-      id="services-projects"
-      variant="PortfolioScreenVariant"
-      title="Our Work"
-      heading={{
-        before: "Websites we've",
-        text: "designed & built",
-        after: "for real clients.",
-      }}
-      description="Every project is custom-crafted to help businesses stand out and convert visitors into customers. Yours could be next."
-      ctaHref="#services-quote-hero"
-      ctaText="Get Your Free Quote"
-      hydrateOn="idle"
-    />
-</div>
+        query={query("projects")}
+        variant="PortfolioScreenVariant"
+        clientLoadPlaceholder={true}
+      />
+    </div>
 
     {benefits.length > 0 && (
       <ContentRenderer
@@ -105,6 +100,8 @@ const capitalizedSlug = capitalizeWords(entry?.slug?.replace(/-/g, ' ') || '');
         columns={3}
       />
     )}
+
+    <DoubleCard />
 
         {/* MDX Content */}
     {Content && <Content />}
