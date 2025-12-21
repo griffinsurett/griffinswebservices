@@ -3,7 +3,7 @@
 
 import type { IconType } from 'react-icons';
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuCheck, LuChevronRight, LuCode, LuContact, LuGithub, LuGlobe, LuInstagram, LuLayers, LuLinkedin, LuMail, LuMinus, LuPhone, LuPlus, LuSettings } from 'react-icons/lu';
-import { FaArrowTrendUp, FaArrowsRotate, FaArrowsUpDownLeftRight, FaArrowsUpToLine, FaAward, FaAws, FaBagShopping, FaBellConcierge, FaBlender, FaBolt, FaBook, FaBorderAll, FaBorderTopLeft, FaBox, FaBoxArchive, FaBoxOpen, FaBoxesStacked, FaBrain, FaBriefcase, FaBroom, FaBug, FaBuilding, FaBullhorn, FaBullseye, FaBurger, FaCakeCandles, FaCalculator, FaCalendarCheck, FaCamera, FaCapsules, FaCartArrowDown, FaCartShopping, FaChampagneGlasses, FaChartLine, FaChartPie, FaChartSimple, FaClock, FaClockRotateLeft, FaClone, FaCloudflare, FaCode, FaCoins, FaCouch, FaCrown, FaCss3Alt, FaCubes, FaDatabase, FaDoorOpen, FaDumbbell, FaEnvelopeCircleCheck, FaEnvelopeOpenText, FaExplosion, FaFaucetDrip, FaFeather, FaFeatherPointed, FaFigma, FaFileLines, FaFlagUsa, FaFlask, FaGear, FaGears, FaGem, FaGithub, FaGraduationCap, FaHammer, FaHandHoldingHeart, FaHands, FaHandshake, FaHeadset, FaHeartPulse, FaHouse, FaHouseChimney, FaHouseChimneyWindow, FaHtml5, FaIdCard, FaJs, FaKey, FaLaptop, FaLayerGroup, FaLifeRing, FaLightbulb, FaListCheck, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMartiniGlassCitrus, FaMicrophone, FaMobileScreen, FaMugHot, FaNetworkWired, FaNodeJs, FaPaintRoller, FaPaintbrush, FaPalette, FaPenNib, FaPenRuler, FaPenToSquare, FaPeopleGroup, FaPersonChalkboard, FaPhp, FaPlug, FaPlus, FaPuzzlePiece, FaPython, FaReact, FaRocket, FaRoute, FaScaleBalanced, FaScissors, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShirt, FaShopify, FaSolarPanel, FaSpa, FaSprayCanSparkles, FaStar, FaStethoscope, FaStore, FaTags, FaTemperatureHalf, FaTree, FaTrophy, FaTruck, FaTruckFast, FaTruckRampBox, FaUmbrella, FaUniversalAccess, FaUsers, FaUtensils, FaWandMagicSparkles, FaWarehouse, FaWordpress } from 'react-icons/fa6';
+import { FaArrowTrendUp, FaArrowsRotate, FaArrowsUpDownLeftRight, FaArrowsUpToLine, FaAward, FaAws, FaBagShopping, FaBellConcierge, FaBlender, FaBolt, FaBook, FaBorderAll, FaBorderTopLeft, FaBox, FaBoxArchive, FaBoxOpen, FaBoxesStacked, FaBrain, FaBriefcase, FaBroom, FaBug, FaBuilding, FaBullhorn, FaBullseye, FaBurger, FaCakeCandles, FaCalculator, FaCalendarCheck, FaCamera, FaCapsules, FaCartArrowDown, FaCartShopping, FaChampagneGlasses, FaChartLine, FaChartPie, FaChartSimple, FaClock, FaClockRotateLeft, FaClone, FaCloudflare, FaCode, FaCoins, FaCouch, FaCrown, FaCss3Alt, FaCubes, FaDatabase, FaDoorOpen, FaDumbbell, FaEnvelopeCircleCheck, FaEnvelopeOpenText, FaExplosion, FaFaucetDrip, FaFeather, FaFeatherPointed, FaFigma, FaFileLines, FaFlagUsa, FaFlask, FaGear, FaGem, FaGithub, FaGraduationCap, FaHammer, FaHandHoldingHeart, FaHands, FaHandshake, FaHeadset, FaHeartPulse, FaHouse, FaHouseChimney, FaHouseChimneyWindow, FaHtml5, FaIdCard, FaJs, FaKey, FaLaptop, FaLayerGroup, FaLifeRing, FaLightbulb, FaListCheck, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMartiniGlassCitrus, FaMicrophone, FaMobileScreen, FaMugHot, FaNetworkWired, FaNodeJs, FaPaintRoller, FaPaintbrush, FaPalette, FaPenNib, FaPenRuler, FaPenToSquare, FaPeopleGroup, FaPersonChalkboard, FaPhp, FaPlug, FaPlus, FaPuzzlePiece, FaPython, FaReact, FaRocket, FaScaleBalanced, FaScissors, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShirt, FaShopify, FaSolarPanel, FaSpa, FaSprayCanSparkles, FaStar, FaStethoscope, FaStore, FaTags, FaTemperatureHalf, FaTree, FaTrophy, FaTruck, FaTruckFast, FaTruckRampBox, FaUmbrella, FaUniversalAccess, FaUsers, FaUtensils, FaWandMagicSparkles, FaWarehouse, FaWordpress } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiVercel, SiWebflow } from 'react-icons/si';
 
 export const iconMap = {
@@ -67,7 +67,6 @@ export const iconMap = {
   'fa6:flag-usa': FaFlagUsa,
   'fa6:flask': FaFlask,
   'fa6:gear': FaGear,
-  'fa6:gears': FaGears,
   'fa6:gem': FaGem,
   'fa6:github': FaGithub,
   'fa6:graduation-cap': FaGraduationCap,
@@ -113,7 +112,6 @@ export const iconMap = {
   'fa6:python': FaPython,
   'fa6:react': FaReact,
   'fa6:rocket': FaRocket,
-  'fa6:route': FaRoute,
   'fa6:scale-balanced': FaScaleBalanced,
   'fa6:scissors': FaScissors,
   'fa6:screwdriver-wrench': FaScrewdriverWrench,

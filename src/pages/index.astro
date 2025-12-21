@@ -11,6 +11,7 @@ import Video from "@/components/Video/Video.astro";
 import PortfolioShowcaseSection from "@/layouts/PortfolioShowcaseSection.astro";
 import GradientLayout from "@/layouts/GradientLayout.astro";
 import FrontPageHero from "@/layouts/FrontPageHero.astro";
+import FrontPageHero2 from "@/layouts/FrontPageHero2.astro";
 import ColorBorderLayout from "@/layouts/ColorBorderLayout.astro";
 import DoubleCard from "@/layouts/DoubleCard.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
@@ -39,7 +40,17 @@ const heroDescription =
         scrollToSection="#portfolio-showcase"
       /> -->
 
-    <FrontPageHero
+    <FrontPageHero2
+      heading={heroHeading}
+      description={heroDescription}
+      primaryCTA={{
+        text: "Get Started",
+        link: "/contact-us",
+      }}
+      scrollToSection="#under-hero"
+    />
+
+      <!-- <FrontPageHero
       heading={heroHeading}
       description={heroDescription}
       primaryCTA={{
@@ -47,16 +58,15 @@ const heroDescription =
         link: "/contact-us",
       }}
       scrollToSection="#website-services"
-    />
-
+    /> -->
+      <div id="under-hero">
     <div
-      class="block md:hidden min-h-screen inner-section"
+      class="block lg:min-h-screen inner-section"
       {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
     >
       <ContentRenderer
         query={query("projects")}
         variant="PortfolioScreenVariant"
-        responsivity={{ hide: "md" }}
         clientLoadPlaceholder={true}
       />
     </div>
@@ -218,5 +228,6 @@ const heroDescription =
       title="Recent Updates"
       description="Latest from our blog and portfolio"
     /> -->
+    </div>
   </main>
 </BaseLayout>
