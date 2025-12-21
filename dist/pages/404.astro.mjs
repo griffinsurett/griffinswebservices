@@ -1,6 +1,6 @@
 import { a as createComponent, d as renderComponent, e as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_CDqnDASo.mjs';
 import 'piccolore';
-import { $ as $$BaseLayout } from '../chunks/BaseLayout_CwDjC27N.mjs';
+import { $ as $$BaseLayout } from '../chunks/BaseLayout_BE8p8IeC.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$404 = createComponent(($$result, $$props, $$slots) => {

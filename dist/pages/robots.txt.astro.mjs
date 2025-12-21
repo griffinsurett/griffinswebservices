@@ -1,4 +1,4 @@
-import { s as siteData } from '../chunks/speakers_ClnnXv1O.mjs';
+import { s as siteData } from '../chunks/solar_CecBMkpk.mjs';
 export { renderers } from '../renderers.mjs';
 
 const GET = () => {

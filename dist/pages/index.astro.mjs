@@ -1,9 +1,9 @@
 import { c as createAstro, a as createComponent, m as maybeRenderHead, b as addAttribute, e as renderTemplate, d as renderComponent, s as spreadAttributes } from '../chunks/astro/server_CDqnDASo.mjs';
-import { q as query, a as $$ContentRenderer, $ as $$BaseLayout, m as roots, n as sortByOrder } from '../chunks/BaseLayout_CwDjC27N.mjs';
-import { s as siteData } from '../chunks/speakers_ClnnXv1O.mjs';
-import { $ as $$DoubleCard, a as $$CTASection } from '../chunks/DoubleCard_CEDHRThk.mjs';
+import { q as query, a as $$ContentRenderer, $ as $$BaseLayout, m as roots, n as sortByOrder } from '../chunks/BaseLayout_BE8p8IeC.mjs';
+import { s as siteData } from '../chunks/solar_CecBMkpk.mjs';
+import { $ as $$DoubleCard, a as $$CTASection } from '../chunks/DoubleCard_DcWpgHLe.mjs';
 import 'piccolore';
-import { $ as $$SectionHeader, B as Button, a as animationProps } from '../chunks/accordion_T_3z6Val.mjs';
+import { $ as $$SectionHeader, B as Button, a as animationProps } from '../chunks/accordion_D3cOwWQo.mjs';
 import 'clsx';
 /* empty css                                 */
 export { renderers } from '../renderers.mjs';
@@ -17,10 +17,15 @@ const $$ScrollIndicator = createComponent(($$result, $$props, $$slots) => {
 }, "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/components/ScrollIndicator.astro", void 0);
 
 const $$Astro = createAstro("https://https://griffinswebservices.com");
-const $$FrontPageHero = createComponent(($$result, $$props, $$slots) => {
+const $$FrontPageHero2 = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
-  Astro2.self = $$FrontPageHero;
-  const defaultDescription = "Hand-crafted websites, automated systems, and ongoing support so you can sell more, grow faster, and stay secure without juggling multiple vendors.";
+  Astro2.self = $$FrontPageHero2;
+  const HeroServicesList = [
+    "Website Design and Development",
+    "Hosting, Maintenance, and Security.",
+    "Full SEO Services.",
+    "Futuristic Ai Ready Web Experiences"
+  ];
   const {
     heading,
     description = siteData.description,
@@ -33,8 +38,11 @@ const $$FrontPageHero = createComponent(($$result, $$props, $$slots) => {
     id = "hero",
     scrollToSection
   } = Astro2.props;
-  return renderTemplate`${maybeRenderHead()}<section${addAttribute(id, "id")}${addAttribute(`min-h-screen flex items-center justify-center relative overflow-hidden ${className}`, "class")} data-astro-cid-ywtey6sq> <div class="relative z-10 min-h-screen inner-section flex items-center" data-astro-cid-ywtey6sq> <div class="mx-auto px-2 lg:px-0 max-w-6xl lg:max-w-7xl w-full py-20 lg:py-0" data-astro-cid-ywtey6sq> <div class="lg:flex lg:flex-row lg:items-center lg:gap-12 space-y-3 lg:space-y-8" data-astro-cid-ywtey6sq> <!-- Left side: Text content --> <div class="flex-1 flex flex-col gap-3 lg:gap-6 justify-center hero-content" data-animate="fade-in-up" data-animate-once="false" data-animate-threshold="0.4" data-animate-root-margin="0px 0px -50% 0px" data-animate-directional="true" data-astro-cid-ywtey6sq> ${renderComponent($$result, "SectionHeader", $$SectionHeader, { "className": "text-left lg:text-left w-full", "heading": heading, "headingTag": "h1", "headingClassName": "text-4xl md:text-5xl", "description": description ?? defaultDescription, "descriptionClassName": "text-lg lg:text-xl leading-relaxed max-w-3xl lg:max-w-none", "data-astro-cid-ywtey6sq": true })} <div class="flex flex-col-reverse lg:flex-row items-start lg:items-center gap-3 lg:gap-6 lg:w-full" data-astro-cid-ywtey6sq> ${renderComponent($$result, "ContentRenderer", $$ContentRenderer, { "query": query("testimonials").where((entry) => entry.data.featured === true).limit(3), "variant": "TestimonialCirclesVariant", "className": "px-2 md:px-0", "counterStart": 10, "counterEnd": 100, "counterDuration": 1800, "counterSuffix": "+", "counterLabel": "Happy Clients", "data-astro-cid-ywtey6sq": true })} ${renderComponent($$result, "Button", Button, { "href": primaryCTA.link, "variant": "primary", "size": "lg", "rightIcon": primaryCTA.rightIcon, "data-astro-cid-ywtey6sq": true }, { "default": ($$result2) => renderTemplate`${primaryCTA.text}` })} </div> </div> <!-- Right side: Portfolio showcase --> <div class="flex-1 w-full hidden lg:block hero-portfolio" data-animate="fade-in" data-animate-once="true" data-astro-cid-ywtey6sq> ${renderComponent($$result, "ContentRenderer", $$ContentRenderer, { "query": query("projects"), "variant": "PortfolioScreenVariant", "responsivity": { show: "lg" }, "clientLoadPlaceholder": false, "optimizeForLCP": true, "data-astro-cid-ywtey6sq": true })} </div> </div> </div> </div> <span class="hero-arrow" data-animate="fade-in" data-animate-once="false" data-astro-cid-ywtey6sq> ${renderComponent($$result, "ScrollIndicator", $$ScrollIndicator, { "href": scrollToSection, "data-astro-cid-ywtey6sq": true })} </span> </section> `;
-}, "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/layouts/FrontPageHero.astro", void 0);
+  return renderTemplate`${maybeRenderHead()}<section${addAttribute(id, "id")}${addAttribute(`min-h-screen flex items-center justify-center relative overflow-hidden ${className}`, "class")}> <div class="relative z-10 inner-section flex flex-wrap items-center h-full"> <div class="mx-auto px-2 lg:px-0 max-w-6xl lg:max-w-7xl w-full h-full"> <div class="lg:flex lg:flex-row lg:items-stretch space-x-25 space-y-4 lg:space-y-0 h-full"> <!-- Left side: Text content --> <div class="flex-1 flex flex-col gap-3 lg:gap-6 justify-center hero-content"> <div class="flex flex-wrap items-end gap-4"> ${renderComponent($$result, "SectionHeader", $$SectionHeader, { "className": "text-left lg:text-left", "heading": heading, "headingTag": "h1", "headingClassName": "text-4xl md:text-5xl lg:text-6xl xl:text-[70px] leading-[1.02]" })} </div> </div> <!-- Right side: Portfolio showcase --> <div class="flex-1 w-full h-full flex flex-col justify-between gap-3 sm:gap-6 md:gap-8 hero-portfolio"> <!-- <div class="flex flex-col gap-4 lg:gap-3"> --> <p class="text-xl md:text-2xl xl:text-3xl pr-4 lg:pr-auto">
+We're a New Jersey based Web Agency that creates fast, engaging
+              websites built to grow your business.
+</p> <ul class="space-y-2"> ${HeroServicesList.map((service) => renderTemplate`<li class="list-none flex items-center gap-1.5"> <span class="faded-bg p-1.5 rounded-full flex items-center justify-center text-primary flex-shrink-0"> <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"> <polyline points="20 6 9 17 4 12"></polyline> </svg> </span> <span class="text-text text-base lg:text-lg leading-relaxed"> ${service} </span> </li>`)} </ul> <!-- </div> --> <div class="flex gap-2 lg:gap-3 xl:gap-5 flex-col sm:flex-row items-start lg:items-center lg:w-full"> ${renderComponent($$result, "Button", Button, { "href": primaryCTA.link, "variant": "primary", "size": "lg", "rightIcon": primaryCTA.rightIcon }, { "default": ($$result2) => renderTemplate`${primaryCTA.text}` })} ${renderComponent($$result, "ContentRenderer", $$ContentRenderer, { "query": query("testimonials").where((entry) => entry.data.featured === true).limit(3), "variant": "TestimonialCirclesVariant", "className": "px-2 md:px-0", "counterStart": 10, "counterEnd": 100, "counterDuration": 1800, "counterSuffix": "+", "counterLabel": "Happy Clients" })} </div> </div> </div> </div> </div> <span class="hero-arrow"> ${renderComponent($$result, "ScrollIndicator", $$ScrollIndicator, { "href": scrollToSection })} </span> </section>`;
+}, "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/layouts/FrontPageHero2.astro", void 0);
 
 const $$Index = createComponent(($$result, $$props, $$slots) => {
   const heroHeading = {
@@ -51,10 +59,18 @@ const $$Index = createComponent(($$result, $$props, $$slots) => {
           link: "/contact-us",
         }}
         scrollToSection="#portfolio-showcase"
-      /> --> ${renderComponent($$result2, "FrontPageHero", $$FrontPageHero, { "heading": heroHeading, "description": heroDescription, "primaryCTA": {
+      /> --> ${renderComponent($$result2, "FrontPageHero2", $$FrontPageHero2, { "heading": heroHeading, "description": heroDescription, "primaryCTA": {
     text: "Get Started",
     link: "/contact-us"
-  }, "scrollToSection": "#website-services" })} <div class="block md:hidden min-h-screen inner-section"${spreadAttributes(animationProps("fade-in-up", { once: false, threshold: 0.2 }))}> ${renderComponent($$result2, "ContentRenderer", $$ContentRenderer, { "query": query("projects"), "variant": "PortfolioScreenVariant", "responsivity": { hide: "md" }, "clientLoadPlaceholder": true })} </div> <!-- Under-hero portfolio showcase --> <!-- <PortfolioShowcaseSection /> --> <!-- </GradientLayout> --> ${renderComponent($$result2, "ContentRenderer", $$ContentRenderer, { "query": roots("capabilities").orderBy(sortByOrder()).limit(6), "variant": "CardVariant", "id": "website-services", "title": "Website Services", "heading": {
+  }, "scrollToSection": "#under-hero" })} <!-- <FrontPageHero
+      heading={heroHeading}
+      description={heroDescription}
+      primaryCTA={{
+        text: "Get Started",
+        link: "/contact-us",
+      }}
+      scrollToSection="#website-services"
+    /> --> <div id="under-hero"> <div class="block lg:min-h-screen inner-section"${spreadAttributes(animationProps("fade-in-up", { once: false, threshold: 0.2 }))}> ${renderComponent($$result2, "ContentRenderer", $$ContentRenderer, { "query": query("projects"), "variant": "PortfolioScreenVariant", "clientLoadPlaceholder": true })} </div> <!-- Under-hero portfolio showcase --> <!-- <PortfolioShowcaseSection /> --> <!-- </GradientLayout> --> ${renderComponent($$result2, "ContentRenderer", $$ContentRenderer, { "query": roots("capabilities").orderBy(sortByOrder()).limit(6), "variant": "CardVariant", "id": "website-services", "title": "Website Services", "heading": {
     before: "Websites aren't just something we do.",
     text: "They're our specialty."
   }, "description": "You deserve a lightning-fast, secure, and scalable website that turn your visitors into customers. Every site we build is built to dominate and stand the test of time.", "columns": 3, "gap": "lg", "showButtonSection": false, "className": "pt-35 lg:pt-20" })} ${renderComponent($$result2, "DoubleCard", $$DoubleCard, {})} <!-- Website Benefits --> ${renderComponent($$result2, "ContentRenderer", $$ContentRenderer, { "query": query("benefits").orderBy(sortByOrder()), "variant": "IconListVariant", "title": "Why Choose Us", "heading": "What Makes Our Websites Different", ",": true }, { "default": ($$result3) => renderTemplate`   ` })} <!-- About Us Two-Column Section --> <!-- <ContentRenderer
@@ -100,7 +116,7 @@ const $$Index = createComponent(($$result, $$props, $$slots) => {
       variant="ListVariant"
       title="Recent Updates"
       description="Latest from our blog and portfolio"
-    /> --> </main> ` })}`;
+    /> --> </div> </main> ` })}`;
 }, "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/pages/index.astro", void 0);
 
 const $$file = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/pages/index.astro";

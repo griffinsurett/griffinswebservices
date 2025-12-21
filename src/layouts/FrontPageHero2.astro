@@ -56,15 +56,15 @@ const {
     <div class="mx-auto px-2 lg:px-0 max-w-6xl lg:max-w-7xl w-full h-full">
       <div class="lg:flex lg:flex-row lg:items-stretch space-x-25 space-y-4 lg:space-y-0 h-full">
         <!-- Left side: Text content -->
-        <div
-          class="flex-1 flex flex-col gap-3 lg:gap-6 justify-center hero-content"
-        >
-          <SectionHeader
-            className="text-left lg:text-left w-full"
-            heading={heading}
-            headingTag="h1"
-            headingClassName="text-4xl md:text-5xl lg:text-6xl xl:text-[75px] leading-[1]"
-          />
+        <div class="flex-1 flex flex-col gap-3 lg:gap-6 justify-center hero-content">
+          <div class="flex flex-wrap items-end gap-4">
+            <SectionHeader
+              className="text-left lg:text-left"
+              heading={heading}
+              headingTag="h1"
+              headingClassName="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[70px] leading-[1.02]"
+            />
+          </div>
         </div>
 
         <!-- Right side: Portfolio showcase -->
@@ -76,11 +76,11 @@ const {
               We're a New Jersey based Web Agency that creates fast, engaging
               websites built to grow your business.
             </p>
-            <ul class="space-y-1">
+            <ul class="space-y-2">
               {
                 HeroServicesList.map((service) => (
-                  <li class="list-none flex items-center gap-2">
-                    <span class="faded-bg p-1 rounded-full flex items-center justify-center text-primary flex-shrink-0">
+                  <li class="list-none flex items-center gap-1.5">
+                    <span class="faded-bg p-1.5 rounded-full flex items-center justify-center text-primary flex-shrink-0">
                       <svg
                         class="w-4 h-4"
                         viewBox="0 0 24 24"
@@ -103,7 +103,7 @@ const {
             </ul>
           <!-- </div> -->
           <div
-            class="flex gap-2 lg:gap-3 flex-col sm:flex-row items-start lg:items-center lg:w-full"
+            class="flex gap-2 lg:gap-3 xl:gap-5 flex-col sm:flex-row items-start lg:items-center lg:w-full"
           >
             <Button
               href={primaryCTA.link}

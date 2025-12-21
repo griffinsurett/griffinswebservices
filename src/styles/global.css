@@ -42,7 +42,7 @@
   --color-bg: var(--color-primary-dark);
   --color-bg2: var(--color-secondary-dark);
   --color-bg3: var(--color-tertiary-dark);
-  --color-surface:      oklch(97.5% 0.006 260); /* cards, nav, modals */
+  --color-surface: oklch(97.5% 0.006 260); /* cards, nav, modals */
 
   /* color helpers */
   --color-primary-50:   oklch(from var(--color-primary) calc(l + 0.40) c h);
@@ -188,6 +188,12 @@ body {
   .video-shell {
     @apply rounded-3xl border border-muted/20 bg-muted/10 overflow-hidden;
   }
+
+  /* Override base background utility to use the gradient */
+  .bg-bg {
+    background-color: transparent;
+    @apply bg-gradient;
+  }
 }
 
 @property --ab-progress {
@@ -202,10 +208,12 @@ body {
 @layer base {
   html {
     scroll-behavior: smooth;
+    @apply bg-gradient;
   }
 
   body {
     font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
+    background-color: transparent;
     @apply bg-gradient overflow-x-hidden;
   }
 
