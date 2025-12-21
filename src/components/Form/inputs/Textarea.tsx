@@ -90,6 +90,10 @@ export default function Textarea({
     .filter(Boolean)
     .join(" ");
 
+  // When animated border is enabled, remove the textarea's own border
+  // Also add block display to prevent inline-block gap at bottom
+  const animatedBorderClasses = enabled ? "!border-transparent block" : "";
+
   const textareaElement = (
     <textarea
       id={id}
@@ -98,7 +102,7 @@ export default function Textarea({
       required={required}
       aria-required={required || undefined}
       aria-describedby={describedBy}
-      className={`form-field resize-none ${textareaClassName}`.trim()}
+      className={`form-field resize-none ${animatedBorderClasses} ${textareaClassName}`.trim()}
       onFocus={handleFocus}
       onBlur={handleBlur}
       {...textareaProps}

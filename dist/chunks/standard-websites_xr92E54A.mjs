@@ -1,0 +1,213 @@
+import { f as createVNode, F as Fragment, _ as __astro_tag_component__ } from './astro/server_CDqnDASo.mjs';
+import { $ as $$ContentSection } from './ContentSection_D1U2H-Wl.mjs';
+import { a as $$ContentRenderer, q as query } from './BaseLayout_CwDjC27N.mjs';
+import 'clsx';
+
+const frontmatter = {
+  "title": "Standard Websites",
+  "description": "Professional websites that establish credibility and generate leads. We build fast, modern sites that make your business look as good online as you are in person.",
+  "heading": {
+    "before": "Professional websites",
+    "text": "that win trust",
+    "after": "and generate leads."
+  },
+  "order": 2,
+  "icon": "fa6-solid:laptop",
+  "price": "Starting from $999",
+  "featured": true,
+  "features": [{
+    "title": "Custom design that fits your brand",
+    "description": "No cookie-cutter templates. We design a unique look that reflects your business and stands out from competitors."
+  }, {
+    "title": "Built for speed and SEO",
+    "description": "Lightning-fast load times and search-engine-friendly architecture so customers can actually find you on Google."
+  }, {
+    "title": "Mobile-first responsive design",
+    "description": "Looks and works perfectly on phones, tablets, and desktops. Because over half your visitors are on mobile."
+  }, {
+    "title": "Easy content management",
+    "description": "Update text, images, and pages yourself without calling a developer. We train you and provide documentation."
+  }, {
+    "title": "Lead capture forms that work",
+    "description": "Contact forms, quote requests, and newsletter signups that route directly to your inbox or CRM."
+  }, {
+    "title": "Analytics and tracking included",
+    "description": "Know exactly how many people visit, where they come from, and what they do on your site."
+  }, {
+    "title": "Ongoing support available",
+    "description": "We don't disappear after launch. Hosting, maintenance, and updates available so you're never stuck."
+  }],
+  "benefits": [{
+    "title": "Build instant credibility",
+    "description": "A polished, professional website makes potential customers trust you before you ever speak to them.",
+    "icon": "fa6-solid:award"
+  }, {
+    "title": "Get found on Google",
+    "description": "SEO-optimized architecture means customers searching for your services actually find you, not your competitors.",
+    "icon": "fa6-solid:magnifying-glass"
+  }, {
+    "title": "Convert visitors into leads",
+    "description": "Strategic design and clear calls-to-action guide visitors to contact you, request quotes, or make purchases.",
+    "icon": "fa6-solid:chart-line"
+  }, {
+    "title": "Own your online presence",
+    "description": "No monthly page builder fees or platform lock-in. You own your site and can host it anywhere.",
+    "icon": "fa6-solid:key"
+  }, {
+    "title": "Update content yourself",
+    "description": "Make changes to text, images, and pages without waiting on a developer or paying hourly rates.",
+    "icon": "fa6-solid:pen-to-square"
+  }, {
+    "title": "Support when you need it",
+    "description": "We don't disappear after launch. Get help with updates, questions, and issues whenever they arise.",
+    "icon": "fa6-solid:headset"
+  }],
+  "quickFacts": [{
+    "title": "Timeline",
+    "description": "3-5 weeks to launch"
+  }, {
+    "title": "What's included",
+    "description": "Design, development, training"
+  }, {
+    "title": "After launch",
+    "description": "Hosting + support included"
+  }]
+};
+function getHeadings() {
+  return [];
+}
+function _createMdxContent(props) {
+  const _components = {
+    p: "p",
+    ...props.components
+  };
+  return createVNode($$ContentSection, {
+    heading: {
+      title: "Your business deserves a website that works",
+      before: "Stop losing customers to",
+      text: "competitors with better websites.",
+      after: "Get one that wins.",
+      description: "Most of your competitors have terrible websites—or none at all. A professional site instantly positions you as the credible choice customers trust before they ever call."
+    },
+    primaryCTA: {
+      text: "Get Your Free Quote",
+      href: "#services-quote-hero",
+      rightIcon: "lu:arrow-right"
+    },
+    secondaryCTA: {
+      text: "See our work",
+      href: "#services-projects"
+    },
+    sidebar: {
+      icon: frontmatter.icon,
+      title: "Everything you need to compete",
+      eyebrow: "Why our sites perform",
+      description: "Custom design, fast load times, and SEO-friendly architecture that makes you look established and helps customers find you.",
+      footIcon: "🚀",
+      footTitle: "Online in weeks, not months",
+      footDescription: "We don't drag projects out. You'll have a professional site live and working in 3-5 weeks.",
+      features: frontmatter.features
+    },
+    children: [createVNode("div", {
+      slot: "text",
+      class: "space-y-6 text-lg text-muted",
+      children: [createVNode("p", {
+        children: createVNode(_components.p, {
+          children: "You didn’t start your business to become a web designer. You have customers to serve, a team to lead, a company to grow. But here’s the truth: your website is often the first impression potential customers get of your business."
+        })
+      }), createVNode("p", {
+        children: createVNode(_components.p, {
+          children: "We build websites that make that first impression count. Custom designs that reflect your brand, lightning-fast load times that keep visitors engaged, and SEO-friendly architecture so people can actually find you on Google."
+        })
+      }), createVNode("p", {
+        children: createVNode(_components.p, {
+          children: "Behind the scenes, you get a site you can actually manage yourself. Update text, swap images, and add pages without calling us. And when you need help, we’re here—hosting, maintenance, and support included."
+        })
+      })]
+    }), createVNode($$ContentRenderer, {
+      slot: "quick-facts",
+      items: frontmatter.quickFacts,
+      variant: "QuickFactsVariant",
+      columns: 3
+    }), createVNode("ul", {
+      slot: "proof-points",
+      class: "space-y-3",
+      children: [createVNode("li", {
+        class: "flex items-start gap-3",
+        children: [createVNode("span", {
+          "aria-hidden": "true",
+          class: "text-accent mt-1",
+          children: "✓"
+        }), createVNode("p", {
+          class: "text-sm text-muted",
+          children: createVNode(_components.p, {
+            children: "Custom design that reflects your brand and stands out from template sites."
+          })
+        })]
+      }), createVNode("li", {
+        class: "flex items-start gap-3",
+        children: [createVNode("span", {
+          "aria-hidden": "true",
+          class: "text-accent mt-1",
+          children: "✓"
+        }), createVNode("p", {
+          class: "text-sm text-muted",
+          children: createVNode(_components.p, {
+            children: "Mobile-first responsive design that works perfectly on any device."
+          })
+        })]
+      }), createVNode("li", {
+        class: "flex items-start gap-3",
+        children: [createVNode("span", {
+          "aria-hidden": "true",
+          class: "text-accent mt-1",
+          children: "✓"
+        }), createVNode("p", {
+          class: "text-sm text-muted",
+          children: createVNode(_components.p, {
+            children: "SEO-optimized architecture so customers can find you on Google."
+          })
+        })]
+      }), createVNode("li", {
+        class: "flex items-start gap-3",
+        children: [createVNode("span", {
+          "aria-hidden": "true",
+          class: "text-accent mt-1",
+          children: "✓"
+        }), createVNode("p", {
+          class: "text-sm text-muted",
+          children: createVNode(_components.p, {
+            children: "Contact forms, analytics, and training so you can manage it yourself."
+          })
+        })]
+      })]
+    }), createVNode("div", {
+      slot: "bottom-section",
+      children: createVNode($$ContentRenderer, {
+        query: query("stats"),
+        variant: "StatsVariant"
+      })
+    })]
+  });
+}
+function MDXContent(props = {}) {
+  const {wrapper: MDXLayout} = props.components || ({});
+  return MDXLayout ? createVNode(MDXLayout, {
+    ...props,
+    children: createVNode(_createMdxContent, {
+      ...props
+    })
+  }) : _createMdxContent(props);
+}
+const url = "src/content/solutions/standard-websites.mdx";
+const file = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/standard-websites.mdx";
+const Content = (props = {}) => MDXContent({
+  ...props,
+  components: { Fragment: Fragment, ...props.components, },
+});
+Content[Symbol.for('mdx-component')] = true;
+Content[Symbol.for('astro.needsHeadRendering')] = !Boolean(frontmatter.layout);
+Content.moduleId = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/standard-websites.mdx";
+__astro_tag_component__(Content, 'astro:jsx');
+
+export { Content, Content as default, file, frontmatter, getHeadings, url };

@@ -127,9 +127,9 @@ const sidebarFeatureKey = (feature: SidebarFeature, index: number) =>
                   class="flex items-start gap-3"
                   key={sidebarFeatureKey(feature, index)}
                 >
-                  <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-accent/15">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-accent">
                     <svg
-                      class="h-4 w-4 text-accent"
+                      class="h-4 w-4"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -148,10 +148,6 @@ const sidebarFeatureKey = (feature: SidebarFeature, index: number) =>
 
           <div class="mt-8 space-y-6">
             <slot name="quick-facts" />
-
-            <div>
-                <slot name="proof-points" />
-            </div>
           </div>
 
           <ContentContainer

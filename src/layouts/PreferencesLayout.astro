@@ -23,6 +23,7 @@ import AccessibilityButton from "@/integrations/preferences/accessibility/compon
 import BrowserTranslateScript from "@/integrations/preferences/language/components/BrowserTranslateScript.astro";
 import "@/integrations/preferences/language/language-switcher.css";
 import DividerHeading from "@/components/DividerHeading/DividerHeading";
+import Button from "@/components/Button/Button";
 
 interface Props {
   showHeading?: boolean;
@@ -70,9 +71,13 @@ const actionWrapperClasses = isHorizontal
 
   <div class={itemsClasses}>
     {/* CCPA Opt-Out Link */}
-    <a href="/privacy-policy#ccpa-rights" class={linkClasses}
-      >Do Not Sell My Personal Information</a
+    <Button
+      variant="link"
+      href="/privacy-policy#ccpa-rights"
+      size="sm"
     >
+      Do Not Sell My Personal Information
+    </Button>
 
     {/* Cookie Preferences Button - Client-side only */}
       <CookiePreferencesButton client:visible />

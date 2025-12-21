@@ -95,6 +95,9 @@ export default function Input({
     .filter(Boolean)
     .join(" ");
 
+  // When animated border is enabled, remove the input's own border
+  const borderClass = enabled ? "!border-transparent" : "";
+
   const inputElement = (
     <input
       id={id}
@@ -102,7 +105,7 @@ export default function Input({
       required={required}
       aria-required={required || undefined}
       aria-describedby={describedBy}
-      className={`form-field ${inputClassName}`.trim()}
+      className={`form-field ${borderClass} ${inputClassName}`.trim()}
       onFocus={handleFocus}
       onBlur={handleBlur}
       {...inputProps}

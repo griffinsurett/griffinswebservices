@@ -222,7 +222,7 @@ export default function FormWrapper({
           <Checkbox
             name={termsCheckboxName}
             required
-            containerClassName="mt-6"
+            containerClassName="mt-1 mx-1"
           >
             {termsCheckboxLabel ?? defaultTermsLabel}
           </Checkbox>

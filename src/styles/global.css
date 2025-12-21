@@ -113,7 +113,7 @@ body {
   /* Link base styles */
   .link-base {
     @apply inline-flex items-center gap-1 tracking-wide;
-    @apply text-primary hover:text-primary-700 hover:underline;
+    @apply text-text hover:text-primary hover:underline;
     @apply bg-transparent font-normal;
     @apply transition-colors duration-200;
     @apply focus:outline-none focus:ring-0 focus:ring-offset-0;
@@ -378,7 +378,7 @@ body {
   }
 
   @utility sticky-section {
-    @apply lg:sticky lg:top-20;
+    @apply lg:sticky lg:top-17;
   }
 
   @utility head-foot-section {

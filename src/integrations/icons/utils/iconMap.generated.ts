@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/integrations/icons/utils/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuCheck, LuChevronRight, LuCode, LuContact, LuGithub, LuGlobe, LuInstagram, LuLayers, LuLinkedin, LuMail, LuMinus, LuPhone, LuPlus } from 'react-icons/lu';
+import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuCheck, LuChevronRight, LuCode, LuContact, LuGithub, LuGlobe, LuInstagram, LuLayers, LuLinkedin, LuMail, LuMinus, LuPhone, LuPlus, LuSettings } from 'react-icons/lu';
 import { FaArrowTrendUp, FaArrowsRotate, FaArrowsUpDownLeftRight, FaArrowsUpToLine, FaAward, FaAws, FaBagShopping, FaBellConcierge, FaBlender, FaBolt, FaBook, FaBorderAll, FaBorderTopLeft, FaBox, FaBoxArchive, FaBoxOpen, FaBoxesStacked, FaBrain, FaBriefcase, FaBroom, FaBug, FaBuilding, FaBullhorn, FaBullseye, FaBurger, FaCakeCandles, FaCalculator, FaCalendarCheck, FaCamera, FaCapsules, FaCartArrowDown, FaCartShopping, FaChampagneGlasses, FaChartLine, FaChartPie, FaChartSimple, FaClock, FaClockRotateLeft, FaClone, FaCloudflare, FaCode, FaCoins, FaCouch, FaCrown, FaCss3Alt, FaCubes, FaDatabase, FaDoorOpen, FaDumbbell, FaEnvelopeCircleCheck, FaEnvelopeOpenText, FaExplosion, FaFaucetDrip, FaFeather, FaFeatherPointed, FaFigma, FaFileLines, FaFlagUsa, FaFlask, FaGear, FaGears, FaGem, FaGithub, FaGraduationCap, FaHammer, FaHandHoldingHeart, FaHands, FaHandshake, FaHeadset, FaHeartPulse, FaHouse, FaHouseChimney, FaHouseChimneyWindow, FaHtml5, FaIdCard, FaJs, FaKey, FaLaptop, FaLayerGroup, FaLifeRing, FaLightbulb, FaListCheck, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMartiniGlassCitrus, FaMicrophone, FaMobileScreen, FaMugHot, FaNetworkWired, FaNodeJs, FaPaintRoller, FaPaintbrush, FaPalette, FaPenNib, FaPenRuler, FaPenToSquare, FaPeopleGroup, FaPersonChalkboard, FaPhp, FaPlug, FaPlus, FaPuzzlePiece, FaPython, FaReact, FaRocket, FaRoute, FaScaleBalanced, FaScissors, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShirt, FaShopify, FaSolarPanel, FaSpa, FaSprayCanSparkles, FaStar, FaStethoscope, FaStore, FaTags, FaTemperatureHalf, FaTree, FaTrophy, FaTruck, FaTruckFast, FaTruckRampBox, FaUmbrella, FaUniversalAccess, FaUsers, FaUtensils, FaWandMagicSparkles, FaWarehouse, FaWordpress } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiVercel, SiWebflow } from 'react-icons/si';
 
@@ -146,6 +146,7 @@ export const iconMap = {
   'lu:arrow-left': LuArrowLeft,
   'lu:arrow-right': LuArrowRight,
   'lu:arrow-up-right': LuArrowUpRight,
+  'lu:book-open': LuBookOpen,
   'lu:check': LuCheck,
   'lu:chevron-right': LuChevronRight,
   'lu:code': LuCode,
@@ -159,6 +160,7 @@ export const iconMap = {
   'lu:minus': LuMinus,
   'lu:phone': LuPhone,
   'lu:plus': LuPlus,
+  'lu:settings': LuSettings,
   'si:astro': SiAstro,
   'si:elementor': SiElementor,
   'si:facebook': SiFacebook,
