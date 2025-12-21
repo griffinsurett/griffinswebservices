@@ -90,9 +90,8 @@ export default function Textarea({
     .filter(Boolean)
     .join(" ");
 
-  // When animated border is enabled, remove the textarea's own border
-  // Also add block display to prevent inline-block gap at bottom
-  const animatedBorderClasses = enabled ? "!border-transparent block" : "";
+  // Add block display to prevent inline-block gap at bottom when using animated border
+  const animatedBorderClasses = enabled ? "block" : "";
 
   const textareaElement = (
     <textarea
