@@ -8,6 +8,6 @@ order: 1
 import BarGraph from "@/components/AnimatedExamples/BarGraph";
 
 <div className="flex flex-col gap-3 mt-2">
-  <BarGraph label="GWS Average" value={97.5} stat="2.5 seconds" variant="primary-reverse" client:visible />
-  <BarGraph label="Industry Average" value={34} stat="7.1 seconds" variant="grey" delay={200} client:visible />
+  <BarGraph label="GWS Average" value={97.5} statValue={2.5} statSuffix=" seconds" variant="primary-reverse" client:visible />
+  <BarGraph label="Industry Average" value={34} statValue={7.1} statSuffix=" seconds" variant="grey" delay={200} client:visible />
 </div>
