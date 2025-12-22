@@ -4,3 +4,10 @@ description: "Built to load instantly and feel effortless from the very first in
 icon: "fa6-solid:bolt"
 order: 1
 ---
+
+import BarGraph from "@/components/BarGraph";
+
+<div className="flex flex-col gap-3 mt-2">
+  <BarGraph label="GWS Average" value={97.5} stat="2.5 seconds" variant="primary-reverse" client:visible />
+  <BarGraph label="Industry Average" value={34} stat="7.1 seconds" variant="grey" delay={200} client:visible />
+</div>

@@ -19,7 +19,7 @@ import { getRelations } from './relations';
 // ❌ NO module-level imports of astro:content or filter/sort (they're pure functions, OK)
 // ✅ Import pure utility functions (no astro:content in them)
 import { applyFilters } from './filters';
-import { applySorting } from './sorting';
+import { applySorting, sortByOrder } from './sorting';
 
 /**
  * Query builder class
@@ -129,9 +129,12 @@ export class Query<T extends CollectionKey> {
     
     const total = entries.length;
     
-    // Apply sorting
+    // Apply sorting (default to sortByOrder if no explicit sort specified)
     if (this._sorts.length > 0) {
       entries = applySorting(entries, this._sorts as any);
+    } else {
+      // Default: sort by order field ascending
+      entries = applySorting(entries, sortByOrder());
     }
     
     // Apply pagination
