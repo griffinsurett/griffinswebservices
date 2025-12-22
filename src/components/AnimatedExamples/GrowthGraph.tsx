@@ -7,6 +7,7 @@ export interface GrowthGraphProps {
 
 export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
   const [progress, setProgress] = useState(0);
+  const [fillOpacity, setFillOpacity] = useState(0);
 
   useEffect(() => {
     // Animate the line drawing
@@ -20,23 +21,31 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
       if (current >= 100) {
         setProgress(100);
         clearInterval(interval);
+        // Fade in the fill after line completes
+        setTimeout(() => {
+          setFillOpacity(1);
+        }, 200);
         // Reset after a pause
         setTimeout(() => {
-          setProgress(0);
-          // Restart animation
+          setFillOpacity(0);
           setTimeout(() => {
-            current = 0;
-            const restartInterval = setInterval(() => {
-              current += increment;
-              if (current >= 100) {
-                setProgress(100);
-                clearInterval(restartInterval);
-              } else {
-                setProgress(current);
-              }
-            }, duration / steps);
-          }, 500);
-        }, 3000);
+            setProgress(0);
+            // Restart animation
+            setTimeout(() => {
+              current = 0;
+              const restartInterval = setInterval(() => {
+                current += increment;
+                if (current >= 100) {
+                  setProgress(100);
+                  clearInterval(restartInterval);
+                  setTimeout(() => setFillOpacity(1), 200);
+                } else {
+                  setProgress(current);
+                }
+              }, duration / steps);
+            }, 500);
+          }, 300);
+        }, 3500);
       } else {
         setProgress(current);
       }
@@ -45,65 +54,93 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
     return () => clearInterval(interval);
   }, []);
 
-  // Growth curve path - starts low left, curves up to high right
-  const width = 280;
-  const height = 100;
-  const padding = 16;
+  // Growth curve - natural aspect ratio
+  const width = 400;
+  const height = 120;
 
   // Create a smooth growth curve
   const points = [
-    { x: 0, y: 85 },
-    { x: 0.15, y: 80 },
-    { x: 0.3, y: 70 },
-    { x: 0.45, y: 55 },
-    { x: 0.6, y: 40 },
-    { x: 0.75, y: 25 },
-    { x: 0.9, y: 15 },
-    { x: 1, y: 8 },
+    { x: 0, y: height - 10 },
+    { x: 0.1, y: height - 15 },
+    { x: 0.2, y: height - 25 },
+    { x: 0.35, y: height - 45 },
+    { x: 0.5, y: height - 65 },
+    { x: 0.65, y: height - 82 },
+    { x: 0.8, y: height - 95 },
+    { x: 0.9, y: height - 105 },
+    { x: 1, y: height - 112 },
   ];
 
-  // Create SVG path
+  // Create SVG path for line (edge to edge)
   const pathData = points
     .map((p, i) => {
-      const x = padding + p.x * (width - padding * 2);
+      const x = p.x * width;
       const y = p.y;
       return i === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
     })
     .join(" ");
 
+  // Create closed path for fill (adds bottom corners)
+  const fillPathData = pathData + ` L ${width} ${height} L 0 ${height} Z`;
+
   // Calculate total path length for animation
-  const pathLength = 400; // Approximate
+  const pathLength = 500;
 
   return (
-    <div className={`bg-text/10 rounded-lg p-4 ${className}`}>
+    <div
+      className={`-mx-6 -mb-6 mt-4 overflow-hidden rounded-b-2xl ${className}`}
+    >
+      {/* Labels above the graph */}
+      <div className="flex justify-between px-4 pb-2 text-xs text-text/60">
+        <span>Today</span>
+        <span>Future</span>
+      </div>
       <svg
         width="100%"
-        height={height + 20}
-        viewBox={`0 0 ${width} ${height + 20}`}
-        className="overflow-visible"
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="none"
+        className="block"
       >
-        {/* Grid lines */}
-        {[0, 1, 2, 3].map((i) => (
-          <line
-            key={i}
-            x1={padding}
-            y1={20 + i * 25}
-            x2={width - padding}
-            y2={20 + i * 25}
-            className="stroke-text/10"
-            strokeWidth="1"
-          />
-        ))}
-
         {/* Growth line with gradient stroke */}
         <defs>
-          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <linearGradient
+            id="growthLineGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="0%"
+          >
             <stop offset="0%" stopColor="var(--color-primary)" />
             <stop offset="100%" stopColor="var(--color-primary-700)" />
           </linearGradient>
+          <linearGradient
+            id="growthFillGradient"
+            x1="0%"
+            y1="0%"
+            x2="0%"
+            y2="100%"
+          >
+            <stop
+              offset="0%"
+              stopColor="var(--color-primary)"
+              stopOpacity="0.25"
+            />
+            <stop
+              offset="100%"
+              stopColor="var(--color-primary)"
+              stopOpacity="0.05"
+            />
+          </linearGradient>
           {/* Glow filter */}
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+          <filter
+            id="growthGlow"
+            x="-50%"
+            y="-50%"
+            width="200%"
+            height="200%"
+          >
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
             <feMerge>
               <feMergeNode in="coloredBlur" />
               <feMergeNode in="SourceGraphic" />
@@ -111,15 +148,25 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
           </filter>
         </defs>
 
+        {/* Filled area under the curve - fades in after line completes */}
+        <path
+          d={fillPathData}
+          fill="url(#growthFillGradient)"
+          style={{
+            opacity: fillOpacity,
+            transition: "opacity 0.5s ease-out",
+          }}
+        />
+
         {/* Animated growth line */}
         <path
           d={pathData}
           fill="none"
-          stroke="url(#lineGradient)"
+          stroke="url(#growthLineGradient)"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
-          filter="url(#glow)"
+          filter="url(#growthGlow)"
           style={{
             strokeDasharray: pathLength,
             strokeDashoffset: pathLength - (pathLength * progress) / 100,
@@ -130,35 +177,16 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
         {/* Dot at the end of the line */}
         {progress > 5 && (
           <circle
-            cx={padding + (progress / 100) * (width - padding * 2)}
-            cy={85 - (progress / 100) * 77}
+            cx={(progress / 100) * width}
+            cy={height - 10 - (progress / 100) * 102}
             r="5"
             className="fill-primary"
             style={{
-              filter: "url(#glow)",
+              filter: "url(#growthGlow)",
               opacity: progress < 100 ? 1 : 0.8,
             }}
           />
         )}
-
-        {/* Labels */}
-        <text
-          x={padding}
-          y={height + 16}
-          className="fill-text/50 text-[10px]"
-          fontFamily="system-ui"
-        >
-          Today
-        </text>
-        <text
-          x={width - padding}
-          y={height + 16}
-          className="fill-text/50 text-[10px]"
-          textAnchor="end"
-          fontFamily="system-ui"
-        >
-          Future
-        </text>
       </svg>
     </div>
   );

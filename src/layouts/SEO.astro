@@ -16,7 +16,8 @@
  * Generates absolute URLs for social sharing.
  */
 
-import defaultOGImage from "@/assets/astro.svg";
+// Default OG image - use logo from public folder
+const defaultOGImage = { src: "/2dfavicons/android-chrome-512x512.png" };
 import { siteData } from "@/content/siteData";
 import { getImageUrl } from "@/utils/images";
 import type { ImageInput, SEOData } from "@/content/schema";
