@@ -1,7 +1,60 @@
 // src/components/BarGraph.tsx
+// Lightweight bar graph with inline counter animation - no external Counter dependency
 import { useEffect, useRef, useState } from "react";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
-import Counter from "@/components/Counter";
+
+// Inline animated number component to avoid importing heavy Counter chunk
+function AnimatedNumber({
+  value,
+  duration = 1000,
+  decimals = 0,
+}: {
+  value: number;
+  duration?: number;
+  decimals?: number;
+}) {
+  const [display, setDisplay] = useState(0);
+  const startTimeRef = useRef<number | null>(null);
+  const animationRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    // If duration is 0, show final value immediately
+    if (duration === 0) {
+      setDisplay(value);
+      return;
+    }
+
+    startTimeRef.current = performance.now();
+
+    const animate = (timestamp: number) => {
+      if (!startTimeRef.current) return;
+
+      const elapsed = timestamp - startTimeRef.current;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = value * eased;
+
+      setDisplay(current);
+
+      if (progress < 1) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [value, duration]);
+
+  const formatted = decimals > 0 ? display.toFixed(decimals) : Math.round(display).toString();
+
+  return <span className="tabular-nums">{formatted}</span>;
+}
 
 export interface BarGraphProps {
   /** Label displayed above or beside the bar */
@@ -86,16 +139,21 @@ export default function BarGraph({
   // Use instant duration when reduced motion is preferred
   const effectiveDuration = prefersReducedMotion ? 0 : counterDuration;
 
+  // Calculate decimals for stat value
+  const statDecimals = statValue !== undefined
+    ? (statValue.toString().split(".")[1]?.length ?? 0)
+    : 0;
+
   return (
     <div ref={barRef} className={`w-full ${className}`}>
       <div className="flex justify-between items-center">
         <span className="text-sm text-text/80">{label}</span>
         {statValue !== undefined ? (
           <span className={`text-lg ${valueClass}`}>
-            <Counter
-              start={0}
-              end={animated ? statValue : 0}
+            <AnimatedNumber
+              value={animated ? statValue : 0}
               duration={effectiveDuration}
+              decimals={statDecimals}
             />
             {statSuffix}
           </span>
@@ -112,9 +170,8 @@ export default function BarGraph({
         />
         {showValue && (
           <span className="absolute inset-0 flex items-center pl-3 text-sm font-semibold text-white">
-            <Counter
-              start={0}
-              end={animated ? value : 0}
+            <AnimatedNumber
+              value={animated ? value : 0}
               duration={effectiveDuration}
             />
             %

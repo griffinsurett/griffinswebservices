@@ -1,5 +1,6 @@
 ---
 // Counter.astro - Lightweight counter animation (tiny inline script, no React bundle)
+// Respects reduced motion and accessibility preferences
 
 interface Props {
   start?: number;
@@ -39,7 +40,12 @@ const formattedEnd = resolvedDecimals > 0
   : Math.round(end).toString();
 const minWidthCh = Math.max(1, formattedEnd.length);
 
-// Initial display value
+// Final display value (shown immediately for reduced motion, or after animation)
+const finalDisplay = resolvedDecimals > 0
+  ? end.toFixed(resolvedDecimals)
+  : Math.round(end).toString();
+
+// Initial display value for animation start
 const initialDisplay = resolvedDecimals > 0
   ? start.toFixed(resolvedDecimals)
   : Math.round(start).toString();
@@ -68,9 +74,18 @@ const initialDisplay = resolvedDecimals > 0
 
 <script>
   // Lightweight counter animation - runs once per page, no React needed
+  // Respects reduced motion and accessibility preferences
   const counters = document.querySelectorAll('.counter-value[data-end]');
 
   if (counters.length > 0) {
+    // Check for reduced motion preference (system or user accessibility setting)
+    const shouldReduceMotion = () => {
+      const systemPrefers = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+      const userPrefers = document.documentElement.getAttribute('data-a11y-motion') === 'reduced';
+      const animationsPaused = document.documentElement.getAttribute('data-a11y-animations') === 'true';
+      return systemPrefers || userPrefers || animationsPaused;
+    };
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -82,8 +97,13 @@ const initialDisplay = resolvedDecimals > 0
           const duration = parseInt(el.dataset.duration || '2000', 10);
           const decimals = parseInt(el.dataset.decimals || '0', 10);
 
-          if (start === end) {
-            el.textContent = decimals > 0 ? end.toFixed(decimals) : Math.round(end).toString();
+          // Format final value
+          const formatValue = (val: number) =>
+            decimals > 0 ? val.toFixed(decimals) : Math.round(val).toString();
+
+          // If reduced motion or start equals end, show final value immediately
+          if (shouldReduceMotion() || start === end) {
+            el.textContent = formatValue(end);
             return;
           }
 
@@ -97,9 +117,7 @@ const initialDisplay = resolvedDecimals > 0
             const eased = 1 - Math.pow(1 - progress, 3);
             const current = start + range * eased;
 
-            el.textContent = decimals > 0
-              ? current.toFixed(decimals)
-              : Math.round(current).toString();
+            el.textContent = formatValue(current);
 
             if (progress < 1) {
               requestAnimationFrame(animate);
