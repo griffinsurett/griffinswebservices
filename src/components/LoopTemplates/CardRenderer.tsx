@@ -8,6 +8,8 @@ export interface CardRendererProps {
   items?: FeatureCardData[];
   columns?: ColumnCount;
   className?: string;
+  /** Enable body content rendering for all cards */
+  showBody?: boolean;
   getCardClassName?: (item: FeatureCardData, index: number) => string;
   getRingDuration?: (item: FeatureCardData, index: number) => number;
   featureCardProps?: Partial<FeatureCardProps>;
@@ -32,6 +34,7 @@ export default function CardRenderer({
   items = [],
   columns = 3,
   className = "",
+  showBody = false,
   getCardClassName,
   getRingDuration,
   featureCardProps = {},
@@ -108,6 +111,12 @@ export default function CardRenderer({
 
         const animationType = getAnimationType(index);
 
+        // Extract body-related props from item if present
+        const itemRecord = item as Record<string, any> | null | undefined;
+        const contentSlotId = itemRecord?.contentSlotId;
+        // Use renderer-level showBody, allow item-level override
+        const itemShowBody = itemRecord?.showBody ?? showBody;
+
         return (
           <li
             key={index}
@@ -122,6 +131,8 @@ export default function CardRenderer({
               data={item}
               ringDuration={resolvedRingDuration}
               className={resolvedClassName}
+              showBody={itemShowBody}
+              contentSlotId={contentSlotId}
               {...restFeatureCardProps}
             />
           </li>

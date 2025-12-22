@@ -1,12 +1,12 @@
 // src/components/LoopComponents/FeatureCard.tsx
 import AnimatedBorder from "../AnimatedBorder/AnimatedBorder";
 import IconListItem, { type IconListItemProps } from "./IconListItem";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 type IconValue = IconListItemProps["data"]["icon"];
 
 export type FeatureCardData =
-  | (IconListItemProps["data"] & { data?: Record<string, unknown> })
+  | (IconListItemProps["data"] & { data?: Record<string, unknown>; contentSlotId?: string })
   | Record<string, unknown>
   | null
   | undefined;
@@ -19,6 +19,12 @@ export interface FeatureCardProps {
   className?: string;
   ringDuration?: number;
   listItemProps?: Partial<Omit<IconListItemProps, "data">>;
+  /** Enable body content rendering (MDX via contentSlotId or children) */
+  showBody?: boolean;
+  /** Slot ID for ContentBridge - loads MDX body content (requires showBody=true) */
+  contentSlotId?: string;
+  /** Direct children (requires showBody=true) */
+  children?: ReactNode;
 }
 
 const ICON_KEYS = ["icon", "Icon", "iconName"];
@@ -113,7 +119,33 @@ export default function FeatureCard({
   className = "",
   ringDuration = 800,
   listItemProps,
+  showBody = false,
+  contentSlotId,
+  children,
 }: FeatureCardProps) {
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  // Load content from ContentBridge slot if provided (only when showBody is true)
+  // Clone the hidden content node (same approach as Accordion)
+  useEffect(() => {
+    if (!showBody || !contentSlotId || !bodyRef.current) return;
+    // Only load once - check if content already exists
+    if (bodyRef.current.children.length > 0) return;
+
+    const hiddenContent = document.getElementById(contentSlotId);
+    if (hiddenContent) {
+      // Clone the node (keeps original hidden div intact)
+      const clone = hiddenContent.cloneNode(true) as HTMLElement;
+      // Make it visible (remove display: none)
+      clone.style.display = "";
+      clone.removeAttribute("id"); // Remove ID to avoid duplicates
+      // Append to body container
+      bodyRef.current.appendChild(clone);
+    }
+  }, [showBody, contentSlotId]);
+
+  // Only render body when explicitly enabled
+  const hasBody = showBody && Boolean(contentSlotId || children);
   const overrideSource = createOverrideSource({ icon, title, description });
   const dataSources = [
     ...(overrideSource ? [overrideSource] : []),
@@ -158,10 +190,13 @@ export default function FeatureCard({
     ...restListItemProps,
   };
 
+  // Use auto height when there's body content, fixed height otherwise
   const innerCardClass =
     resolvedLayout.includes("horizontal")
       ? "lg:h-55 w-full px-4 md:px-8 py-6 relative flex flex-col justify-center items-center card-bg"
-      : "h-90 mx-auto px-6 md:px-10 flex flex-col justify-center items-center relative card-bg";
+      : hasBody
+        ? "mx-auto px-6 md:px-10 py-8 flex flex-col justify-center items-center relative card-bg"
+        : "h-90 mx-auto px-6 md:px-10 flex flex-col justify-center items-center relative card-bg";
 
   const wrapperTextClass = resolvedLayout.includes("horizontal") ? "text-left" : "text-center";
   const hoverLift = !resolvedLayout.includes("horizontal") && isInteractive ? "hover:-translate-y-3" : "";
@@ -193,6 +228,22 @@ export default function FeatureCard({
           data={resolvedData}
           {...listItemConfig}
         />
+        {/* Body content from MDX or children */}
+        {hasBody && (
+          <div
+            className={`feature-card-body mt-4 pt-4 border-t border-primary/15 relative z-10 w-full ${
+              resolvedLayout.includes("horizontal") ? "text-left" : "text-center"
+            }`}
+          >
+            {/* ContentBridge slot content loads here */}
+            <div
+              ref={bodyRef}
+              className="prose prose-sm dark:prose-invert max-w-none text-text/85 leading-relaxed"
+            />
+            {/* Direct children */}
+            {children}
+          </div>
+        )}
       </AnimatedBorder>
     </div>
   );

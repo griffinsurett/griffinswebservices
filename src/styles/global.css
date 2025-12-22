@@ -255,6 +255,33 @@ body {
   @apply dark:text-zinc-200 light:text-zinc-600;
 }
 
+@utility bottom-image-fade {
+  @apply [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_55%,rgba(0,0,0,0.35)_78%,rgba(0,0,0,0)_92%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_55%,rgba(0,0,0,0.35)_78%,rgba(0,0,0,0)_92%)]
+}
+
+/* todo:make top image fade */
+/* @utility bottom-image-fade {
+  @apply [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_55%,rgba(0,0,0,0.35)_78%,rgba(0,0,0,0)_92%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_55%,rgba(0,0,0,0.35)_78%,rgba(0,0,0,0)_92%)]
+} */
+
+/* Fade around entire border - vignette effect from center outward */
+@utility border-image-fade {
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 30% 35%,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,1) 50%,
+    rgba(0,0,0,0.4) 75%,
+    rgba(0,0,0,0) 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 60% at 30% 35%,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,1) 50%,
+    rgba(0,0,0,0.4) 75%,
+    rgba(0,0,0,0) 100%
+  );
+}
+
 @utility heading-accent-text {
   color: var(--color-primary);
 }
