@@ -56,12 +56,12 @@ export default function BarGraph({
     variant === "primary"
       ? "primary-gradient"
       : variant === "primary-reverse"
-        ? "bg-linear-to-r from-primary-700 to-primary"
+        ? "bg-linear-to-r from-accent-700 to-accent"
         : "bg-text/30";
 
   const valueClass =
     variant === "primary" || variant === "primary-reverse"
-      ? "text-primary font-bold"
+      ? "text-accent font-bold"
       : "text-text/60";
 
   return (

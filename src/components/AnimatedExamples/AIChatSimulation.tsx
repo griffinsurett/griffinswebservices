@@ -58,8 +58,8 @@ export default function AIChatSimulation({
         </div>
       </div>
 
-      {/* Chat area */}
-      <div className="p-4 min-h-[140px] bg-bg2/50">
+      {/* Chat area - fixed height to prevent layout shift */}
+      <div className="p-4 h-[140px] bg-bg2/50 overflow-hidden">
         {/* AI message bubble */}
         <div className="flex gap-3">
           <div className="w-6 h-6 rounded-full primary-gradient flex items-center justify-center shrink-0 mt-1">
@@ -67,7 +67,7 @@ export default function AIChatSimulation({
           </div>
           <div className="flex-1">
             <div className="bg-bg2 rounded-2xl rounded-tl-sm px-4 py-3 inline-block max-w-full">
-              <p className="text-sm text-text leading-relaxed">
+              <p className="text-sm text-text leading-relaxed h-[72px] overflow-hidden">
                 {displayedText}
                 {isTyping && (
                   <span
@@ -78,12 +78,14 @@ export default function AIChatSimulation({
                 )}
               </p>
             </div>
-            {!isTyping && (
-              <div className="mt-2 flex items-center gap-2 text-xs text-text/40">
-                <Icon icon="lu:clock" size="sm" />
-                <span>Just now</span>
-              </div>
-            )}
+            <div className="mt-2 flex items-center gap-2 text-xs text-text/40 h-4">
+              {!isTyping && (
+                <>
+                  <Icon icon="lu:clock" size="sm" />
+                  <span>Just now</span>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

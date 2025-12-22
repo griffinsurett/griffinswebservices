@@ -1,4 +1,5 @@
-// src/components/SecureBrowserBar.tsx
+// src/components/AnimatedExamples/SecureBrowserBar.tsx
+import { useState, useEffect } from "react";
 import Icon from "@/components/Icon";
 
 export interface SecureBrowserBarProps {
@@ -12,6 +13,16 @@ export default function SecureBrowserBar({
   url = "yoursite.com",
   className = "",
 }: SecureBrowserBarProps) {
+  const [showBadge, setShowBadge] = useState(false);
+
+  useEffect(() => {
+    // Animate badge in after a short delay
+    const timer = setTimeout(() => {
+      setShowBadge(true);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className={`bg-text/10 rounded-lg p-3 ${className}`}>
       {/* Browser bar */}
@@ -25,8 +36,14 @@ export default function SecureBrowserBar({
 
         {/* URL bar */}
         <div className="flex-1 flex items-center gap-2 bg-bg2 rounded-md px-3 py-1.5">
-          {/* Secure badge */}
-          <div className="flex items-center gap-1.5 primary-gradient rounded px-2 py-0.5">
+          {/* Secure badge - animates in */}
+          <div
+            className={`flex items-center gap-1.5 primary-gradient rounded px-2 py-0.5 transition-all duration-500 ease-out ${
+              showBadge
+                ? "opacity-100 translate-x-0 scale-100"
+                : "opacity-0 -translate-x-4 scale-75"
+            }`}
+          >
             <Icon icon="lu:lock" size="sm" className="text-white" />
             <span className="text-xs font-medium text-white">Secure</span>
           </div>
