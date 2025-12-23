@@ -13,9 +13,9 @@ import { useClickToScroll } from "@/hooks/interactions/useClickToScroll";
 
 const AUTO_SCROLL_START_DELAY_MS = 200;
 const AUTO_SCROLL_RESUME_DELAY_MS = 300;
-const AUTO_SCROLL_TARGET_DURATION_SEC = 28;
+const AUTO_SCROLL_TARGET_DURATION_SEC = 14;
 const AUTO_SCROLL_DEFAULT_CYCLE_MS = AUTO_SCROLL_TARGET_DURATION_SEC * 1000;
-const AUTO_SCROLL_MIN_SPEED = 8;
+const AUTO_SCROLL_MIN_SPEED = 15;
 // Simple delay before considering content ready (allows images to load)
 const CONTENT_READY_DELAY_MS = 350;
 
@@ -25,6 +25,8 @@ export interface ScrollableViewportProps {
   isTransitioning?: boolean;
   onScrollComplete?: () => void;
   scrollDurationMs?: number;
+  /** Target duration in seconds to scroll through content (default: 14) */
+  targetDurationSec?: number;
   className?: string;
   style?: CSSProperties;
   resetOnActivate?: boolean;
@@ -44,6 +46,7 @@ export default function ScrollableViewport({
   isActive,
   isTransitioning = false,
   onScrollComplete,
+  targetDurationSec = AUTO_SCROLL_TARGET_DURATION_SEC,
   className = "",
   style,
   resetOnActivate = true,
@@ -51,32 +54,33 @@ export default function ScrollableViewport({
 }: ScrollableViewportProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [contentReady, setContentReady] = useState(false);
-  const [scrollDurationMs, setScrollDurationMs] = useState(AUTO_SCROLL_DEFAULT_CYCLE_MS);
+  const defaultCycleMs = targetDurationSec * 1000;
+  const [scrollDurationMs, setScrollDurationMs] = useState(defaultCycleMs);
   const [progressPct, setProgressPct] = useState(0);
 
   const resolveAutoScrollSpeed = useCallback((host: HTMLElement) => {
     const maxScrollable = Math.max(0, host.scrollHeight - host.clientHeight);
     if (maxScrollable <= 0) return 0;
-    const baseline = maxScrollable / AUTO_SCROLL_TARGET_DURATION_SEC;
+    const baseline = maxScrollable / targetDurationSec;
     if (!Number.isFinite(baseline) || baseline <= 0) {
       return AUTO_SCROLL_MIN_SPEED;
     }
     return Math.max(AUTO_SCROLL_MIN_SPEED, baseline);
-  }, []);
+  }, [targetDurationSec]);
 
   const measureScrollDuration = useCallback(
     (host: HTMLElement) => {
       const maxScrollable = Math.max(0, host.scrollHeight - host.clientHeight);
-      if (maxScrollable <= 0) return AUTO_SCROLL_DEFAULT_CYCLE_MS;
+      if (maxScrollable <= 0) return defaultCycleMs;
       const pxPerSecond = resolveAutoScrollSpeed(host);
-      if (pxPerSecond <= 0) return AUTO_SCROLL_DEFAULT_CYCLE_MS;
+      if (pxPerSecond <= 0) return defaultCycleMs;
       const rawDurationMs = Math.round((maxScrollable / pxPerSecond) * 1000);
       if (!Number.isFinite(rawDurationMs) || rawDurationMs <= 0) {
-        return AUTO_SCROLL_DEFAULT_CYCLE_MS;
+        return defaultCycleMs;
       }
-      return Math.max(AUTO_SCROLL_DEFAULT_CYCLE_MS, rawDurationMs);
+      return Math.max(defaultCycleMs, rawDurationMs);
     },
-    [resolveAutoScrollSpeed],
+    [resolveAutoScrollSpeed, defaultCycleMs],
   );
 
   const autoScrollActive = isActive && contentReady && !isTransitioning;
@@ -143,7 +147,7 @@ export default function ScrollableViewport({
   // Measure scroll duration when content is ready
   useEffect(() => {
     if (!contentReady || !isActive) {
-      setScrollDurationMs(AUTO_SCROLL_DEFAULT_CYCLE_MS);
+      setScrollDurationMs(defaultCycleMs);
       return;
     }
 

@@ -189,6 +189,7 @@ export default function PortfolioItemComponent({
         isActive={isActive}
         isTransitioning={false}
         onScrollComplete={isActive && itemsLength > 1 ? onScrollComplete : undefined}
+        targetDurationSec={28}
         resetOnActivate={true}
         showDevOverlay={true}
         className="w-full h-full bg-gray-900 m-0 p-0"
