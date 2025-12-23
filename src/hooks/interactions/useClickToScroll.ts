@@ -1,12 +1,14 @@
 import { useEffect, useRef, useCallback, useState, type RefObject } from "react";
 
+const MANUAL_SCROLL_TIMEOUT_MS = 3000; // Disable manual scroll after 3 seconds of inactivity
+
 interface UseClickToScrollOptions {
   /** Ref to the scrollable element */
   ref: RefObject<HTMLElement | null>;
   /** Whether the element is currently active/visible */
   active?: boolean;
-  /** Whether auto-scroll resume is scheduled (from useEngagementAutoScroll) */
-  resumeScheduled?: boolean;
+  /** Timeout in ms before disabling manual scroll after inactivity (default: 3000) */
+  inactivityTimeout?: number;
 }
 
 interface UseClickToScrollReturn {
@@ -18,55 +20,83 @@ interface UseClickToScrollReturn {
 
 /**
  * Hook that prevents an element from capturing scroll events until clicked.
- * After clicking, manual scrolling is enabled. When the auto-scroll resume
- * timer fires (resumeScheduled goes from true to false), scrolling is disabled.
  *
- * Before enabled: wheel/touch events pass through to the page (page scrolls normally).
- * After click: the element captures scroll events (element scrolls).
- * After resume timer: reverts back to passing through events.
+ * Behavior:
+ * - Manual scroll starts DISABLED (user cannot scroll the element)
+ * - User CLICKS on the element -> manual scroll ENABLED
+ * - User scrolls -> inactivity timer resets
+ * - User stops scrolling for 3 seconds -> manual scroll DISABLED
+ * - Element becomes inactive -> manual scroll DISABLED
+ *
+ * This prevents the scrollable element from interfering with page scroll
+ * until the user explicitly clicks on it to interact.
  */
 export function useClickToScroll({
   ref,
   active = true,
-  resumeScheduled = false,
+  inactivityTimeout = MANUAL_SCROLL_TIMEOUT_MS,
 }: UseClickToScrollOptions): UseClickToScrollReturn {
   const [enabled, setEnabled] = useState(false);
-  const wasResumeScheduledRef = useRef(false);
+  const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const enableScroll = useCallback(() => {
-    setEnabled(true);
+  const clearInactivityTimer = useCallback(() => {
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current);
+      inactivityTimerRef.current = null;
+    }
   }, []);
+
+  const startInactivityTimer = useCallback(() => {
+    clearInactivityTimer();
+    inactivityTimerRef.current = setTimeout(() => {
+      setEnabled(false);
+    }, inactivityTimeout);
+  }, [clearInactivityTimer, inactivityTimeout]);
+
+  // Only enable on explicit click
+  const enableScroll = useCallback(() => {
+    if (!active) return;
+    setEnabled(true);
+    startInactivityTimer();
+  }, [active, startInactivityTimer]);
 
   // Reset when element becomes inactive
   useEffect(() => {
     if (!active) {
       setEnabled(false);
+      clearInactivityTimer();
     }
-  }, [active]);
+  }, [active, clearInactivityTimer]);
 
-  // Disable when resumeScheduled transitions from true to false (resume timer fired)
+  // Track scroll activity to reset inactivity timer
   useEffect(() => {
-    if (wasResumeScheduledRef.current && !resumeScheduled) {
-      // Resume timer just fired - disable manual scroll
-      setEnabled(false);
-    }
-    wasResumeScheduledRef.current = resumeScheduled;
-  }, [resumeScheduled]);
-
-  // Apply pointer-events style when not enabled
-  useEffect(() => {
-    if (enabled || !active) return;
+    if (!enabled || !active) return;
 
     const el = ref.current;
     if (!el) return;
 
-    // Disable pointer events so wheel/touch events pass through to the page
-    el.style.pointerEvents = "none";
+    const handleScrollActivity = () => {
+      // Reset the inactivity timer on any scroll activity
+      startInactivityTimer();
+    };
+
+    el.addEventListener("scroll", handleScrollActivity, { passive: true });
+    el.addEventListener("touchmove", handleScrollActivity, { passive: true });
+    el.addEventListener("wheel", handleScrollActivity, { passive: true });
 
     return () => {
-      el.style.pointerEvents = "";
+      el.removeEventListener("scroll", handleScrollActivity);
+      el.removeEventListener("touchmove", handleScrollActivity);
+      el.removeEventListener("wheel", handleScrollActivity);
     };
-  }, [ref, enabled, active]);
+  }, [ref, enabled, active, startInactivityTimer]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      clearInactivityTimer();
+    };
+  }, [clearInactivityTimer]);
 
   return { enabled, enableScroll };
 }

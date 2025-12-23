@@ -113,7 +113,7 @@ export const collections = {
         client: z.string().optional(),
         projectUrl: z.string().url().optional(),
         technologies: z.array(z.string()).default([]),
-        category: z.string().optional(),
+        industry: refSchema("industries"),
       }),
   }),
 

@@ -94,6 +94,28 @@ const heroDescription =
       className="pt-35 lg:pt-20"
     />
 
+    <!-- Filtered Capabilities by Parent -->
+    <ContentRenderer
+      query={query("capabilities").where((entry) => !!entry.data.parent).orderBy(sortByOrder())}
+      variant="FilteredCardVariant"
+      id="capabilities-filtered"
+      title="Our Capabilities"
+      heading={{
+        before: "Explore our",
+        text: "specialized skills",
+        after: "by category.",
+      }}
+      description="Filter through our expertise areas to find exactly what you need for your project."
+      filter={{
+        field: "parent",
+        mode: "parent",
+        showAll: true,
+        allLabel: "All Services",
+        showCount: true,
+      }}
+      columns={3}
+      filterSize="sm"
+    />
 
     <!-- Website Benefits -->
     <ContentRenderer

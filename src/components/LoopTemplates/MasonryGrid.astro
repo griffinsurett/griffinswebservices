@@ -3,6 +3,7 @@
 /**
  * MasonryGrid - 2-column layout with balanced distribution
  * Each card is rendered as a slot for individual hydration
+ * Cards fade in on scroll
  */
 
 export interface MasonryCardData {
@@ -47,7 +48,12 @@ const rightColumn = rightColumnTitles
 <div class={`masonry-grid ${className}`}>
   <div class="masonry-column">
     {leftColumn.map((item) => (
-      <article class="masonry-card">
+      <article
+        class="masonry-card"
+        data-animate="fade-in-up"
+        data-animate-threshold="0.15"
+        data-animate-root-margin="-10% 0px -10% 0px"
+      >
         <h3 class="text-xl font-semibold text-text mb-2">{item.title}</h3>
         {item.description && (
           <p class="text-sm text-text/60 leading-relaxed">{item.description}</p>
@@ -62,7 +68,12 @@ const rightColumn = rightColumnTitles
   </div>
   <div class="masonry-column">
     {rightColumn.map((item) => (
-      <article class="masonry-card">
+      <article
+        class="masonry-card"
+        data-animate="fade-in-up"
+        data-animate-threshold="0.15"
+        data-animate-root-margin="-10% 0px -10% 0px"
+      >
         <h3 class="text-xl font-semibold text-text mb-2">{item.title}</h3>
         {item.description && (
           <p class="text-sm text-text/60 leading-relaxed">{item.description}</p>
