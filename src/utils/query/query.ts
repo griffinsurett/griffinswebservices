@@ -32,7 +32,7 @@ export class Query<T extends CollectionKey> {
   private _offset: number = 0;
   private _includeRelations: boolean = false;
   private _maxDepth: number = 3;
-  
+
   constructor(collection?: T | T[]) {
     this._collection = collection;
   }
@@ -95,7 +95,7 @@ export class Query<T extends CollectionKey> {
     }
     return this;
   }
-  
+
   /**
    * Execute query and return results
    */

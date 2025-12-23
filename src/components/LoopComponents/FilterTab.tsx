@@ -1,13 +1,10 @@
 // src/components/LoopComponents/FilterTab.tsx
 import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
 import IconListItem from "./IconListItem";
+import type { FilterOption } from "@/hooks/useFilter";
 
-export interface FilterOption {
-  key: string;
-  label: string;
-  icon?: string;
-  count?: number;
-}
+// Re-export FilterOption from the hook for backwards compatibility
+export type { FilterOption } from "@/hooks/useFilter";
 
 export interface FilterTabProps {
   id: string;

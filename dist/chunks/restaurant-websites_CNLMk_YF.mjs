@@ -1,0 +1,160 @@
+import { f as createVNode, F as Fragment, _ as __astro_tag_component__ } from './astro/server_CDqnDASo.mjs';
+import { $ as $$ContentSection } from './ContentSection_DQkNIRRf.mjs';
+import { a as $$ContentRenderer } from './BaseLayout_BD8xUcJo.mjs';
+import 'clsx';
+
+/*<div slot="bottom-section">
+<ContentRenderer
+query={query("stats")}
+variant="StatsVariant"
+/>
+</div>*/
+const frontmatter = {
+  "title": "Restaurant Websites",
+  "description": "Websites that fill tables and drive orders. We build beautiful, fast restaurant sites with menus, reservations, and online ordering that make it easy for hungry customers to become paying guests.",
+  "heading": {
+    "before": "Restaurant sites",
+    "text": "that fill tables",
+    "after": "and drive orders."
+  },
+  "order": 4,
+  "icon": "fa6-solid:utensils",
+  "price": "Starting from $2,000",
+  "features": [{
+    "title": "Menus that make mouths water",
+    "description": "Beautiful, easy-to-update menu displays with photos, descriptions, and dietary info. Update specials in seconds."
+  }, {
+    "title": "Online ordering integration",
+    "description": "Connect with DoorDash, Uber Eats, or your own ordering system. Make it effortless to order from you."
+  }, {
+    "title": "Reservation system",
+    "description": "OpenTable, Resy, or simple booking forms that let guests reserve tables without calling."
+  }, {
+    "title": "Mobile-first design",
+    "description": "Most people search for restaurants on their phones. Your site will look perfect on any device."
+  }, {
+    "title": "Local SEO optimized",
+    "description": "Get found when people search for restaurants near them. Google Business Profile integration included."
+  }, {
+    "title": "Photo galleries that sell",
+    "description": "Showcase your food, ambiance, and team with galleries designed to make people hungry."
+  }, {
+    "title": "Hours, location, and contact",
+    "description": "Make it dead simple for customers to find you, call you, or get directions."
+  }],
+  "benefits": [{
+    "title": "Fill more tables",
+    "description": "Easy online reservations remove friction so hungry customers book with you instead of your competitor.",
+    "icon": "fa6-solid:calendar-check"
+  }, {
+    "title": "Boost online orders",
+    "description": "Seamless ordering integration makes it effortless for customers to order delivery or pickup.",
+    "icon": "fa6-solid:bag-shopping"
+  }, {
+    "title": "Get found locally",
+    "description": "Local SEO optimization puts you at the top when people search for restaurants in your area.",
+    "icon": "fa6-solid:location-dot"
+  }, {
+    "title": "Update menus instantly",
+    "description": "Change prices, add specials, or 86 items yourself in seconds—no waiting on a developer.",
+    "icon": "fa6-solid:list-check"
+  }, {
+    "title": "Look as good as you taste",
+    "description": "Mouthwatering photo galleries and professional design make customers hungry before they arrive.",
+    "icon": "fa6-solid:camera"
+  }, {
+    "title": "Answer questions 24/7",
+    "description": "Hours, location, menu, and contact info always available so customers never have to call to find out.",
+    "icon": "fa6-solid:clock"
+  }],
+  "quickFacts": [{
+    "title": "Timeline",
+    "description": "2-4 weeks to launch"
+  }, {
+    "title": "What's included",
+    "description": "Design, menu setup, training"
+  }, {
+    "title": "Integrations",
+    "description": "Reservations + ordering"
+  }]
+};
+function getHeadings() {
+  return [];
+}
+function _createMdxContent(props) {
+  const _components = {
+    p: "p",
+    ...props.components
+  };
+  return createVNode($$ContentSection, {
+    heading: {
+      title: "Hungry customers are searching for you",
+      before: "If they can't find you online,",
+      text: "they'll find your competitor.",
+      after: "Don't let that happen.",
+      description: "When someone's deciding where to eat, they're looking at your website. A dated, slow, or hard-to-navigate site sends them straight to the restaurant down the street."
+    },
+    primaryCTA: {
+      text: "Get Your Free Quote",
+      href: "#services-quote-hero",
+      rightIcon: "lu:arrow-right"
+    },
+    secondaryCTA: {
+      text: "See our work",
+      href: "#services-projects"
+    },
+    sidebar: {
+      icon: frontmatter.icon,
+      title: "Turn browsers into diners",
+      eyebrow: "Why our restaurant sites work",
+      description: "Fast load times, mouthwatering visuals, and seamless ordering that turns hungry searchers into paying customers.",
+      footIcon: "🍽",
+      footTitle: "Your menu, always up to date",
+      footDescription: "Update specials, prices, and hours yourself in minutes—no waiting on a developer.",
+      features: frontmatter.features
+    },
+    children: [createVNode("div", {
+      slot: "text",
+      class: "space-y-6 text-lg text-muted",
+      children: [createVNode("p", {
+        children: createVNode(_components.p, {
+          children: "People don’t just want to find your restaurant online—they want to immediately understand what you’re about, see what you serve, and know how to get there or order. If your website makes any of that hard, they’ll move on to the next option."
+        })
+      }), createVNode("p", {
+        children: createVNode(_components.p, {
+          children: "We build restaurant websites that work as hard as you do. Menus that are easy to browse and make people hungry. Seamless connections to your reservation system or online ordering. And mobile-first design because that’s where most of your customers are looking."
+        })
+      }), createVNode("p", {
+        children: createVNode(_components.p, {
+          children: "Behind the scenes, you get a site you can actually update yourself. Change tonight’s specials, update your hours, or swap out photos without calling us. Plus local SEO optimization so hungry people in your area actually find you on Google."
+        })
+      })]
+    }), createVNode($$ContentRenderer, {
+      slot: "quick-facts",
+      items: frontmatter.quickFacts,
+      variant: "QuickFactsVariant",
+      columns: 3
+    })]
+  });
+}
+function MDXContent(props = {}) {
+  const {wrapper: MDXLayout} = props.components || ({});
+  return MDXLayout ? createVNode(MDXLayout, {
+    ...props,
+    children: createVNode(_createMdxContent, {
+      ...props
+    })
+  }) : _createMdxContent(props);
+}
+const url = "src/content/solutions/restaurant-websites.mdx";
+const file = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/restaurant-websites.mdx";
+const Content = (props = {}) => MDXContent({
+  ...props,
+  components: { Fragment: Fragment, ...props.components, },
+});
+Content[Symbol.for('mdx-component')] = true;
+Content[Symbol.for('astro.needsHeadRendering')] = !Boolean(frontmatter.layout);
+Content.moduleId = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/restaurant-websites.mdx";
+__astro_tag_component__(Content, 'astro:jsx');
+
+export { Content, Content as default, file, frontmatter, getHeadings, url };

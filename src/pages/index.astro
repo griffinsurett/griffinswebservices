@@ -94,7 +94,7 @@ const heroDescription =
       className="pt-35 lg:pt-20"
     />
 
-    <!-- Filtered Capabilities by Parent -->
+    <!-- Filtered Capabilities by Parent (auto-detects parent field) -->
     <ContentRenderer
       query={query("capabilities").where((entry) => !!entry.data.parent).orderBy(sortByOrder())}
       variant="FilteredCardVariant"
@@ -106,13 +106,7 @@ const heroDescription =
         after: "by category.",
       }}
       description="Filter through our expertise areas to find exactly what you need for your project."
-      filter={{
-        field: "parent",
-        mode: "parent",
-        showAll: true,
-        allLabel: "All Services",
-        showCount: true,
-      }}
+      filter={{ showAll: false, showCount: true }}
       columns={3}
       filterSize="sm"
     />

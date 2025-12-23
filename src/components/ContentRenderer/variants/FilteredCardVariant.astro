@@ -3,38 +3,34 @@
 /**
  * Filtered Card Variant
  *
- * Extends CardVariant with filtering capabilities.
- * Allows filtering collection items by parent, tag, category, or custom fields.
+ * Extends CardVariant with auto-detecting filtering capabilities.
+ * Automatically derives filter tabs from the items' data structure:
+ * - If items have `parent` field → group by parent
+ * - If items have `tags` field → group by tags
+ * - If items have a reference field → group by that reference
+ *
+ * No manual filter configuration needed - just use the query.
  *
  * @example
- * // Filter by parent (e.g., capabilities grouped by service type)
+ * // Auto-detect: items have parent field, so filter by parent
  * <ContentRenderer
- *   query={query('capabilities')}
+ *   query={query('capabilities').where((e) => !!e.data.parent)}
  *   variant="FilteredCardVariant"
- *   filter={{ field: "parent", mode: "parent" }}
  * />
  *
  * @example
- * // Filter by tags
+ * // Auto-detect: items have tags, so filter by tags
  * <ContentRenderer
  *   query={query('blog')}
  *   variant="FilteredCardVariant"
- *   filter={{ field: "tags", mode: "tag", showCount: true }}
  * />
  *
  * @example
- * // Filter by category with custom options
+ * // Override: explicitly set field and options
  * <ContentRenderer
  *   query={query('projects')}
  *   variant="FilteredCardVariant"
- *   filter={{
- *     field: "category",
- *     mode: "custom",
- *     options: [
- *       { key: "web", label: "Web Apps", icon: "lu:globe" },
- *       { key: "mobile", label: "Mobile", icon: "lu:smartphone" }
- *     ]
- *   }}
+ *   filter={{ field: "category", showCount: true }}
  * />
  */
 
@@ -49,8 +45,8 @@ import { shouldShowCollectionCTA } from "../utils/helpers";
 import { toArray } from "@/utils/array";
 
 interface Props extends BaseVariantProps {
-  /** Filter configuration - required for this variant */
-  filter: FilterConfig;
+  /** Optional filter configuration for overrides (auto-detects if not provided) */
+  filter?: FilterConfig;
   /** Grid columns (1-4) */
   columns?: 1 | 2 | 3 | 4;
   /** Custom CTA href (defaults to collectionUrl) */
