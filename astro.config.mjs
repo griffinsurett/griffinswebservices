@@ -30,9 +30,6 @@ export default defineConfig({
         output: {
           assetFileNames,
           manualChunks,
-          // Merge very small modules (< 5KB) to reduce chunk count without
-          // over-bundling unrelated components together.
-          experimentalMinChunkSize: 5000,
         },
       },
     },

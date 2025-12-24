@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["_astro/scriptManager.waj6tdSd.js","_astro/consent.DDw29qdq.js"])))=>i.map(i=>d[i]);
+import{_ as i}from"./preload-helper.BlTxHScW.js";document.cookie.includes("cookie-consent=")&&("requestIdleCallback"in window?requestIdleCallback(()=>{i(()=>import("./scriptManager.waj6tdSd.js"),__vite__mapDeps([0,1])).then(e=>e.initScriptManager())},{timeout:2e3}):setTimeout(()=>{i(()=>import("./scriptManager.waj6tdSd.js"),__vite__mapDeps([0,1])).then(e=>e.initScriptManager())},100));
