@@ -46,6 +46,8 @@ interface SmoothScrollCarouselProps {
   itemSelector?: string;
   className?: string;
   trackClassName?: string;
+  /** Enable drag/swipe to manually scroll */
+  drag?: boolean;
 }
 
 const SmoothScrollCarousel = forwardRef<
@@ -74,6 +76,7 @@ const SmoothScrollCarousel = forwardRef<
     itemSelector,
     className = "",
     trackClassName = "",
+    drag = false,
   },
   ref,
 ) {
@@ -205,6 +208,85 @@ const SmoothScrollCarousel = forwardRef<
     }, resumeDelay);
   }, [clearHoverResume, resume, resumeDelay]);
 
+  // Drag state for manual scrolling
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragStartOffset = useRef(0);
+
+  const handleDragStart = useCallback((clientX: number) => {
+    if (!drag) return;
+    isDragging.current = true;
+    dragStartX.current = clientX;
+    dragStartOffset.current = currentOffset;
+  }, [drag, currentOffset]);
+
+  const handleDragMove = useCallback((clientX: number) => {
+    if (!drag || !isDragging.current) return;
+    const delta = clientX - dragStartX.current;
+    let newOffset = dragStartOffset.current + delta;
+    // Wrap around for infinite scroll feel
+    if (totalWidth > 0) {
+      while (newOffset > 0) newOffset -= totalWidth;
+      while (newOffset < -totalWidth) newOffset += totalWidth;
+    }
+    setCurrentOffset(newOffset);
+  }, [drag, totalWidth]);
+
+  const handleDragEnd = useCallback(() => {
+    isDragging.current = false;
+  }, []);
+
+  // Mouse events for drag
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!drag) return;
+    e.preventDefault();
+    engageUser();
+    pause();
+    handleDragStart(e.clientX);
+  }, [drag, engageUser, pause, handleDragStart]);
+
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    handleDragMove(e.clientX);
+  }, [handleDragMove]);
+
+  const onMouseUp = useCallback(() => {
+    if (isDragging.current) {
+      handleDragEnd();
+      scheduleHoverResume();
+    }
+  }, [handleDragEnd, scheduleHoverResume]);
+
+  // Touch events for drag
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!drag) return;
+    engageUser();
+    pause();
+    handleDragStart(e.touches[0].clientX);
+  }, [drag, engageUser, pause, handleDragStart]);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    handleDragMove(e.touches[0].clientX);
+  }, [handleDragMove]);
+
+  const onTouchEnd = useCallback(() => {
+    if (isDragging.current) {
+      handleDragEnd();
+      scheduleHoverResume();
+    }
+  }, [handleDragEnd, scheduleHoverResume]);
+
+  // Global mouse up listener for drag release outside container
+  useEffect(() => {
+    if (!drag) return;
+    const handleGlobalMouseUp = () => {
+      if (isDragging.current) {
+        handleDragEnd();
+      }
+    };
+    window.addEventListener("mouseup", handleGlobalMouseUp);
+    return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
+  }, [drag, handleDragEnd]);
+
   const handleItemInteraction = (payload: any, index: number, type: string) => {
     if (pauseOnEngage) {
       engageUser();
@@ -257,11 +339,11 @@ const SmoothScrollCarousel = forwardRef<
       {gradientMask && (
         <>
           <div
-            className="absolute left-0 top-0 bottom-0 z-10 pointer-events-none"
+            className="absolute left-0 top-0 bottom-0 z-10 pointer-events-none bg-linear-to-r from-bg to-transparent"
             style={{ width: `${gradientPx}px` }}
           />
           <div
-            className="absolute right-0 top-0 bottom-0 z-10 pointer-events-none"
+            className="absolute right-0 top-0 bottom-0 z-10 pointer-events-none bg-linear-to-l from-bg to-transparent"
             style={{ width: `${gradientPx}px` }}
           />
         </>
@@ -270,12 +352,18 @@ const SmoothScrollCarousel = forwardRef<
       <div className="overflow-hidden" style={{ paddingInline: `${gradientPx}px` }}>
         <div
           ref={trackRef}
-          className={`flex items-center ${trackClassName}`.trim()}
+          className={`flex items-center ${drag ? "cursor-grab active:cursor-grabbing select-none" : ""} ${trackClassName}`.trim()}
           style={{
             transform: `translateX(${currentOffset}px)`,
             width: "max-content",
             gap: `${gap}px`,
           }}
+          onMouseDown={drag ? onMouseDown : undefined}
+          onMouseMove={drag ? onMouseMove : undefined}
+          onMouseUp={drag ? onMouseUp : undefined}
+          onTouchStart={drag ? onTouchStart : undefined}
+          onTouchMove={drag ? onTouchMove : undefined}
+          onTouchEnd={drag ? onTouchEnd : undefined}
         >
           {duplicated.map((entry, index) => (
             <div

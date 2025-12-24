@@ -1,0 +1,154 @@
+---
+// src/layouts/collections/CapabilitiesLayout.astro
+/**
+ * Capabilities Layout - Item Page Layout for Capabilities
+ *
+ * A specialized layout for capability-type collection items.
+ * Features:
+ * - QuoteHero with title, description, and quote form
+ * - Features/benefits display
+ * - MDX content rendering
+ * - Related solutions section
+ */
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import QuoteHero from "@/layouts/QuoteHero.astro";
+import { animationProps } from "@/integrations/scroll-animations/props";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import CTASection from "@/layouts/CTASection.astro";
+import { query, sortByOrder, related } from "@/utils/query";
+import { capitalizeWords } from "@/utils/string";
+import type { CollectionLayoutProps } from "./types";
+import DoubleCard from "../DoubleCard.astro";
+
+const {
+  entry,
+  collection,
+  collectionMeta,
+  Content,
+  isIndexPage,
+  seoProps = {},
+  ...extraProps
+} = Astro.props as CollectionLayoutProps;
+
+const data = entry?.data || {};
+const {
+  title,
+  description,
+  price,
+  features = [],
+  benefits = [],
+  parent,
+  heading,
+  cta,
+} = data;
+
+// Build CTA props from frontmatter
+const ctaButtons = cta?.buttons || [];
+const primaryCTAButton = ctaButtons.find((c: any) => c.variant === "primary");
+
+// Map frontmatter CTA button format to component props format
+const mapCTAButton = (ctaItem: any) => ctaItem ? {
+  text: ctaItem.text,
+  link: ctaItem.link,
+} : undefined;
+
+// Get the current entry's slug for filtering related items
+const currentSlug = entry?.id;
+
+// Get related capabilities (siblings with same parent, excluding current item)
+const relatedQuery = parent
+  ? query(collection as any)
+      .where((e: any) => e.data.parent === parent && e.id !== entry?.id)
+      .orderBy(sortByOrder())
+      .limit(6)
+  : null;
+
+// Query solutions that include this capability
+const relatedSolutionsQuery = currentSlug
+  ? related("solutions", "capabilities", currentSlug)
+  : null;
+
+// Build the description with price if available
+const heroDescription = price ? `${description} ${price}` : description;
+
+// Capitalize the slug for display
+const displayTitle =
+  title || capitalizeWords(entry?.slug?.replace(/-/g, " ") || "");
+const capitalizedSlug = capitalizeWords(entry?.slug?.replace(/-/g, " ") || "");
+---
+
+<BaseLayout {...seoProps}>
+  <main class="flex-1">
+    {/* Quote Hero Section */}
+    <QuoteHero
+      title={title}
+      heading={heading}
+      description={heroDescription}
+      primaryCTA={{
+        text: `View All ${collectionMeta?.data?.title || "Capabilities"}`,
+        link: `/${collection}`,
+        rightIcon: "lu:arrow-left",
+      }}
+      id="capabilities-quote-hero"
+    />
+
+    {
+      benefits.length > 0 && (
+        <ContentRenderer
+          items={benefits}
+          variant="CardVariant"
+          title="Benefits"
+          heading={{
+            before: "Why",
+            text: title,
+            after: "matters for your business.",
+          }}
+          description="Real results that matter for your bottom line."
+          ctaHref="#capabilities-quote-hero"
+          ctaText="Get Your Free Quote"
+          columns={3}
+        />
+      )
+    }
+
+    {/* MDX Content */}
+    {Content && <Content />}
+
+    <DoubleCard />
+
+    {/* Related Solutions that use this capability */}
+    <ContentRenderer
+      query={related("solutions", "capabilities", currentSlug)}
+      variant="CardVariant"
+      title="Solutions"
+      heading={{
+        before: "Solutions that include",
+        text: displayTitle,
+      }}
+      description={`Explore our website packages that include ${displayTitle.toLowerCase()} as part of the build.`}
+      ctaHref="#capabilities-quote-hero"
+      ctaText="Get Your Free Quote"
+      columns={3}
+    />
+
+    <ContentRenderer
+      query={query("testimonials")}
+      variant="TestimonialCarouselVariant"
+    />
+
+    <CTASection
+      id="capabilities-page-cta"
+      className="min-h-[60vh]"
+      title={cta?.title || `Need ${title} for your project?`}
+      heading={cta?.heading || {
+        before: "Let's add",
+        text: title,
+        after: " to your website.",
+      }}
+      primaryCTA={mapCTAButton(primaryCTAButton) || {
+        text: "Get Your Free Quote",
+        link: "#capabilities-quote-hero",
+      }}
+    />
+  </main>
+</BaseLayout>

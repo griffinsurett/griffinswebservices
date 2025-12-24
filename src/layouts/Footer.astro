@@ -19,85 +19,33 @@ import Logo from "@/components/Logo/Logo.astro";
 import Button from "@/components/Button/Button";
 ---
 
-<footer class="mt-auto relative border-t border-accent/10 bg-bg2/60">
+<footer class="mt-auto relative">
   <div class="mx-auto w-full relative">
-    <div class="section-color-border"></div>
+    <div class="section-dim-border"></div>
 
     <div class="relative">
       <section
-        class="inner-section flex flex-col gap-10 py-12 text-center lg:text-left md:flex-row md:items-center md:justify-between"
+        class="inner-section grid gap-10 py-12 text-left sm:text-left grid-cols-1 md:grid-cols-2 xl:grid-cols-4 items-start"
       >
-        <div
-          class="flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-7 xl:gap-10"
-        >
+        <div class="flex flex-col items-start gap-6 text-sm max-w-lg">
           <Logo
             loading="lazy"
             trigger="visible"
-            class="gap-2"
             animateOutText={false}
-            logoMediaClass="block w-[86px] h-[86px] lg:w-[94px] lg:h-[94px] object-contain"
-            logoWidths={[90, 160, 220]}
-            logoSizes="(min-width: 1024px) 110px, 90px"
-            titleFirstClass="text-5xl lg:text-7xl -ml-[0.1rem] leading-tight font-bold no-translate"
-            titleRestClass="font-light emphasized-text uppercase sm:text-sm md:text-base lg:text-lg xl:text-xl p-0 m-0 tracking-[0.3em]"
             loop={false}
+            class="gap-2"
+            logoMediaClass="block w-[64px] h-[64px] lg:w-[70px] lg:h-[70px] object-contain"
+            logoWidths={[70, 120, 150]}
+            logoSizes="(min-width: 1024px) 68px, 60px"
+            titleFirstClass="text-4xl lg:text-5xl -ml-[0.1rem] leading-tight font-bold no-translate"
+            titleRestClass="font-light emphasized-text uppercase text-sm md:text-base lg:text-lg p-0 m-0 tracking-[0.25em]"
           />
-          {/* Temporarily hiding social media icons */}
-          {
-            /*
-          <ContentRenderer
-            query={query("social-media")}
-            variant="SocialMediaVariant"
-            size="lg"
-            alignment="left"
-            className="text-bg"
-          />
-          */
-          }
-          <ContentRenderer
-            query={query("contact-us")}
-            variant="ContactListVariant"
-            size="lg"
-            alignment="left"
-            showButtonSection={false}
-            showHeadingSection={false}
-          />
-        </div>
-        <div
-          class="flex flex-col items-center lg:items-start gap-6 text-sm text-text/80 md:max-w-sm"
-        >
-          <p class="text-lg md:text-xl text-text font-semibold">
+          <p class="text-lg md:text-xl text-text">
             {
               siteData?.tagline ??
                 "Ready to give your business the fast, secure website it deserves?"
             }
           </p>
-          <Button
-            href={ctaData?.link ?? "/contact-us"}
-            variant="primary"
-            size="sm"
-            rightIcon="lucide:arrow-right"
-          >
-            {ctaData?.text ?? "Schedule a Consultation"}
-          </Button>
-        </div>
-      </section>
-      <div class="section-color-border absolute bottom-0 top-auto"></div>
-    </div>
-
-    <div class="relative">
-      <section
-        class="inner-section flex flex-wrap gap-10 py-12 text-left sm:text-left justify-between"
-      >
-        {/* Column 2: Legal links & preferences */}
-        <div class="flex flex-col items-start gap-8 text-sm">
-          <ContentRenderer
-            query={related("menu-items", "menu", "footer-menu-2")}
-            variant="ListVariant"
-            title="Links"
-            className="text-bg flex flex-col items-start justify-center"
-            showHeadingDivider
-          />
           <ContentRenderer
             query={related("menu-items", "menu", "footer-menu")}
             variant="ListVariant"
@@ -106,37 +54,44 @@ import Button from "@/components/Button/Button";
             showHeadingDivider
           />
         </div>
-
-        {/* Column 1: Legal links & preferences */}
-          <ContentRenderer
-            query={roots("capabilities")}
-            variant="ListVariant"
-            showButtonSection={false}
-            showHeadingDivider
-          />
-
         {/* Column 2: Legal links & preferences */}
-          <ContentRenderer
-            query={roots("solutions")}
+        <div class="flex flex-col items-start gap-8 text-sm">
+          <!-- <ContentRenderer
+            query={related("menu-items", "menu", "footer-menu-2")}
             variant="ListVariant"
-            showButtonSection={false}
+            title="Links"
+            className="text-bg flex flex-col items-start justify-center"
             showHeadingDivider
-          />
-
-        {/* Column 2: Legal links & preferences */}
-          {/* Column 3: Contact-Us */}
+          /> -->
           <ContentRenderer
             query={roots("industries")}
             variant="ListVariant"
             showButtonSection={false}
             showHeadingDivider
           />
+        </div>
+
+        {/* Column 1: Legal links & preferences */}
+        <ContentRenderer
+          query={roots("capabilities")}
+          variant="ListVariant"
+          showButtonSection={false}
+          showHeadingDivider
+        />
+
+        {/* Column 2: Legal links & preferences */}
+        <ContentRenderer
+          query={roots("solutions")}
+          variant="ListVariant"
+          showButtonSection={false}
+          showHeadingDivider
+        />
       </section>
-      <div class="section-color-border absolute bottom-0 top-auto"></div>
+      <!-- <div class="section-color-border absolute bottom-0 top-auto"></div> -->
     </div>
 
     <div class="relative">
-      <div class="section-color-border"></div>
+      <div class="section-dim-border"></div>
       <section
         class="inner-section flex flex-col gap-4 text-text text-sm py-6 sm:flex-row sm:items-center sm:justify-between"
       >

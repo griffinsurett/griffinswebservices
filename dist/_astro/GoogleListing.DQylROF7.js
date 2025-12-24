@@ -1,0 +1,33 @@
+import{r as c,j as e}from"./react-core.C0zGrjp4.js";import{I as M}from"./ui-primitives.DGH992mQ.js";const N=["data-a11y-motion","data-a11y-animations"];function g(){if(typeof window>"u"||typeof document>"u")return!1;const t=document.documentElement,a=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches??!1,s=t.getAttribute("data-a11y-motion")==="reduced",n=t.getAttribute("data-a11y-animations")==="true";return a||s||n}function b(t=!0){const[a,s]=c.useState(()=>t?g():!1);return c.useEffect(()=>{if(!t||typeof window>"u"||typeof document>"u")return;const n=()=>{s(g())};n();const i=window.matchMedia?window.matchMedia("(prefers-reduced-motion: reduce)"):null;i?.addEventListener("change",n);const r=new MutationObserver(o=>{for(const l of o)if(l.type==="attributes"&&l.attributeName&&N.includes(l.attributeName)){n();break}});return r.observe(document.documentElement,{attributes:!0,attributeFilter:N}),()=>{i?.removeEventListener("change",n),r.disconnect()}},[t]),c.useEffect(()=>{s(t?g():!1)},[t]),t?a:!1}function w({value:t,duration:a=1e3,decimals:s=0}){const[n,i]=c.useState(0),r=c.useRef(null),o=c.useRef(null);c.useEffect(()=>{if(a===0){i(t);return}r.current=performance.now();const m=f=>{if(!r.current)return;const p=f-r.current,d=Math.min(p/a,1),u=1-Math.pow(1-d,3),x=t*u;i(x),d<1&&(o.current=requestAnimationFrame(m))};return o.current=requestAnimationFrame(m),()=>{o.current&&cancelAnimationFrame(o.current)}},[t,a]);const l=s>0?n.toFixed(s):Math.round(n).toString();return e.jsx("span",{className:"tabular-nums",children:l})}function T({label:t,value:a,variant:s="primary",showValue:n=!0,stat:i,statValue:r,statSuffix:o="",delay:l=0,height:m="h-10",className:f="",counterDuration:p=1e3}){const d=b(),[u,x]=c.useState(!1),h=c.useRef(null);c.useEffect(()=>{if(d){x(!0);return}const v=new IntersectionObserver($=>{$.forEach(S=>{S.isIntersecting&&!u&&setTimeout(()=>x(!0),l)})},{threshold:.3});return h.current&&v.observe(h.current),()=>v.disconnect()},[u,l,d]);const R=s==="primary"?"primary-gradient":s==="primary-reverse"?"bg-linear-to-r from-accent-700 to-accent":"bg-text/30",j=s==="primary"||s==="primary-reverse"?"text-accent font-bold":"text-text/60",y=d?0:p,E=r!==void 0?r.toString().split(".")[1]?.length??0:0;return e.jsxs("div",{ref:h,className:`w-full ${f}`,children:[e.jsxs("div",{className:"flex justify-between items-center",children:[e.jsx("span",{className:"text-sm text-text/80",children:t}),r!==void 0?e.jsxs("span",{className:`text-lg ${j}`,children:[e.jsx(w,{value:u?r:0,duration:y,decimals:E}),o]}):i?e.jsx("span",{className:`text-lg ${j}`,children:i}):null]}),e.jsxs("div",{className:`w-full ${m} bg-text/10 rounded-sm overflow-hidden relative`,children:[e.jsx("div",{className:`h-full rounded-sm ${d?"":"transition-all duration-1000 ease-out"} ${R}`,style:{width:u?`${a}%`:"0%"}}),n&&e.jsxs("span",{className:"absolute inset-0 flex items-center pl-3 text-sm font-semibold text-white",children:[e.jsx(w,{value:u?a:0,duration:y}),"%"]})]})]})}function B({url:t="yoursite.com",className:a=""}){const s=b(),[n,i]=c.useState(!1);return c.useEffect(()=>{if(s){i(!0);return}i(!1);const r=setTimeout(()=>{i(!0)},300);return()=>clearTimeout(r)},[s]),e.jsx("div",{className:`bg-text/10 rounded-lg p-3 ${a}`,children:e.jsxs("div",{className:"flex items-center gap-2",children:[e.jsxs("div",{className:"flex gap-1.5 mr-2",children:[e.jsx("div",{className:"w-2.5 h-2.5 rounded-full bg-red-500/60"}),e.jsx("div",{className:"w-2.5 h-2.5 rounded-full bg-yellow-500/60"}),e.jsx("div",{className:"w-2.5 h-2.5 rounded-full bg-green-500/60"})]}),e.jsxs("div",{className:"flex-1 flex items-center gap-2 bg-bg2 rounded-md px-3 py-1.5",children:[e.jsxs("div",{className:`flex items-center gap-1.5 accent-primary-gradient rounded px-2 py-0.5 ${s?"":"transition-all duration-500 ease-out"} ${n?"opacity-100 translate-x-0 scale-100":"opacity-0 -translate-x-4 scale-75"}`,children:[e.jsx(M,{icon:"lu:lock",size:"sm",className:"text-white"}),e.jsx("span",{className:"text-xs font-medium text-white",children:"Secure"})]}),e.jsx("span",{className:"text-sm text-text",children:t})]})]})})}function _({title:t="Your Website",url:a="yourwebsite.com",description:s="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...",date:n="Dec 21, 2025",favicon:i="lu:globe",className:r=""}){const o=b();return e.jsxs("div",{className:`relative bg-bg2 rounded-lg p-4 text-left border border-text/10 overflow-hidden ${r}`,children:[e.jsxs("div",{className:"flex items-center gap-3 mb-2",children:[e.jsx("div",{className:"w-7 h-7 rounded-full bg-bg3 flex items-center justify-center shrink-0",children:e.jsx(M,{icon:i,size:"sm",className:"text-primary"})}),e.jsxs("div",{className:"flex flex-col leading-tight",children:[e.jsx("span",{className:"text-sm text-text",children:t}),e.jsx("span",{className:"text-xs text-text/70",children:a})]})]}),e.jsxs("h3",{className:`text-lg text-primary mb-1 inline-block ${o?"underline":"animate-[titleHighlight_3s_ease-in-out_infinite]"}`,children:[t," — Home"]}),e.jsxs("p",{className:"text-sm text-text/60 leading-relaxed",children:[e.jsx("span",{className:"text-text/70",children:n}),e.jsx("span",{className:"text-text/40 mx-1",children:"—"}),s,e.jsx("span",{className:"text-primary ml-1 cursor-pointer hover:underline",children:"Read more"})]}),e.jsx("div",{className:`absolute pointer-events-none ${o?"":"animate-[cursorMove_3s_ease-in-out_infinite]"}`,style:{top:"50px",left:"-20px",transform:o?"translate(80px, 10px)":void 0},children:e.jsx("svg",{width:"24",height:"24",viewBox:"0 0 24 24",fill:"none",className:"drop-shadow-lg",children:e.jsx("path",{d:"M5.5 3.21V20.8c0 .45.54.67.85.35l4.86-4.86a.5.5 0 0 1 .35-.15h6.87a.5.5 0 0 0 .35-.85L6.35 2.86a.5.5 0 0 0-.85.35Z",fill:"white",stroke:"black",strokeWidth:"1"})})}),e.jsx("style",{children:`
+        @keyframes cursorMove {
+          0%, 100% {
+            transform: translate(0, 0);
+            opacity: 0;
+          }
+          15% {
+            opacity: 1;
+          }
+          40%, 70% {
+            transform: translate(80px, 10px);
+            opacity: 1;
+          }
+          85% {
+            opacity: 1;
+          }
+          95% {
+            transform: translate(80px, 10px);
+            opacity: 0;
+          }
+        }
+        @keyframes titleHighlight {
+          0%, 35% {
+            text-decoration: none;
+          }
+          40%, 75% {
+            text-decoration: underline;
+          }
+          80%, 100% {
+            text-decoration: none;
+          }
+        }
+      `})]})}export{T as B,_ as G,B as S,b as u};

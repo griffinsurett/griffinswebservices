@@ -1,6 +1,5 @@
 // src/components/LoopTemplates/TechStackSection.tsx
 import { useMemo, useState } from "react";
-import BorderTitle from "@/components/BorderTitle";
 import Heading from "@/components/Heading";
 import SmoothScrollCarousel from "@/components/Carousels/SmoothScrollCarousel";
 import TechStackLabel from "@/components/LoopComponents/TechStackLabel";
@@ -36,7 +35,7 @@ export default function TechStackSection({
   return (
     <div className={`inner-section text-center lg:text-left ${className}`.trim()}>
 
-      <div className="flex flex-col lg:grid lg:grid-cols-[1fr_2fr] gap-6 lg:gap-8 items-center">
+      <div className="flex flex-col lg:grid lg:grid-cols-[1fr_3fr] gap-6 lg:gap-8 items-center">
         <div className="w-sm">
           <div className="relative inline-block mb-6 leading-tight">
             <Heading
@@ -73,6 +72,7 @@ export default function TechStackSection({
           pauseOnEngage
           gradientMask
           gradientWidth={{ base: 48, md: 72 }}
+          drag
           className="relative w-full h-[84px] md:h-[96px]"
         >
           {techList.map((tech, index) => (
