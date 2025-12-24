@@ -50,7 +50,7 @@ export default function SecureBrowserBar({
         <div className="flex-1 flex items-center gap-2 bg-bg2 rounded-md px-3 py-1.5">
           {/* Secure badge - animates in (no transition for reduced motion) */}
           <div
-            className={`flex items-center gap-1.5 primary-gradient rounded px-2 py-0.5 ${
+            className={`flex items-center gap-1.5 accent-primary-gradient rounded px-2 py-0.5 ${
               prefersReducedMotion ? "" : "transition-all duration-500 ease-out"
             } ${
               showBadge
