@@ -1,0 +1,127 @@
+---
+title: "Portfolio Websites"
+description: "Showcase your best work with a portfolio that gets you hired. We build stunning, fast portfolio sites that highlight your skills and make clients want to work with you."
+heading:
+  before: "Portfolio sites"
+  text: "that get you hired"
+  after: "and land clients."
+order: 7
+icon: "fa6-solid:briefcase"
+price: "Starting from $1,200"
+features:
+  - title: "Project showcases that impress"
+    description: "Beautiful case studies and galleries that highlight your best work with the context clients need to see your value."
+  - title: "Lightning-fast performance"
+    description: "Sub-second load times that keep visitors engaged. Slow portfolios lose clients before they even see your work."
+  - title: "Mobile-perfect presentation"
+    description: "Your work looks stunning on every device. No pinching, zooming, or broken layouts on phones."
+  - title: "Easy self-management"
+    description: "Add new projects, update descriptions, and swap images yourself without touching code or calling a developer."
+  - title: "SEO for creative discovery"
+    description: "Get found when clients search for designers, photographers, developers, or creatives in your niche."
+  - title: "Contact forms that convert"
+    description: "Strategic inquiry forms that qualify leads and route directly to your inbox or CRM."
+  - title: "Social and platform integration"
+    description: "Connect your Dribbble, Behance, GitHub, Instagram, or other platforms to show your full creative presence."
+benefits:
+  - title: "Win more clients"
+    description: "A polished portfolio builds instant credibility and makes potential clients confident in hiring you."
+    icon: "fa6-solid:handshake"
+  - title: "Stand out from the crowd"
+    description: "Custom design that reflects your unique style, not a generic template that looks like everyone else."
+    icon: "fa6-solid:star"
+  - title: "Show your best work"
+    description: "Beautiful project showcases with the context, process, and results that demonstrate your value."
+    icon: "fa6-solid:images"
+  - title: "Get found online"
+    description: "SEO-optimized architecture helps clients searching for your skills actually discover you."
+    icon: "fa6-solid:magnifying-glass"
+  - title: "Update anytime"
+    description: "Add new projects and update your portfolio yourself without waiting on developers or paying hourly rates."
+    icon: "fa6-solid:pen-to-square"
+  - title: "Own your platform"
+    description: "No algorithm changes or platform fees. Your portfolio lives on your domain, under your control."
+    icon: "fa6-solid:key"
+quickFacts:
+  - title: "Timeline"
+    description: "2-4 weeks to launch"
+  - title: "What's included"
+    description: "Design, development, training"
+  - title: "After launch"
+    description: "Hosting + support available"
+cta:
+  title: "Ready to showcase your work?"
+  heading:
+    before: "Let's build your"
+    text: "stunning portfolio"
+    after: "today."
+  buttons:
+    - text: "Get Your Free Quote"
+      link: "#services-quote-hero"
+    - text: "See our work"
+      link: "#services-projects"
+---
+import ContentSection from "@/layouts/ContentSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
+import { query, sortByOrder } from "@/utils/query";
+
+<ContentSection
+  heading={{
+    title: "Your work deserves to be seen",
+    before: "Stop losing clients to",
+    text: "bad portfolios",
+    after: "that hide your talent.",
+    description:
+      "Most portfolios fail because they're either generic templates or clunky page builders that make your work look amateur. We build fast, beautiful portfolio sites that let your work shine."
+  }}
+  primaryCTA={{
+    text: "Get Your Free Quote",
+    href: "#services-quote-hero",
+    rightIcon: "lu:arrow-right"
+  }}
+  secondaryCTA={{
+    text: "See our work",
+    href: "#services-projects"
+  }}
+  sidebar={{
+    icon: frontmatter.icon,
+    title: "Built to impress clients",
+    eyebrow: "Why our portfolios win",
+    description:
+      "We don't just make your work look good. We engineer portfolio experiences that tell your story and convert visitors into paying clients.",
+    footIcon: "🏆",
+    footTitle: "First impressions matter",
+    footDescription:
+      "Clients decide in seconds whether to reach out. Make those seconds count.",
+    features: frontmatter.features
+  }}
+>
+  <div slot="text" class="space-y-6 text-lg text-muted">
+    <p>
+      You've put in the work. You've built an impressive body of projects. But if your portfolio doesn't do them justice, potential clients will never know how good you really are. They'll hire someone with a better website instead.
+    </p>
+    <p>
+      We build portfolios engineered to win clients. That means lightning-fast load times that keep visitors engaged. Beautiful project showcases that highlight your process and results. And a design that reflects your unique creative voice, not a template that looks like everyone else.
+    </p>
+    <p>
+      Whether you're a designer, developer, photographer, artist, or any other creative professional, we'll build a portfolio that makes clients want to work with you.
+    </p>
+  </div>
+
+  <ContentRenderer
+    slot="quick-facts"
+    items={frontmatter.quickFacts}
+    variant="QuickFactsVariant"
+    columns={3}
+  />
+
+</ContentSection>
+
+<ContentRenderer
+  query={query("benefits").orderBy(sortByOrder())}
+  variant="BenefitsVariant"
+  columns={2}
+  gap="lg"
+  title="Why Choose Us"
+  heading="What Makes Our Websites Different"
+/>

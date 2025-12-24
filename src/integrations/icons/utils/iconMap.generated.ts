@@ -3,7 +3,7 @@
 
 import type { IconType } from 'react-icons';
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuContact, LuGithub, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMail, LuMinus, LuPhone, LuPlus, LuSend, LuSettings, LuSparkles } from 'react-icons/lu';
-import { FaArrowTrendUp, FaArrowsUpDownLeftRight, FaAward, FaAws, FaBagShopping, FaBolt, FaBoxOpen, FaBoxesStacked, FaBriefcase, FaBullseye, FaCalendarCheck, FaCamera, FaCartArrowDown, FaCartShopping, FaChartLine, FaChartPie, FaChartSimple, FaClock, FaClockRotateLeft, FaClone, FaCloudflare, FaCode, FaCoins, FaCrown, FaCss3Alt, FaDumbbell, FaEnvelopeCircleCheck, FaEnvelopeOpenText, FaFeather, FaFeatherPointed, FaFigma, FaFileLines, FaFlask, FaGithub, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHtml5, FaJs, FaKey, FaLaptop, FaLayerGroup, FaLifeRing, FaListCheck, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMobileScreenButton, FaNodeJs, FaPenNib, FaPenToSquare, FaPhp, FaPlug, FaPython, FaReact, FaRobot, FaRocket, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaTrophy, FaTruckFast, FaUniversalAccess, FaUtensils, FaWandMagicSparkles, FaWordpress } from 'react-icons/fa6';
+import { FaArrowTrendUp, FaArrowsUpDownLeftRight, FaAward, FaAws, FaBagShopping, FaBolt, FaBoxOpen, FaBoxesStacked, FaBriefcase, FaBullseye, FaCalendarCheck, FaCamera, FaCartArrowDown, FaCartShopping, FaChartLine, FaChartPie, FaChartSimple, FaClock, FaClockRotateLeft, FaClone, FaCloudflare, FaCode, FaCoins, FaCrown, FaCss3Alt, FaDumbbell, FaEnvelopeCircleCheck, FaEnvelopeOpenText, FaFeather, FaFeatherPointed, FaFigma, FaFileLines, FaFlask, FaGithub, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHtml5, FaImages, FaJs, FaKey, FaLaptop, FaLayerGroup, FaLifeRing, FaListCheck, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMobileScreenButton, FaNodeJs, FaPenNib, FaPenToSquare, FaPhp, FaPlug, FaPython, FaReact, FaRobot, FaRocket, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaStar, FaTrophy, FaTruckFast, FaUniversalAccess, FaUtensils, FaWandMagicSparkles, FaWordpress } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiVercel, SiWebflow } from 'react-icons/si';
 
 export const iconMap = {
@@ -46,6 +46,7 @@ export const iconMap = {
   'fa6:heart-pulse': FaHeartPulse,
   'fa6:helmet-safety': FaHelmetSafety,
   'fa6:html5': FaHtml5,
+  'fa6:images': FaImages,
   'fa6:js': FaJs,
   'fa6:key': FaKey,
   'fa6:laptop': FaLaptop,
@@ -70,6 +71,7 @@ export const iconMap = {
   'fa6:shield-halved': FaShieldHalved,
   'fa6:shield-heart': FaShieldHeart,
   'fa6:shopify': FaShopify,
+  'fa6:star': FaStar,
   'fa6:trophy': FaTrophy,
   'fa6:truck-fast': FaTruckFast,
   'fa6:universal-access': FaUniversalAccess,

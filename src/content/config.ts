@@ -150,6 +150,26 @@ export const collections = {
             }),
           )
           .default([]),
+        cta: z
+          .object({
+            title: z.string().optional(),
+            heading: z
+              .object({
+                before: z.string().optional(),
+                text: z.string().optional(),
+                after: z.string().optional(),
+              })
+              .optional(),
+            buttons: z
+              .array(
+                z.object({
+                  text: z.string(),
+                  link: z.string(),
+                }),
+              )
+              .optional(),
+          })
+          .optional(),
       }),
   }),
 
