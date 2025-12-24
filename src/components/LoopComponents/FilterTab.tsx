@@ -46,7 +46,6 @@ export default function FilterTab({
       size={size}
       className={`shrink-0 ${className}`.trim()}
       onClick={handleClick}
-      aria-pressed={checked}
       role="radio"
       aria-checked={checked}
     />
