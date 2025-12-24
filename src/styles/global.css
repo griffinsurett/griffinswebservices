@@ -233,6 +233,7 @@ body {
     --color-bg: var(--color-primary-light);
     --color-bg2: var(--color-secondary-light);
     --color-bg3: var(--color-tertiary-light);
+    --color-border-dim: rgba(0, 0, 0, 0.15);
   }
 
   [data-theme="dark"] {

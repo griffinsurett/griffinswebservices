@@ -44,7 +44,7 @@ export default function FilterIconButton({
   const buttonClasses = [
     currentSize.padding,
     "font-medium main-duration transition-all group",
-    "text-text max-w-[100px] md:max-w-[90px]",
+    "text-text max-w-[100px] md:max-w-[110px]",
     className,
   ].filter(Boolean).join(" ");
 
