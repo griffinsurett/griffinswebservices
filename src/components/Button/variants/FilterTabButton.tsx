@@ -22,9 +22,9 @@ export interface FilterTabButtonProps extends Omit<ButtonProps, 'children'> {
 }
 
 const sizeClasses: Record<ButtonSize, { padding: string; text: string; gap: string }> = {
-  sm: { padding: "px-3 py-2", text: "text-sm", gap: "gap-1.5" },
-  md: { padding: "px-4 py-2.5", text: "text-base", gap: "gap-2" },
-  lg: { padding: "px-5 py-3", text: "text-lg", gap: "gap-2.5" },
+  sm: { padding: "px-3 py-2", text: "text-xs", gap: "gap-1.5" },
+  md: { padding: "px-4 py-2.5", text: "text-sm", gap: "gap-2" },
+  lg: { padding: "px-5 py-3", text: "text-base", gap: "gap-2.5" },
 };
 
 export default function FilterTabButton({

@@ -24,9 +24,9 @@ export interface FilterIconButtonProps extends Omit<ButtonProps, 'children'> {
 }
 
 const sizeClasses: Record<ButtonSize, { padding: string; text: string; gap: string; iconSize: IconSize }> = {
-  sm: { padding: "px-3 py-2", text: "text-base", gap: "gap-1.5", iconSize: "md" },
-  md: { padding: "px-4 py-2.5", text: "text-base", gap: "gap-2", iconSize: "lg" },
-  lg: { padding: "px-5 py-3", text: "text-lg", gap: "gap-2.5", iconSize: "xl" },
+  sm: { padding: "px-3 py-2", text: "text-sm md:text-sm", gap: "gap-1.5", iconSize: "md" },
+  md: { padding: "px-4 py-2.5", text: "text-sm md:text-base", gap: "gap-2", iconSize: "lg" },
+  lg: { padding: "px-5 py-3", text: "text-base md:text-lg", gap: "gap-2.5", iconSize: "xl" },
 };
 
 export default function FilterIconButton({
@@ -67,7 +67,7 @@ export default function FilterIconButton({
           className={`${currentSize.gap} items-center`}
           iconClassName={iconWrapperClasses}
           iconSize={currentSize.iconSize}
-          titleClassName={`${currentSize.text} font-medium`}
+          titleClassName={`${currentSize.text} font-medium text-center leading-tight`}
           titleTag="span"
           showDescription={false}
         />

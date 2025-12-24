@@ -39,7 +39,7 @@ interface FilterNavigationProps {
 }
 
 const arrowClasses =
-  "w-10 h-10 rounded-full faded-bg text-text backdrop-blur-sm transition hover:bg-heading/20 hover:border-heading/50 shrink-0 flex items-center justify-center";
+  "hidden md:flex w-10 h-10 rounded-full faded-bg text-text backdrop-blur-sm transition hover:bg-heading/20 hover:border-heading/50 shrink-0 items-center justify-center";
 
 const iconClasses = "w-4 h-4";
 

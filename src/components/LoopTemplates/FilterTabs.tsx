@@ -4,6 +4,7 @@
  *
  * A standalone component for rendering filter tabs that works with the useFilter hook.
  * Can be used in any variant that needs filtering functionality.
+ * Auto-scrolls to keep the active filter centered.
  *
  * @example
  * // Basic usage with useFilter hook
@@ -23,7 +24,6 @@
  *   </>
  * );
  */
-import { useEffect, useRef } from "react";
 import FilterTab from "@/components/LoopComponents/FilterTab";
 import type { FilterOption } from "@/hooks/useFilter";
 import type { ButtonVariant } from "@/components/Button/Button";
@@ -60,44 +60,34 @@ export default function FilterTabs({
   className = "",
   variant = "filterTab",
 }: FilterTabsProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Scroll active filter into view when it changes
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const activeIndex = options.findIndex((o) => o.key === activeFilter);
-    if (activeIndex === -1) return;
-
-    const container = containerRef.current;
-    const activeElement = container.children[activeIndex] as HTMLElement;
-    if (!activeElement) return;
-
-    // Scroll the active element into center of view
-    const elementRect = activeElement.getBoundingClientRect();
-    const scrollLeft =
-      activeElement.offsetLeft -
-      container.offsetWidth / 2 +
-      elementRect.width / 2;
-
-    container.scrollTo({
-      left: Math.max(0, scrollLeft),
-      behavior: "smooth",
-    });
-  }, [activeFilter, options]);
-
   // Don't render if not showing or no options
   if (!show || options.length <= 1) {
     return null;
   }
 
+  // Reorder options so active is always in the center
+  // Items rotate around maintaining their relative order
+  const activeIndex = options.findIndex((o) => o.key === activeFilter);
+  const centerIndex = Math.floor(options.length / 2);
+
+  let reorderedOptions = options;
+  if (activeIndex !== -1 && activeIndex !== centerIndex) {
+    // Calculate how many positions to rotate
+    const shift = activeIndex - centerIndex;
+    reorderedOptions = options.map((_, i) => {
+      // Rotate the array so active ends up at centerIndex
+      const newIndex = (i + shift + options.length) % options.length;
+      return options[newIndex];
+    });
+  }
+
   return (
     <div
-      ref={containerRef}
-      className={`flex flex-nowrap gap-2 justify-center overflow-x-auto scrollbar-hide ${className}`.trim()}
+      className={`flex gap-2 justify-center overflow-x-auto scrollbar-hide ${className}`.trim()}
       role="radiogroup"
       aria-label={`Filter by ${groupingField || "category"}`}
     >
-      {options.map((option) => (
+      {reorderedOptions.map((option) => (
         <FilterTab
           key={option.key}
           option={option}
