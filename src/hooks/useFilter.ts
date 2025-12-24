@@ -177,17 +177,20 @@ function extractFilterOptions<T extends Record<string, any>>(
       if (existing) {
         existing.count++;
       } else {
-        // Try to get label and icon from resolved data or parentData
+        // Try to get label and icon from resolved data or {field}Data pattern
         let label = key;
         let icon: string | undefined;
 
         if (typeof value === "object") {
           label = value.title || value.label || value.name || key;
           icon = value.icon;
-        } else if (field === "parent" && item.parentData) {
-          // Use resolved parent data if available
-          label = item.parentData.title || item.parentData.label || key;
-          icon = item.parentData.icon;
+        } else {
+          // Check for resolved data in {field}Data pattern (e.g., parentData, industryData)
+          const fieldData = item[`${field}Data`];
+          if (fieldData) {
+            label = fieldData.title || fieldData.label || key;
+            icon = fieldData.icon;
+          }
         }
 
         optionMap.set(key, {

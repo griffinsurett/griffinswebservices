@@ -93,6 +93,8 @@ export default function IconListItem({
     md: "icon-medium",
     lg: "icon-large",
     xl: "icon-large",
+    "2xl": "icon-2xl",
+    "3xl": "icon-3xl",
   };
 
   const resolvedIconClassName = [

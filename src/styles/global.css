@@ -264,6 +264,33 @@ body {
   @apply [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_55%,rgba(0,0,0,0.35)_78%,rgba(0,0,0,0)_92%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_55%,rgba(0,0,0,0.35)_78%,rgba(0,0,0,0)_92%)]
 } */
 
+/* Horizontal edge fade - for filter tabs and horizontal scrollable content */
+@utility horizontal-edge-fade {
+  mask-image: linear-gradient(
+    to right,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,1) 8%,
+    rgba(0,0,0,1) 92%,
+    rgba(0,0,0,0) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,1) 8%,
+    rgba(0,0,0,1) 92%,
+    rgba(0,0,0,0) 100%
+  );
+}
+
+/* Hide scrollbar while keeping scroll functionality */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Fade around entire border - vignette effect from center outward */
 @utility border-image-fade {
   mask-image: radial-gradient(
@@ -529,6 +556,16 @@ body {
     @apply bg-gradient-to-br border-primary border-2 from-primary light:to-bg2 dark:to-primary/25 text-bg;
   }
 
+  /* Filter icon wrapper - card-bg with accent, primary style on hover/active */
+  .filter-icon-wrapper {
+    @apply card-bg text-accent transition-all main-duration;
+  }
+
+  .filter-icon-wrapper.active,
+  .group:hover .filter-icon-wrapper {
+    @apply bg-gradient-to-br border-primary border-2 from-primary light:to-bg2 dark:to-primary/25 text-bg;
+  }
+
   /* Grid helpers */
   .max-2-primary {
     @apply grid lg:grid-cols-2 gap-6 lg:gap-12;
@@ -566,6 +603,14 @@ body {
 
   .icon-xsmall {
     @apply w-8 h-8 rounded-full flex items-center justify-center;
+  }
+
+  .icon-2xl {
+    @apply w-20 h-20 text-2xl lg:text-3xl flex items-center justify-center rounded-full relative;
+  }
+
+  .icon-3xl {
+    @apply w-24 h-24 text-3xl lg:text-4xl flex items-center justify-center rounded-full relative;
   }
 
   /* Border callouts */

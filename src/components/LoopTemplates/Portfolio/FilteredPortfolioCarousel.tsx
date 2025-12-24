@@ -1,12 +1,12 @@
 // src/components/LoopTemplates/Portfolio/FilteredPortfolioCarousel.tsx
 /**
- * FilteredPortfolioCarousel - Industry-filtered portfolio with 3D carousel transitions
+ * FilteredPortfolioCarousel - Collection-neutral filtered portfolio with 3D carousel transitions
  *
  * Combines the best of both portfolio variants:
- * - 3D carousel transitions between industries (like PortfolioCarousel)
- * - Image cycling within each industry (like PortfolioScreenShowcase)
+ * - 3D carousel transitions between filter groups (like PortfolioCarousel)
+ * - Image cycling within each group (like PortfolioScreenShowcase)
  *
- * Uses the reusable useFilter hook for industry filtering.
+ * Accepts pre-built groups from the Astro variant for server-side grouping.
  */
 import {
   useCallback,
@@ -17,41 +17,40 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { useFilter, type FilterConfig } from "@/hooks/useFilter";
+import type { FilterConfig } from "@/hooks/useFilter";
 import FilterTabs from "../FilterTabs";
 import ScrollableViewport from "@/components/LoopComponents/Portfolio/ScrollableViewport";
 import ClientImage from "@/components/ClientImage";
-import { LeftArrow, RightArrow } from "@/components/Carousels/CarouselArrows";
+import FilterNavigation from "../FilterNavigation";
 import { useSideDragNavigation } from "@/hooks/interactions/useSideDragNavigation";
 import { animationProps } from "@/integrations/scroll-animations";
 import {
   type PortfolioItemData,
   type PortfolioMediaEntry,
   getPortfolioImageSrc,
-  normalizeItems,
 } from "@/components/LoopComponents/Portfolio/types";
 
-// Extended portfolio item with industry reference
+// Extended portfolio item
 interface FilteredPortfolioItem extends PortfolioItemData {
-  industry?: string | { id?: string; slug?: string; title?: string; icon?: string };
-  parentData?: { title?: string; icon?: string };
+  [key: string]: any;
 }
 
-interface IndustryGroup {
+// Pre-built group from server
+interface FilterGroup {
   key: string;
   label: string;
   icon?: string;
   items: FilteredPortfolioItem[];
   mediaEntries: (PortfolioMediaEntry | undefined)[];
+  count?: number;
 }
 
 interface FilteredPortfolioCarouselProps {
-  items?: FilteredPortfolioItem[];
-  mediaEntries?: (PortfolioMediaEntry | undefined)[];
+  /** Pre-built groups from the Astro variant */
+  groups?: FilterGroup[];
   filter?: FilterConfig;
   filterSize?: "sm" | "md" | "lg";
   filterClassName?: string;
-  showArrows?: boolean;
   showFilters?: boolean;
   drag?: boolean;
   className?: string;
@@ -60,10 +59,10 @@ interface FilteredPortfolioCarouselProps {
 const SLIDE_TRANSITION_DURATION_MS = 750;
 
 /**
- * Individual industry slide that cycles through its project images
+ * Individual slide that cycles through its project images
  */
-interface IndustrySlideProps {
-  group: IndustryGroup;
+interface SlideProps {
+  group: FilterGroup;
   isActive: boolean;
   position: "center" | "left" | "right" | "hidden";
   centerW: number;
@@ -75,7 +74,7 @@ interface IndustrySlideProps {
   onCycleComplete: () => void;
 }
 
-function IndustrySlide({
+function GroupSlide({
   group,
   isActive,
   position,
@@ -86,7 +85,7 @@ function IndustrySlide({
   tx,
   onSelect,
   onCycleComplete,
-}: IndustrySlideProps) {
+}: SlideProps) {
   const [imageIndex, setImageIndex] = useState(0);
   const [prevImageIndex, setPrevImageIndex] = useState<number | null>(null);
   const [transitionStage, setTransitionStage] = useState<"idle" | "pre" | "animating">("idle");
@@ -337,90 +336,44 @@ function IndustrySlide({
 }
 
 export default function FilteredPortfolioCarousel({
-  items = [],
-  mediaEntries: mediaEntriesProp = [],
+  groups: groupsProp = [],
   filter,
   filterSize = "sm",
   filterClassName = "",
-  showArrows = true,
   showFilters = true,
   drag = false,
   className = "",
 }: FilteredPortfolioCarouselProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [containerW, setContainerW] = useState(0);
-  const [isHydrated, setIsHydrated] = useState(false);
 
+  // Use pre-built groups from the Astro variant
+  const filterGroups = useMemo(() => groupsProp as FilterGroup[], [groupsProp]);
+
+  // Build filter options from groups
+  const filterOptions = useMemo(() => {
+    return filterGroups.map((group) => ({
+      key: group.key,
+      label: group.label,
+      icon: group.icon,
+      count: group.count ?? group.items.length,
+    }));
+  }, [filterGroups]);
+
+  // Current group index and active filter state
+  const [groupIndex, setGroupIndex] = useState(0);
+  const [activeFilter, setActiveFilter] = useState(filterGroups[0]?.key ?? "");
+
+  // Sync group index with active filter
   useEffect(() => {
-    setIsHydrated(true);
-  }, []);
-
-  const safeItems = useMemo(() => normalizeItems(items) as FilteredPortfolioItem[], [items]);
-  const mediaEntries = useMemo(() => normalizeItems(mediaEntriesProp), [mediaEntriesProp]);
-
-  // Use the filter hook with industry field
-  const filterConfig: FilterConfig = useMemo(() => ({
-    field: "industry",
-    showAll: false,
-    ...filter,
-  }), [filter]);
-
-  const {
-    filterOptions,
-    activeFilter,
-    setActiveFilter,
-    showFilters: shouldShowFilters,
-    groupingField,
-  } = useFilter(safeItems, filterConfig);
-
-  // Group items by industry with their corresponding media entries
-  const industryGroups = useMemo(() => {
-    const groups: IndustryGroup[] = [];
-
-    for (const option of filterOptions) {
-      const groupItems: FilteredPortfolioItem[] = [];
-      const groupMediaEntries: (PortfolioMediaEntry | undefined)[] = [];
-
-      safeItems.forEach((item, idx) => {
-        const industryValue = item.industry;
-        let industryKey: string | null = null;
-
-        if (typeof industryValue === "string") {
-          industryKey = industryValue;
-        } else if (industryValue && typeof industryValue === "object") {
-          industryKey = industryValue.id || industryValue.slug || null;
-        }
-
-        if (industryKey === option.key) {
-          groupItems.push(item);
-          groupMediaEntries.push(isHydrated ? mediaEntries[idx] : undefined);
-        }
-      });
-
-      if (groupItems.length > 0) {
-        groups.push({
-          key: option.key,
-          label: option.label,
-          icon: option.icon,
-          items: groupItems,
-          mediaEntries: groupMediaEntries,
-        });
-      }
+    const idx = filterGroups.findIndex((g) => g.key === activeFilter);
+    if (idx !== -1 && idx !== groupIndex) {
+      setGroupIndex(idx);
     }
+  }, [activeFilter, filterGroups, groupIndex]);
 
-    return groups;
-  }, [filterOptions, safeItems, mediaEntries, isHydrated]);
-
-  // Current industry index based on active filter
-  const [industryIndex, setIndustryIndex] = useState(0);
-
-  // Sync industry index with active filter
-  useEffect(() => {
-    const idx = industryGroups.findIndex((g) => g.key === activeFilter);
-    if (idx !== -1 && idx !== industryIndex) {
-      setIndustryIndex(idx);
-    }
-  }, [activeFilter, industryGroups, industryIndex]);
+  // Whether to show filters (more than one group)
+  const shouldShowFilters = filterGroups.length > 1;
 
   const ready = containerW > 0;
 
@@ -470,54 +423,41 @@ export default function FilteredPortfolioCarousel({
     : { centerW: 0, centerH: 0, sideW: 0, sideH: 0 };
   const tx = ready ? getTranslateDistance(sideW) : 0;
 
-  const goToIndustry = useCallback((idx: number) => {
-    setIndustryIndex(idx);
-    if (industryGroups[idx]) {
-      setActiveFilter(industryGroups[idx].key);
+  const goToGroup = useCallback((idx: number) => {
+    setGroupIndex(idx);
+    if (filterGroups[idx]) {
+      setActiveFilter(filterGroups[idx].key);
     }
-  }, [industryGroups, setActiveFilter]);
+  }, [filterGroups, setActiveFilter]);
 
   const goToPrevious = useCallback(() => {
-    const newIdx = industryIndex === 0 ? industryGroups.length - 1 : industryIndex - 1;
-    goToIndustry(newIdx);
-  }, [industryIndex, industryGroups.length, goToIndustry]);
+    const newIdx = groupIndex === 0 ? filterGroups.length - 1 : groupIndex - 1;
+    goToGroup(newIdx);
+  }, [groupIndex, filterGroups.length, goToGroup]);
 
   const goToNext = useCallback(() => {
-    const newIdx = industryIndex === industryGroups.length - 1 ? 0 : industryIndex + 1;
-    goToIndustry(newIdx);
-  }, [industryIndex, industryGroups.length, goToIndustry]);
+    const newIdx = groupIndex === filterGroups.length - 1 ? 0 : groupIndex + 1;
+    goToGroup(newIdx);
+  }, [groupIndex, filterGroups.length, goToGroup]);
 
   // Handle filter tab click
   const handleFilterChange = useCallback((key: string) => {
-    const idx = industryGroups.findIndex((g) => g.key === key);
+    const idx = filterGroups.findIndex((g) => g.key === key);
     if (idx !== -1) {
-      goToIndustry(idx);
+      goToGroup(idx);
     }
-  }, [industryGroups, goToIndustry]);
+  }, [filterGroups, goToGroup]);
 
   // Handle cycle complete from industry slide (all images shown)
-  const handleIndustryCycleComplete = useCallback(() => {
+  const handleGroupCycleComplete = useCallback(() => {
     goToNext();
   }, [goToNext]);
-
-  const arrowDiameter = containerW >= 768 ? 48 : 40;
-  const arrowRadius = arrowDiameter / 2;
-  const gap = containerW >= 1024 ? 20 : 16;
-  const isLarge = containerW >= 1280;
-
-  const sideOffsetFromCenterSlide = centerW / 2 + arrowRadius + gap;
-  const leftCalc = isLarge
-    ? `calc(50% - ${tx}px)`
-    : `calc(50% - ${sideOffsetFromCenterSlide}px)`;
-  const rightCalc = isLarge
-    ? `calc(50% + ${tx}px)`
-    : `calc(50% + ${sideOffsetFromCenterSlide}px)`;
 
   const leftZoneRef = useRef<HTMLDivElement | null>(null);
   const rightZoneRef = useRef<HTMLDivElement | null>(null);
 
   useSideDragNavigation({
-    enabled: ready && drag && industryGroups.length > 1,
+    enabled: ready && drag && filterGroups.length > 1,
     leftElRef: leftZoneRef,
     rightElRef: rightZoneRef,
     onLeft: goToPrevious,
@@ -535,10 +475,10 @@ export default function FilteredPortfolioCarousel({
     height: "100%",
   });
 
-  const leftZoneOffset = isLarge ? tx : sideOffsetFromCenterSlide;
-  const rightZoneOffset = isLarge ? tx : sideOffsetFromCenterSlide;
+  const leftZoneOffset = tx;
+  const rightZoneOffset = tx;
 
-  if (!industryGroups.length) return null;
+  if (!filterGroups.length) return null;
 
   return (
     <div
@@ -548,18 +488,25 @@ export default function FilteredPortfolioCarousel({
       suppressHydrationWarning
       className={`w-full ${className}`.trim()}
     >
-      {/* Filter Tabs */}
-      {showFilters && (
-        <FilterTabs
-          options={filterOptions}
-          activeFilter={activeFilter}
-          onFilterChange={handleFilterChange}
-          show={shouldShowFilters}
-          groupingField={groupingField}
-          size={filterSize}
-          showCount={filter?.showCount}
+      {/* Filter Tabs with Arrows */}
+      {showFilters && shouldShowFilters && (
+        <FilterNavigation
+          onPrevious={goToPrevious}
+          onNext={goToNext}
           className={`mb-8 ${filterClassName}`.trim()}
-        />
+        >
+          <FilterTabs
+            options={filterOptions}
+            activeFilter={activeFilter}
+            onFilterChange={handleFilterChange}
+            show={shouldShowFilters}
+            groupingField="filter"
+            size={filterSize}
+            showCount={filter?.showCount}
+            className="px-6"
+            variant="filterIcon"
+          />
+        </FilterNavigation>
       )}
 
       {ready && (
@@ -568,9 +515,9 @@ export default function FilteredPortfolioCarousel({
             className="relative overflow-visible w-full leading-none"
             style={{ height: `${centerH}px` }}
           >
-            {industryGroups.map((group, groupIndex) => {
-              const diff = groupIndex - industryIndex;
-              const itemsLength = industryGroups.length;
+            {filterGroups.map((group, idx) => {
+              const diff = idx - groupIndex;
+              const itemsLength = filterGroups.length;
 
               let position: "center" | "left" | "right" | "hidden" = "hidden";
               if (diff === 0) position = "center";
@@ -578,7 +525,7 @@ export default function FilteredPortfolioCarousel({
               else if (diff === 1 || diff === -(itemsLength - 1)) position = "right";
 
               return (
-                <IndustrySlide
+                <GroupSlide
                   key={group.key}
                   group={group}
                   isActive={position === "center"}
@@ -588,13 +535,13 @@ export default function FilteredPortfolioCarousel({
                   sideW={sideW}
                   sideH={sideH}
                   tx={tx}
-                  onSelect={() => goToIndustry(groupIndex)}
-                  onCycleComplete={handleIndustryCycleComplete}
+                  onSelect={() => goToGroup(idx)}
+                  onCycleComplete={handleGroupCycleComplete}
                 />
               );
             })}
 
-            {drag && industryGroups.length > 1 && (
+            {drag && filterGroups.length > 1 && (
               <>
                 <div
                   ref={leftZoneRef}
@@ -613,28 +560,6 @@ export default function FilteredPortfolioCarousel({
               </>
             )}
 
-            {showArrows && industryGroups.length > 1 && (
-              <>
-                <LeftArrow
-                  onClick={goToPrevious}
-                  variant="floating"
-                  position={{
-                    left: leftCalc,
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                />
-                <RightArrow
-                  onClick={goToNext}
-                  variant="floating"
-                  position={{
-                    left: rightCalc,
-                    top: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                />
-              </>
-            )}
           </div>
         </>
       )}

@@ -95,7 +95,7 @@ const heroDescription =
     />
 
     <!-- Filtered Capabilities by Parent (auto-detects parent field) -->
-    <ContentRenderer
+    <!-- <ContentRenderer
       query={query("capabilities").where((entry) => !!entry.data.parent).orderBy(sortByOrder())}
       variant="FilteredCardVariant"
       id="capabilities-filtered"
@@ -109,7 +109,7 @@ const heroDescription =
       filter={{ showAll: false, showCount: true }}
       columns={3}
       filterSize="sm"
-    />
+    /> -->
 
     <!-- Website Benefits -->
     <ContentRenderer
@@ -181,15 +181,19 @@ const heroDescription =
       id="testimonials-home"
     />
 
-    <!-- Portfolio with sorting -->
-   <ContentRenderer
-  query={query('projects')}
-  variant="FilteredPortfolioVariant"
-  title="Our Work"
-  filter={{ showCount: true }}
-  showFilters={true}
-  showArrows={true}
-/>
+    <!-- Portfolio filtered by industries -->
+    <ContentRenderer
+      query={query('industries').orderBy(sortByOrder())}
+      variant="FilteredPortfolioVariant"
+      relatedCollection="projects"
+      relatedField="industry"
+      title="Portfolio"
+      heading="Websites that deliver real results"
+      description="From contractors to e-commerce brands, we build sites that look great, load fast, and convert visitors into customers."
+      filter={{ showCount: false }}
+      showFilters={true}
+      showArrows={true}
+    />
 
 
     <!-- Technologies -->

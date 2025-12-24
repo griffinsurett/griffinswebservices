@@ -22,8 +22,6 @@ export interface FilteredCardRendererProps extends Omit<CardRendererProps, "item
   filterSize?: "sm" | "md" | "lg";
   /** Additional class for filter tabs container */
   filterClassName?: string;
-  /** Unique name for radio group (defaults to auto-generated) */
-  filterName?: string;
   /** Callback when filter changes */
   onFilterChange?: (filterKey: string) => void;
 }
@@ -33,7 +31,6 @@ export default function FilteredCardRenderer({
   filter,
   filterSize = "sm",
   filterClassName = "",
-  filterName,
   onFilterChange,
   ...cardRendererProps
 }: FilteredCardRendererProps) {
@@ -48,7 +45,7 @@ export default function FilteredCardRenderer({
     showFilters,
     groupingField,
     showCount,
-  } = useFilter(safeItems, filter);
+  } = useFilter(safeItems as Record<string, unknown>[], filter);
 
   // Handle filter change with optional callback
   const handleFilterChange = (key: string) => {
@@ -72,7 +69,6 @@ export default function FilteredCardRenderer({
         size={filterSize}
         showCount={showCount}
         className={filterClassName}
-        name={filterName}
       />
 
       {/* Filtered Cards */}
@@ -80,7 +76,7 @@ export default function FilteredCardRenderer({
         className="transition-all duration-300 ease-in-out"
         key={activeFilter}
       >
-        <CardRenderer items={filteredItems} {...cardRendererProps} />
+        <CardRenderer items={filteredItems as FeatureCardData[]} {...cardRendererProps} />
       </div>
     </div>
   );

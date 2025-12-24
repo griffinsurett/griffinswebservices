@@ -16,6 +16,8 @@ import TertiaryButton from './variants/TertiaryButton';
 import ArrowLinkButton from './variants/ArrowLinkButton';
 import MenuItemButton from './variants/MenuItemButton';
 import LogoLinkButton from './variants/LogoLinkButton';
+import FilterTabButton from './variants/FilterTabButton';
+import FilterIconButton from './variants/FilterIconButton';
 
 /**
  * Base props shared by all button variants
@@ -123,28 +125,34 @@ const VARIANT_MAP = {
   tertiary: TertiaryButton,
   arrowLink: ArrowLinkButton,
   logoLink: LogoLinkButton,
+  filterTab: FilterTabButton,
+  filterIcon: FilterIconButton,
 };
 
 export type ButtonVariant = keyof typeof VARIANT_MAP;
 
 /**
- * Props for the main Button component including variant selection
+ * Props for the main Button component including variant selection.
+ * Uses Record<string, unknown> to allow variant-specific props to pass through.
  */
-export type ButtonComponentProps = ButtonProps & {
+export type ButtonComponentProps = {
   variant?: ButtonVariant;
+  [key: string]: unknown;
 };
 
 /**
  * Main Button component - delegates to variant components
- * 
+ *
  * @example
  * <Button variant="primary" onClick={handleClick}>Click me</Button>
  * <Button variant="secondary" href="/about">Learn more</Button>
+ * <Button variant="filterTab" active={true} label="All" />
  */
-export default function Button({ 
+export default function Button({
   variant = 'primary',
-  ...props 
+  ...props
 }: ButtonComponentProps) {
   const VariantComponent = VARIANT_MAP[variant] || PrimaryButton;
-  return <VariantComponent {...props} />;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return <VariantComponent {...(props as any)} />;
 }

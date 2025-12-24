@@ -263,8 +263,31 @@ export const relatedRoots = (
     .orderBy(sortByOrder());
 };
 
-// TODO: Items with references to any entry in target collection
-// export const withReferencesTo = (collection: CollectionKey, targetCollection: CollectionKey) => {}
+/**
+ * Items from a collection that have any reference to a target collection.
+ *
+ * Example: Get all capabilities that reference any solution
+ * withReferencesTo("capabilities", "solutions")
+ *
+ * @param collection - The collection to query (e.g., "capabilities")
+ * @param field - The reference field name (e.g., "solutions")
+ */
+export const withReferencesTo = (
+  collection: CollectionKey,
+  field: string
+) => {
+  return query(collection)
+    .where((entry) => {
+      const data = entry.data as any;
+      const fieldValue = data[field];
+
+      // Check if field has any value (not null, undefined, or empty array)
+      if (!fieldValue) return false;
+      if (Array.isArray(fieldValue)) return fieldValue.length > 0;
+      return true;
+    })
+    .orderBy(sortByOrder());
+}
 
 // ============================================================================
 // CROSS-COLLECTION

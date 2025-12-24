@@ -128,4 +128,5 @@ export {
   siblings,
   related,
   relatedRoots,
+  withReferencesTo,
 } from './snippets';
