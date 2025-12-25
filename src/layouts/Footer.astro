@@ -19,12 +19,13 @@ import Logo from "@/components/Logo/Logo.astro";
 import Button from "@/components/Button/Button";
 ---
 
-<footer class="mt-auto relative">
+<footer class="mt-auto relative" role="contentinfo">
   <div class="mx-auto w-full relative">
     <div class="section-dim-border"></div>
 
     <div class="relative">
-      <section
+      <nav
+        aria-label="Footer navigation"
         class="inner-section grid gap-10 py-12 text-left sm:text-left grid-cols-1 md:grid-cols-2 xl:grid-cols-4 items-start"
       >
         <div class="flex flex-col items-start gap-6 text-sm max-w-lg">
@@ -86,7 +87,7 @@ import Button from "@/components/Button/Button";
           showButtonSection={false}
           showHeadingDivider
         />
-      </section>
+      </nav>
       <!-- <div class="section-color-border absolute bottom-0 top-auto"></div> -->
     </div>
 
