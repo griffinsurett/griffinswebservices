@@ -56,13 +56,13 @@ const { ...seoProps } = Astro.props;
     >
       Skip to main content
     </a>
-    <Header />
-
     {/* Body-level scripts and elements */}
     <BodyTags />
 
     {/* Main app container with flex column for sticky footer */}
     <div id="app" class="min-h-screen flex flex-col">
+      <Header />
+
       {/* Page content goes here */}
       <main id="main-content" class="flex-1" tabindex="-1">
         <slot />
