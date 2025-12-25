@@ -1,35 +1,33 @@
 // src/components/accessibility/AccessibilityButton.tsx
-import { memo } from "react";
-import { useLazyLoad } from "@/hooks/useLazyLoad";
+import { useState, lazy, Suspense, memo } from "react";
 import Button from "@/components/Button/Button";
 
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const BUTTON_ID = "accessibility-button";
+const AccessibilityModal = lazy(() => import("./AccessibilityModal"));
 
 function AccessibilityButton() {
-  const { Component: Modal, isOpen, close } = useLazyLoad<ModalProps>(
-    () => import("./AccessibilityModal"),
-    { triggerId: BUTTON_ID, toggle: true }
-  );
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
       <Button
         variant="link"
         size="sm"
-        id={BUTTON_ID}
+        onClick={() => {
+          console.log('AccessibilityButton clicked, setting showModal to true');
+          setShowModal(true);
+        }}
         aria-label="Manage reading preferences"
-        aria-expanded="false"
+        aria-expanded={showModal}
         rightIcon="lucide:book-open"
       >
         Reading Preferences
       </Button>
 
-      {Modal && <Modal isOpen={isOpen} onClose={close} />}
+      {showModal && (
+        <Suspense fallback={null}>
+          <AccessibilityModal isOpen={showModal} onClose={() => setShowModal(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

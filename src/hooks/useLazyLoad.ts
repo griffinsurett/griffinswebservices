@@ -91,28 +91,44 @@ export function useLazyLoad<P extends object>(
   useEffect(() => {
     if (!triggerId) return;
 
-    const el = document.getElementById(triggerId);
-    if (!el) return;
+    // Use requestAnimationFrame to ensure DOM is ready after React render
+    let frameId: number;
+    let el: HTMLElement | null = null;
 
     const onClick = () => {
+      if (!el) return;
       if (!started.current) {
         doLoad(() => {
           if (toggle) {
             setIsOpen(true);
-            el.setAttribute("aria-expanded", "true");
+            el?.setAttribute("aria-expanded", "true");
           }
         });
       } else if (toggle) {
         setIsOpen((prev) => {
           const next = !prev;
-          el.setAttribute("aria-expanded", String(next));
+          el?.setAttribute("aria-expanded", String(next));
           return next;
         });
       }
     };
 
-    el.addEventListener("click", onClick);
-    return () => el.removeEventListener("click", onClick);
+    const setup = () => {
+      el = document.getElementById(triggerId);
+      if (!el) {
+        // Retry on next frame if element not found yet
+        frameId = requestAnimationFrame(setup);
+        return;
+      }
+      el.addEventListener("click", onClick);
+    };
+
+    frameId = requestAnimationFrame(setup);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      el?.removeEventListener("click", onClick);
+    };
   }, [triggerId, toggle, doLoad]);
 
   return {
