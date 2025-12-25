@@ -3,7 +3,6 @@ import LottieLogo from "./LottieLogo";
 import TextLogoStatic from "./TextLogoStatic.astro";
 import { Image } from "astro:assets";
 import POSTER_SRC from "@/assets/GWS-animated.png";
-import SVG_LOGO from "@/assets/GWS-animated.svg";
 import { siteData } from "@/content/siteData";
 
 export interface Props {
@@ -19,6 +18,7 @@ export interface Props {
   titleFirstClass?: string;
   titleRestClass?: string;
   loop?: boolean;
+  altContext?: string;
 }
 
 const {
@@ -34,7 +34,13 @@ const {
   titleFirstClass,
   titleRestClass,
   loop = true,
+  altContext,
 } = Astro.props;
+
+// Build alt text: "Griffin's Web Services Logo" + optional context
+const alt = altContext
+  ? `Griffin's Web Services Logo - ${altContext}`
+  : "Griffin's Web Services Logo";
 
 const shouldUseLottie =
   useLottie &&
@@ -59,7 +65,7 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
 >
   {shouldUseLottie ? (
     <LottieLogo
-      alt="Griffin's Web Services Animated Logo"
+      alt={alt}
       loading={loading}
       trigger={trigger}
       className="logo-class"
@@ -69,19 +75,20 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
     >
       <Image
         src={POSTER_SRC}
-        alt="Griffin's Web Services Logo"
+        alt=""
         loading={loading}
         decoding="async"
         class={logoClasses}
         widths={LOGO_WIDTHS}
         sizes={LOGO_SIZES}
         fetchpriority={loading === "eager" ? "high" : "low"}
+        aria-hidden="true"
       />
     </LottieLogo>
   ) : (
     <Image
       src={POSTER_SRC}
-      alt="Griffin's Web Services Logo"
+      alt={alt}
       loading={loading}
       decoding="async"
       class={logoClasses}
