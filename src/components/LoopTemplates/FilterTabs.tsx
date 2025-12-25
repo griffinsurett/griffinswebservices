@@ -83,7 +83,7 @@ export default function FilterTabs({
 
   return (
     <div
-      className={`flex gap-2 justify-center overflow-x-auto scrollbar-hide ${className}`.trim()}
+      className={`flex gap-2 items-start justify-center overflow-x-auto scrollbar-hide ${className}`.trim()}
       role="radiogroup"
       aria-label={`Filter by ${groupingField || "category"}`}
     >

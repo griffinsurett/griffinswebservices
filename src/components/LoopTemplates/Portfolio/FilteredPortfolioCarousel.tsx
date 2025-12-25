@@ -279,8 +279,9 @@ function GroupSlide({
           isActive={isActive}
           isTransitioning={false}
           onScrollComplete={handleScrollComplete}
-          targetDurationSec={28}
+          speedPxPerSec={98}
           resetOnActivate={true}
+          showDevOverlay={true}
           className="w-full h-full bg-gray-900 m-0 p-0"
         >
           {renderMedia(currentItem, currentMediaEntry)}
@@ -321,8 +322,9 @@ function GroupSlide({
                   isActive={isActive && isActiveImage}
                   isTransitioning={transitionStage !== "idle"}
                   onScrollComplete={isActiveImage ? handleScrollComplete : undefined}
-                  targetDurationSec={28}
+                  speedPxPerSec={98}
                   resetOnActivate={true}
+                  showDevOverlay={true}
                   className="w-full h-full bg-gray-900 m-0 p-0"
                 >
                   {renderMedia(item, group.mediaEntries[idx])}

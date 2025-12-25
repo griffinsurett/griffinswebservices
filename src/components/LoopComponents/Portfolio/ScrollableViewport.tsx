@@ -13,9 +13,10 @@ import { useClickToScroll } from "@/hooks/interactions/useClickToScroll";
 
 const AUTO_SCROLL_START_DELAY_MS = 200;
 const AUTO_SCROLL_RESUME_DELAY_MS = 300;
-const AUTO_SCROLL_TARGET_DURATION_SEC = 14;
-const AUTO_SCROLL_DEFAULT_CYCLE_MS = AUTO_SCROLL_TARGET_DURATION_SEC * 1000;
-const AUTO_SCROLL_MIN_SPEED = 15;
+// Fixed scroll speed in pixels per second - all images scroll at the same visual rate
+const AUTO_SCROLL_FIXED_SPEED_PX_SEC = 98;
+// Minimum duration before advancing to next slide (prevents rapid cycling on short content)
+const AUTO_SCROLL_MIN_DURATION_MS = 3000;
 // Simple delay before considering content ready (allows images to load)
 const CONTENT_READY_DELAY_MS = 350;
 
@@ -24,9 +25,8 @@ export interface ScrollableViewportProps {
   isActive: boolean;
   isTransitioning?: boolean;
   onScrollComplete?: () => void;
-  scrollDurationMs?: number;
-  /** Target duration in seconds to scroll through content (default: 14) */
-  targetDurationSec?: number;
+  /** Fixed scroll speed in pixels per second (default: 65) */
+  speedPxPerSec?: number;
   className?: string;
   style?: CSSProperties;
   resetOnActivate?: boolean;
@@ -46,7 +46,7 @@ export default function ScrollableViewport({
   isActive,
   isTransitioning = false,
   onScrollComplete,
-  targetDurationSec = AUTO_SCROLL_TARGET_DURATION_SEC,
+  speedPxPerSec = AUTO_SCROLL_FIXED_SPEED_PX_SEC,
   className = "",
   style,
   resetOnActivate = true,
@@ -54,33 +54,18 @@ export default function ScrollableViewport({
 }: ScrollableViewportProps) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [contentReady, setContentReady] = useState(false);
-  const defaultCycleMs = targetDurationSec * 1000;
-  const [scrollDurationMs, setScrollDurationMs] = useState(defaultCycleMs);
+  const [scrollDurationMs, setScrollDurationMs] = useState(AUTO_SCROLL_MIN_DURATION_MS);
   const [progressPct, setProgressPct] = useState(0);
 
-  const resolveAutoScrollSpeed = useCallback((host: HTMLElement) => {
-    const maxScrollable = Math.max(0, host.scrollHeight - host.clientHeight);
-    if (maxScrollable <= 0) return 0;
-    const baseline = maxScrollable / targetDurationSec;
-    if (!Number.isFinite(baseline) || baseline <= 0) {
-      return AUTO_SCROLL_MIN_SPEED;
-    }
-    return Math.max(AUTO_SCROLL_MIN_SPEED, baseline);
-  }, [targetDurationSec]);
-
+  // Calculate how long it will take to scroll through the content at the fixed speed
   const measureScrollDuration = useCallback(
     (host: HTMLElement) => {
       const maxScrollable = Math.max(0, host.scrollHeight - host.clientHeight);
-      if (maxScrollable <= 0) return defaultCycleMs;
-      const pxPerSecond = resolveAutoScrollSpeed(host);
-      if (pxPerSecond <= 0) return defaultCycleMs;
-      const rawDurationMs = Math.round((maxScrollable / pxPerSecond) * 1000);
-      if (!Number.isFinite(rawDurationMs) || rawDurationMs <= 0) {
-        return defaultCycleMs;
-      }
-      return Math.max(defaultCycleMs, rawDurationMs);
+      if (maxScrollable <= 0) return AUTO_SCROLL_MIN_DURATION_MS;
+      const durationMs = Math.round((maxScrollable / speedPxPerSec) * 1000);
+      return Math.max(AUTO_SCROLL_MIN_DURATION_MS, durationMs);
     },
-    [resolveAutoScrollSpeed, defaultCycleMs],
+    [speedPxPerSec],
   );
 
   const autoScrollActive = isActive && contentReady && !isTransitioning;
@@ -88,7 +73,7 @@ export default function ScrollableViewport({
   const autoScroll = useEngagementAutoScroll({
     ref: viewportRef,
     active: autoScrollActive,
-    speed: resolveAutoScrollSpeed,
+    speed: speedPxPerSec, // Fixed speed - same for all content
     loop: false,
     startDelay: AUTO_SCROLL_START_DELAY_MS,
     resumeDelay: AUTO_SCROLL_RESUME_DELAY_MS,
@@ -104,7 +89,6 @@ export default function ScrollableViewport({
   });
 
   // Simple content ready detection: just use a short delay when becoming active
-  // This replaces the complex mediaReady/contentReady stability detection
   useEffect(() => {
     if (!isActive) {
       setContentReady(false);
@@ -147,7 +131,7 @@ export default function ScrollableViewport({
   // Measure scroll duration when content is ready
   useEffect(() => {
     if (!contentReady || !isActive) {
-      setScrollDurationMs(defaultCycleMs);
+      setScrollDurationMs(AUTO_SCROLL_MIN_DURATION_MS);
       return;
     }
 
@@ -178,10 +162,8 @@ export default function ScrollableViewport({
     if (autoScroll.paused) return;
 
     const BETWEEN_SLIDE_PAUSE_MS = 450;
-    // Use a minimum duration to prevent rapid cycling
-    const effectiveDuration = Math.max(scrollDurationRef.current, AUTO_SCROLL_DEFAULT_CYCLE_MS);
     const totalDuration =
-      AUTO_SCROLL_START_DELAY_MS + effectiveDuration + BETWEEN_SLIDE_PAUSE_MS;
+      AUTO_SCROLL_START_DELAY_MS + scrollDurationRef.current + BETWEEN_SLIDE_PAUSE_MS;
     const timer = window.setTimeout(() => {
       // Double-check we're still active before completing cycle
       if (!autoScroll.paused) {
@@ -217,14 +199,15 @@ export default function ScrollableViewport({
 
       {import.meta.env.DEV && showDevOverlay && isActive && (
         <div className="absolute right-3 top-3 text-xs opacity-75 bg-zinc-800/95 p-3 rounded-lg shadow-lg border border-white/10 z-50 space-y-1 pointer-events-none">
-          <div>👁️ In View: {autoScroll.inView ? "✅" : "❌"}</div>
-          <div>⏸️ Paused: {autoScroll.paused ? "✅" : "❌"}</div>
-          <div>👤 Engaged: {autoScroll.engaged ? "✅" : "❌"}</div>
-          <div>⏲️ Resume Scheduled: {autoScroll.resumeScheduled ? "✅" : "❌"}</div>
-          <div>🖱️ Manual Scroll: {manualScrollEnabled ? "✅" : "❌"}</div>
-          <div>📊 Progress: {progressPct}%</div>
-          <div>📏 Duration: {(scrollDurationMs / 1000).toFixed(1)}s</div>
-          <div>✅ Content Ready: {contentReady ? "✅" : "❌"}</div>
+          <div>In View: {autoScroll.inView ? "Y" : "N"}</div>
+          <div>Paused: {autoScroll.paused ? "Y" : "N"}</div>
+          <div>Engaged: {autoScroll.engaged ? "Y" : "N"}</div>
+          <div>Resume: {autoScroll.resumeScheduled ? "Y" : "N"}</div>
+          <div>Manual: {manualScrollEnabled ? "Y" : "N"}</div>
+          <div>Progress: {progressPct}%</div>
+          <div>Duration: {(scrollDurationMs / 1000).toFixed(1)}s</div>
+          <div>Speed: {speedPxPerSec}px/s</div>
+          <div>Ready: {contentReady ? "Y" : "N"}</div>
         </div>
       )}
     </div>
