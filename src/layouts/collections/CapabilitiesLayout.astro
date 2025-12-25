@@ -78,7 +78,6 @@ const capitalizedSlug = capitalizeWords(entry?.slug?.replace(/-/g, " ") || "");
 ---
 
 <BaseLayout {...seoProps}>
-  <main class="flex-1">
     {/* Quote Hero Section */}
     <QuoteHero
       title={title}
@@ -150,5 +149,4 @@ const capitalizedSlug = capitalizeWords(entry?.slug?.replace(/-/g, " ") || "");
         link: "#capabilities-quote-hero",
       }}
     />
-  </main>
 </BaseLayout>

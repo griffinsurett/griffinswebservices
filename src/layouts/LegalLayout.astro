@@ -63,7 +63,6 @@ const fullTitle = `${title} — ${siteData.title}`;
 ---
 
 <BaseLayout title={fullTitle} description={description} {...baseLayoutProps}>
-  <main class="flex-1">
     <SecondaryHero
       title={title}
       description={description}
@@ -83,5 +82,4 @@ const fullTitle = `${title} — ${siteData.title}`;
       {/* Legal Content */}
       <slot />
     </article>
-  </main>
 </BaseLayout>

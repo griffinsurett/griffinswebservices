@@ -64,9 +64,9 @@ const { ...seoProps } = Astro.props;
     {/* Main app container with flex column for sticky footer */}
     <div id="app" class="min-h-screen flex flex-col">
       {/* Page content goes here */}
-      <div id="main-content" tabindex="-1">
+      <main id="main-content" class="flex-1" tabindex="-1">
         <slot />
-      </div>
+      </main>
       
       {/* Footer at bottom - now contains both consent and accessibility */}
       <Footer />
