@@ -12,10 +12,7 @@ function AccessibilityButton() {
       <Button
         variant="link"
         size="sm"
-        onClick={() => {
-          console.log('AccessibilityButton clicked, setting showModal to true');
-          setShowModal(true);
-        }}
+        onClick={() => setShowModal(true)}
         aria-label="Manage reading preferences"
         aria-expanded={showModal}
         rightIcon="lucide:book-open"

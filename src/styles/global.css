@@ -35,8 +35,8 @@
   /* ───── Neutrals ───── */
   /* Text colors */
   --color-heading: var(--color-tertiary-dark);
-  --color-text: var(--color-zinc-300);
-  --color-muted: var(--color-zinc-200);
+  --color-text: var(--color-zinc-200);
+  --color-muted: var(--color-zinc-300);
 
   /* Background surfaces */
   --color-bg: var(--color-primary-dark);
@@ -239,8 +239,8 @@ body {
   [data-theme="dark"] {
     --color-primary: var(--color-accent);
     --color-heading: var(--color-primary-light);
-    --color-text: var(--color-zinc-300);
-    --color-muted: var(--color-gray-100);
+    --color-text: var(--color-zinc-200);
+    --color-muted: var(--color-zinc-300);
     --color-bg: var(--color-primary-dark);
     --color-bg2: var(--color-secondary-dark);
     --color-bg3: var(--color-tertiary-dark);

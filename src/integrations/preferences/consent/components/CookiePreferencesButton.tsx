@@ -19,10 +19,7 @@ function CookiePreferencesButton() {
       <Button
         variant="link"
         size="sm"
-        onClick={() => {
-          console.log('CookiePreferencesButton clicked, setting showModal to true');
-          setShowModal(true);
-        }}
+        onClick={() => setShowModal(true)}
         aria-label="Manage cookie preferences"
         rightIcon="lucide:settings"
       >
