@@ -49,7 +49,7 @@ export default function ResponsiveShowcase({
   const isTablet = widthPercent >= 50 && widthPercent < 75;
 
   return (
-    <div className={`bg-text/10 rounded-lg p-4 overflow-hidden ${className}`}>
+    <div className={`bg-text/10 rounded-lg p-4 overflow-hidden ${className}`} aria-hidden="true">
       {/* Width indicator */}
       <div className="flex items-center justify-between mb-3 px-1">
         <span className="text-xs text-text/40">

@@ -55,7 +55,7 @@ export default function AIChatSimulation({
   }, [prefersReducedMotion]);
 
   return (
-    <div className={`bg-text/10 rounded-lg overflow-hidden ${className}`}>
+    <div className={`bg-text/10 rounded-lg overflow-hidden ${className}`} aria-hidden="true">
       {/* Chat header */}
       <div className="bg-bg2 px-4 py-2 flex items-center gap-3 border-b border-text/10">
         <div className="w-8 h-8 rounded-full primary-gradient flex items-center justify-center">

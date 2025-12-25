@@ -28,7 +28,7 @@ export default function GoogleListing({
   const prefersReducedMotion = useMotionPreference();
 
   return (
-    <div className={`relative bg-bg2 rounded-lg p-4 text-left border border-text/10 overflow-hidden ${className}`}>
+    <div className={`relative bg-bg2 rounded-lg p-4 text-left border border-text/10 overflow-hidden ${className}`} aria-hidden="true">
       {/* Favicon + site name + URL */}
       <div className="flex items-center gap-3 mb-2">
         <div className="w-7 h-7 rounded-full bg-bg3 flex items-center justify-center shrink-0">

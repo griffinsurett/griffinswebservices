@@ -98,6 +98,7 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
   return (
     <div
       className={`-mx-6 -mb-6 mt-4 overflow-hidden rounded-b-2xl bg-text/10 ${className}`}
+      aria-hidden="true"
     >
       {/* Labels above the graph */}
       <div className="flex justify-between px-4 pt-3 pb-2 text-xs text-text/60">

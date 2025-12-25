@@ -145,7 +145,7 @@ export default function BarGraph({
     : 0;
 
   return (
-    <div ref={barRef} className={`w-full ${className}`}>
+    <div ref={barRef} className={`w-full ${className}`} aria-hidden="true">
       <div className="flex justify-between items-center">
         <span className="text-sm text-text/80">{label}</span>
         {statValue !== undefined ? (

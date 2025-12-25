@@ -36,7 +36,7 @@ export default function SecureBrowserBar({
   }, [prefersReducedMotion]);
 
   return (
-    <div className={`bg-text/10 rounded-lg p-3 ${className}`}>
+    <div className={`bg-text/10 rounded-lg p-3 ${className}`} aria-hidden="true">
       {/* Browser bar */}
       <div className="flex items-center gap-2">
         {/* Browser dots */}

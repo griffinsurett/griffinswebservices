@@ -47,7 +47,7 @@ export default function SupportChat({ className = "" }: SupportChatProps) {
   }, [animationKey, prefersReducedMotion]);
 
   return (
-    <div className={`flex gap-4 ${className}`}>
+    <div className={`flex gap-4 ${className}`} aria-hidden="true">
       {/* Chat section */}
       <div className="flex-1 bg-text/10 rounded-lg overflow-hidden">
         {/* Chat header */}
