@@ -57,7 +57,7 @@ export default function TechStackLabel({
       data-tech-item
       data-tech-name={name}
       data-index={index}
-      className={`group flex flex-col items-center flex-shrink-0 ${className}`.trim()}
+      className={`group flex flex-col items-center flex-shrink-0 cursor-pointer ${className}`.trim()}
       role="button"
       tabIndex={0}
       aria-label={name}
@@ -67,7 +67,7 @@ export default function TechStackLabel({
       onBlur={handleMouseLeave}
       onTouchStart={handleTouch}
     >
-      <div className="relative p-2 transition-all duration-300 group-hover:scale-110 cursor-pointer select-none">
+      <div className="relative p-2 transition-all duration-300 group-hover:scale-110 select-none">
         <div
           className={`relative text-heading transition-opacity duration-300 ${
             isMobileActive ? "opacity-100" : "opacity-70 group-hover:opacity-100"
