@@ -2,7 +2,6 @@
 // TestimonialCirclesVariant.astro - Uses lightweight Astro Counter with reduced motion support
 import { Image } from "astro:assets";
 import Counter from "@/components/Counter.astro";
-import Heading from "@/components/Heading";
 import Placeholder from "@/assets/placeholder.jpg";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import { toArray } from "@/utils/array";
@@ -81,7 +80,7 @@ const resolveImage = (face: any) => {
   </div>
 
   <div class="flex flex-col items-start">
-    <Heading tagName="span" className={counterClassName}>
+    <span class={`${counterClassName} capitalize`} role="presentation">
       <Counter
         prefix={counterPrefix}
         start={counterStart}
@@ -91,10 +90,10 @@ const resolveImage = (face: any) => {
         suffix={counterSuffix}
         class="leading-none"
       />
-    </Heading>
-    <Heading tagName="p" className="small-text m-0">
+    </span>
+    <p class="small-text m-0 capitalize">
       {counterLabel}
-    </Heading>
+    </p>
   </div>
 </a>
 
