@@ -1,5 +1,5 @@
 // src/components/AnimatedExamples/GrowthGraph.tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
 import DecorativeWrapper from "@/integrations/preferences/accessibility/components/DecorativeWrapper";
 
@@ -10,6 +10,7 @@ export interface GrowthGraphProps {
 export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
   const prefersReducedMotion = useMotionPreference();
   const [progress, setProgress] = useState(prefersReducedMotion ? 100 : 0);
+  const uniqueId = useId();
   const [fillOpacity, setFillOpacity] = useState(prefersReducedMotion ? 1 : 0);
 
   useEffect(() => {
@@ -115,7 +116,7 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
         {/* Growth line with gradient stroke */}
         <defs>
           <linearGradient
-            id="growthLineGradient"
+            id={`growthLineGradient-${uniqueId}`}
             x1="0%"
             y1="0%"
             x2="100%"
@@ -125,7 +126,7 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
             <stop offset="100%" stopColor="var(--color-accent-700)" />
           </linearGradient>
           <linearGradient
-            id="growthFillGradient"
+            id={`growthFillGradient-${uniqueId}`}
             x1="0%"
             y1="0%"
             x2="0%"
@@ -144,7 +145,7 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
           </linearGradient>
           {/* Glow filter */}
           <filter
-            id="growthGlow"
+            id={`growthGlow-${uniqueId}`}
             x="-50%"
             y="-50%"
             width="200%"
@@ -161,7 +162,7 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
         {/* Filled area under the curve - fades in after line completes */}
         <path
           d={fillPathData}
-          fill="url(#growthFillGradient)"
+          fill={`url(#growthFillGradient-${uniqueId})`}
           style={{
             opacity: fillOpacity,
             transition: "opacity 0.5s ease-out",
@@ -172,11 +173,11 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
         <path
           d={pathData}
           fill="none"
-          stroke="url(#growthLineGradient)"
+          stroke={`url(#growthLineGradient-${uniqueId})`}
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
-          filter="url(#growthGlow)"
+          filter={`url(#growthGlow-${uniqueId})`}
           style={{
             strokeDasharray: pathLength,
             strokeDashoffset: pathLength - (pathLength * progress) / 100,
@@ -192,7 +193,7 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
             r="5"
             className="fill-accent"
             style={{
-              filter: "url(#growthGlow)",
+              filter: `url(#growthGlow-${uniqueId})`,
               opacity: progress < 100 ? 1 : 0.8,
             }}
           />
