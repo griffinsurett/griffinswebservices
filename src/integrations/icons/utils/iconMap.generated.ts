@@ -3,7 +3,7 @@
 
 import type { IconType } from 'react-icons';
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuContact, LuGithub, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMail, LuMinus, LuPhone, LuPlus, LuSend, LuSettings, LuSparkles } from 'react-icons/lu';
-import { FaArrowsUpDownLeftRight, FaAws, FaBolt, FaBoxOpen, FaBriefcase, FaCartShopping, FaChartLine, FaClockRotateLeft, FaCloudflare, FaCode, FaCompass, FaCss3Alt, FaDisplay, FaDumbbell, FaFeather, FaFigma, FaFileLines, FaGithub, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHtml5, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaMagnifyingGlassChart, FaMobileScreenButton, FaNodeJs, FaPalette, FaPenNib, FaPhp, FaPython, FaReact, FaRobot, FaRocket, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaUniversalAccess, FaUtensils, FaWandMagicSparkles, FaWordpress } from 'react-icons/fa6';
+import { FaArrowsUpDownLeftRight, FaAws, FaBolt, FaBoxOpen, FaBriefcase, FaCartShopping, FaChartLine, FaClockRotateLeft, FaCloudflare, FaCode, FaCompass, FaCookieBite, FaCss3Alt, FaDisplay, FaDumbbell, FaFeather, FaFigma, FaFileLines, FaGears, FaGithub, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHtml5, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaMagnifyingGlassChart, FaMobileScreenButton, FaNodeJs, FaPalette, FaPenNib, FaPhp, FaPython, FaReact, FaRobot, FaRocket, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaUniversalAccess, FaUtensils, FaWandMagicSparkles, FaWordpress } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiVercel, SiWebflow } from 'react-icons/si';
 
 export const iconMap = {
@@ -18,12 +18,14 @@ export const iconMap = {
   'fa6:cloudflare': FaCloudflare,
   'fa6:code': FaCode,
   'fa6:compass': FaCompass,
+  'fa6:cookie-bite': FaCookieBite,
   'fa6:css3-alt': FaCss3Alt,
   'fa6:display': FaDisplay,
   'fa6:dumbbell': FaDumbbell,
   'fa6:feather': FaFeather,
   'fa6:figma': FaFigma,
   'fa6:file-lines': FaFileLines,
+  'fa6:gears': FaGears,
   'fa6:github': FaGithub,
   'fa6:handshake': FaHandshake,
   'fa6:headset': FaHeadset,
@@ -34,6 +36,7 @@ export const iconMap = {
   'fa6:laptop': FaLaptop,
   'fa6:layer-group': FaLayerGroup,
   'fa6:life-ring': FaLifeRing,
+  'fa6:link': FaLink,
   'fa6:magnifying-glass-chart': FaMagnifyingGlassChart,
   'fa6:mobile-screen-button': FaMobileScreenButton,
   'fa6:node-js': FaNodeJs,
@@ -44,6 +47,7 @@ export const iconMap = {
   'fa6:react': FaReact,
   'fa6:robot': FaRobot,
   'fa6:rocket': FaRocket,
+  'fa6:scale-balanced': FaScaleBalanced,
   'fa6:screwdriver-wrench': FaScrewdriverWrench,
   'fa6:server': FaServer,
   'fa6:shield-halved': FaShieldHalved,

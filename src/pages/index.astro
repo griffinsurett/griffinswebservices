@@ -186,7 +186,7 @@ const heroDescription =
 
     <!-- Technologies -->
     <ContentRenderer
-      query={query("technologies").orderBy(sortByOrder())}
+      query={byTag("technologies", "featured").orderBy(sortByOrder())}
       variant="TechnologiesVariant"
     />
 

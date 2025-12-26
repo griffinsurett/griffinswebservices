@@ -7,12 +7,13 @@
  * Features:
  * - QuoteHero with title, description, and quote form
  * - MDX content rendering
+ * - Related technologies section
  * - Related solutions section
  */
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import QuoteHero from "@/layouts/QuoteHero.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, related } from "@/utils/query";
+import { related } from "@/utils/query";
 import { capitalizeWords } from "@/utils/string";
 import type { CollectionLayoutProps } from "./types";
 

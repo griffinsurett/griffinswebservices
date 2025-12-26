@@ -8,7 +8,7 @@
  * After preferences are saved, enables scripts via scriptManager.
  */
 
-import { useState, useMemo, useTransition, memo } from "react";
+import { useState, useMemo, useTransition, useRef, useEffect, memo } from "react";
 import Modal from "@/components/Modal";
 import { useCookieStorage } from "@/hooks/useCookieStorage";
 import { enableConsentedScripts } from "@/integrations/preferences/consent/scripts/scriptManager";
@@ -78,6 +78,30 @@ function CookiePreferencesModal({
   }, [getCookie]);
 
   const [preferences, setPreferences] = useState<CookieConsent>(initialPreferences);
+  const [canScroll, setCanScroll] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Check if scroll container has overflow
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const checkScroll = () => {
+      const hasOverflow = container.scrollHeight > container.clientHeight;
+      const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 10;
+      setCanScroll(hasOverflow && !isAtBottom);
+    };
+
+    checkScroll();
+    container.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll, { passive: true });
+
+    return () => {
+      container.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [isOpen]);
+
   const accordionItems = cookieCategories.map((category, idx) => ({
     slug: category.id,
     title: category.title,
@@ -145,12 +169,12 @@ function CookiePreferencesModal({
       isOpen={isOpen}
       onClose={onClose}
       closeButton={true}
-      className="bg-bg rounded-2xl p-8 max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl"
+      className="bg-bg rounded-2xl p-8 max-w-3xl w-full mx-4 max-h-[90vh] flex flex-col shadow-2xl"
       overlayClass="bg-black/60"
       ariaLabel="Manage cookie consent preferences"
       ssr={false}
     >
-      <div className="mb-8">
+      <div className="mb-6 shrink-0">
         <h2 className="text-3xl font-bold text-heading mb-4">
           Manage Consent Preferences
         </h2>
@@ -188,71 +212,79 @@ function CookiePreferencesModal({
         </Button>
       </div>
 
-      <Accordion
-        allowMultiple
-        className="space-y-3"
-        items={accordionItems}
-        showIndicator={false}
-        headerSlot={({ item, id, expanded }) => {
-          const category = cookieCategories.find((c) => c.id === item.slug);
-          if (!category) return null;
-          const toggleId = `${id}-toggle`;
-          return (
-            <div className="flex items-center gap-3 w-full">
-              <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 text-lg font-semibold ${
-                  expanded ? "bg-primary text-bg" : "bg-primary/20 text-accent"
-                }`}
-                aria-hidden="true"
-              >
-                <Icon
-                  icon={expanded ? "lucide:minus" : "lucide:plus"}
-                  size="sm"
-                  className="w-4 h-4"
-                />
-              </div>
-              <span className="font-semibold text-heading text-base flex-1">
-                {category.title}
-              </span>
-              <div className="shrink-0 flex items-center gap-3">
-                {category.required && (
-                  <span className="text-sm font-semibold text-primary">
-                    Always Active
-                  </span>
-                )}
-                <ToggleControl
-                  label={category.title}
-                  description={category.description}
-                  checked={preferences[category.id as keyof Omit<CookieConsent, "timestamp">]}
-                  onChange={(checked) =>
-                    handleToggle(category.id as keyof Omit<CookieConsent, "timestamp">, checked)
-                  }
-                  disabled={category.required}
-                  id={toggleId}
-                  bordered={false}
-                  className="py-0"
-                  hideText={true}
-                  size="lg"
-                />
-              </div>
-            </div>
-          );
-        }}
-      />
-
-      {accordionItems.map((item, idx) => (
+      {/* Scrollable accordion container */}
+      <div className="relative flex-1 min-h-0">
         <div
-          key={item.slug}
-          id={`cookie-category-${idx}-content`}
-          style={{ display: "none" }}
+          ref={scrollContainerRef}
+          className="overflow-y-auto max-h-[40vh] pr-2"
         >
-          <p className="text-sm text-text leading-relaxed">
-            {item.description}
-          </p>
-        </div>
-      ))}
+          <Accordion
+            allowMultiple
+            className="space-y-3"
+            items={accordionItems}
+            showIndicator={false}
+            headerSlot={({ item, id, expanded }) => {
+              const category = cookieCategories.find((c) => c.id === item.slug);
+              if (!category) return null;
+              const toggleId = `${id}-toggle`;
+              return (
+                <div className="flex items-center gap-3 w-full">
+                  <div
+                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 text-lg font-semibold ${
+                      expanded ? "bg-primary text-bg" : "bg-primary/20 text-accent"
+                    }`}
+                    aria-hidden="true"
+                  >
+                    <Icon
+                      icon={expanded ? "lucide:minus" : "lucide:plus"}
+                      size="sm"
+                      className="w-4 h-4"
+                    />
+                  </div>
+                  <span className="font-semibold text-heading text-base flex-1">
+                    {category.title}
+                  </span>
+                  <div className="shrink-0 flex items-center gap-3">
+                    {category.required && (
+                      <span className="text-sm font-semibold text-primary">
+                        Always Active
+                      </span>
+                    )}
+                    <ToggleControl
+                      label={category.title}
+                      description={category.description}
+                      checked={preferences[category.id as keyof Omit<CookieConsent, "timestamp">]}
+                      onChange={(checked) =>
+                        handleToggle(category.id as keyof Omit<CookieConsent, "timestamp">, checked)
+                      }
+                      disabled={category.required}
+                      id={toggleId}
+                      bordered={false}
+                      className="py-0"
+                      hideText={true}
+                      size="lg"
+                    />
+                  </div>
+                </div>
+              );
+            }}
+          />
 
-      <div className="flex flex-col sm:flex-row gap-3 mt-8">
+          {accordionItems.map((item, idx) => (
+            <div
+              key={item.slug}
+              id={`cookie-category-${idx}-content`}
+              style={{ display: "none" }}
+            >
+              <p className="text-sm text-text leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-4 shrink-0">
         <Button
           variant="secondary"
           onClick={handleRejectAll}

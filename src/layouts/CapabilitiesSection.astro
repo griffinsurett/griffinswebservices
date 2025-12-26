@@ -104,6 +104,13 @@ const {
   heading={faqHeading || `Common Questions About ${title || "This Capability"}`}
 />
 
+<ContentRenderer
+  query={related("technologies", "capabilities", slug)}
+  variant="TechnologiesVariant"
+  title="Technologies"
+  description={`The tools and frameworks we use to deliver ${title?.toLowerCase() || "this capability"}.`}
+/>
+
 {ctaHeading && (
   <CTASection
     id={ctaId}

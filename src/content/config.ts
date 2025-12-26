@@ -153,7 +153,9 @@ export const collections = {
   // ── technologies ──────────────────────────────────────────
   "technologies": defineCollection({
     schema: ({ image }) =>
-      baseSchema({ image }),
+      baseSchema({ image }).extend({
+        capabilities: refSchema("capabilities"),
+      }),
   }),
 
   // ── stats ──────────────────────────────────────────

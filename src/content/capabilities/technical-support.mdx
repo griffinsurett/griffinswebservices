@@ -1,36 +1,8 @@
 ---
 title: "Technical Support"
 description: "Expert technical assistance when you need it. We respond with context, reproduce issues, and ship fixes so downtime stays minimal."
-heading:
-  before: "On-call"
-  text: "technical support"
-  after: "from the builders."
-order: 14
-parent: "webmaster-services"
 icon: "fa6-solid:headset"
-solutions:
-  - e-commerce-websites
-  - custom-full-stack-applications
-highlights:
-  - title: "Dedicated Response SLAs"
-    description: "Clear severity tiers and escalation paths mean you always know when fixes will land."
-  - title: "Issue Reproduction & QA"
-    description: "We document steps, recreate issues in staging, and verify fixes before deploying."
-  - title: "Proactive Maintenance Backlog"
-    description: "Support isn’t just firefighting—we chip away at tech debt and improvements every month."
-  - title: "Clear Communication Channels"
-    description: "You get a single point of contact, async status threads, and optional huddles for critical incidents."
+parent: "webmaster-services"
+hasPage: false
+order: 4
 ---
-
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import TrustStatement from "@/components/TrustStatement.astro";
-
-<TrustStatement text="You talk directly to the developers who built your site—not a help desk." />
-
-<ContentRenderer
-  items={frontmatter.highlights}
-  variant="SplitHighlightsVariant"
-  title="Technical Support Desk"
-  heading="On-call experts who know your stack inside and out."
-  description="Responsive technical support to resolve issues quickly and keep your website running without interruption."
-/>

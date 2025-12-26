@@ -459,6 +459,13 @@
               }
             ]
           },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          },
           "email": {
             "type": "string",
             "format": "email"

@@ -11,26 +11,31 @@ solutions:
   - blog
   - e-commerce-websites
   - restaurant-websites
-highlights:
-  - title: "Technical SEO Foundation"
-    description: "We fix crawl traps, schema, and site architecture so search engines understand every page."
-  - title: "Revenue-Focused Content Strategy"
-    description: "Editorial calendars map keywords to funnels so new content attracts buyers—not just visits."
-  - title: "Authority & Link Building"
-    description: "Digital PR, partnerships, and resource outreach grow trustworthy backlinks that compound rankings."
-  - title: "Transparent Reporting"
-    description: "Monthly scorecards connect rankings, traffic, and pipeline so stakeholders see SEO’s impact."
 ---
 
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
+import CapabilitiesSection from "@/layouts/CapabilitiesSection.astro";
 
 <TrustStatement text="We focus on rankings that drive revenue—not vanity metrics that don't convert." />
 
-<ContentRenderer
-  items={frontmatter.highlights}
-  variant="SplitHighlightsVariant"
-  title="Search Engine Program"
-  heading="Revenue-focused SEO campaigns that compound visibility."
-  description="Continuous SEO audits, keyword optimization, and technical improvements to help your site climb search rankings and attract more qualified traffic."
+<CapabilitiesSection
+  slug="seo"
+  title="Search Engine Optimization"
+  capabilitiesHeading="SEO disciplines we execute across."
+  highlights={[
+    { title: "Technical SEO Foundation", description: "We fix crawl traps, schema, and site architecture so search engines understand every page." },
+    { title: "Revenue-Focused Content Strategy", description: "Editorial calendars map keywords to funnels so new content attracts buyers—not just visits." },
+    { title: "Authority & Link Building", description: "Digital PR, partnerships, and resource outreach grow trustworthy backlinks that compound rankings." },
+    { title: "Transparent Reporting", description: "Monthly scorecards connect rankings, traffic, and pipeline so stakeholders see SEO's impact." },
+  ]}
+  highlightsTitle="Search Engine Program"
+  highlightsHeading="Revenue-focused SEO campaigns that compound visibility."
+  highlightsDescription="Continuous SEO audits, keyword optimization, and technical improvements to help your site climb search rankings and attract more qualified traffic."
+  ctaTitle="Ready to rank where it matters?"
+  ctaHeading={{
+    before: "Get found by",
+    text: "customers searching for you.",
+    after: ""
+  }}
+  ctaDescription="Stop losing leads to competitors who show up first. Get an SEO strategy that drives rankings, traffic, and revenue."
 />

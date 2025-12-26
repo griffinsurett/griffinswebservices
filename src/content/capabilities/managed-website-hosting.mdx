@@ -1,38 +1,8 @@
 ---
 title: "Managed Website Hosting"
 description: "Reliable, high-performance hosting with full management. We watch uptime, capacity, and security patches so your stack stays healthy around the clock."
-heading:
-  before: "Fully managed"
-  text: "website hosting"
-  after: "with care."
-order: 8
-parent: "webmaster-services"
 icon: "fa6-solid:server"
-solutions:
-  - blog
-  - e-commerce-websites
-  - restaurant-websites
-  - custom-full-stack-applications
-highlights:
-  - title: "Redundant Cloud Infrastructure"
-    description: "Load-balanced environments with automated scaling keep traffic spikes from knocking you offline."
-  - title: "Continuous Monitoring & Alerts"
-    description: "Real-time observability dashboards and on-call alerts let us fix issues before customers notice."
-  - title: "Managed Security & Patch Cycles"
-    description: "OS updates, SSL renewals, WAF rules, and backups are handled with documented change logs."
-  - title: "Performance-First Delivery"
-    description: "Edge caching, CDN routing, and tuned runtimes keep response times low everywhere."
+parent: "webmaster-services"
+hasPage: false
+order: 1
 ---
-
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import TrustStatement from "@/components/TrustStatement.astro";
-
-<TrustStatement text="Your site lives on infrastructure we manage ourselves—no third-party runaround." />
-
-<ContentRenderer
-  items={frontmatter.highlights}
-  variant="SplitHighlightsVariant"
-  title="Managed Hosting Control Room"
-  heading="Reliable infrastructure handled by the same team that built it."
-  description="Fully managed hosting solutions with guaranteed uptime, automatic backups, and expert technical support."
-/>

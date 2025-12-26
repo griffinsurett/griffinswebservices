@@ -11,26 +11,31 @@ solutions:
   - blog
   - e-commerce-websites
   - restaurant-websites
-highlights:
-  - title: "WCAG & ADA Audits"
-    description: "Manual and automated testing surfaces violations with prioritized remediation plans."
-  - title: "Inclusive Design Remediation"
-    description: "We fix semantic structure, focus states, color contrast, and content patterns across your site."
-  - title: "Assistive Tech QA & Training"
-    description: "Screen reader, keyboard, and voice control testing ensures real users can complete key tasks."
-  - title: "Compliance Documentation"
-    description: "Accessibility statements, VPATs, and internal guides prove your commitment and keep teams aligned."
 ---
 
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
+import CapabilitiesSection from "@/layouts/CapabilitiesSection.astro";
 
-<TrustStatement text="Accessibility is built in from day one—not bolted on as an afterthought." />
+<TrustStatement text="We're developers, not lawyers—but we've done the research most agencies skip to help you meet compliance standards." />
 
-<ContentRenderer
-  items={frontmatter.highlights}
-  variant="SplitHighlightsVariant"
-  title="Accessibility Program"
-  heading="Inclusive experiences that satisfy WCAG, ADA, and legal standards."
-  description="We audit, remediate, and monitor your site so it stays inclusive and compliant—covering semantic structure, keyboard navigation, color contrast, assistive tech support, required policies, and multilingual/language-access features."
+<CapabilitiesSection
+  slug="accessibility-compliance"
+  title="Accessibility & Compliance"
+  capabilitiesHeading="Compliance areas we cover."
+  highlights={[
+    { title: "WCAG & ADA Audits", description: "Manual and automated testing surfaces violations with prioritized remediation plans." },
+    { title: "Inclusive Design Remediation", description: "We fix semantic structure, focus states, color contrast, and content patterns across your site." },
+    { title: "Assistive Tech QA & Training", description: "Screen reader, keyboard, and voice control testing ensures real users can complete key tasks." },
+    { title: "Compliance Documentation", description: "Accessibility statements, VPATs, and internal guides prove your commitment and keep teams aligned." },
+  ]}
+  highlightsTitle="Accessibility Program"
+  highlightsHeading="Inclusive experiences that satisfy WCAG, ADA, and legal standards."
+  highlightsDescription="We audit, remediate, and monitor your site so it stays inclusive and compliant—covering semantic structure, keyboard navigation, color contrast, assistive tech support, required policies, and multilingual/language-access features."
+  ctaTitle="Ready to make your site accessible to everyone?"
+  ctaHeading={{
+    before: "Build experiences",
+    text: "everyone can use.",
+    after: ""
+  }}
+  ctaDescription="Avoid legal risk and reach more customers with a site that meets accessibility standards and privacy regulations."
 />

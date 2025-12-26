@@ -452,6 +452,13 @@
             }
           ]
         },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
         "highlight": {
           "type": "boolean"
         },

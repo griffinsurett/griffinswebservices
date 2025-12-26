@@ -312,6 +312,8 @@ export const baseSchema = ({ image }: { image: Function }) =>
     // Parent reference for content hierarchy (slug of parent item in same collection)
     parent: z.union([z.string(), z.array(z.string())]).optional(),
     heading: headingSchema.optional(),
+    // Tags for filtering (e.g., "featured")
+    tags: z.array(z.string()).default([]),
   });
 
 export type BaseData = z.infer<ReturnType<typeof baseSchema>>;
