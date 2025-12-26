@@ -11,7 +11,6 @@ import type { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from 'reac
 import { Children } from 'react';
 import PrimaryButton from './variants/PrimaryButton';
 import SecondaryButton from './variants/SecondaryButton';
-import GhostButton from './variants/GhostButton';
 import LinkButton from './variants/LinkButton';
 import TertiaryButton from './variants/TertiaryButton';
 import ArrowLinkButton from './variants/ArrowLinkButton';
@@ -227,7 +226,6 @@ export const ButtonBase = ({
 const VARIANT_MAP = {
   primary: PrimaryButton,
   secondary: SecondaryButton,
-  ghost: GhostButton,
   link: LinkButton,
   menuItemButton: MenuItemButton,
   tertiary: TertiaryButton,

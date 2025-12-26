@@ -11,5 +11,26 @@ solutions:
   - blog
   - e-commerce-websites
   - restaurant-websites
+highlights:
+  - title: "Technical SEO Foundation"
+    description: "We fix crawl traps, schema, and site architecture so search engines understand every page."
+  - title: "Revenue-Focused Content Strategy"
+    description: "Editorial calendars map keywords to funnels so new content attracts buyers—not just visits."
+  - title: "Authority & Link Building"
+    description: "Digital PR, partnerships, and resource outreach grow trustworthy backlinks that compound rankings."
+  - title: "Transparent Reporting"
+    description: "Monthly scorecards connect rankings, traffic, and pipeline so stakeholders see SEO’s impact."
 ---
-Continuous SEO audits, keyword optimization, and technical improvements to help your site climb search rankings and attract more qualified traffic.
+
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+
+<TrustStatement text="We focus on rankings that drive revenue—not vanity metrics that don't convert." />
+
+<ContentRenderer
+  items={frontmatter.highlights}
+  variant="SplitHighlightsVariant"
+  title="Search Engine Program"
+  heading="Revenue-focused SEO campaigns that compound visibility."
+  description="Continuous SEO audits, keyword optimization, and technical improvements to help your site climb search rankings and attract more qualified traffic."
+/>

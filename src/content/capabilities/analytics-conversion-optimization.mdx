@@ -11,5 +11,26 @@ solutions:
   - blog
   - landing-pages
   - e-commerce-websites
+highlights:
+  - title: "Clean Tracking Implementation"
+    description: "We deploy GTM, server-side tagging, and consent-aware scripts so every event fires reliably."
+  - title: "Unified Reporting Dashboards"
+    description: "Marketing, sales, and leadership see the same KPIs with tailored dashboards tied to revenue."
+  - title: "Experiment-Ready Funnels"
+    description: "Conversion goals, cohorts, and attribution paths are mapped so tests show exactly what moved the needle."
+  - title: "Privacy & Compliance Guardrails"
+    description: "Data retention, consent capture, and governance workflows keep your analytics stack compliant."
 ---
-We install reliable analytics pipelines, unify dashboards, and instrument funnels so you can tie every visitor, campaign, and experiment back to real outcomes.
+
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+
+<TrustStatement text="We set up tracking that actually works—clean data, no guesswork." />
+
+<ContentRenderer
+  items={frontmatter.highlights}
+  variant="SplitHighlightsVariant"
+  title="Analytics & Attribution"
+  heading="Know exactly which campaigns drive revenue."
+  description="We install reliable analytics pipelines, unify dashboards, and instrument funnels so you can tie every visitor, campaign, and experiment back to real outcomes."
+/>

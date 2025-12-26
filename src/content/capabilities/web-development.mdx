@@ -2,8 +2,7 @@
 title: "Web Development"
 description: "We design and develop custom websites and web applications that look great, load fast, and scale with your business. We handle the entire build—so everything works together seamlessly."
 heading:
-  before: "Senior"
-  text: "web development"
+  text: "Web development"
   after: "across the stack."
 order: 2
 icon: "fa6-solid:code"
@@ -17,6 +16,26 @@ solutions:
   - e-commerce-websites
   - restaurant-websites
   - custom-full-stack-applications
+highlights:
+  - title: "Clean, Maintainable Code"
+    description: "Organized, well-documented code that's easy to update, extend, and hand off when needed."
+  - title: "Design-to-Development"
+    description: "Pixel-perfect implementation of your vision—we translate designs into functional, responsive websites and web apps."
+  - title: "End-to-End Architecture"
+    description: "From design systems to database schemas, we plan the full stack so every layer works together."
+  - title: "Integration-Ready APIs"
+    description: "Custom APIs, third-party integrations, and middleware keep data flowing between the tools you rely on."
 ---
 
-We architect, build, and ship maintainable codebases spanning front-end, back-end, and full-stack needs—covering API design, integrations, hosting, testing, and DevOps so launches are smooth and future iterations stay predictable.
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+
+<TrustStatement text="Built by developers who understand both the code and the business goals behind it." />
+
+<ContentRenderer
+  items={frontmatter.highlights}
+  variant="SplitHighlightsVariant"
+  title="Web Engineering Practice"
+  heading="Full-stack development tailored to your roadmap."
+  description="We architect, build, and ship maintainable codebases spanning front-end, back-end, and full-stack needs—covering API design, integrations, and clean implementation so your website works exactly as designed."
+/>

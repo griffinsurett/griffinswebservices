@@ -178,6 +178,14 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         features: z.array(z.string()).default([]),
+        highlights: z
+          .array(
+            z.object({
+              title: z.string(),
+              description: z.string(),
+            }),
+          )
+          .default([]),
         solutions: refSchema("solutions"),
       }),
   }),

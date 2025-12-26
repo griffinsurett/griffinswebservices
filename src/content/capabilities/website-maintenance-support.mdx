@@ -13,5 +13,26 @@ solutions:
   - e-commerce-websites
   - restaurant-websites
   - custom-full-stack-applications
+highlights:
+  - title: "Planned Update Cycles"
+    description: "We handle CMS and dependency updates plus compatibility checks on a predictable cadence."
+  - title: "Content & UI Requests"
+    description: "Need a new section or copy tweak? Submit it and we scope, design, and ship without chaos."
+  - title: "Security & Backup Coverage"
+    description: "Malware scans, automated backups, and restore drills protect your site from surprises."
+  - title: "Release Documentation"
+    description: "Every change ships with notes and QA evidence so stakeholders know exactly what changed."
 ---
-On-Demand ASAP website maintenance including updates, backups, and technical support to ensure your site stays secure and operational.
+
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+
+<TrustStatement text="Updates ship on schedule, not when something breaks." />
+
+<ContentRenderer
+  items={frontmatter.highlights}
+  variant="SplitHighlightsVariant"
+  title="Maintenance & Support Desk"
+  heading="Everyday updates handled without fire drills."
+  description="On-Demand ASAP website maintenance including updates, backups, and technical support to ensure your site stays secure and operational."
+/>

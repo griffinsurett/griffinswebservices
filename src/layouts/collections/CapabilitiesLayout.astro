@@ -113,8 +113,6 @@ const capitalizedSlug = capitalizeWords(entry?.slug?.replace(/-/g, " ") || "");
     {/* MDX Content */}
     {Content && <Content />}
 
-    <DoubleCard />
-
     {/* Related Solutions that use this capability */}
     <ContentRenderer
       query={related("solutions", "capabilities", currentSlug)}

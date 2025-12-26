@@ -13,6 +13,26 @@ icon: "fa6-solid:truck-fast"
 solutions:
   - blog
   - e-commerce-websites
+highlights:
+  - title: "Content & Asset Inventory"
+    description: "We catalog every page, media asset, and integration so nothing disappears mid-migration."
+  - title: "SEO-Safe Redirect Mapping"
+    description: "URL mapping, canonical cleanup, and search console prep protect rankings on launch day."
+  - title: "Data & Feature Parity"
+    description: "Forms, eCommerce data, and custom workflows are migrated and tested so operations keep humming."
+  - title: "Cutover & Hypercare Support"
+    description: "We rehearse launch steps, monitor live traffic, and stay on-call until the dust settles."
 ---
 
-Expert website migration services to move your site to a new platform, host, or technology stack without losing data or SEO rankings.
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+
+<TrustStatement text="We've migrated dozens of sites—your rankings and data stay intact." />
+
+<ContentRenderer
+  items={frontmatter.highlights}
+  variant="SplitHighlightsVariant"
+  title="Migration Playbooks"
+  heading="Platform moves that protect rankings and operations."
+  description="Expert website migration services to move your site to a new platform, host, or technology stack without losing data or SEO rankings."
+/>

@@ -13,6 +13,26 @@ solutions:
   - landing-pages
   - e-commerce-websites
   - restaurant-websites
+highlights:
+  - title: "Modular Design Systems"
+    description: "Reusable sections and design tokens keep every new page on-brand while letting campaigns launch quickly."
+  - title: "Future-Ready Scalability"
+    description: "Composable architectures make it simple to add products, pages, or integrations without replatforming."
+  - title: "Flexible User Experiences"
+    description: "Copy, hierarchy, and motion are tuned for each buyer journey so prospects always know the next step."
+  - title: "Integrated Collaboration"
+    description: "Design, content, and engineering teams work from the same system so approvals stay fast and handoffs clean."
 ---
 
-We design modern, conversion-focused websites that pair editorial polish with research-backed UX flows, motion systems, and content choreography so prospects know exactly what you do, why it matters, and how to take the next step.
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+
+<TrustStatement text="Every design is custom—built around your brand, your goals, and your customers." />
+
+<ContentRenderer
+  items={frontmatter.highlights}
+  variant="SplitHighlightsVariant"
+  title="Web Design System"
+  heading="Modular web design built for modern business."
+  description="We design modern, conversion-focused websites that pair editorial polish with research-backed UX flows, motion systems, and content choreography so prospects know exactly what you do, why it matters, and how to take the next step."
+/>

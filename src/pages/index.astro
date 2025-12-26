@@ -5,7 +5,7 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import { query, sortByOrder } from "@/utils/query";
 import TextHero from "@/layouts/TextHero.astro";
 import { siteData } from "@/content/siteData";
-import { roots } from "@/utils/query/snippets";
+import { roots, byTag } from "@/utils/query/snippets";
 import CTASection from "@/layouts/CTASection.astro";
 import Video from "@/components/Video/Video.astro";
 import PortfolioShowcaseSection from "@/layouts/PortfolioShowcaseSection.astro";
@@ -112,7 +112,7 @@ const heroDescription =
 
     <!-- Website Benefits -->
     <ContentRenderer
-      query={query("benefits").orderBy(sortByOrder())}
+      query={byTag("benefits", "featured").orderBy(sortByOrder())}
       variant="BenefitsVariant"
       columns={2}
       gap="lg"

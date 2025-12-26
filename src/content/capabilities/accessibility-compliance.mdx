@@ -11,5 +11,26 @@ solutions:
   - blog
   - e-commerce-websites
   - restaurant-websites
+highlights:
+  - title: "WCAG & ADA Audits"
+    description: "Manual and automated testing surfaces violations with prioritized remediation plans."
+  - title: "Inclusive Design Remediation"
+    description: "We fix semantic structure, focus states, color contrast, and content patterns across your site."
+  - title: "Assistive Tech QA & Training"
+    description: "Screen reader, keyboard, and voice control testing ensures real users can complete key tasks."
+  - title: "Compliance Documentation"
+    description: "Accessibility statements, VPATs, and internal guides prove your commitment and keep teams aligned."
 ---
-We audit, remediate, and monitor your site so it stays inclusive and compliant—covering semantic structure, keyboard navigation, color contrast, assistive tech support, required policies, and multilingual/language-access features.
+
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+
+<TrustStatement text="Accessibility is built in from day one—not bolted on as an afterthought." />
+
+<ContentRenderer
+  items={frontmatter.highlights}
+  variant="SplitHighlightsVariant"
+  title="Accessibility Program"
+  heading="Inclusive experiences that satisfy WCAG, ADA, and legal standards."
+  description="We audit, remediate, and monitor your site so it stays inclusive and compliant—covering semantic structure, keyboard navigation, color contrast, assistive tech support, required policies, and multilingual/language-access features."
+/>

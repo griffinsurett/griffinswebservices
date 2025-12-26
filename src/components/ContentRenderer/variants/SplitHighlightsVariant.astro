@@ -20,11 +20,6 @@ interface Props extends BaseVariantProps {
   columns?: ColumnCount;
   ctaHref?: string;
   ctaText?: string;
-  /**
-   * Controls whether the SectionHeader description stays under the heading
-   * (`header`) or moves to the supporting column (`split`).
-   */
-  descriptionPlacement?: "split" | "header";
 }
 
 const {
@@ -40,21 +35,13 @@ const {
   showButtonSection = false,
   ctaHref,
   ctaText,
-  descriptionPlacement = "split",
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
 const sectionTitle = title ?? collectionTitle;
 const showHeader = Boolean(sectionTitle || heading);
-const hasIntroSlot = Astro.slots.has("default");
-const useSplitDescription = descriptionPlacement === "split";
 const hasDescription = typeof description === "string" && description.trim().length > 0;
-
-const showIntroColumn = hasIntroSlot || (useSplitDescription && hasDescription);
-const headerDescription =
-  useSplitDescription && (hasIntroSlot || hasDescription) ? undefined : description;
-const introCopy = !hasIntroSlot && useSplitDescription ? description : undefined;
-const showTopRegion = showHeader || showIntroColumn;
+const showTopRegion = showHeader || hasDescription;
 
 const columnClasses: Record<ColumnCount, string> = {
   1: "grid-cols-1",
@@ -109,17 +96,15 @@ const getItemEyebrow = (record: Record<string, any>) =>
           <SectionHeader
             title={sectionTitle}
             heading={heading}
-            description={headerDescription}
             className="space-y-4 text-left"
             headingClassName="h2 text-4xl lg:text-5xl leading-tight"
-            descriptionClassName="text-lg text-muted"
             titleVisibleRootMargin={0}
           />
         )}
 
-        {showIntroColumn && (
+        {hasDescription && (
           <div class="text-lg text-muted leading-relaxed space-y-5">
-            {hasIntroSlot ? <slot /> : introCopy}
+            <p>{description}</p>
           </div>
         )}
       </div>
