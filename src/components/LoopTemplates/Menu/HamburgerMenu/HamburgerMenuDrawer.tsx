@@ -101,13 +101,22 @@ export default function MobileMenuDrawer({
   // Direct click listener for all clicks after component mounts
   // This works for both useExternalTrigger and clientClickHandlerKey cases
   useEffect(() => {
+    console.log('[MenuDrawer] Direct click effect', { useExternalTrigger, triggerId });
     if (!useExternalTrigger) return;
     const button = document.getElementById(triggerId);
+    console.log('[MenuDrawer] Button found:', !!button, triggerId);
     if (!button) return;
 
-    const handleClick = () => toggleMenuRef.current();
+    const handleClick = () => {
+      console.log('[MenuDrawer] Direct click handler fired');
+      toggleMenuRef.current();
+    };
     button.addEventListener("click", handleClick);
-    return () => button.removeEventListener("click", handleClick);
+    console.log('[MenuDrawer] Click listener attached');
+    return () => {
+      console.log('[MenuDrawer] Click listener removed');
+      button.removeEventListener("click", handleClick);
+    };
   }, [triggerId, useExternalTrigger]);
 
   const handleNavigate = () => {
