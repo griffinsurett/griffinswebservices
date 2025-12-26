@@ -81,31 +81,38 @@ export default function MobileMenuDrawer({
     syncTriggerState(isOpen);
   }, [isOpen, syncTriggerState]);
 
+  // Track whether the clientClickHandler handled the current click
+  const handledByClientClick = useRef(false);
+
   useEffect(() => {
     if (!useExternalTrigger) return;
     const button = document.getElementById(triggerId);
     if (!button) return;
 
-    const handleClick = () => toggleMenu();
+    const handleClick = () => {
+      // Skip if clientClickHandler already handled this click
+      if (handledByClientClick.current) {
+        handledByClientClick.current = false;
+        return;
+      }
+      toggleMenu();
+    };
     button.addEventListener("click", handleClick);
 
     return () => button.removeEventListener("click", handleClick);
   }, [triggerId, toggleMenu, useExternalTrigger]);
 
   useEffect(() => {
-    if (!clientClickHandlerKey) {
-      return;
-    }
+    if (!clientClickHandlerKey) return;
 
     const handler = () => {
+      handledByClientClick.current = true;
       toggleMenu();
       return true;
     };
 
     registerClientClickHandler(clientClickHandlerKey, handler);
-    return () => {
-      unregisterClientClickHandler(clientClickHandlerKey, handler);
-    };
+    return () => unregisterClientClickHandler(clientClickHandlerKey, handler);
   }, [clientClickHandlerKey, toggleMenu]);
 
   const handleNavigate = () => {
