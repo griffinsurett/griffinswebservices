@@ -1,6 +1,7 @@
 import type { ClientDirective } from 'astro';
 import type { EventName } from './shared/eventHandlers';
 import { eventMatchesSelector } from './shared/eventHandlers';
+import { waitForHydrationReady } from './shared/hydrationHelpers';
 
 type DirectiveConfig =
   | boolean
@@ -19,7 +20,7 @@ interface NormalizedOptions {
   includeFocus: boolean;
 }
 
-const DEFAULT_EVENTS: EventName[] = ['pointerover', 'mouseover'];
+const DEFAULT_EVENTS: EventName[] = ['pointerover', 'mouseover', 'touchstart'];
 
 const DEFAULTS: NormalizedOptions = {
   events: DEFAULT_EVENTS,
@@ -65,12 +66,55 @@ const hoverDirective: ClientDirective = (load, options, el) => {
   const eventTarget: EventTarget = selector && doc ? doc : el;
 
   let hydrated = false;
+  let hydrating = false;
+  let pendingClick: MouseEvent | null = null;
+
+  // Capture clicks during hydration so we can replay them after
+  const captureClick = (event: Event) => {
+    if (hydrating && event instanceof MouseEvent && eventMatchesSelector(event, selector)) {
+      pendingClick = event;
+    }
+  };
+
+  // Replay a captured click event
+  const replayClick = (target: EventTarget) => {
+    if (!pendingClick) return;
+    const cloned = new MouseEvent('click', {
+      bubbles: pendingClick.bubbles,
+      cancelable: pendingClick.cancelable,
+      composed: pendingClick.composed,
+      clientX: pendingClick.clientX,
+      clientY: pendingClick.clientY,
+      button: pendingClick.button,
+      buttons: pendingClick.buttons,
+    });
+    pendingClick = null;
+    setTimeout(() => target.dispatchEvent(cloned), 0);
+  };
+
   const hydrateOnDemand = async (event: Event) => {
-    if (hydrated || !eventMatchesSelector(event, selector)) return;
-    hydrated = true;
+    if (hydrated || hydrating || !eventMatchesSelector(event, selector)) return;
+
+    hydrating = true;
+
+    // If triggered by touch, capture any clicks that happen during hydration
+    const isTouchTrigger = event.type === 'touchstart';
+    if (isTouchTrigger) {
+      eventTarget.addEventListener('click', captureClick, { capture: true, signal: controller.signal });
+    }
+
     const hydrate = await load();
     controller.abort();
     await hydrate();
+    await waitForHydrationReady();
+
+    hydrated = true;
+    hydrating = false;
+
+    // Replay captured click if we have one
+    if (pendingClick && event.target instanceof EventTarget) {
+      replayClick(event.target);
+    }
   };
 
   for (const eventName of events) {

@@ -1,15 +1,12 @@
 // src/components/HamburgerMenuDrawer.tsx
 /**
- * Mobile Menu Drawer Template
+ * Mobile Menu Drawer
  *
- * Manages open/close state for mobile menu with checkbox-based hamburger button.
+ * Self-contained mobile menu with hamburger button and modal drawer.
+ * Hydrates on hover/touch for instant interactivity.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  registerClientClickHandler,
-  unregisterClientClickHandler,
-} from "@/integrations/client-directives/shared/clientClickBridge";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import MobileMenuItem from "@/components/LoopComponents/Menu/MobileMenuItem";
 import HamburgerButton from "@/components/Menu/HamburgerButton";
@@ -19,9 +16,6 @@ interface MobileMenuDrawerProps {
   className?: string;
   hamburgerTransform?: boolean;
   closeButton?: boolean;
-  triggerId?: string;
-  useExternalTrigger?: boolean;
-  clientClickHandlerKey?: string;
 }
 
 interface MenuLevel {
@@ -34,16 +28,11 @@ export default function MobileMenuDrawer({
   className = "",
   hamburgerTransform = true,
   closeButton = false,
-  triggerId = "mobile-menu-toggle",
-  useExternalTrigger = false,
-  clientClickHandlerKey,
 }: MobileMenuDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [menuStack, setMenuStack] = useState<MenuLevel[]>(() => [
     { title: "Main Menu", items },
   ]);
-  const latestTriggerId = useRef(triggerId);
-  latestTriggerId.current = triggerId;
 
   const resetMenuStack = useCallback(() => {
     setMenuStack([{ title: "Main Menu", items }]);
@@ -53,16 +42,6 @@ export default function MobileMenuDrawer({
     resetMenuStack();
   }, [resetMenuStack]);
 
-  const syncTriggerState = useCallback(
-    (next: boolean) => {
-      const button = document.getElementById(latestTriggerId.current);
-      if (button) {
-        button.setAttribute("aria-expanded", String(next));
-      }
-    },
-    []
-  );
-
   const toggleMenu = useCallback(
     (forced?: boolean) => {
       setIsOpen((prev) => {
@@ -70,80 +49,11 @@ export default function MobileMenuDrawer({
         if (!next) {
           resetMenuStack();
         }
-        syncTriggerState(next);
         return next;
       });
     },
-    [resetMenuStack, syncTriggerState]
+    [resetMenuStack]
   );
-
-  useEffect(() => {
-    syncTriggerState(isOpen);
-  }, [isOpen, syncTriggerState]);
-
-  // Stable ref to toggleMenu to avoid effect re-runs
-  const toggleMenuRef = useRef(toggleMenu);
-  toggleMenuRef.current = toggleMenu;
-
-  // Register handler for client:click directive (handles the initial hydration click)
-  useEffect(() => {
-    if (!clientClickHandlerKey) return;
-
-    const handler = () => {
-      toggleMenuRef.current();
-      return true;
-    };
-
-    registerClientClickHandler(clientClickHandlerKey, handler);
-    return () => unregisterClientClickHandler(clientClickHandlerKey, handler);
-  }, [clientClickHandlerKey]);
-
-  // Track component mount/unmount
-  useEffect(() => {
-    console.log('[MenuDrawer] Component MOUNTED');
-    return () => {
-      console.log('[MenuDrawer] Component UNMOUNTED');
-    };
-  }, []);
-
-  // Direct click listener for all clicks after component mounts
-  // This works for both useExternalTrigger and clientClickHandlerKey cases
-  useEffect(() => {
-    console.log('[MenuDrawer] Direct click effect running', { useExternalTrigger, triggerId });
-    if (!useExternalTrigger) {
-      console.log('[MenuDrawer] useExternalTrigger is false, skipping listener');
-      return;
-    }
-
-    const button = document.getElementById(triggerId);
-    console.log('[MenuDrawer] Button element:', button ? 'found' : 'NOT FOUND', triggerId);
-    if (!button) {
-      console.warn('[MenuDrawer] WARNING: Button not found, cannot attach click listener');
-      return;
-    }
-
-    const handleClick = (e: Event) => {
-      console.log('[MenuDrawer] Direct click handler fired at', new Date().toISOString());
-      toggleMenuRef.current();
-    };
-
-    button.addEventListener("click", handleClick);
-    console.log('[MenuDrawer] Click listener ATTACHED to button');
-
-    // Log button state periodically to see if it's still in DOM
-    const checkButtonInterval = setInterval(() => {
-      const stillExists = document.getElementById(triggerId);
-      if (!stillExists) {
-        console.warn('[MenuDrawer] WARNING: Button no longer in DOM!');
-      }
-    }, 5000);
-
-    return () => {
-      console.log('[MenuDrawer] Click listener REMOVED from button');
-      clearInterval(checkButtonInterval);
-      button.removeEventListener("click", handleClick);
-    };
-  }, [triggerId, useExternalTrigger]);
 
   const handleNavigate = () => {
     toggleMenu(false);
@@ -165,15 +75,12 @@ export default function MobileMenuDrawer({
 
   return (
     <>
-      {!useExternalTrigger && (
-        <HamburgerButton
-          isOpen={isOpen}
-          onChange={(state: boolean | undefined) => toggleMenu(state)}
-          hamburgerTransform={hamburgerTransform}
-          ariaLabel={isOpen ? "Close menu" : "Open menu"}
-          id={triggerId}
-        />
-      )}
+      <HamburgerButton
+        isOpen={isOpen}
+        onChange={() => toggleMenu()}
+        hamburgerTransform={hamburgerTransform}
+        ariaLabel={isOpen ? "Close menu" : "Open menu"}
+      />
 
       {/* Mobile Menu Modal */}
       <Modal

@@ -3,17 +3,13 @@
 /**
  * Menu Variant - Responsive Navigation Menu
  *
- * Now expects items to be passed with potential parent relationships.
  * Builds tree structure from flat items.
- *
- * Mobile menu renders with the interactive drawer component so the menu
- * opens instantly with no extra click or event replaying.
+ * Mobile menu hydrates on hover/touch for instant interactivity.
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import MenuList from "@/components/LoopTemplates/Menu/MenuList.astro";
 import HamburgerMenuDrawer from "@/components/LoopTemplates/Menu/HamburgerMenu/HamburgerMenuDrawer";
-import StaticHamburgerButton from "@/components/Menu/StaticHamburgerButton.astro";
 import { buildMenuTree } from "@/utils/menuQueries";
 import { toArray } from "@/utils/array";
 
@@ -48,7 +44,6 @@ const showMobile = mode === "responsive" || mode === "hamburger-only";
 // Responsive visibility classes
 const desktopClasses = mode === "responsive" ? "hidden md:block" : "";
 const mobileClasses = showMobile && mode === "responsive" ? "md:hidden" : "";
-const buttonId = id ? `${id}-menu-toggle` : "mobile-menu-toggle";
 
 ---
 
@@ -64,16 +59,12 @@ const buttonId = id ? `${id}-menu-toggle` : "mobile-menu-toggle";
   {
     showMobile && (
       <div class={`menu-mobile ${mobileClasses}`}>
-        <StaticHamburgerButton id={buttonId} />
         <HamburgerMenuDrawer
-          client:click={{ selector: `#${buttonId}`, handlerKey: buttonId }}
+          client:hover
           items={menuTree}
           className="menu-mobile-inner"
           closeButton={closeButton}
           hamburgerTransform={hamburgerTransform}
-          triggerId={buttonId}
-          useExternalTrigger
-          clientClickHandlerKey={buttonId}
         />
       </div>
     )
