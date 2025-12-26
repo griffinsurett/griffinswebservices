@@ -17,7 +17,7 @@ solutions:
 
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/CapabilitiesSection.astro";
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import WrittenLayout from "@/layouts/WrittenLayout.astro";
 
 <TrustStatement text="Every design is custom—built around your brand, your goals, and your customers." />
 
@@ -41,16 +41,10 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
     after: ""
   }}
   ctaDescription="Stop blending in with template-based competitors. Get a custom design system that makes your business look as good online as you are in person."
-/>
-
-<ContentRenderer
-  variant="WrittenVariant"
+>
+  <WrittenLayout
   title="Strategy-First Web Design"
-  heading={{
-    before: "The process behind",
-    text: "polished, performant web experiences",
-    after: "that scale with your roadmap."
-  }}
+  heading="The process behind polished, performant web experiences that scale with your roadmap."
   description="Our written playbooks capture the research, testing, and collaboration rituals we use on every engagement so you always know how we arrive at design decisions."
   tocTitle="Table of Contents"
 >
@@ -117,4 +111,5 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
       <li><strong>Launch playbook:</strong> QA checklist covering accessibility, performance budgets, analytics tagging, and stakeholder sign-offs.</li>
     </ul>
   </section>
-</ContentRenderer>
+</WrittenLayout>
+</CapabilitiesSection>

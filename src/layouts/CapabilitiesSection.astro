@@ -111,6 +111,8 @@ const {
   description={`The tools and frameworks we use to deliver ${title?.toLowerCase() || "this capability"}.`}
 />
 
+<slot />
+
 {ctaHeading && (
   <CTASection
     id={ctaId}

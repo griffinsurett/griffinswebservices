@@ -1,25 +1,27 @@
 ---
-// src/components/ContentRenderer/variants/WrittenVariant.astro
 /**
  * Long-form written content layout with a synchronized table of contents.
- * Accepts standard ContentRenderer props plus slot-based HTML content.
  * Designed for capability detail pages where each heading should receive
  * an automatic anchor for deep-linking.
  */
 
-import type { BaseVariantProps } from "../ContentRenderer.types";
 import SectionHeader from "@/components/SectionHeader.astro";
 import TableOfContents from "@/components/TableOfContents/TableOfContents";
 
-interface Props extends BaseVariantProps {
+interface Props {
+  id?: string;
+  className?: string;
+  title?: string;
+  heading?: string;
+  description?: string;
   tocTitle?: string;
   headingSelector?: string;
   stickyOffset?: number;
   contentCardClassName?: string;
+  showHeadingSection?: boolean;
 }
 
 const {
-  items = [],
   title,
   heading,
   description,
@@ -30,16 +32,9 @@ const {
   stickyOffset = 150,
   contentCardClassName = "",
   showHeadingSection = true,
-} = Astro.props as Props;
+} = Astro.props;
 
-const hasProvidedItems = Array.isArray(items) && items.length > 0;
-const hasSlotContent = Astro.slots?.has("default");
-
-if (!hasProvidedItems && !hasSlotContent) {
-  return;
-}
-
-const sectionId = id ?? "written-variant";
+const sectionId = id ?? "written-layout";
 const contentId = `${sectionId}-content`;
 const showHeader =
   showHeadingSection !== false && Boolean(title || heading || description);
@@ -59,9 +54,9 @@ const showHeader =
     )}
 
     <div class="grid gap-8 lg:gap-12 lg:grid-cols-[minmax(240px,0.38fr)_1fr] relative">
-      <div class="space-y-6 sticky-section">
+      <div class="sticky-section lg:self-start space-y-6">
         <TableOfContents
-          client:load
+          client:visible
           contentId={contentId}
           title={tocTitle}
           headingSelector={headingSelector}

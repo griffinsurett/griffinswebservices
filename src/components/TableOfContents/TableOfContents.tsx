@@ -45,7 +45,6 @@ export default function TableOfContents({
   const navId = id ?? `${contentId}-toc`;
   const listId = `${navId}-list`;
 
-  const [items, setItems] = useState<TocItem[]>([]);
   const [groups, setGroups] = useState<TocGroup[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
@@ -87,7 +86,6 @@ export default function TableOfContents({
       }
     });
 
-    setItems(headingNodes);
     setGroups(grouped);
 
     if (headingNodes.length > 0) {
@@ -191,31 +189,21 @@ export default function TableOfContents({
     scrollToHeading(itemId);
   };
 
-  const itemCountLabel =
-    items.length === 0
-      ? ""
-      : items.length === 1
-        ? "1 section"
-        : `${items.length} sections`;
-
   return (
     <nav
       id={navId}
-      className={`table-of-contents-card ${className}`.trim()}
+      className={`card-bg border border-white/10 rounded-3xl p-6 shadow-2xl ${className}`.trim()}
       aria-label={title}
     >
-      <div className="table-of-contents-header">
-        <p className="table-of-contents-label">{title}</p>
-        <span className="table-of-contents-count" aria-live="polite">
-          {itemCountLabel}
-        </span>
+      <div className="flex items-center justify-center gap-4">
+        <p className="text-[0.7rem] uppercase tracking-[0.3em] font-semibold dark:text-white/70 light:text-black/70">{title}</p>
       </div>
 
-      <ol id={listId} className="table-of-contents-list">
+      <ol id={listId} className="mt-4 space-y-3 list-none p-0 m-0">
         {groups.length === 0 ? (
-          <li className="table-of-contents-placeholder">{emptyLabel}</li>
+          <li className="py-3 text-sm text-muted">{emptyLabel}</li>
         ) : (
-          groups.map((group, index) => {
+          groups.map((group) => {
             const groupId = group.parent.id;
             const isOpen = Boolean(openGroups[groupId]);
             const parentActive =
@@ -224,38 +212,36 @@ export default function TableOfContents({
             const childListId = `${groupId}-children`;
 
             return (
-              <li key={groupId} className="table-of-contents-item">
+              <li key={groupId} className="rounded-2xl list-none">
                 <button
                   type="button"
-                  className={`toc-parent-trigger ${parentActive ? "is-active" : ""}`}
+                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-left text-sm md:text-base no-underline transition-colors duration-200 hover:text-primary focus-visible:text-heading ${parentActive ? "text-accent font-semibold" : "text-white/80"}`}
                   aria-expanded={isOpen}
                   aria-controls={childListId}
                   onClick={(event) => handleParentClick(event, groupId)}
                 >
-                  <span className="toc-label">{group.parent.text}</span>
-                  <span className={`toc-caret ${isOpen ? "is-open" : ""}`} aria-hidden="true">
-                    ▾
-                  </span>
+                  <span className="flex-1 text-left leading-tight">{group.parent.text}</span>
                 </button>
 
                 {group.children.length > 0 && (
                   <ol
                     id={childListId}
-                    className={`toc-children ${isOpen ? "is-open" : ""}`}
+                    className={`${isOpen ? "flex" : "hidden"} flex-col gap-2 px-4 pb-3 pl-4 m-0 list-none`}
                     aria-hidden={!isOpen}
                   >
-                    {group.children.map((child, childIndex) => {
+                    {group.children.map((child) => {
+                      const isChildActive = child.id === activeId;
                       return (
-                        <li key={child.id}>
+                        <li key={child.id} className="list-none">
                           <a
                             href={`#${child.id}`}
-                            className="toc-child-link"
-                            aria-current={child.id === activeId}
+                            className={`flex items-start gap-3 text-sm no-underline transition-colors duration-200 hover:text-primary focus-visible:text-primary ${isChildActive ? "text-heading font-semibold" : "dark:text-white/70 light:text-black/70"}`}
+                            aria-current={isChildActive}
                             onClick={(event) =>
                               handleChildClick(event, child.id)
                             }
                           >
-                            <span className="toc-label">{child.text}</span>
+                            <span className="flex-1 text-left leading-tight">{child.text}</span>
                           </a>
                         </li>
                       );
