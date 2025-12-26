@@ -3,23 +3,17 @@
 /**
  * Consent Script Initialization
  *
- * Deferred script that only loads script manager if consent exists.
- * Uses dynamic import to avoid adding to initial bundle.
+ * Pure inline script - no bundling, no module preloading.
+ * For returning users with consent: dispatches event that triggers
+ * script loading in CookieConsentBanner when it hydrates.
  */
 ---
 
-<script>
-  // Quick inline check - only import heavy modules if consent exists
-  if (document.cookie.includes('cookie-consent=')) {
-    // Defer to idle to not block rendering
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        import('@/integrations/preferences/consent/scripts/scriptManager').then(m => m.initScriptManager());
-      }, { timeout: 2000 });
-    } else {
-      setTimeout(() => {
-        import('@/integrations/preferences/consent/scripts/scriptManager').then(m => m.initScriptManager());
-      }, 100);
-    }
-  }
+<script is:inline>
+  // Check consent and notify - CookieConsentBanner handles the heavy lifting
+  (function() {
+    if (!document.cookie.includes('cookie-consent=')) return;
+    // Mark that consent exists for components to check
+    window.__CONSENT_EXISTS__ = true;
+  })();
 </script>

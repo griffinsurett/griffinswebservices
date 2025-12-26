@@ -24,10 +24,14 @@ export default function CookieConsentBanner() {
   const { setCookie } = useCookieStorage();
 
   useEffect(() => {
-    // Quick inline check - if consent exists, don't show banner
-    if (document.cookie.includes("cookie-consent=")) return;
+    // Check if consent already exists (returning user)
+    if (document.cookie.includes("cookie-consent=")) {
+      // Enable consented scripts for returning users
+      enableConsentedScripts();
+      return;
+    }
 
-    // Show banner immediately (component already loads on first interaction)
+    // New user - show banner
     setShowBanner(true);
   }, []);
 
