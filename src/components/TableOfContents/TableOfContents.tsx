@@ -242,6 +242,7 @@ export default function TableOfContents({
                   <ol
                     id={childListId}
                     className={`toc-children ${isOpen ? "is-open" : ""}`}
+                    aria-hidden={!isOpen}
                   >
                     {group.children.map((child, childIndex) => {
                       return (
