@@ -1,7 +1,6 @@
 import type { ClientDirective } from 'astro';
 import type { EventName } from './shared/eventHandlers';
 import { eventMatchesSelector } from './shared/eventHandlers';
-import { createConditionalHydrationTrigger } from './shared/hydrationHelpers';
 
 type DirectiveConfig =
   | boolean
@@ -65,11 +64,14 @@ const hoverDirective: ClientDirective = (load, options, el) => {
   const doc = el.ownerDocument ?? (typeof document !== 'undefined' ? document : null);
   const eventTarget: EventTarget = selector && doc ? doc : el;
 
-  const hydrateOnDemand = createConditionalHydrationTrigger(
-    load,
-    controller,
-    (event) => eventMatchesSelector(event, selector)
-  );
+  let hydrated = false;
+  const hydrateOnDemand = async (event: Event) => {
+    if (hydrated || !eventMatchesSelector(event, selector)) return;
+    hydrated = true;
+    const hydrate = await load();
+    controller.abort();
+    await hydrate();
+  };
 
   for (const eventName of events) {
     eventTarget.addEventListener(
