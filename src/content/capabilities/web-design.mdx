@@ -17,6 +17,7 @@ solutions:
 
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/CapabilitiesSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 
 <TrustStatement text="Every design is custom—built around your brand, your goals, and your customers." />
 
@@ -41,3 +42,79 @@ import CapabilitiesSection from "@/layouts/CapabilitiesSection.astro";
   }}
   ctaDescription="Stop blending in with template-based competitors. Get a custom design system that makes your business look as good online as you are in person."
 />
+
+<ContentRenderer
+  variant="WrittenVariant"
+  title="Strategy-First Web Design"
+  heading={{
+    before: "The process behind",
+    text: "polished, performant web experiences",
+    after: "that scale with your roadmap."
+  }}
+  description="Our written playbooks capture the research, testing, and collaboration rituals we use on every engagement so you always know how we arrive at design decisions."
+  tocTitle="Table of Contents"
+>
+  <section>
+    <h2>What design questions do we answer before we open Figma?</h2>
+    <p>
+      Every engagement starts with discovery sessions that map the business case for the site, the audiences we need to influence, and the moments where design either accelerates or slows a deal. We pair stakeholder interviews with analytics and CRM insights so visual direction is tied to measurable goals, not just aesthetic preferences.
+    </p>
+    <ul>
+      <li><strong>Audience modeling:</strong> We synthesize buying committees, objections, and desired outcomes so layout decisions support each persona’s journey.</li>
+      <li><strong>Message hierarchy:</strong> Copy decks identify the promise, proof, and proof-of-life content required for each page before wireframes are created.</li>
+      <li><strong>Competitive scans:</strong> We evaluate design languages in and outside your industry to determine when to differentiate and when to lean on familiar UI conventions.</li>
+      <li><strong>Success metrics:</strong> Conversion, engagement, and accessibility targets are documented so we can validate every design choice later in the build.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>How do we design for scale without sacrificing craft?</h2>
+    <p>
+      We build modular systems that let marketing teams launch pages quickly while keeping every component purposeful. Tokens, states, and spacing rules are documented alongside pixel-perfect comps so future campaigns can be executed without calling the original design team.
+    </p>
+    <h3>Systems we maintain throughout the project</h3>
+    <ul>
+      <li><strong>Foundations:</strong> Color, typography, elevation, and motion principles that translate across devices and dark or light backgrounds.</li>
+      <li><strong>Pattern libraries:</strong> Hero, testimonial, pricing, feature, and resource patterns with clear guidance on copy length, imagery specs, and animation behavior.</li>
+      <li><strong>Content choreography:</strong> Guidance on how modules stack, collapse, or switch order on different breakpoints to maintain narrative flow.</li>
+      <li><strong>State documentation:</strong> Hover, focus, active, and error states captured in the same file so developers never guess about interaction feedback.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Collaboration rituals that keep stakeholders aligned</h2>
+    <p>
+      Transparency keeps projects moving. We treat the design file as a shared workspace, not a black box, and run structured reviews so executives, marketing, and engineers all see their requirements addressed.
+    </p>
+    <ol>
+      <li><strong>Weekly demos:</strong> We show in-progress flows, note what changed, and capture risks or dependencies so surprises never spill into development.</li>
+      <li><strong>Async annotations:</strong> Loom walkthroughs and contextual comments summarize rationale for each section, making it simple for busy teams to react on their schedule.</li>
+      <li><strong>Implementation pairing:</strong> Designers and engineers meet during component build-out to validate spacing, typography, and animation so the final product matches the approved design.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Accessibility, compliance, and performance are requirements</h2>
+    <p>
+      Inclusive design is a baseline, not a nice-to-have. We evaluate flows against WCAG 2.2 AA principles, consider privacy obligations, and ensure the visuals we design can be implemented without bloating the experience.
+    </p>
+    <ul>
+      <li><strong>Readable contrast and typography:</strong> We test color palettes within our system and provide alternative treatments when brand colors need adjustment for compliance.</li>
+      <li><strong>Keyboard + screen reader specs:</strong> Focus order, aria labels, and live-region behaviors are documented alongside each component.</li>
+      <li><strong>Asset budgets:</strong> Motion and imagery guidelines include size targets, export instructions, and fallbacks for reduced-motion preferences.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What you receive at handoff</h2>
+    <p>
+      By the time development starts you own a complete design system, not just static mockups. Teams can ship future updates because we share the same source of truth the studio used during production.
+    </p>
+    <ul>
+      <li><strong>Interactive prototypes:</strong> Clickable flows that communicate transitions, hover states, and micro-interactions.</li>
+      <li><strong>Component library:</strong> Tokenized components in Figma organized by category with naming conventions that mirror the engineering stack.</li>
+      <li><strong>Content outlines:</strong> Approved messaging, SEO considerations, and guidelines for long-form storytelling elements.</li>
+      <li><strong>Launch playbook:</strong> QA checklist covering accessibility, performance budgets, analytics tagging, and stakeholder sign-offs.</li>
+    </ul>
+  </section>
+</ContentRenderer>

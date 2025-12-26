@@ -1,0 +1,82 @@
+---
+// src/components/ContentRenderer/variants/WrittenVariant.astro
+/**
+ * Long-form written content layout with a synchronized table of contents.
+ * Accepts standard ContentRenderer props plus slot-based HTML content.
+ * Designed for capability detail pages where each heading should receive
+ * an automatic anchor for deep-linking.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import SectionHeader from "@/components/SectionHeader.astro";
+import TableOfContents from "@/components/TableOfContents/TableOfContents";
+
+interface Props extends BaseVariantProps {
+  tocTitle?: string;
+  headingSelector?: string;
+  stickyOffset?: number;
+  contentCardClassName?: string;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "",
+  id,
+  tocTitle = "Table of Contents",
+  headingSelector = "h2, h3",
+  stickyOffset = 150,
+  contentCardClassName = "",
+  showHeadingSection = true,
+} = Astro.props as Props;
+
+const hasProvidedItems = Array.isArray(items) && items.length > 0;
+const hasSlotContent = Astro.slots?.has("default");
+
+if (!hasProvidedItems && !hasSlotContent) {
+  return;
+}
+
+const sectionId = id ?? "written-variant";
+const contentId = `${sectionId}-content`;
+const showHeader =
+  showHeadingSection !== false && Boolean(title || heading || description);
+---
+
+<section id={sectionId} class={`outer-section relative ${className}`.trim()}>
+  <div class="inner-section space-y-12">
+    {showHeader && (
+      <SectionHeader
+        title={title}
+        heading={heading}
+        description={description}
+        className="space-y-5 text-left max-w-4xl"
+        headingClassName="h2 text-4xl lg:text-5xl leading-tight text-heading"
+        descriptionClassName="text-lg lg:text-xl text-muted leading-relaxed"
+      />
+    )}
+
+    <div class="grid gap-8 lg:gap-12 lg:grid-cols-[minmax(240px,0.38fr)_1fr] relative">
+      <div class="space-y-6 sticky-section">
+        <TableOfContents
+          client:load
+          contentId={contentId}
+          title={tocTitle}
+          headingSelector={headingSelector}
+          scrollOffset={stickyOffset}
+        />
+      </div>
+
+      <article
+        id={contentId}
+        class={`relative px-4 sm:px-6 md:px-10 pb-6 md:pb-12 ${contentCardClassName}`.trim()}
+      >
+        <div class="written-rich-text">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
