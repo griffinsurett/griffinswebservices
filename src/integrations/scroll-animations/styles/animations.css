@@ -414,7 +414,7 @@
 
 [data-animate="fade-in-up"] {
   opacity: 0;
-  transform: translateY(60px);
+  transform: translateY(40px);
   transition:
     opacity var(--animation-duration) var(--animation-easing),
     transform var(--animation-duration) var(--animation-easing);
@@ -423,9 +423,15 @@
   opacity: 1;
   transform: translateY(0);
 }
-/* Exit going up when scrolling down (element leaves top of viewport) */
-[data-animate="fade-in-up"][data-visible="false"][data-exit-direction="down"] {
-  transform: translateY(-20px);
+/* Exit scrolling down: fade out upward (element leaves top of viewport) */
+[data-animate="fade-in-up"][data-exit-direction="down"] {
+  opacity: 0;
+  transform: translateY(-40px);
+}
+/* Exit scrolling up: fade out downward (element leaves bottom of viewport) */
+[data-animate="fade-in-up"][data-exit-direction="up"] {
+  opacity: 0;
+  transform: translateY(40px);
 }
 
 [data-animate="fade-in-down"] {

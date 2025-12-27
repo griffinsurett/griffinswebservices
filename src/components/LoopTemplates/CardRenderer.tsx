@@ -50,7 +50,7 @@ export default function CardRenderer({
 
   // Animation configuration
   const defaultAnimationType = "fade-in-up";
-  const animationOnce = animation?.once ?? true;
+  const animationOnce = animation?.once ?? false;
 
   const getAnimationType = (index: number): string => {
     if (!animation?.type) return defaultAnimationType;

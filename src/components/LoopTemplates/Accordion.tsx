@@ -86,7 +86,7 @@ export default function Accordion({
         return (
           <div
             key={itemId}
-            {...animationProps("fade-in-up", { once: true })}
+            {...animationProps("fade-in-up", { once: false })}
           >
             <AccordionItem
               id={itemId}

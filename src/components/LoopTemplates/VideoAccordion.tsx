@@ -228,7 +228,7 @@ export default function VideoAccordion({
   return (
     <div
       ref={wrapRef}
-      {...animationProps("fade-in", { once: true })}
+      {...animationProps("fade-in", { once: false })}
       className={`relative ${className}`.trim()}
       data-video-accordion={instanceId}
     >
@@ -243,7 +243,7 @@ export default function VideoAccordion({
             return (
               <div
                 key={key}
-                {...animationProps("fade-in-up", { once: true })}
+                {...animationProps("fade-in-up", { once: false })}
               >
                 <EnhancedAccordionItem
                   icon={item.icon}
@@ -293,7 +293,7 @@ export default function VideoAccordion({
 
         <div
           className="hidden lg:block lg:w-1/2 min-w-0 sticky-section"
-          {...animationProps("fade-in", { once: true })}
+          {...animationProps("fade-in", { once: false })}
         >
           <VideoPlayer
             key={`desktop-${activeItem?.key ?? activeIndex}`}

@@ -42,7 +42,7 @@ export default function BorderTitle({
           >
             <span
               data-animate="color-text-fade"
-              data-animate-once="true"
+              data-animate-once="false"
               className="color-text-fade"
               style={{ "--animation-duration": `${duration}ms` } as React.CSSProperties}
             >

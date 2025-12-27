@@ -20,7 +20,7 @@ import Logo from "@/components/Logo/Logo.astro";
 import Button from "@/components/Button/Button";
 ---
 
-<footer class="mt-auto relative" role="contentinfo">
+<Section tag="footer" class="mt-auto relative" role="contentinfo">
   <div class="mx-auto w-full relative">
     <div class="section-dim-border"></div>
 
@@ -90,14 +90,11 @@ import Button from "@/components/Button/Button";
           showHeadingDivider
         />
       </nav>
-      <!-- <div class="section-color-border absolute bottom-0 top-auto"></div> -->
     </div>
 
     <div class="relative">
       <div class="section-dim-border"></div>
-      <Section
-        class="inner-section flex flex-col gap-4 text-text text-sm py-6 sm:flex-row sm:items-center sm:justify-between"
-      >
+      <div class="inner-section flex flex-col gap-4 text-text text-sm py-6 sm:flex-row sm:items-center sm:justify-between">
         <p class="text-center sm:text-right">
           &copy; {new Date().getFullYear()}
           {siteData.legalName}. All rights reserved.
@@ -107,7 +104,7 @@ import Button from "@/components/Button/Button";
           layout="horizontal"
           class="w-full sm:w-auto"
         />
-      </Section>
+      </div>
     </div>
   </div>
-</footer>
+</Section>

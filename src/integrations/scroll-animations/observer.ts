@@ -96,6 +96,7 @@ interface AnimationObserverOptions {
 class ScrollAnimationObserver {
   private observedElements = new WeakSet<Element>();
   private disconnectors = new WeakMap<Element, () => void>();
+  private seenElements = new WeakSet<Element>(); // Track elements that have been visible at least once
   private defaultThreshold: number;
   private defaultRootMargin: string;
   private lastScrollY: number = 0;
@@ -162,6 +163,9 @@ class ScrollAnimationObserver {
       once,
       onEnter: () => {
         handleVideoEnter(el);
+        // Mark element as seen and clear exit direction when entering
+        this.seenElements.add(el);
+        delete el.dataset.exitDirection;
         if (delay > 0) {
           setTimeout(() => {
             el.dataset.visible = "true";
@@ -171,12 +175,11 @@ class ScrollAnimationObserver {
         }
       },
       onExit: () => {
-        if (!once) {
+        if (!once && this.seenElements.has(el)) {
+          // Only apply exit state if this element has been seen before
+          // This prevents initial observer setup from applying exit styles to unseen elements
+          el.dataset.exitDirection = this.scrollDirection;
           el.dataset.visible = "false";
-          // Only set exit direction if element opts into directional exits
-          if (el.dataset.animateDirectional === "true") {
-            el.dataset.exitDirection = this.scrollDirection;
-          }
         }
         handleVideoExit(el);
       },
