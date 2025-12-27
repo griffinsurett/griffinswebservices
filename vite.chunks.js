@@ -1,6 +1,15 @@
 // vite.chunks.js
 
 export function manualChunks(id) {
+  // Scroll observer - MUST come FIRST to prevent contamination with React
+  // This is loaded by Theme.astro and must NOT pull in any React deps
+  if (
+    id.includes('integrations/scroll-animations/observer') ||
+    id.includes('utils/IntersectionObserver')
+  ) {
+    return 'scroll-observer';
+  }
+
   // Core React runtime (kept small and shared)
   if (
     id.includes('node_modules/react') ||

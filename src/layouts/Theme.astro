@@ -62,5 +62,6 @@ import AccessibilityScript from "@/integrations/preferences/accessibility/compon
 
 <!-- Scroll animations (deferred to avoid blocking initial render) -->
 <script>
-  import "@/integrations/scroll-animations";
+  // Import observer directly to avoid pulling in React via index barrel exports
+  import "@/integrations/scroll-animations/observer";
 </script>
