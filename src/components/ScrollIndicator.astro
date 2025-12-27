@@ -12,6 +12,7 @@ const { href = "#about-us", className = "" } = Astro.props;
   href={href}
   class={`scroll-indicator absolute bottom-16 lg:bottom-12 left-1/2 -translate-x-1/2 cursor-pointer no-underline z-20 ${className}`}
   aria-label="Scroll down for more content"
+  data-scroll-indicator
 >
   <div
     class="flex items-center justify-center p-1 border border-muted rounded-full shadow-lg transition-all duration-300 ease-in-out"
@@ -55,3 +56,27 @@ const { href = "#about-us", className = "" } = Astro.props;
     }
   }
 </style>
+
+<script>
+  const indicator = document.querySelector('[data-scroll-indicator]') as HTMLElement;
+  if (indicator) {
+    let ticking = false;
+
+    const updateIndicator = () => {
+      const scrollY = window.scrollY;
+      indicator.style.opacity = scrollY > 50 ? '0' : '1';
+      indicator.style.pointerEvents = scrollY > 50 ? 'none' : 'auto';
+      ticking = false;
+    };
+
+    // Set initial transition
+    indicator.style.transition = 'opacity 0.4s ease';
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateIndicator);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+</script>

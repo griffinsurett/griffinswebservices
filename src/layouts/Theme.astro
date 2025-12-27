@@ -5,7 +5,6 @@ import "../styles/fonts.css";  // Critical fonts - loaded first for optimal LCP
 import "../styles/global.css";
 import "../integrations/scroll-animations/styles/animations.css";  // Scroll animations (CSS-only + JS-observed)
 import "../styles/accessibility.css";  // Accessibility styles - MUST load LAST to override Tailwind classes
-import AccessibilityScript from "@/integrations/preferences/accessibility/components/AccessibilityScript.astro";
 ---
 
 <!-- Favicons -->
@@ -39,8 +38,6 @@ import AccessibilityScript from "@/integrations/preferences/accessibility/compon
   })();
 </script>
 
-<!-- Accessibility preferences (runs before content loads to prevent FOUC) -->
-<AccessibilityScript />
 <!-- Deferred theme enhancements (non-blocking) -->
 <script>
   // Update theme-color meta after paint

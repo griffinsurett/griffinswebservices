@@ -19,6 +19,7 @@ import HeadTags from "./HeadTags.astro";
 import SEO from "./SEO.astro";
 import Theme from "./Theme.astro";
 import BodyTags from "./BodyTags.astro";
+import AccessibilityScript from "@/integrations/preferences/accessibility/components/AccessibilityScript.astro";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
 // Language detection removed - page always loads in English first
@@ -37,6 +38,7 @@ const { ...seoProps } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Theme />
+    <AccessibilityScript />
     <meta name="generator" content={Astro.generator} />
 
     {/* SEO meta tags */}
