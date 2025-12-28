@@ -121,6 +121,7 @@ export {
 // Query snippets (pre-built patterns)
 export {
   byTag,
+  byItemKeys,
   roots,
   leaves,
   children,

@@ -3,7 +3,7 @@
 
 import type { IconType } from 'react-icons';
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuContact, LuGithub, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMail, LuMinus, LuPhone, LuPlus, LuSend, LuSettings, LuSparkles } from 'react-icons/lu';
-import { FaArrowsUpDownLeftRight, FaAws, FaBolt, FaBoxOpen, FaBriefcase, FaCartShopping, FaChartLine, FaClockRotateLeft, FaCloudflare, FaCode, FaCompass, FaCookieBite, FaCss3Alt, FaDisplay, FaDumbbell, FaFeather, FaFigma, FaFileLines, FaGears, FaGithub, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHtml5, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaMagnifyingGlassChart, FaMobileScreenButton, FaNodeJs, FaPalette, FaPenNib, FaPhp, FaPython, FaReact, FaRobot, FaRocket, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaUniversalAccess, FaUtensils, FaWandMagicSparkles, FaWordpress } from 'react-icons/fa6';
+import { FaArrowsUpDownLeftRight, FaAws, FaBolt, FaBoxOpen, FaBriefcase, FaBullseye, FaCartShopping, FaChartLine, FaClockRotateLeft, FaCloudflare, FaCode, FaCompass, FaCookieBite, FaCss3Alt, FaDisplay, FaDumbbell, FaEye, FaFeather, FaFigma, FaFileLines, FaGears, FaGithub, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHtml5, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaMagnifyingGlassChart, FaMobileScreenButton, FaNodeJs, FaPalette, FaPenNib, FaPhp, FaPython, FaReact, FaRobot, FaRocket, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaUniversalAccess, FaUtensils, FaWandMagicSparkles, FaWordpress } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiVercel, SiWebflow } from 'react-icons/si';
 
 export const iconMap = {
@@ -12,6 +12,7 @@ export const iconMap = {
   'fa6:bolt': FaBolt,
   'fa6:box-open': FaBoxOpen,
   'fa6:briefcase': FaBriefcase,
+  'fa6:bullseye': FaBullseye,
   'fa6:cart-shopping': FaCartShopping,
   'fa6:chart-line': FaChartLine,
   'fa6:clock-rotate-left': FaClockRotateLeft,
@@ -22,6 +23,7 @@ export const iconMap = {
   'fa6:css3-alt': FaCss3Alt,
   'fa6:display': FaDisplay,
   'fa6:dumbbell': FaDumbbell,
+  'fa6:eye': FaEye,
   'fa6:feather': FaFeather,
   'fa6:figma': FaFigma,
   'fa6:file-lines': FaFileLines,

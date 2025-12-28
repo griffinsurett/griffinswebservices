@@ -46,6 +46,35 @@ export const byTag = (collection: CollectionKey, tags: string | string[], limit?
   return q;
 };
 
+/**
+ * Get specific items by their keys (slugs/ids), preserving the order provided.
+ * Supports a single key or an array of keys.
+ *
+ * Example: byItemKeys("about-us", "our-mission")
+ * Example: byItemKeys("about-us", ["our-mission", "our-vision"])
+ */
+export const byItemKeys = (collection: CollectionKey, keys: string | string[]) => {
+  const keyList = (Array.isArray(keys) ? keys : [keys]).filter(Boolean);
+  if (keyList.length === 0) {
+    return query(collection).where(() => false).limit(0);
+  }
+
+  const normalizedKeys = keyList.map(normalizeId);
+  const keySet = new Set(normalizedKeys);
+
+  return query(collection)
+    .where((entry) => {
+      const entryKey = normalizeId(getItemKey(entry));
+      return keySet.has(entryKey);
+    })
+    .orderBy((a, b) => {
+      // Preserve the order from the keys array
+      const aKey = normalizeId(getItemKey(a));
+      const bKey = normalizeId(getItemKey(b));
+      return normalizedKeys.indexOf(aKey) - normalizedKeys.indexOf(bKey);
+    });
+};
+
 // TODO: Items by author
 // export const byAuthor = (collection: CollectionKey, authorId: string, limit?: number) => {}
 

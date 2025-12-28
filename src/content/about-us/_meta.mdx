@@ -16,24 +16,49 @@ addToMenu:
     order: 1
 ---
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, sortByOrder } from "@/utils/query";
+import { query, sortByOrder, byTag, byItemKeys } from "@/utils/query";
 import Video from "@/components/Video/Video.astro";
+import CTASection from "@/layouts/CTASection.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+import Section from "@/components/Section.astro";
+
+    <div class="min-h-screen flex items-center">
+    <TrustStatement text="We're a New Jersey–based web design and development agency building custom web solutions for businesses that want clarity, performance, and reliability. As a small team, we take a hands-on approach—working closely with our clients from planning to launch and beyond. Our focus is on creating fast, secure, and maintainable digital experiences that support real business goals." />
+    </div>
+
+    <Section class="inner-section">
+      <Video
+        src="/speed-site.mov"
+        alt="Speed site walkthrough"
+        controls
+        clientLoadPlaceholder={true}
+        wrapperClass="video-shell w-full max-w-4xl mx-auto"
+      />
+    </Section>
 
     <ContentRenderer
-      query={query("about-us").orderBy(sortByOrder())}
-      variant="TwoColumnImageVariant"
-      imagePosition="right"
-      imagePlaceholder="👨‍💻"
-      imageAlt="Griffin Surett - Founder"
-      contentType="text"
-      borderClass=""
-      ctaText="Learn More About Us"
-    >
-    <Video
-      src="/speed-site.mov"
-      alt="Speed site walkthrough"
-      controls
-      clientLoadPlaceholder={true}
-      wrapperClass="video-shell"
+      query={byItemKeys("about-us", ["our-vision", "our-mission"])}
+      variant="CardVariant"
+      columns={2}
+      gap="md"
     />
-    </ContentRenderer>
+
+    <ContentRenderer
+      query={query("testimonials").where((entry) => entry.data.rating >= 4)}
+      variant="TestimonialCarouselVariant"
+      id="testimonials-home"
+    />
+    
+    <ContentRenderer
+      query={byTag("technologies", "featured").orderBy(sortByOrder())}
+      variant="TechnologiesVariant"
+    />
+
+    <CTASection
+      heading={{
+        before: "Ready to work with",
+        text: "a team that cares?",
+      }}
+      description="Let's talk about your project. We'll listen, ask questions, and map out a plan that makes sense for your goals and budget."
+      id="cta"
+    />
