@@ -192,11 +192,11 @@ export default function TableOfContents({
   return (
     <nav
       id={navId}
-      className={`card-bg border border-white/10 rounded-3xl p-6 shadow-2xl ${className}`.trim()}
+      className={`card-bg faded-border rounded-3xl p-6 shadow-2xl ${className}`.trim()}
       aria-label={title}
     >
       <div className="flex items-center justify-center gap-4">
-        <p className="text-[0.7rem] uppercase tracking-[0.3em] font-semibold dark:text-white/70 light:text-black/70">{title}</p>
+        <p className="text-[0.7rem] uppercase tracking-[0.3em] font-semibold text-muted">{title}</p>
       </div>
 
       <ol id={listId} className="mt-4 space-y-3 list-none p-0 m-0">
@@ -215,7 +215,7 @@ export default function TableOfContents({
               <li key={groupId} className="rounded-2xl list-none">
                 <button
                   type="button"
-                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-left text-sm md:text-base no-underline transition-colors duration-200 hover:text-primary focus-visible:text-heading ${parentActive ? "text-accent font-semibold" : "text-white/80"}`}
+                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-left text-sm md:text-base no-underline transition-colors duration-200 hover:text-primary focus-visible:text-heading ${parentActive ? "text-accent font-semibold" : "text-text"}`}
                   aria-expanded={isOpen}
                   aria-controls={childListId}
                   onClick={(event) => handleParentClick(event, groupId)}
@@ -235,7 +235,7 @@ export default function TableOfContents({
                         <li key={child.id} className="list-none">
                           <a
                             href={`#${child.id}`}
-                            className={`flex items-start gap-3 text-sm no-underline transition-colors duration-200 hover:text-primary focus-visible:text-primary ${isChildActive ? "text-heading font-semibold" : "dark:text-white/70 light:text-black/70"}`}
+                            className={`flex items-start gap-3 text-sm no-underline transition-colors duration-200 hover:text-primary focus-visible:text-primary ${isChildActive ? "text-heading font-semibold" : "text-muted"}`}
                             aria-current={isChildActive}
                             onClick={(event) =>
                               handleChildClick(event, child.id)
