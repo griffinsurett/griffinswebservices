@@ -1,8 +1,72 @@
 ---
 title: "Marketing Agencies"
+heading:
+  before: "White-label development for"
+  text: "Marketing Agencies"
+  after: "that scales."
 description: "White-label development partnerships that let you say yes to bigger projects without the overhead"
 hasPage: true
 order: 4
 icon: "fa6-solid:handshake"
 ---
-Stop turning down web projects or outsourcing to unreliable freelancers. Partner with us for white-label development that ships on time, stays on brand, and makes your agency look great—while you keep the client relationship.
+import TrustStatement from '@/components/TrustStatement.astro';
+import DoubleCard from '@/layouts/DoubleCard.astro';
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import CTASection from '@/layouts/CTASection.astro';
+import { query, sortByOrder } from '@/utils/query';
+import { roots } from '@/utils/query/snippets';
+
+<TrustStatement text="Stop turning down web projects or outsourcing to unreliable freelancers. Partner with us for white-label development that ships on time, stays on brand, and makes your agency look great—while you keep the client relationship." />
+
+<DoubleCard />
+
+<ContentRenderer
+  query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
+  variant="CardVariant"
+  id="website-services"
+  title="Website Services"
+  heading={{
+    before: "Expert web services for",
+    text: "Marketing Agencies",
+    after: ".",
+  }}
+  description="Your clients deserve lightning-fast, secure, and scalable websites. Every site we build is built to dominate and stand the test of time—making your agency look great."
+  columns={3}
+  gap="lg"
+  showButtonSection={false}
+  className="pt-35 lg:pt-20"
+/>
+
+<ContentRenderer
+  query={query("solutions")}
+  variant="IconListVariant"
+  heading="Premium Websites for Agencies, Built for Your Growth."
+  title="Web Solutions"
+  description="We design top-tier websites for agency clients — custom-built for their goals, lightning-fast, secure, and easy to manage. No templates, no bloat — just powerful online presences that look sharp, perform flawlessly, and grow with your clients."
+  autoAdvanceDelay={2000}
+/>
+
+<ContentRenderer
+  query={query("testimonials")}
+  variant="TestimonialCarouselVariant"
+/>
+
+<ContentRenderer
+  query={query("faq").orderBy(sortByOrder())}
+  variant="AccordionVariant"
+  allowMultiple={false}
+  title="FAQs"
+/>
+
+<CTASection
+  title="Partner With Us"
+  heading={{
+    before: "Ready to scale your agency with",
+    text: "white-label development?",
+  }}
+  description="Stop turning down projects. Partner with Griffin's Web Services for reliable white-label development that ships on time and makes your agency look great."
+  primaryCTA={{
+    text: "Start a Partnership",
+    link: "#industry-quote-hero",
+  }}
+/>

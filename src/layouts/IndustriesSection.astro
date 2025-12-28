@@ -1,0 +1,104 @@
+---
+// src/layouts/IndustriesSection.astro
+/**
+ * Reusable section for industry pages
+ * Renders trust statement, testimonials, and CTA
+ *
+ * Automatically derives slug from URL and fetches title from content collection
+ */
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import CTASection from "@/layouts/CTASection.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+import { query, related, safeGetEntry } from "@/utils/query";
+import { capitalizeWords } from "@/utils/string";
+import { parseUrlPath } from "@/utils/paths";
+
+interface HeadingContent {
+  before?: string;
+  text?: string;
+  after?: string;
+}
+
+interface CTAButton {
+  text: string;
+  link: string;
+}
+
+interface Props {
+  /** Trust statement text */
+  trustStatement?: string;
+  /** FAQ section title */
+  faqTitle?: string;
+  /** FAQ section heading */
+  faqHeading?: string;
+  /** CTA section title */
+  ctaTitle?: string;
+  /** CTA section heading */
+  ctaHeading?: string | HeadingContent;
+  /** CTA section description */
+  ctaDescription?: string;
+  /** CTA primary button */
+  ctaPrimaryButton?: CTAButton;
+  /** CTA section ID */
+  ctaId?: string;
+}
+
+const {
+  trustStatement,
+  faqTitle = "FAQs",
+  faqHeading,
+  ctaTitle,
+  ctaHeading,
+  ctaDescription,
+  ctaPrimaryButton,
+  ctaId = "industries-cta",
+} = Astro.props;
+
+// Derive slug from URL path using utility
+const { slug } = parseUrlPath(Astro.url.pathname);
+
+// Fetch the entry to get the title
+const entry = slug ? await safeGetEntry("industries", slug) : undefined;
+const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || "");
+
+// Default trust statement if not provided
+const defaultTrustStatement = `We've helped ${title.toLowerCase()} businesses launch websites that convert visitors into customers. Your industry deserves a partner who understands your goals.`;
+---
+
+{/* Trust Statement */}
+<TrustStatement text={trustStatement || defaultTrustStatement} />
+
+{/* Slot for additional content */}
+<slot />
+
+{/* Testimonials */}
+<ContentRenderer
+  query={query("testimonials")}
+  variant="TestimonialCarouselVariant"
+/>
+
+{/* Related FAQs */}
+{slug && (
+  <ContentRenderer
+    query={related("faq", "industries", slug)}
+    variant="AccordionVariant"
+    allowMultiple={false}
+    title={faqTitle}
+    heading={faqHeading || `Common Questions About ${title || "This Industry"}`}
+  />
+)}
+
+{/* CTA Section */}
+{ctaHeading && (
+  <CTASection
+    id={ctaId}
+    className="min-h-[60vh]"
+    title={ctaTitle}
+    heading={ctaHeading}
+    description={ctaDescription}
+    primaryCTA={ctaPrimaryButton || {
+      text: "Get Your Free Quote",
+      link: "#industry-quote-hero",
+    }}
+  />
+)}

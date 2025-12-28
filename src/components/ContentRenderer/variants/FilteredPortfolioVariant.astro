@@ -54,6 +54,8 @@ interface Props extends BaseVariantProps {
   relatedCollection?: CollectionKey;
   /** Field on related items that references the filter items (e.g., "industry") */
   relatedField?: string;
+  /** Additional class for heading section wrapper */
+  headingSectionClassName?: string;
 }
 
 const {
@@ -76,6 +78,7 @@ const {
   drag = false,
   relatedCollection = "projects",
   relatedField = "industry",
+  headingSectionClassName = "",
 } = Astro.props as Props;
 
 // Items are the filter tabs (e.g., industries)
@@ -223,7 +226,7 @@ const showHeader = Boolean(sectionTitle || headingValue || description);
         title={sectionTitle}
         heading={headingValue}
         description={description}
-        className="text-center inner-section"
+        className={`text-center inner-section ${headingSectionClassName}`.trim()}
         headingClassName="h2 mb-6 heading-padding"
         descriptionClassName="large-text max-w-2xl mx-auto"
       />

@@ -1,0 +1,78 @@
+---
+// src/layouts/collections/IndustriesLayout.astro
+/**
+ * Industries Layout - Item Page Layout for Industry Pages
+ *
+ * A specialized layout for industry-specific landing pages.
+ * Features:
+ * - QuoteHero with title, description, and quote form
+ * - Portfolio screen showcase filtered by industry
+ * - MDX content (which includes IndustriesSection)
+ */
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import QuoteHero from "@/layouts/QuoteHero.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+import { related } from "@/utils/query/snippets";
+import { capitalizeWords } from "@/utils/string";
+import { getItemKey } from "@/utils/collections";
+import type { CollectionLayoutProps } from "./types";
+import { animationProps } from "@/integrations/scroll-animations/props";
+
+const {
+  entry,
+  collection,
+  collectionMeta,
+  Content,
+  isIndexPage,
+  seoProps = {},
+  ...extraProps
+} = Astro.props as CollectionLayoutProps;
+
+const data = entry?.data || {};
+const {
+  title,
+  description,
+  heading,
+  icon,
+} = data;
+
+// Get the industry slug for filtering projects
+const industrySlug = entry ? getItemKey(entry) : "";
+
+// Capitalize the slug for display
+const displayTitle =
+  title || capitalizeWords(entry?.slug?.replace(/-/g, " ") || "");
+---
+
+<BaseLayout {...seoProps}>
+    {/* Quote Hero Section */}
+    <QuoteHero
+      title={title}
+      heading={heading}
+      description={description}
+      primaryCTA={{
+        text: "View All Industries",
+        link: "/industries",
+        rightIcon: "lu:arrow-left",
+      }}
+      id="industry-quote-hero"
+    />
+
+    {/* Portfolio Screen Showcase - filtered by industry */}
+    <div id="under-hero">
+      <div
+        class="block lg:min-h-screen inner-section"
+        {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
+      >
+        <ContentRenderer
+          query={related("projects", "industry", industrySlug)}
+          variant="PortfolioScreenVariant"
+          clientLoadPlaceholder={true}
+        />
+      </div>
+
+      {/* MDX Content - includes IndustriesSection */}
+      {Content && <Content />}
+    </div>
+</BaseLayout>

@@ -1,8 +1,72 @@
 ---
 title: "Contractors"
+heading:
+  before: "Websites for"
+  text: "Contractors"
+  after: "that win more bids."
 description: "High-performance websites that generate leads, build credibility, and help contractors win more bids"
 hasPage: true
 order: 1
 icon: "fa6-solid:helmet-safety"
 ---
-From roofers to demolition crews, your website should work as hard as you do. We build fast, mobile-first sites that showcase your work, capture leads 24/7, and give customers the confidence to pick up the phone.
+import TrustStatement from '@/components/TrustStatement.astro';
+import DoubleCard from '@/layouts/DoubleCard.astro';
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import CTASection from '@/layouts/CTASection.astro';
+import { query, sortByOrder } from '@/utils/query';
+import { roots } from '@/utils/query/snippets';
+
+<TrustStatement text="From roofers to demolition crews, your website should work as hard as you do. We build fast, mobile-first sites that showcase your work, capture leads 24/7, and give customers the confidence to pick up the phone." />
+
+<DoubleCard />
+
+<ContentRenderer
+  query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
+  variant="CardVariant"
+  id="website-services"
+  title="Website Services"
+  heading={{
+    before: "Expert web services for",
+    text: "Contractors",
+    after: ".",
+  }}
+  description="You deserve a lightning-fast, secure, and scalable website that turns your contractor visitors into customers. Every site we build is built to dominate and stand the test of time."
+  columns={3}
+  gap="lg"
+  showButtonSection={false}
+  className="pt-35 lg:pt-20"
+/>
+
+<ContentRenderer
+  query={query("solutions")}
+  variant="IconListVariant"
+  heading="Premium Websites for Contractors, Built for Your Growth."
+  title="Web Solutions"
+  description="We design top-tier websites for contractor businesses — custom-built for your goals, lightning-fast, secure, and easy to manage. No templates, no bloat — just a powerful online presence that looks sharp, performs flawlessly, and grows with you."
+  autoAdvanceDelay={2000}
+/>
+
+<ContentRenderer
+  query={query("testimonials")}
+  variant="TestimonialCarouselVariant"
+/>
+
+<ContentRenderer
+  query={query("faq").orderBy(sortByOrder())}
+  variant="AccordionVariant"
+  allowMultiple={false}
+  title="FAQs"
+/>
+
+<CTASection
+  title="Get Started"
+  heading={{
+    before: "Ready to get more leads for your",
+    text: "contracting business?",
+  }}
+  description="Join other contractors who trust Griffin's Web Services. We build websites that generate leads, build credibility, and help you win more bids."
+  primaryCTA={{
+    text: "Get Your Free Quote",
+    link: "#industry-quote-hero",
+  }}
+/>

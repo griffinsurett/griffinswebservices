@@ -10,3 +10,20 @@ addToMenu:
   - menu: "links-menu"
     order: 2
 ---
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import { query, orderBy, sortByOrder } from '@/utils/query';
+
+<ContentRenderer
+  query={query('industries').orderBy(sortByOrder())}
+  variant="FilteredPortfolioVariant"
+  relatedCollection="projects"
+  relatedField="industry"
+  headingSectionClassName="hidden"
+  showButtonSection={false}
+/>
+
+
+<ContentRenderer
+  query={query("testimonials")}
+  variant="TestimonialCarouselVariant"
+/>
