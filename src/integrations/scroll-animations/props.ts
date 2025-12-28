@@ -245,7 +245,7 @@ export function staggeredAnimationProps(
   index: number,
   options: AnimationOptions & { staggerDelay?: number } = {}
 ): AnimationDataAttributes {
-  const { staggerDelay = 100, delay = 0, ...rest } = options;
+  const { staggerDelay = 300, delay = 0, ...rest } = options;
   return animationProps(animation, {
     ...rest,
     delay: delay + index * staggerDelay,

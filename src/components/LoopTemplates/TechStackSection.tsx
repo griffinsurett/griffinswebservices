@@ -36,7 +36,7 @@ export default function TechStackSection({
     <div className={`inner-section text-center lg:text-left ${className}`.trim()}>
 
       <div className="flex flex-col lg:grid lg:grid-cols-[1fr_3fr] gap-6 lg:gap-8 items-center">
-        <div className="w-sm">
+        <div className="w-md">
           <div className="relative inline-block mb-6 leading-tight">
             <Heading
               tagName="h2"

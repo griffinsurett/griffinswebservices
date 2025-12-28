@@ -187,8 +187,8 @@ export default function TestimonialCarousel({
                     <div
                       key={`testimonial-${pageIdx}-${itemIdx}`}
                       className="min-w-0"
-                      {...staggeredAnimationProps("scale-in", pageIdx * slidesPerViewValue + itemIdx, {
-                        once: true,
+                      {...staggeredAnimationProps("fade-in-up", pageIdx * slidesPerViewValue + itemIdx, {
+                        once: false,
                         staggerDelay: STAGGER_MS,
                       })}
                     >
