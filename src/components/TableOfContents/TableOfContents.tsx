@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import AccordionItem from "@/components/LoopComponents/AccordionItem";
 
 interface TocItem {
   id: string;
@@ -48,6 +49,7 @@ export default function TableOfContents({
   const [groups, setGroups] = useState<TocGroup[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+  const [mobileExpanded, setMobileExpanded] = useState(false);
 
   const selector = useMemo(() => {
     return headingSelector
@@ -189,70 +191,92 @@ export default function TableOfContents({
     scrollToHeading(itemId);
   };
 
+  const tocContent = (
+    <ol id={listId} className="space-y-3 list-none p-0 m-0">
+      {groups.length === 0 ? (
+        <li className="py-3 text-sm text-muted">{emptyLabel}</li>
+      ) : (
+        groups.map((group) => {
+          const groupId = group.parent.id;
+          const isOpen = Boolean(openGroups[groupId]);
+          const parentActive =
+            activeId === groupId ||
+            group.children.some((child) => child.id === activeId);
+          const childListId = `${groupId}-children`;
+
+          return (
+            <li key={groupId} className="rounded-2xl list-none">
+              <button
+                type="button"
+                className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-left text-sm md:text-base no-underline transition-colors duration-200 hover:text-primary focus-visible:text-heading ${parentActive ? "text-accent font-semibold" : "text-text"}`}
+                aria-expanded={isOpen}
+                aria-controls={childListId}
+                onClick={(event) => handleParentClick(event, groupId)}
+              >
+                <span className="flex-1 text-left leading-tight">{group.parent.text}</span>
+              </button>
+
+              {group.children.length > 0 && (
+                <ol
+                  id={childListId}
+                  className={`${isOpen ? "flex" : "hidden"} flex-col gap-2 px-4 pb-3 pl-4 m-0 list-none`}
+                  aria-hidden={!isOpen}
+                >
+                  {group.children.map((child) => {
+                    const isChildActive = child.id === activeId;
+                    return (
+                      <li key={child.id} className="list-none">
+                        <a
+                          href={`#${child.id}`}
+                          className={`flex items-start gap-3 text-sm no-underline transition-colors duration-200 hover:text-primary focus-visible:text-primary ${isChildActive ? "text-heading font-semibold" : "text-muted"}`}
+                          aria-current={isChildActive}
+                          onClick={(event) =>
+                            handleChildClick(event, child.id)
+                          }
+                        >
+                          <span className="flex-1 text-left leading-tight">{child.text}</span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+            </li>
+          );
+        })
+      )}
+    </ol>
+  );
+
   return (
     <nav
       id={navId}
-      className={`card-bg faded-border rounded-3xl p-6 shadow-2xl ${className}`.trim()}
+      className={className}
       aria-label={title}
     >
-      <div className="flex items-center justify-center gap-4">
-        <p className="text-[0.7rem] uppercase tracking-[0.3em] font-semibold text-muted">{title}</p>
+      {/* Mobile: Accordion */}
+      <div className="lg:hidden">
+        <AccordionItem
+          id={`${navId}-mobile`}
+          title={title}
+          isExpanded={mobileExpanded}
+          onToggle={() => setMobileExpanded(!mobileExpanded)}
+          headerClassName="text-sm uppercase tracking-widest font-semibold text-muted"
+          showIndicator
+        >
+          {tocContent}
+        </AccordionItem>
       </div>
 
-      <ol id={listId} className="mt-4 space-y-3 list-none p-0 m-0">
-        {groups.length === 0 ? (
-          <li className="py-3 text-sm text-muted">{emptyLabel}</li>
-        ) : (
-          groups.map((group) => {
-            const groupId = group.parent.id;
-            const isOpen = Boolean(openGroups[groupId]);
-            const parentActive =
-              activeId === groupId ||
-              group.children.some((child) => child.id === activeId);
-            const childListId = `${groupId}-children`;
-
-            return (
-              <li key={groupId} className="rounded-2xl list-none">
-                <button
-                  type="button"
-                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-left text-sm md:text-base no-underline transition-colors duration-200 hover:text-primary focus-visible:text-heading ${parentActive ? "text-accent font-semibold" : "text-text"}`}
-                  aria-expanded={isOpen}
-                  aria-controls={childListId}
-                  onClick={(event) => handleParentClick(event, groupId)}
-                >
-                  <span className="flex-1 text-left leading-tight">{group.parent.text}</span>
-                </button>
-
-                {group.children.length > 0 && (
-                  <ol
-                    id={childListId}
-                    className={`${isOpen ? "flex" : "hidden"} flex-col gap-2 px-4 pb-3 pl-4 m-0 list-none`}
-                    aria-hidden={!isOpen}
-                  >
-                    {group.children.map((child) => {
-                      const isChildActive = child.id === activeId;
-                      return (
-                        <li key={child.id} className="list-none">
-                          <a
-                            href={`#${child.id}`}
-                            className={`flex items-start gap-3 text-sm no-underline transition-colors duration-200 hover:text-primary focus-visible:text-primary ${isChildActive ? "text-heading font-semibold" : "text-muted"}`}
-                            aria-current={isChildActive}
-                            onClick={(event) =>
-                              handleChildClick(event, child.id)
-                            }
-                          >
-                            <span className="flex-1 text-left leading-tight">{child.text}</span>
-                          </a>
-                        </li>
-                      );
-                    })}
-                  </ol>
-                )}
-              </li>
-            );
-          })
-        )}
-      </ol>
+      {/* Desktop: Always visible */}
+      <div className="hidden lg:block card-bg faded-border rounded-3xl p-6 shadow-2xl">
+        <div className="flex items-center justify-center gap-4">
+          <p className="text-[0.7rem] uppercase tracking-[0.3em] font-semibold text-muted">{title}</p>
+        </div>
+        <div className="mt-4">
+          {tocContent}
+        </div>
+      </div>
     </nav>
   );
 }
