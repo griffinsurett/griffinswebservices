@@ -2,17 +2,19 @@
 // src/components/ContentRenderer/variants/ContactVariant.astro
 /**
  * Contact Variant - Contact information with social media
- * Features: Contact cards, embedded social media section, 1-3 columns
+ * Features: FeatureCard style contact cards, embedded social media section
+ * Uses normalizeContactLinks for proper phone/email formatting and clickable links
  */
 import ContentRenderer from "../ContentRenderer.astro";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import Section from "@/components/Section.astro";
-import ContactCard from "@/components/LoopComponents/ContactCard.astro";
+import FeatureCard from "@/components/LoopComponents/FeatureCard";
 import Button from "@/components/Button/Button";
 import { query } from "@/utils/query";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import ContactForm from "@/components/Form/forms/ContactForm.astro";
 import { toArray } from "@/utils/array";
+import { normalizeContactLinks } from "@/utils/contactLinks";
 
 interface Props extends BaseVariantProps {
   columns?: 1 | 2 | 3;
@@ -35,6 +37,7 @@ const {
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
+const contactLinks = normalizeContactLinks(safeItems);
 
 const columnClasses = {
   1: "grid-cols-1",
@@ -44,13 +47,38 @@ const columnClasses = {
 ---
 
 <Section id={id} class={`py-16 w-full ${className}`}>
-  <div class="flex flex-col-reverse lg:flex-row w-full">
+  <div class="flex flex-col-reverse justify-center items-start lg:flex-row inner-section">
     <div class="px-4">
-      {safeItems.length > 0 && (
-        <ul class={`flex flex-col gap-6 list-none`}>
-          {safeItems.map((item) => (
-            <li>
-              <ContactCard {...item} />
+      {contactLinks.length > 0 && (
+        <ul class={`flex flex-col gap-4 list-none`}>
+          {contactLinks.map((link) => (
+            <li
+              class="relative overflow-hidden"
+              data-animate="fade-in-up"
+              data-animate-threshold="0.15"
+              data-animate-root-margin="-10% 0px -10% 0px"
+            >
+              <FeatureCard
+                client:visible
+                data={{
+                  icon: link.icon,
+                  title: link.title,
+                  description: link.displayValue,
+                  url: link.url,
+                }}
+                ringDuration={800}
+                listItemProps={{
+                  layout: "horizontal",
+                  alignment: "left",
+                  className: "gap-1 w-full flex items-start",
+                  iconClassName: "icon-large card-icon-color mr-4",
+                  iconSize: "xl",
+                  titleTag: "h3",
+                  titleClassName: "text-heading h3 my-4",
+                  descriptionClassName: "text-lg text-text",
+                  showDescription: true,
+                }}
+              />
             </li>
           ))}
         </ul>
@@ -74,13 +102,6 @@ const columnClasses = {
     </div>
     <div class="flex flex-col justify-between w-full">
       <ContactForm />
-      <ContentRenderer
-        query={query("social-media")}
-        variant="SocialMediaVariant"
-        title="Follow Us"
-        size="lg"
-        alignment="center"
-      />
     </div>
   </div>
 </Section>

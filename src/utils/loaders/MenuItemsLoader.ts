@@ -378,10 +378,13 @@ async function processCollectionMenus(
           const { slug } = parseContentPath(itemPath);
 
           const hasRenderablePage = shouldItemHavePageData(itemData, meta);
-          const itemUrl = hasRenderablePage
-            ? (shouldItemUseRootPathData(itemData, meta) ? `/${slug}` : `/${collection}/${slug}`)
-            : undefined;
-          
+
+          // Skip items that don't have pages - they shouldn't appear in menus
+          // unless they serve as parent containers for other items (handled separately)
+          if (!hasRenderablePage) continue;
+
+          const itemUrl = shouldItemUseRootPathData(itemData, meta) ? `/${slug}` : `/${collection}/${slug}`;
+
           let parent = attachTo;
           // If attachTo is the collection but no explicit collection parent exists in the store,
           // avoid creating an implicit menu item and instead drop to root.

@@ -53,8 +53,9 @@ const contactLinks = normalizeContactLinks(safeItems);
     <ul class="flex flex-col items-start justify-center gap-2 list-none">
       {contactLinks.map((link) => {
         const href = link.url;
-        const displayValue = link.displayTitle || link.title;
-        const supportingText = link.description;
+        // Title is the heading, displayValue is the formatted contact info
+        const displayTitle = link.title;
+        const displayValue = link.displayValue;
         const iconName = link.icon;
         return (
           <li class="py-0" data-contact-id={link.id}>
@@ -72,13 +73,11 @@ const contactLinks = normalizeContactLinks(safeItems);
                 </span>
                 <span class="flex flex-col">
                   <span class="text-heading font-semibold">
+                    {displayTitle}
+                  </span>
+                  <span class="text-sm text-text/70">
                     {displayValue}
                   </span>
-                  {supportingText && (
-                    <span class="text-sm text-text/70 uppercase tracking-wide">
-                      {supportingText}
-                    </span>
-                  )}
                 </span>
               </a>
             ) : (
@@ -92,13 +91,11 @@ const contactLinks = normalizeContactLinks(safeItems);
                 </span>
                 <div class="flex flex-col">
                   <span class="text-heading font-semibold">
+                    {displayTitle}
+                  </span>
+                  <span class="text-sm text-text/70">
                     {displayValue}
                   </span>
-                  {supportingText && (
-                    <span class="text-sm text-text/70 uppercase tracking-wide">
-                      {supportingText}
-                    </span>
-                  )}
                 </div>
               </div>
             )}

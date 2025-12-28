@@ -3,69 +3,57 @@
 /**
  * Contact Card Component
  *
+ * Card-style contact item similar to IconListItem.
  * Displays contact information with:
- * - Icon (defaults based on tags: phone, email, or generic)
- * - Title (phone number, email address, etc.)
- * - Optional description
- * - Clickable link if linkPrefix provided
+ * - Large icon
+ * - Title (formatted phone number, email, etc.)
+ * - Optional description label
+ * - Clickable link (entire card is clickable when href provided)
  *
- * Used in ContactVariant to display phone, email, address, etc.
+ * Expects normalized data from normalizeContactLinks utility.
  */
 
 import Icon from "@/components/Icon";
 
 export interface Props {
-  title: string; // Contact info (phone number, email, etc.)
-  linkPrefix?: string; // URL prefix (tel:, mailto:, etc.)
-  tags?: string[]; // Used to determine default icon
-  description?: string; // Optional label/description
-  icon?: any; // Custom icon (overrides default)
+  title: string;        // Formatted display title
+  href?: string;        // Pre-computed URL (tel:, mailto:, etc.)
+  description?: string; // Label like "Call Us" or "Email Us"
+  icon?: any;           // Icon identifier
 }
 
-const { title, linkPrefix, tags, description, icon } = Astro.props;
+const { title, href, description, icon } = Astro.props;
 
-// Smart icon selection based on tags if no custom icon provided
-const defaultIcon = tags?.includes("phone")
-  ? "lu:phone"
-  : tags?.includes("email")
-    ? "lu:mail"
-    : "lu:contact";
-
-const displayIcon = icon || defaultIcon;
-
-// Build full link if prefix provided (tel:, mailto:, etc.)
-const href = linkPrefix ? `${linkPrefix}${title}` : undefined;
+const displayIcon = icon || "lu:contact";
+const Tag = href ? "a" : "div";
 ---
 
-<div class="bg-bg rounded-lg shadow-md hover:shadow-lg transition-shadow p-6">
-  <div class="flex items-start gap-4">
-    {/* Icon circle */}
-    <div class="flex-shrink-0">
-      <div
-        class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center"
-      >
-        <Icon icon={displayIcon} size="md" className="text-primary" />
-      </div>
-    </div>
-
-    {/* Contact info */}
-    <div class="flex-1">
-      {/* Title as link or plain text */}
-      {
-        href ? (
-          <a
-            href={href}
-            class="text-lg font-semibold text-heading hover:text-primary transition-colors block"
-          >
-            {title}
-          </a>
-        ) : (
-          <p class="text-lg font-semibold text-heading">{title}</p>
-        )
-      }
-
-      {/* Optional description */}
-      {description && <p class="text-text mt-1">{description}</p>}
-    </div>
+<Tag
+  href={href}
+  class:list={[
+    "flex items-center gap-4 p-5 rounded-xl bg-bg border border-border/50",
+    "transition-all duration-200",
+    href && "hover:border-primary/50 hover:shadow-md cursor-pointer group",
+  ]}
+>
+  {/* Icon */}
+  <div class="shrink-0">
+    <Icon
+      icon={displayIcon}
+      size="lg"
+      className="card-icon-color group-hover:text-primary transition-colors"
+    />
   </div>
-</div>
+
+  {/* Content */}
+  <div class="flex flex-col">
+    {description && (
+      <span class="text-sm text-text/70 uppercase tracking-wide mb-0.5">
+        {description}
+      </span>
+    )}
+    <span class="h4 text-heading group-hover:text-primary transition-colors">
+      {title}
+    </span>
+  </div>
+</Tag>

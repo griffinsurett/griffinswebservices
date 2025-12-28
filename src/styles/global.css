@@ -447,7 +447,7 @@ body {
   }
 
   @utility menu-item-spacing {
-    @apply space-y-5;
+    @apply space-y-3;
   }
 
   @utility heading-padding {
