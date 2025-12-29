@@ -48,12 +48,12 @@ const columnClasses = {
 
 <Section id={id} class={`py-16 w-full ${className}`}>
   <div class="flex flex-col-reverse justify-center gap-4 lg:gap-8 items-start lg:flex-row inner-section">
-    <div>
+    <div class="flex flex-1">
       {safeItems.length > 0 && (
-        <ul class={`flex flex-col gap-4 list-none`}>
+        <ul class={`flex flex-wrap lg:flex-col gap-4 list-none w-full`}>
           {safeItems.map((item: any) => (
             <li
-              class="relative overflow-hidden"
+              class="relative overflow-hidden w-full"
               data-animate="fade-in-up"
               data-animate-threshold="0.15"
               data-animate-root-margin="-10% 0px -10% 0px"
@@ -68,14 +68,15 @@ const columnClasses = {
                 }}
                 ringDuration={800}
                 listItemProps={{
-                  layout: "horizontal",
+                  layout: "horizontal-stacked-responsive",
                   alignment: "left",
-                  className: "gap-1 w-full flex items-start",
+                  className: "gap-1 w-full",
+                  containerClassName: "gap-4",
                   iconClassName: "icon-large card-icon-color mr-4",
                   iconSize: "xl",
                   titleTag: "h3",
-                  titleClassName: "text-heading h3 my-4",
-                  descriptionClassName: "text-lg text-text",
+                  titleClassName: "text-heading h3",
+                  descriptionClassName: "text-lg text-text md:mt-0 mt-2",
                   showDescription: true,
                 }}
               />
@@ -100,7 +101,7 @@ const columnClasses = {
         </div>
       )}
     </div>
-    <div class="flex flex-col justify-between w-full">
+    <div class="flex flex-2 flex-col justify-between w-full">
       <ContactForm />
     </div>
   </div>

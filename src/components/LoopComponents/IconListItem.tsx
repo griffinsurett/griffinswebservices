@@ -4,7 +4,7 @@ import Icon from "@/components/Icon";
 import type { IconType } from "@/content/schema";
 import type { IconSize } from "@/integrations/icons";
 
-type Layout = "vertical" | "horizontal" | "horizontal-reverse";
+type Layout = "vertical" | "horizontal" | "horizontal-reverse" | "horizontal-stacked" | "horizontal-stacked-responsive";
 type Alignment = "center" | "left" | "right";
 type TitleTag =
   | "h1"
@@ -80,6 +80,8 @@ export default function IconListItem({
     vertical: "flex flex-col",
     horizontal: "flex items-center",
     "horizontal-reverse": "flex items-start flex-row-reverse",
+    "horizontal-stacked": "flex flex-col",
+    "horizontal-stacked-responsive": "flex flex-col",
   };
 
   const alignments: Record<Alignment, string> = {
@@ -188,21 +190,58 @@ export default function IconListItem({
     return <div className={`shrink-0 ${resolvedIconClassName}`}>{icon}</div>;
   })();
 
+  // Responsive layout: stacked on mobile, horizontal on md+
+  if (layout === "horizontal-stacked-responsive") {
+    return (
+      <div className={`${alignments[alignment]} ${className}`.trim()}>
+        {imageContent}
+        {/* Mobile: stacked layout */}
+        <div className="flex flex-col md:hidden">
+          <div className={`flex items-center ${containerClassName}`}>
+            {iconContent}
+            {titleContent}
+          </div>
+          {descriptionContent}
+        </div>
+        {/* Desktop: horizontal layout */}
+        <div className="hidden md:flex md:items-center">
+          {iconContent}
+          <div className={containerClassName}>
+            {titleContent}
+            {descriptionContent}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`${layouts[layout]} ${alignments[alignment]} ${className}`.trim()}>
       {imageContent}
 
-      {iconContent}
-
-      {layout.includes("horizontal") ? (
-        <div className={containerClassName}>
-          {titleContent}
+      {layout === "horizontal-stacked" ? (
+        <>
+          <div className={`flex items-center ${containerClassName}`}>
+            {iconContent}
+            {titleContent}
+          </div>
           {descriptionContent}
-        </div>
+        </>
       ) : (
         <>
-          {titleContent}
-          {descriptionContent}
+          {iconContent}
+
+          {layout.includes("horizontal") ? (
+            <div className={containerClassName}>
+              {titleContent}
+              {descriptionContent}
+            </div>
+          ) : (
+            <>
+              {titleContent}
+              {descriptionContent}
+            </>
+          )}
         </>
       )}
     </div>
