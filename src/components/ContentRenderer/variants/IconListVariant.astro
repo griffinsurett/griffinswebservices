@@ -36,20 +36,6 @@ const safeItems = toArray(items);
 const sectionTitle = title ?? collectionTitle;
 const showHeader = Boolean(sectionTitle ?? description ?? heading);
 
-const resolveItemUrl = (item: Record<string, any>): string | undefined => {
-    if (!item || typeof item !== "object") return undefined;
-    const candidates = [
-        item.url,
-        item.href,
-        item.link,
-        item.route,
-        item?.data?.url,
-    ];
-    return candidates.find(
-        (value): value is string =>
-            typeof value === "string" && value.trim().length > 0,
-    );
-};
 ---
 
 <Section id={id} class={`py-16 ${className}`.trim()}>
@@ -90,56 +76,44 @@ const resolveItemUrl = (item: Record<string, any>): string | undefined => {
                         <ul
                             class={`flex flex-col gap-4 list-none`.trim()}
                         >
-                            {safeItems.map((item) => {
-                                const route = resolveItemUrl(item);
-                                const linkLabel =
-                                    typeof item?.title === "string"
-                                        ? item.title
-                                        : typeof item?.heading === "string"
-                                          ? item.heading
-                                          : "Open link";
-
-                                return (
-                                    <li
-                                        class="relative overflow-hidden"
-                                        data-animate="fade-in-up"
-                                        data-animate-threshold="0.15"
-                                        data-animate-root-margin="-10% 0px -10% 0px"
-                                    >
-                                        {route ? (
-                                            <FeatureCard
-                                                client:visible
-                                                data={{ ...item, url: route }}
-                                                ringDuration={800}
-                                                listItemProps={{
-                                                    layout: itemLayout,
-                                                    alignment: "left",
-                                                    className: "gap-1 w-full flex items-start",
-                                                    iconClassName: "icon-large card-icon-color mr-4",
-                                                    iconSize: "xl",
-                                                    titleTag: "h3",
-                                                    titleClassName: "text-heading h3 my-4",
-                                                    descriptionClassName: "text-lg text-text",
-                                                }}
-                                            />
-                                        ) : (
-                                            // <div class="p-4 md:p-6 lg:p-8">
-                                                <IconListItem
-                                                    data={item}
-                                                    layout={itemLayout}
-                                                    alignment="left"
-                                                    className="text-left gap-1 w-full flex items-start"
-                                                    iconClassName="icon-large card-icon-color mr-4"
-                                                    iconSize="xl"
-                                                    titleTag="h3"
-                                                    titleClassName="text-heading h3 my-4"
-                                                    descriptionClassName="text-lg text-text"
-                                                />
-                                            // </div>
-                                        )}
-                                    </li>
-                                );
-                            })}
+                            {safeItems.map((item: any) => (
+                                <li
+                                    class="relative overflow-hidden"
+                                    data-animate="fade-in-up"
+                                    data-animate-threshold="0.15"
+                                    data-animate-root-margin="-10% 0px -10% 0px"
+                                >
+                                    {item.url ? (
+                                        <FeatureCard
+                                            client:visible
+                                            data={item}
+                                            ringDuration={800}
+                                            listItemProps={{
+                                                layout: itemLayout,
+                                                alignment: "left",
+                                                className: "gap-1 w-full flex items-start",
+                                                iconClassName: "icon-large card-icon-color mr-4",
+                                                iconSize: "xl",
+                                                titleTag: "h3",
+                                                titleClassName: "text-heading h3 my-4",
+                                                descriptionClassName: "text-lg text-text",
+                                            }}
+                                        />
+                                    ) : (
+                                        <IconListItem
+                                            data={item}
+                                            layout={itemLayout}
+                                            alignment="left"
+                                            className="text-left gap-1 w-full flex items-start"
+                                            iconClassName="icon-large card-icon-color mr-4"
+                                            iconSize="xl"
+                                            titleTag="h3"
+                                            titleClassName="text-heading h3 my-4"
+                                            descriptionClassName="text-lg text-text"
+                                        />
+                                    )}
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 )

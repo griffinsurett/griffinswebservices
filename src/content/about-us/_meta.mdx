@@ -44,6 +44,15 @@ import Section from "@/components/Section.astro";
     />
 
     <ContentRenderer
+      query={byTag("benefits", "featured").orderBy(sortByOrder())}
+      variant="BenefitsVariant"
+      columns={2}
+      gap="lg"
+      title="Why Choose Us"
+      heading="What Makes Our Websites Different"
+    />
+
+    <ContentRenderer
       query={query("testimonials").where((entry) => entry.data.rating >= 4)}
       variant="TestimonialCarouselVariant"
       id="testimonials-home"
@@ -60,5 +69,4 @@ import Section from "@/components/Section.astro";
         text: "a team that cares?",
       }}
       description="Let's talk about your project. We'll listen, ask questions, and map out a plan that makes sense for your goals and budget."
-      id="cta"
     />

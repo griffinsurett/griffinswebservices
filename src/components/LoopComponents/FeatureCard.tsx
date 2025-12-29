@@ -31,7 +31,7 @@ const ICON_KEYS = ["icon", "Icon", "iconName"];
 const TITLE_KEYS = ["title", "name", "heading", "label"];
 const DESCRIPTION_KEYS = ["description", "summary", "excerpt", "body", "content"];
 const IMAGE_KEYS = ["image", "img", "media"];
-const URL_KEYS = ["url", "href", "link"];
+const URL_KEYS = ["url"];
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);

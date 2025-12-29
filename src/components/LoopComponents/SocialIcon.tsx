@@ -8,7 +8,7 @@ type SocialIconSize = "sm" | "md" | "lg";
 
 export interface SocialIconProps {
   title: string;
-  link?: string;
+  url?: string;
   icon?: IconType;
   size?: SocialIconSize;
 }
@@ -27,7 +27,7 @@ const ICON_SIZE_MAP: Record<SocialIconSize, IconSize> = {
 
 export default function SocialIcon({
   title,
-  link,
+  url,
   icon = "lu:globe",
   size = "md",
 }: SocialIconProps) {
@@ -45,9 +45,9 @@ export default function SocialIcon({
       className="inline-flex transition-all duration-300 hover:-translate-y-1"
       innerClassName="rounded-full w-full h-full"
     >
-      {link ? (
+      {url ? (
         <a
-          href={link}
+          href={url}
           target="_blank"
           rel="noopener noreferrer"
           className={`inline-flex rounded-full ${wrapperClass}`}

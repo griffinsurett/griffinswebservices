@@ -39,7 +39,7 @@ export default function TestimonialCard({
   const avatarSrc = getImageSrc(item.featuredImage) || PLACEHOLDER_PATH;
 
   // Determine if this testimonial is interactive (has a page/link)
-  const cardUrl = item.url || item.href || (item.slug ? `/${item.slug}` : undefined);
+  const cardUrl = item.url;
   const isInteractive = Boolean(item.hasPage && cardUrl);
 
   const wrapperClassName = [

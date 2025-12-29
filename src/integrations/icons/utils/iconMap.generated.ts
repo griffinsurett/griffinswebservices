@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/integrations/icons/utils/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuContact, LuGithub, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMail, LuMinus, LuPhone, LuPlus, LuSend, LuSettings, LuSparkles } from 'react-icons/lu';
+import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuGithub, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMail, LuMinus, LuPhone, LuPlus, LuSend, LuSettings, LuSparkles } from 'react-icons/lu';
 import { FaArrowsUpDownLeftRight, FaAws, FaBolt, FaBoxOpen, FaBriefcase, FaBullseye, FaCartShopping, FaChartLine, FaClockRotateLeft, FaCloudflare, FaCode, FaCompass, FaCookieBite, FaCss3Alt, FaDisplay, FaDumbbell, FaEye, FaFeather, FaFigma, FaFileLines, FaGears, FaGithub, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHtml5, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaMagnifyingGlassChart, FaMobileScreenButton, FaNodeJs, FaPalette, FaPenNib, FaPhp, FaPython, FaReact, FaRobot, FaRocket, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaUniversalAccess, FaUtensils, FaWandMagicSparkles, FaWordpress } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiVercel, SiWebflow } from 'react-icons/si';
 
@@ -68,7 +68,6 @@ export const iconMap = {
   'lu:chevron-right': LuChevronRight,
   'lu:clock': LuClock,
   'lu:code': LuCode,
-  'lu:contact': LuContact,
   'lu:github': LuGithub,
   'lu:globe': LuGlobe,
   'lu:image': LuImage,

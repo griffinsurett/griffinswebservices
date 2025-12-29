@@ -314,9 +314,73 @@ export const baseSchema = ({ image }: { image: Function }) =>
     heading: headingSchema.optional(),
     // Tags for filtering (e.g., "featured")
     tags: z.array(z.string()).default([]),
+    // Per-item link behavior override (takes priority over collection's itemsLinkBehavior)
+    linkBehavior: LinkBehaviorConfig,
   });
 
 export type BaseData = z.infer<ReturnType<typeof baseSchema>>;
+
+// ============================================================================
+// LINK BEHAVIOR SCHEMA
+// ============================================================================
+
+/**
+ * Value formatters for display values
+ */
+export const ValueFormatter = z.enum(['phone', 'email', 'none']).default('none');
+
+/**
+ * Link behavior modes for collections
+ * - standard: Generate URL from /{collection}/{slug}
+ * - root: Generate URL from /{slug}
+ * - prefixed: Build URL from linkPrefix + valueField (e.g., tel: + phone)
+ * - field: Use the 'link' field directly as the URL
+ * - none: No URL generation
+ */
+export const LinkMode = z.enum([
+  'standard',   // /{collection}/{slug}
+  'root',       // /{slug}
+  'prefixed',   // linkPrefix + value (for tel:, mailto:, etc.)
+  'field',      // Use 'link' field directly as URL
+  'none',       // No URL
+]).default('standard');
+
+/**
+ * Link behavior configuration for collections
+ *
+ * @example Contact collection (prefixed mode):
+ * ```yaml
+ * linkBehavior:
+ *   mode: prefixed
+ *   linkPrefix: linkPrefix  # Field containing tel: or mailto:
+ *   valueFormatter: phone   # Format description as phone number
+ * ```
+ *
+ * @example Social media (field mode):
+ * ```yaml
+ * linkBehavior:
+ *   mode: field
+ *   link: link  # Use the 'link' field as URL
+ * ```
+ */
+export const LinkBehaviorConfig = z.object({
+  mode: LinkMode,
+
+  // Field mappings
+  link: z.string().default('url'),              // Field containing URL (for 'field' mode)
+  linkPrefix: z.string().default('linkPrefix'), // Field containing prefix (for 'prefixed' mode)
+  // Note: 'prefixed' mode uses item.description as the value by default
+
+  // Static prefix (overrides per-item linkPrefix field)
+  prefix: z.string().optional(),
+
+  // Display value formatting (formats description for display)
+  valueFormatter: ValueFormatter,
+}).optional();
+
+export type LinkBehaviorConfigType = z.infer<typeof LinkBehaviorConfig>;
+export type LinkModeType = z.infer<typeof LinkMode>;
+export type ValueFormatterType = z.infer<typeof ValueFormatter>;
 
 // ============================================================================
 // META SCHEMA
@@ -335,6 +399,8 @@ export const metaSchema = ({ image }: { image: Function }) =>
     itemsHasPage: z.boolean().default(true),
     itemsRootPath: z.boolean().default(false),
     itemsAddToMenu: z.array(ItemsAddToMenuFields).optional(),
+    // Link behavior for all items in this collection (can be overridden per-item)
+    itemsLinkBehavior: LinkBehaviorConfig,
     layout: z.string().default('../layouts/collections/CollectionIndexLayout.astro'),
     itemsLayout: z.string().default('../layouts/collections/CollectionLayout.astro'),
   });

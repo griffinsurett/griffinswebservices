@@ -466,6 +466,43 @@
             },
             "default": []
           },
+          "linkBehavior": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "standard",
+                  "root",
+                  "prefixed",
+                  "field",
+                  "none"
+                ],
+                "default": "standard"
+              },
+              "link": {
+                "type": "string",
+                "default": "url"
+              },
+              "linkPrefix": {
+                "type": "string",
+                "default": "linkPrefix"
+              },
+              "prefix": {
+                "type": "string"
+              },
+              "valueFormatter": {
+                "type": "string",
+                "enum": [
+                  "phone",
+                  "email",
+                  "none"
+                ],
+                "default": "none"
+              }
+            },
+            "additionalProperties": false
+          },
           "email": {
             "type": "string",
             "format": "email"

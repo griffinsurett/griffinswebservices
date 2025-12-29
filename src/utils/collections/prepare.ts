@@ -14,6 +14,7 @@ import { getItemKey } from "./core";
 export interface PreparedFields {
   slug: string;
   url?: string;
+  displayValue?: string;
   Content?: AstroComponentFactory;
   content?: string;
 }
@@ -29,17 +30,36 @@ export async function prepareEntry<T extends CollectionKey>(
   const { shouldItemHavePage, shouldItemUseRootPath } = await import(
     "@/utils/pages"
   );
+  const { applyLinkBehavior, mergeLinkBehavior } = await import(
+    "@/utils/links/linkBehavior"
+  );
 
   const identifier = getItemKey(entry);
   const data = entry.data as Record<string, any>;
 
-  const hasExistingUrl = data.url !== undefined;
-  const hasPage = shouldItemHavePage(entry, meta);
+  // Check for link behavior config (item-level overrides collection-level)
+  const linkBehavior = mergeLinkBehavior(
+    data.linkBehavior,
+    meta.itemsLinkBehavior
+  );
 
   let itemUrl: string | undefined;
-  if (!hasExistingUrl && hasPage) {
-    const useRootPath = shouldItemUseRootPath(entry, meta);
-    itemUrl = useRootPath ? `/${identifier}` : `/${collection}/${identifier}`;
+  let displayValue: string | undefined;
+
+  if (linkBehavior) {
+    // Use link behavior to determine URL and display value
+    const linkResult = applyLinkBehavior(data, linkBehavior, collection, identifier);
+    itemUrl = linkResult.url;
+    displayValue = linkResult.displayValue;
+  } else {
+    // Standard URL generation
+    const hasExistingUrl = data.url !== undefined;
+    const hasPage = shouldItemHavePage(entry, meta);
+
+    if (!hasExistingUrl && hasPage) {
+      const useRootPath = shouldItemUseRootPath(entry, meta);
+      itemUrl = useRootPath ? `/${identifier}` : `/${collection}/${identifier}`;
+    }
   }
 
   let Content: AstroComponentFactory | undefined;
@@ -65,6 +85,7 @@ export async function prepareEntry<T extends CollectionKey>(
     ...data,
     slug: identifier,
     ...(itemUrl && { url: itemUrl }),
+    ...(displayValue && { displayValue }),
     ...(Content && { Content }),
     ...(content && { content }),
   } as PreparedItem;

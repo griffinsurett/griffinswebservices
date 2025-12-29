@@ -3,7 +3,9 @@
 /**
  * Contact Variant - Contact information with social media
  * Features: FeatureCard style contact cards, embedded social media section
- * Uses normalizeContactLinks for proper phone/email formatting and clickable links
+ *
+ * Uses the linkBehavior system for URL/displayValue generation.
+ * Items should have: url, displayValue (from prepareEntry), title, icon
  */
 import ContentRenderer from "../ContentRenderer.astro";
 import type { BaseVariantProps } from "../ContentRenderer.types";
@@ -14,7 +16,6 @@ import { query } from "@/utils/query";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import ContactForm from "@/components/Form/forms/ContactForm.astro";
 import { toArray } from "@/utils/array";
-import { normalizeContactLinks } from "@/utils/contactLinks";
 
 interface Props extends BaseVariantProps {
   columns?: 1 | 2 | 3;
@@ -37,7 +38,6 @@ const {
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
-const contactLinks = normalizeContactLinks(safeItems);
 
 const columnClasses = {
   1: "grid-cols-1",
@@ -49,9 +49,9 @@ const columnClasses = {
 <Section id={id} class={`py-16 w-full ${className}`}>
   <div class="flex flex-col-reverse justify-center items-start lg:flex-row inner-section">
     <div class="px-4">
-      {contactLinks.length > 0 && (
+      {safeItems.length > 0 && (
         <ul class={`flex flex-col gap-4 list-none`}>
-          {contactLinks.map((link) => (
+          {safeItems.map((item: any) => (
             <li
               class="relative overflow-hidden"
               data-animate="fade-in-up"
@@ -61,10 +61,10 @@ const columnClasses = {
               <FeatureCard
                 client:visible
                 data={{
-                  icon: link.icon,
-                  title: link.title,
-                  description: link.displayValue,
-                  url: link.url,
+                  icon: item.icon,
+                  title: item.title,
+                  description: item.displayValue ?? item.description,
+                  url: item.url,
                 }}
                 ringDuration={800}
                 listItemProps={{
