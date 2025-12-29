@@ -16,6 +16,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import SecondaryHero from "@/layouts/SecondaryHero.astro";
 import { query } from "@/utils/query";
+import DoubleCard from "../DoubleCard.astro";
 
 export interface Props {
   Content?: any;
@@ -66,4 +67,6 @@ const heroImage = collectionMeta?.featuredImage;
         )
       }
     </div>
+
+     <DoubleCard />
 </BaseLayout>

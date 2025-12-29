@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
   type FormEvent,
+  type FormHTMLAttributes,
   type ReactNode,
 } from "react";
 import SuccessMessage from "./messages/SuccessMessage";
@@ -31,7 +32,10 @@ export interface SubmitButtonConfig {
 
 export interface FormWrapperProps {
   children: ReactNode;
-  onSubmit: (values: Record<string, any>) => Promise<void> | void;
+  onSubmit?: (values: Record<string, any>) => Promise<void> | void;
+  formAction?: string;
+  formMethod?: FormHTMLAttributes<HTMLFormElement>["method"];
+  useNativeFormSubmission?: boolean;
   successMessage?: string;
   errorMessage?: string;
   loadingMessage?: string;
@@ -54,6 +58,9 @@ export interface FormWrapperProps {
 export default function FormWrapper({
   children,
   onSubmit,
+  formAction,
+  formMethod = "post",
+  useNativeFormSubmission = false,
   successMessage = "Form submitted successfully!",
   errorMessage = "An error occurred. Please try again.",
   loadingMessage = "Submitting your form...",
@@ -111,7 +118,14 @@ export default function FormWrapper({
     }
   };
 
+  const shouldUseNativeSubmission =
+    useNativeFormSubmission && Boolean(formAction);
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    if (!onSubmit) {
+      throw new Error("Form submission handler is not configured.");
+    }
+
     e.preventDefault();
 
     const form = e.currentTarget;
@@ -212,7 +226,13 @@ export default function FormWrapper({
 
   return (
     <FormContext.Provider value={contextValue}>
-      <form onSubmit={handleSubmit} className={className} noValidate={false}>
+      <form
+        action={formAction}
+        method={formMethod}
+        onSubmit={shouldUseNativeSubmission ? undefined : handleSubmit}
+        className={className}
+        noValidate={false}
+      >
         {status === "submitting" && (
           <LoadingMessage>{loadingMessage}</LoadingMessage>
         )}
@@ -241,13 +261,15 @@ export default function FormWrapper({
 
         {/* Terms checkbox - show on last step for multi-step, or always for single-step */}
         {includeTermsCheckbox && (!isMultiStep || currentStep === totalSteps - 1) && (
-          <Checkbox
-            name={termsCheckboxName}
-            required
-            containerClassName="mt-2 mx-1"
-          >
-            {termsCheckboxLabel ?? defaultTermsLabel}
-          </Checkbox>
+          <div className="relative z-10">
+            <Checkbox
+              name={termsCheckboxName}
+              required
+              containerClassName="mt-2 mx-1"
+            >
+              {termsCheckboxLabel ?? defaultTermsLabel}
+            </Checkbox>
+          </div>
         )}
 
         {/* Submit button for single-step forms */}
