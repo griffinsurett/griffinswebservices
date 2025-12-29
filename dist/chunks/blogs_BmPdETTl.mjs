@@ -1,0 +1,107 @@
+import { g as createVNode, F as Fragment, _ as __astro_tag_component__ } from './astro/server_BujBp8IR.mjs';
+import { G as $$TrustStatement } from './BaseLayout_DpejhLLs.mjs';
+import { $ as $$SolutionsSection } from './SolutionsSection_lFItHi1t.mjs';
+import 'clsx';
+
+const frontmatter = {
+  "title": "Blogs",
+  "description": "Turn your expertise into a traffic-driving content engine. We build blogs that rank, convert readers into subscribers, and position you as the go-to authority in your space.",
+  "heading": {
+    "before": "Content that",
+    "text": "ranks & converts",
+    "after": "while you sleep."
+  },
+  "order": 3,
+  "icon": "fa6-solid:pen-nib",
+  "price": "Starting from $1,500"
+};
+function getHeadings() {
+  return [];
+}
+function _createMdxContent(props) {
+  return createVNode(Fragment, {
+    children: [createVNode($$TrustStatement, {
+      text: "Every blog is engineered to rank, build authority, and turn readers into loyal subscribers."
+    }), "\n", createVNode($$SolutionsSection, {
+      icon: frontmatter.icon,
+      features: [{
+        title: "Custom CMS built for you",
+        description: "No fighting with clunky page builders. We create an intuitive content system where publishing a polished article takes minutes, not hours."
+      }, {
+        title: "SEO architecture from day one",
+        description: "Structured data, optimized URLs, internal linking strategy, and Core Web Vitals performance baked into every page so Google actually finds and ranks your content."
+      }, {
+        title: "Category & tag systems",
+        description: "Smart organization that helps readers discover more of your content while sending clear topical signals to search engines."
+      }, {
+        title: "Author profiles that build trust",
+        description: "Showcase your team's expertise with professional bios, credentials, and post archives that establish credibility with every article."
+      }, {
+        title: "Newsletter & subscriber capture",
+        description: "Strategic opt-in placements, lead magnets, and email integrations that turn casual readers into loyal subscribers."
+      }, {
+        title: "Social sharing on autopilot",
+        description: "Custom Open Graph images, Twitter cards, and share buttons that make your content look professional everywhere it's shared."
+      }, {
+        title: "Lightning-fast performance",
+        description: "Sub-second load times that keep readers engaged and help you outrank slower competitors in search results."
+      }],
+      quickFacts: [{
+        title: "Timeline",
+        description: "3-4 weeks to launch"
+      }, {
+        title: "What's included",
+        description: "Design, CMS, SEO setup"
+      }, {
+        title: "After launch",
+        description: "Training + ongoing support"
+      }],
+      contentHeading: {
+        title: "Your expertise deserves a platform",
+        before: "Stop leaving traffic on the table.",
+        text: "Start building authority",
+        after: "with a blog that works.",
+        description: "Most blogs fail because they're built on bloated platforms with zero SEO strategy. We build lean, fast, search-optimized blogs that actually get found."
+      },
+      sidebar: {
+        title: "Built to grow with you",
+        eyebrow: "Why our blogs win",
+        description: "We don't just build pretty blogs. We engineer content systems that compound over time, driving more traffic month after month.",
+        footIcon: "📈",
+        footTitle: "Content that compounds",
+        footDescription: "Every article you publish becomes a permanent asset working to bring in new readers."
+      },
+      textContent: ["You have valuable expertise. Your potential customers are searching for answers you can provide. But if your content is buried on a slow, poorly-structured site, they'll never find you. They'll find your competitors instead.", "We build blogs engineered for organic growth. That means lightning-fast load times that keep readers engaged. Clean architecture that search engines understand. And a publishing workflow so simple you'll actually use it. No more excuses for not hitting publish.", "Whether you're starting fresh or migrating years of existing content, we handle the technical complexity so you can focus on what you do best: sharing your knowledge and growing your audience."],
+      benefitsHeading: "What Makes Our Blogs Different",
+      ctaTitle: "Ready to start your content engine?",
+      ctaHeading: {
+        before: "Let's build your",
+        text: "authority blog",
+        after: "today."
+      },
+      ctaDescription: "Stop leaving traffic on the table. Get a blog that ranks, converts, and positions you as the expert."
+    })]
+  });
+}
+function MDXContent(props = {}) {
+  const {wrapper: MDXLayout} = props.components || ({});
+  return MDXLayout ? createVNode(MDXLayout, {
+    ...props,
+    children: createVNode(_createMdxContent, {
+      ...props
+    })
+  }) : _createMdxContent();
+}
+
+const url = "src/content/solutions/blogs.mdx";
+const file = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/blogs.mdx";
+const Content = (props = {}) => MDXContent({
+  ...props,
+  components: { Fragment: Fragment, ...props.components, },
+});
+Content[Symbol.for('mdx-component')] = true;
+Content[Symbol.for('astro.needsHeadRendering')] = !Boolean(frontmatter.layout);
+Content.moduleId = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/blogs.mdx";
+__astro_tag_component__(Content, 'astro:jsx');
+
+export { Content, Content as default, file, frontmatter, getHeadings, url };

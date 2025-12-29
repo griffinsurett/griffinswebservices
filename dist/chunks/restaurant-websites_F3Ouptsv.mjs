@@ -1,0 +1,107 @@
+import { g as createVNode, F as Fragment, _ as __astro_tag_component__ } from './astro/server_BujBp8IR.mjs';
+import { G as $$TrustStatement } from './BaseLayout_DpejhLLs.mjs';
+import { $ as $$SolutionsSection } from './SolutionsSection_lFItHi1t.mjs';
+import 'clsx';
+
+const frontmatter = {
+  "title": "Restaurant Websites",
+  "description": "Websites that fill tables and drive orders. We build beautiful, fast restaurant sites with menus, reservations, and online ordering that make it easy for hungry customers to become paying guests.",
+  "heading": {
+    "before": "Restaurant sites",
+    "text": "that fill tables",
+    "after": "and drive orders."
+  },
+  "order": 4,
+  "icon": "fa6-solid:utensils",
+  "price": "Starting from $2,000"
+};
+function getHeadings() {
+  return [];
+}
+function _createMdxContent(props) {
+  return createVNode(Fragment, {
+    children: [createVNode($$TrustStatement, {
+      text: "Every restaurant site is designed to fill tables and drive orders from hungry local customers."
+    }), "\n", createVNode($$SolutionsSection, {
+      icon: frontmatter.icon,
+      features: [{
+        title: "Menus that make mouths water",
+        description: "Beautiful, easy-to-update menu displays with photos, descriptions, and dietary info. Update specials in seconds."
+      }, {
+        title: "Online ordering integration",
+        description: "Connect with DoorDash, Uber Eats, or your own ordering system. Make it effortless to order from you."
+      }, {
+        title: "Reservation system",
+        description: "OpenTable, Resy, or simple booking forms that let guests reserve tables without calling."
+      }, {
+        title: "Mobile-first design",
+        description: "Most people search for restaurants on their phones. Your site will look perfect on any device."
+      }, {
+        title: "Local SEO optimized",
+        description: "Get found when people search for restaurants near them. Google Business Profile integration included."
+      }, {
+        title: "Photo galleries that sell",
+        description: "Showcase your food, ambiance, and team with galleries designed to make people hungry."
+      }, {
+        title: "Hours, location, and contact",
+        description: "Make it dead simple for customers to find you, call you, or get directions."
+      }],
+      quickFacts: [{
+        title: "Timeline",
+        description: "2-4 weeks to launch"
+      }, {
+        title: "What's included",
+        description: "Design, menu setup, training"
+      }, {
+        title: "Integrations",
+        description: "Reservations + ordering"
+      }],
+      contentHeading: {
+        title: "Hungry customers are searching for you",
+        before: "If they can't find you online,",
+        text: "they'll find your competitor.",
+        after: "Don't let that happen.",
+        description: "When someone's deciding where to eat, they're looking at your website. A dated, slow, or hard-to-navigate site sends them straight to the restaurant down the street."
+      },
+      sidebar: {
+        title: "Turn browsers into diners",
+        eyebrow: "Why our restaurant sites work",
+        description: "Fast load times, mouthwatering visuals, and seamless ordering that turns hungry searchers into paying customers.",
+        footIcon: "🍽",
+        footTitle: "Your menu, always up to date",
+        footDescription: "Update specials, prices, and hours yourself in minutes—no waiting on a developer."
+      },
+      textContent: ["People don't just want to find your restaurant online—they want to immediately understand what you're about, see what you serve, and know how to get there or order. If your website makes any of that hard, they'll move on to the next option.", "We build restaurant websites that work as hard as you do. Menus that are easy to browse and make people hungry. Seamless connections to your reservation system or online ordering. And mobile-first design because that's where most of your customers are looking.", "Behind the scenes, you get a site you can actually update yourself. Change tonight's specials, update your hours, or swap out photos without calling us. Plus local SEO optimization so hungry people in your area actually find you on Google."],
+      benefitsHeading: "What Makes Our Restaurant Sites Different",
+      ctaTitle: "Ready to fill more tables?",
+      ctaHeading: {
+        before: "Let's build your",
+        text: "restaurant website",
+        after: "today."
+      },
+      ctaDescription: "Stop losing hungry customers to competitors with better websites. Get a site that fills tables and drives orders."
+    })]
+  });
+}
+function MDXContent(props = {}) {
+  const {wrapper: MDXLayout} = props.components || ({});
+  return MDXLayout ? createVNode(MDXLayout, {
+    ...props,
+    children: createVNode(_createMdxContent, {
+      ...props
+    })
+  }) : _createMdxContent();
+}
+
+const url = "src/content/solutions/restaurant-websites.mdx";
+const file = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/restaurant-websites.mdx";
+const Content = (props = {}) => MDXContent({
+  ...props,
+  components: { Fragment: Fragment, ...props.components, },
+});
+Content[Symbol.for('mdx-component')] = true;
+Content[Symbol.for('astro.needsHeadRendering')] = !Boolean(frontmatter.layout);
+Content.moduleId = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/restaurant-websites.mdx";
+__astro_tag_component__(Content, 'astro:jsx');
+
+export { Content, Content as default, file, frontmatter, getHeadings, url };

@@ -28,21 +28,27 @@ export interface Props {
 
 const {
   Content,
-  collectionName,
-  collectionMeta,
-  seoProps,
+  collectionName = "blog",
+  collectionMeta = {},
+  seoProps = {},
   hasContent = false,
 } = Astro.props;
 
-const { title: pageTitle, description: pageDescription } = seoProps;
+// Get title/description from seoProps or fall back to collectionMeta
+const pageTitle = seoProps?.title || collectionMeta?.title || "Blog";
+const pageDescription = seoProps?.description || collectionMeta?.description || "";
 
 // Use featuredImage from _meta.mdx if provided, otherwise undefined (will use default)
-const heroImage = collectionMeta.featuredImage;
+const heroImage = collectionMeta?.featuredImage;
 ---
 
 <BaseLayout {...seoProps}>
-    {/* Header - Always displayed */}
-    Blog Index Layout
+    {/* Header - SecondaryHero with title and description */}
+    <SecondaryHero
+      title={pageTitle}
+      description={pageDescription}
+      image={heroImage}
+    />
 
     {/* Content - Either custom MDX or default grid */}
     <div class="container mx-auto px-4 pb-16">
@@ -51,10 +57,11 @@ const heroImage = collectionMeta.featuredImage;
           /* Custom MDX content from _meta.mdx body */
           <Content />
         ) : (
-          /* Default: Grid of collection items */
+          /* Default: Grid of blog posts */
           <ContentRenderer
             query={query(collectionName)}
-            variant="CardVariant"
+            variant="BlogVariant"
+            columns={2}
           />
         )
       }

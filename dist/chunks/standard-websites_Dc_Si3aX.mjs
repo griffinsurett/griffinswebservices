@@ -1,0 +1,108 @@
+import { g as createVNode, F as Fragment, _ as __astro_tag_component__ } from './astro/server_BujBp8IR.mjs';
+import { G as $$TrustStatement } from './BaseLayout_DpejhLLs.mjs';
+import { $ as $$SolutionsSection } from './SolutionsSection_lFItHi1t.mjs';
+import 'clsx';
+
+const frontmatter = {
+  "title": "Standard Websites",
+  "description": "Professional websites that establish credibility and generate leads. We build fast, modern sites that make your business look as good online as you are in person.",
+  "heading": {
+    "before": "Professional websites",
+    "text": "that win trust",
+    "after": "and generate leads."
+  },
+  "order": 2,
+  "icon": "fa6-solid:laptop",
+  "price": "Starting from $999",
+  "featured": true
+};
+function getHeadings() {
+  return [];
+}
+function _createMdxContent(props) {
+  return createVNode(Fragment, {
+    children: [createVNode($$TrustStatement, {
+      text: "Every site is custom-designed around your brand, your goals, and your audience."
+    }), "\n", createVNode($$SolutionsSection, {
+      icon: frontmatter.icon,
+      features: [{
+        title: "Custom design that fits your brand",
+        description: "No cookie-cutter templates. We design a unique look that reflects your business and stands out from competitors."
+      }, {
+        title: "Built for speed and SEO",
+        description: "Lightning-fast load times and search-engine-friendly architecture so customers can actually find you on Google."
+      }, {
+        title: "Mobile-first responsive design",
+        description: "Looks and works perfectly on phones, tablets, and desktops. Because over half your visitors are on mobile."
+      }, {
+        title: "Easy content management",
+        description: "Update text, images, and pages yourself without calling a developer. We train you and provide documentation."
+      }, {
+        title: "Lead capture forms that work",
+        description: "Contact forms, quote requests, and newsletter signups that route directly to your inbox or CRM."
+      }, {
+        title: "Analytics and tracking included",
+        description: "Know exactly how many people visit, where they come from, and what they do on your site."
+      }, {
+        title: "Ongoing support available",
+        description: "We don't disappear after launch. Hosting, maintenance, and updates available so you're never stuck."
+      }],
+      quickFacts: [{
+        title: "Timeline",
+        description: "3-5 weeks to launch"
+      }, {
+        title: "What's included",
+        description: "Design, development, training"
+      }, {
+        title: "After launch",
+        description: "Hosting + support included"
+      }],
+      contentHeading: {
+        title: "Your business deserves a website that works",
+        before: "Stop losing customers to",
+        text: "competitors with better websites.",
+        after: "Get one that wins.",
+        description: "Most of your competitors have terrible websites—or none at all. A professional site instantly positions you as the credible choice customers trust before they ever call."
+      },
+      sidebar: {
+        title: "Everything you need to compete",
+        eyebrow: "Why our sites perform",
+        description: "Custom design, fast load times, and SEO-friendly architecture that makes you look established and helps customers find you.",
+        footIcon: "🚀",
+        footTitle: "Online in weeks, not months",
+        footDescription: "We don't drag projects out. You'll have a professional site live and working in 3-5 weeks."
+      },
+      textContent: ["You didn't start your business to become a web designer. You have customers to serve, a team to lead, a company to grow. But here's the truth: your website is often the first impression potential customers get of your business.", "We build websites that make that first impression count. Custom designs that reflect your brand, lightning-fast load times that keep visitors engaged, and SEO-friendly architecture so people can actually find you on Google.", "Behind the scenes, you get a site you can actually manage yourself. Update text, swap images, and add pages without calling us. And when you need help, we're here—hosting, maintenance, and support included."],
+      benefitsHeading: "What Makes Our Websites Different",
+      ctaTitle: "Ready for a website that works for you?",
+      ctaHeading: {
+        before: "Let's build your",
+        text: "professional website",
+        after: "today."
+      },
+      ctaDescription: "Stop losing customers to competitors with better websites. Get a fast, modern site that establishes credibility and generates leads."
+    })]
+  });
+}
+function MDXContent(props = {}) {
+  const {wrapper: MDXLayout} = props.components || ({});
+  return MDXLayout ? createVNode(MDXLayout, {
+    ...props,
+    children: createVNode(_createMdxContent, {
+      ...props
+    })
+  }) : _createMdxContent();
+}
+
+const url = "src/content/solutions/standard-websites.mdx";
+const file = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/standard-websites.mdx";
+const Content = (props = {}) => MDXContent({
+  ...props,
+  components: { Fragment: Fragment, ...props.components, },
+});
+Content[Symbol.for('mdx-component')] = true;
+Content[Symbol.for('astro.needsHeadRendering')] = !Boolean(frontmatter.layout);
+Content.moduleId = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/standard-websites.mdx";
+__astro_tag_component__(Content, 'astro:jsx');
+
+export { Content, Content as default, file, frontmatter, getHeadings, url };

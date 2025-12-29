@@ -4,11 +4,10 @@
  * Quote Form - Compact version for hero sections
  * Simplified form with essential fields: name, email, phone, message
  */
-import Button from "@/components/Button/Button";
 import FormWrapper from "@/components/Form/FormWrapper";
 import Input from "@/components/Form/inputs/Input";
 import Textarea from "@/components/Form/inputs/Textarea";
-import Checkbox from "../inputs/Checkbox";
+import { submitToFormspree } from "@/utils/formspree";
 
 interface Props {
   className?: string;
@@ -19,9 +18,19 @@ const {
   className = "",
   buttonText = "Get Your Quote"
 } = Astro.props;
+const quoteFormId = import.meta.env.PUBLIC_FORMSPREE_QUOTE_ID;
 
-const handleSubmit = async (values: any) => {
-  console.log("Quote form submitted:", values);
+const handleSubmit = async (values: Record<string, unknown>) => {
+  if (!quoteFormId) {
+    throw new Error("Quote request form is unavailable at the moment.");
+  }
+
+  await submitToFormspree({
+    formId: quoteFormId,
+    formName: "Quote Request",
+    values,
+    excludeKeys: ["terms-agreement"],
+  });
 };
 ---
 

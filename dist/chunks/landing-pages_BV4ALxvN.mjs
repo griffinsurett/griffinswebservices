@@ -1,0 +1,107 @@
+import { g as createVNode, F as Fragment, _ as __astro_tag_component__ } from './astro/server_BujBp8IR.mjs';
+import { G as $$TrustStatement } from './BaseLayout_DpejhLLs.mjs';
+import { $ as $$SolutionsSection } from './SolutionsSection_lFItHi1t.mjs';
+import 'clsx';
+
+const frontmatter = {
+  "title": "Landing Pages",
+  "description": "High-converting landing pages designed to turn ad clicks into customers. We build focused, persuasive pages that maximize your marketing ROI.",
+  "heading": {
+    "before": "Landing pages that",
+    "text": "convert clicks",
+    "after": "into customers."
+  },
+  "order": 1,
+  "icon": "fa6-solid:file-lines",
+  "price": "Starting from $500"
+};
+function getHeadings() {
+  return [];
+}
+function _createMdxContent(props) {
+  return createVNode(Fragment, {
+    children: [createVNode($$TrustStatement, {
+      text: "Every page is strategically designed to maximize your ad ROI and convert clicks into customers."
+    }), "\n", createVNode($$SolutionsSection, {
+      icon: frontmatter.icon,
+      features: [{
+        title: "Conversion-focused design",
+        description: "Every element strategically placed to guide visitors toward one goal: taking action on your offer."
+      }, {
+        title: "Lightning-fast load times",
+        description: "Pages that load in under 2 seconds. Slow pages kill conversions and waste your ad spend."
+      }, {
+        title: "Mobile-optimized experience",
+        description: "Designed mobile-first because most ad traffic comes from phones. No pinching or zooming required."
+      }, {
+        title: "A/B testing ready",
+        description: "Built to test different headlines, images, and CTAs so you can optimize based on real data."
+      }, {
+        title: "Form and CRM integration",
+        description: "Leads flow directly into your inbox, CRM, or marketing automation—no manual data entry."
+      }, {
+        title: "Tracking pixels installed",
+        description: "Google Analytics, Meta Pixel, and conversion tracking set up correctly from day one."
+      }, {
+        title: "Thank you page included",
+        description: "Custom confirmation page that reinforces the next step and keeps engagement going."
+      }],
+      quickFacts: [{
+        title: "Timeline",
+        description: "5-7 days to launch"
+      }, {
+        title: "What's included",
+        description: "Page + thank you + tracking"
+      }, {
+        title: "Optimization",
+        description: "A/B variants available"
+      }],
+      contentHeading: {
+        title: "Stop wasting ad spend on bad pages",
+        before: "Your ads are working.",
+        text: "Your landing page isn't.",
+        after: "Let's fix that.",
+        description: "You're paying for every click. If those clicks land on a slow, confusing, or generic page, you're throwing money away. A great landing page turns that ad spend into actual customers."
+      },
+      sidebar: {
+        title: "Built for one thing: conversions",
+        eyebrow: "Why our pages perform",
+        description: "We obsess over the details that make people click. Compelling headlines, clear value props, strategic CTAs, and zero distractions.",
+        footIcon: "💰",
+        footTitle: "Maximize your ad ROI",
+        footDescription: "Every dollar you spend on ads works harder when it lands on a page designed to convert."
+      },
+      textContent: ["Most landing pages fail because they try to do too much. They're cluttered with navigation, competing messages, and distractions that pull visitors away from the one action you want them to take.", "We build focused landing pages with one goal: getting visitors to convert. That means compelling headlines that grab attention, clear value propositions that explain why they should care, social proof that builds trust, and a single, obvious call-to-action.", "Fast load times, mobile optimization, and proper tracking are table stakes. We handle all the technical details so you can focus on running your campaigns and watching the leads come in."],
+      benefitsHeading: "What Makes Our Landing Pages Different",
+      ctaTitle: "Ready to maximize your ad spend?",
+      ctaHeading: {
+        before: "Let's build your",
+        text: "high-converting page",
+        after: "today."
+      },
+      ctaDescription: "Stop wasting money on ads that lead to slow, confusing pages. Get a landing page engineered for conversions."
+    })]
+  });
+}
+function MDXContent(props = {}) {
+  const {wrapper: MDXLayout} = props.components || ({});
+  return MDXLayout ? createVNode(MDXLayout, {
+    ...props,
+    children: createVNode(_createMdxContent, {
+      ...props
+    })
+  }) : _createMdxContent();
+}
+
+const url = "src/content/solutions/landing-pages.mdx";
+const file = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/landing-pages.mdx";
+const Content = (props = {}) => MDXContent({
+  ...props,
+  components: { Fragment: Fragment, ...props.components, },
+});
+Content[Symbol.for('mdx-component')] = true;
+Content[Symbol.for('astro.needsHeadRendering')] = !Boolean(frontmatter.layout);
+Content.moduleId = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/landing-pages.mdx";
+__astro_tag_component__(Content, 'astro:jsx');
+
+export { Content, Content as default, file, frontmatter, getHeadings, url };

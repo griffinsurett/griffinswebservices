@@ -1,0 +1,107 @@
+import { g as createVNode, F as Fragment, _ as __astro_tag_component__ } from './astro/server_BujBp8IR.mjs';
+import { G as $$TrustStatement } from './BaseLayout_DpejhLLs.mjs';
+import { $ as $$SolutionsSection } from './SolutionsSection_lFItHi1t.mjs';
+import 'clsx';
+
+const frontmatter = {
+  "title": "Custom Full-Stack Applications",
+  "description": "When off-the-shelf software doesn't cut it, we build exactly what you need. Custom web applications tailored to your unique workflows, designed to scale with your business.",
+  "heading": {
+    "before": "Custom apps",
+    "text": "built for your business,",
+    "after": "not the other way around."
+  },
+  "order": 6,
+  "icon": "fa6-solid:code",
+  "price": "Starting from $8,000"
+};
+function getHeadings() {
+  return [];
+}
+function _createMdxContent(props) {
+  return createVNode(Fragment, {
+    children: [createVNode($$TrustStatement, {
+      text: "Every application is built from scratch to match your exact workflow—no compromises or workarounds."
+    }), "\n", createVNode($$SolutionsSection, {
+      icon: frontmatter.icon,
+      features: [{
+        title: "Built to your exact requirements",
+        description: "No compromises or workarounds. We build software that matches how you actually work."
+      }, {
+        title: "Modern, scalable architecture",
+        description: "Clean code and proven technologies that grow with your business and won't become outdated."
+      }, {
+        title: "Secure by design",
+        description: "User authentication, role-based permissions, and data encryption baked in from the start."
+      }, {
+        title: "Third-party integrations",
+        description: "Connect with the tools you already use—CRMs, payment processors, APIs, and more."
+      }, {
+        title: "Real-time dashboards and reporting",
+        description: "See what's happening in your business at a glance with custom analytics and visualizations."
+      }, {
+        title: "Mobile-responsive design",
+        description: "Works beautifully on desktop, tablet, and mobile so your team can work from anywhere."
+      }, {
+        title: "Ongoing support and maintenance",
+        description: "We don't disappear after launch. Hosting, updates, and support plans available."
+      }],
+      quickFacts: [{
+        title: "Timeline",
+        description: "8-16 weeks typical"
+      }, {
+        title: "Process",
+        description: "Discovery, design, build, launch"
+      }, {
+        title: "After launch",
+        description: "Hosting + support included"
+      }],
+      contentHeading: {
+        title: "Your business is unique. Your software should be too.",
+        before: "Stop forcing your workflow",
+        text: "into generic software.",
+        after: "Get a solution built for you.",
+        description: "Off-the-shelf tools force you to work around their limitations. Custom applications work exactly how you need them to—no compromises, no workarounds."
+      },
+      sidebar: {
+        title: "From concept to production",
+        eyebrow: "How we build",
+        description: "We partner with you from discovery through launch and beyond. You get a dedicated team that understands your business and builds software that grows with it.",
+        footIcon: "🛠",
+        footTitle: "Built to last",
+        footDescription: "Clean architecture, thorough documentation, and ongoing support mean your investment keeps paying off."
+      },
+      textContent: ["Every business has unique processes, data flows, and requirements. When you try to force those into generic software, you end up with workarounds, manual processes, and frustrated teams. Custom software eliminates all of that.", "We build web applications that match exactly how you work. Customer portals, internal tools, booking systems, dashboards, workflow automation—whatever you need, designed around your specific requirements and integrated with your existing tools.", "Our process starts with understanding your business deeply. We map out requirements, design interfaces, and build iteratively with your feedback at every step. You're never left guessing what we're building or why."],
+      benefitsHeading: "What Makes Our Custom Apps Different",
+      ctaTitle: "Ready to build something custom?",
+      ctaHeading: {
+        before: "Let's create your",
+        text: "custom application",
+        after: "today."
+      },
+      ctaDescription: "Stop forcing your workflows into generic software. Get an application built exactly for how your business works."
+    })]
+  });
+}
+function MDXContent(props = {}) {
+  const {wrapper: MDXLayout} = props.components || ({});
+  return MDXLayout ? createVNode(MDXLayout, {
+    ...props,
+    children: createVNode(_createMdxContent, {
+      ...props
+    })
+  }) : _createMdxContent();
+}
+
+const url = "src/content/solutions/custom-full-stack-applications.mdx";
+const file = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/custom-full-stack-applications.mdx";
+const Content = (props = {}) => MDXContent({
+  ...props,
+  components: { Fragment: Fragment, ...props.components, },
+});
+Content[Symbol.for('mdx-component')] = true;
+Content[Symbol.for('astro.needsHeadRendering')] = !Boolean(frontmatter.layout);
+Content.moduleId = "/Users/griffinsurett/coding/2025-Website-Projects/griffinswebservices/new/Griffins_Web_Services/src/content/solutions/custom-full-stack-applications.mdx";
+__astro_tag_component__(Content, 'astro:jsx');
+
+export { Content, Content as default, file, frontmatter, getHeadings, url };
