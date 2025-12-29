@@ -64,7 +64,7 @@ export default function FormWrapper({
   successMessage = "Form submitted successfully!",
   errorMessage = "An error occurred. Please try again.",
   loadingMessage = "Submitting your form...",
-  resetOnSuccess = false,
+  resetOnSuccess = true,
   className = "",
   onSuccess,
   onError,
@@ -81,6 +81,7 @@ export default function FormWrapper({
   >("idle");
   const [message, setMessage] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
+  const [formInstance, setFormInstance] = useState(0);
   const stepContainerRef = useRef<HTMLDivElement>(null);
 
   const childrenArray = Children.toArray(children);
@@ -161,6 +162,7 @@ export default function FormWrapper({
       if (resetOnSuccess) {
         form.reset();
         setCurrentStep(0);
+        setFormInstance((prev) => prev + 1);
       }
 
       onSuccess?.();
@@ -227,6 +229,7 @@ export default function FormWrapper({
   return (
     <FormContext.Provider value={contextValue}>
       <form
+        key={formInstance}
         action={formAction}
         method={formMethod}
         onSubmit={shouldUseNativeSubmission ? undefined : handleSubmit}
