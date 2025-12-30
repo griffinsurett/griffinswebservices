@@ -487,7 +487,7 @@ function SliderTile({
         step={step}
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="mt-3 w-full accent-primary"
+        className="a11y-slider"
         aria-label={label}
       />
     </div>
