@@ -1,0 +1,18 @@
+---
+title: "Fast-Loading Blog Pages"
+description: "Your blog loads quickly so readers can start reading right away — no waiting, no frustration."
+icon: "fa6-solid:bolt"
+order: 11
+solutions:
+  - blogs
+---
+
+import BarGraph from "@/components/AnimatedExamples/BarGraph";
+import WebsiteLoadComparison from "@/components/AnimatedExamples/WebsiteLoadComparison";
+
+<div className="flex flex-col gap-3 mt-2">
+  <BarGraph label="GWS Average" value={97.5} statValue={2.5} statSuffix=" seconds" variant="primary-reverse" client:visible />
+  <BarGraph label="Industry Average" value={34} statValue={7.1} statSuffix=" seconds" variant="grey" delay={200} client:visible />
+</div>
+
+<WebsiteLoadComparison className="mt-4" client:visible />

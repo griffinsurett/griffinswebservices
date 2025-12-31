@@ -146,7 +146,7 @@ export default function BarGraph({
     : 0;
 
   return (
-    <DecorativeWrapper className={`w-full ${className}`}>
+    <DecorativeWrapper className={`w-full select-none pointer-events-none ${className}`}>
       <div ref={barRef} className="flex justify-between items-center">
         <span className="text-sm text-text/80">{label}</span>
         {statValue !== undefined ? (

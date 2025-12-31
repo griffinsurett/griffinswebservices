@@ -4,11 +4,18 @@ description: "Built to load instantly and feel effortless from the very first in
 icon: "fa6-solid:bolt"
 order: 1
 tags: ["featured"]
+solutions:
+  - landing-pages
+  - standard-websites
+  - portfolio-websites
 ---
 
 import BarGraph from "@/components/AnimatedExamples/BarGraph";
+import WebsiteLoadComparison from "@/components/AnimatedExamples/WebsiteLoadComparison";
 
 <div className="flex flex-col gap-3 mt-2">
   <BarGraph label="GWS Average" value={97.5} statValue={2.5} statSuffix=" seconds" variant="primary-reverse" client:visible />
   <BarGraph label="Industry Average" value={34} statValue={7.1} statSuffix=" seconds" variant="grey" delay={200} client:visible />
 </div>
+
+<WebsiteLoadComparison className="mt-4" client:visible />

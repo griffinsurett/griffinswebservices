@@ -179,6 +179,7 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         highlight: z.boolean().optional(),
+        solutions: refSchema("solutions"),
       }),
   }),
 

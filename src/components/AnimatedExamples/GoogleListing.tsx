@@ -29,7 +29,7 @@ export default function GoogleListing({
   const prefersReducedMotion = useMotionPreference();
 
   return (
-    <DecorativeWrapper className={`relative bg-bg2 rounded-lg p-4 text-left border border-text/10 overflow-hidden ${className}`}>
+    <DecorativeWrapper className={`relative bg-bg2 rounded-lg p-4 text-left border border-text/10 overflow-hidden select-none pointer-events-none ${className}`}>
       {/* Favicon + site name + URL */}
       <div className="flex items-center gap-3 mb-2">
         <div className="w-7 h-7 rounded-full bg-bg3 flex items-center justify-center shrink-0">
@@ -55,7 +55,7 @@ export default function GoogleListing({
         <span className="text-text/70">{date}</span>
         <span className="text-text/40 mx-1">—</span>
         {description}
-        <span className="text-primary ml-1 cursor-pointer hover:underline">Read more</span>
+        <span className="text-primary ml-1">Read more</span>
       </p>
 
       {/* Animated cursor - show in final position for reduced motion */}

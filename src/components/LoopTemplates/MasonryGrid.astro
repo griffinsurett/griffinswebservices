@@ -21,28 +21,18 @@ interface Props {
 
 const { items, className = "" } = Astro.props;
 
-// Explicit column assignments for balanced heights
-const leftColumnTitles = [
-  "Lightning-Fast Websites",
-  "Designed to Stand Out on Every Device",
-  "Designed to Grow With You",
-];
+// Distribute items into columns for balanced heights
+// Alternates items between left and right columns
+const leftColumn: MasonryCardData[] = [];
+const rightColumn: MasonryCardData[] = [];
 
-const rightColumnTitles = [
-  "SEO From the Foundations",
-  "Future-Ready & AI-Prepared",
-  "Security-Minded by Design",
-  "Support That Sticks Around",
-];
-
-// Build columns based on explicit assignments
-const leftColumn = leftColumnTitles
-  .map(title => items.find(item => item.title === title))
-  .filter((item): item is MasonryCardData => item !== undefined);
-
-const rightColumn = rightColumnTitles
-  .map(title => items.find(item => item.title === title))
-  .filter((item): item is MasonryCardData => item !== undefined);
+items.forEach((item, index) => {
+  if (index % 2 === 0) {
+    leftColumn.push(item);
+  } else {
+    rightColumn.push(item);
+  }
+});
 ---
 
 <div class={`masonry-grid ${className}`}>

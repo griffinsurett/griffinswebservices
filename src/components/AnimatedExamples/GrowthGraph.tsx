@@ -99,7 +99,7 @@ export default function GrowthGraph({ className = "" }: GrowthGraphProps) {
 
   return (
     <DecorativeWrapper
-      className={`-mx-6 -mb-6 mt-4 overflow-hidden rounded-b-2xl bg-text/10 ${className}`}
+      className={`-mx-6 -mb-6 mt-4 overflow-hidden rounded-b-2xl bg-text/10 select-none pointer-events-none ${className}`}
     >
       {/* Labels above the graph */}
       <div className="flex justify-between px-4 pt-3 pb-2 text-xs text-text/60">

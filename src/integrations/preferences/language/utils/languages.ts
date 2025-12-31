@@ -28,6 +28,7 @@ export const supportedLanguages: Language[] = [
   { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '🇯🇵' },
   { code: 'ko', name: 'Korean', nativeName: '한국어', flag: '🇰🇷' },
   { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦' },
+  { code: 'fa', name: 'Farsi', nativeName: 'فارسی', flag: '🇮🇷' },
 ];
 
 export const defaultLanguage: Language = supportedLanguages[0];

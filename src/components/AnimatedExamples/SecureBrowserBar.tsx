@@ -37,7 +37,7 @@ export default function SecureBrowserBar({
   }, [prefersReducedMotion]);
 
   return (
-    <DecorativeWrapper className={`bg-text/10 rounded-lg p-3 ${className}`}>
+    <DecorativeWrapper className={`bg-text/10 rounded-lg p-3 select-none pointer-events-none ${className}`}>
       {/* Browser bar */}
       <div className="flex items-center gap-2">
         {/* Browser dots */}

@@ -156,14 +156,16 @@ const fullSidebar = sidebar ? {
   )}
 </ContentSection>
 
-<ContentRenderer
-  query={query("benefits").orderBy(sortByOrder())}
-  variant="BenefitsVariant"
-  columns={2}
-  gap="lg"
-  title={benefitsTitle}
-  heading={benefitsHeading || `What Makes Our ${title} Different`}
-/>
+{slug && (
+  <ContentRenderer
+    query={related("benefits", "solutions", slug)}
+    variant="BenefitsVariant"
+    columns={2}
+    gap="lg"
+    title={benefitsTitle}
+    heading={benefitsHeading || `What Makes Our ${title} Different`}
+  />
+)}
 
 <ContentRenderer
   query={query("testimonials")}

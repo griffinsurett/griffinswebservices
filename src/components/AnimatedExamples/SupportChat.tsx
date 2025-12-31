@@ -48,7 +48,7 @@ export default function SupportChat({ className = "" }: SupportChatProps) {
   }, [animationKey, prefersReducedMotion]);
 
   return (
-    <DecorativeWrapper className={`flex gap-4 ${className}`}>
+    <DecorativeWrapper className={`flex gap-4 select-none pointer-events-none ${className}`}>
       {/* Chat section */}
       <div className="flex-1 bg-text/10 rounded-lg overflow-hidden">
         {/* Chat header */}
