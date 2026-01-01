@@ -450,6 +450,29 @@ body {
     @apply space-y-3;
   }
 
+/* ============================================================
+ * HERO SECTION STYLES
+ * Consolidated hero layout with landscape viewport adjustments
+ * ============================================================ */
+@layer components {
+  .hero-section {
+    /* Core layout */
+    @apply relative min-h-screen flex items-center justify-center overflow-hidden;
+    /* Default top padding for fixed header */
+    @apply pt-16;
+
+    /* Landscape phones/tablets with short viewports */
+    @media (orientation: landscape) and (max-height: 700px) {
+      @apply pt-20;
+      min-height: auto !important;
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      @apply pt-24 pb-8;
+    }
+  }
+}
+
   @utility heading-padding {
     @apply lg:px-20;
   }
