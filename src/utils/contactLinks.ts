@@ -53,8 +53,8 @@ export function normalizeContactLinks(items: Array<any>): ContactLink[] {
 }
 
 export async function getContactLinks(): Promise<ContactLink[]> {
-  const { getCollection } = await import('astro:content');
-  const entries = await getCollection('contact-us');
+  const { getPublishedCollection } = await import('@/utils/collections');
+  const entries = await getPublishedCollection('contact-us');
   return normalizeContactLinks(entries as CollectionEntry<'contact-us'>[]);
 }
 

@@ -21,8 +21,8 @@
  */
 
 import { getImage } from "astro:assets";
-import { getCollection } from "astro:content";
 import type { CollectionKey } from "astro:content";
+import { getPublishedCollection } from "@/utils/collections";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import type { FilterConfig } from "@/hooks/useFilter";
 import SectionHeader from "@/components/SectionHeader.astro";
@@ -84,8 +84,8 @@ const {
 // Items are the filter tabs (e.g., industries)
 const filterItems = toArray(items) as Record<string, any>[];
 
-// Fetch the related collection (e.g., projects)
-const relatedItems = await getCollection(relatedCollection);
+// Fetch the related collection (e.g., projects) - drafts excluded
+const relatedItems = await getPublishedCollection(relatedCollection);
 
 // Image optimization settings
 const IMAGE_WIDTHS = [480, 640, 860, 1024, 1280, 1600];

@@ -100,26 +100,26 @@ export class Query<T extends CollectionKey> {
    * Execute query and return results
    */
   async get(): Promise<QueryResult<T>> {
-    // ✅ Lazy import
-    const { getCollection } = await import('astro:content');
-    
+    // ✅ Lazy import - use getPublishedCollection which excludes drafts
+    const { getPublishedCollection } = await import('@/utils/collections');
+
     if (!this._collection) {
       throw new Error('Collection not specified');
     }
-    
-    // Get entries
+
+    // Get entries (drafts are automatically excluded)
     let entries: CollectionEntry<T>[];
-    
+
     if (Array.isArray(this._collection)) {
       // Multiple collections
       entries = [];
       for (const coll of this._collection) {
-        const collEntries = await getCollection(coll);
+        const collEntries = await getPublishedCollection(coll);
         entries.push(...(collEntries as CollectionEntry<T>[]));
       }
     } else {
       // Single collection
-      entries = await getCollection(this._collection) as CollectionEntry<T>[];
+      entries = await getPublishedCollection(this._collection) as CollectionEntry<T>[];
     }
     
     // Apply filters
@@ -239,9 +239,9 @@ export async function find<T extends CollectionKey>(
   collection: T,
   id: string
 ): Promise<CollectionEntry<T> | undefined> {
-  // ✅ Lazy import
-  const { getCollection } = await import('astro:content');
-  const entries = await getCollection(collection);
+  // ✅ Lazy import - use getPublishedCollection which excludes drafts
+  const { getPublishedCollection } = await import('@/utils/collections');
+  const entries = await getPublishedCollection(collection);
   return entries.find(e => e.id === id) as CollectionEntry<T> | undefined;
 }
 
