@@ -27,7 +27,7 @@ export default function DarkLightToggle() {
           <svg
             viewBox="32 32 36 36"
             xmlns="http://www.w3.org/2000/svg"
-            className="block w-3 h-3 sm:w-4 sm:h-4"
+            className="block w-3.5 h-3.5 sm:w-4 sm:h-4"
           >
             <defs>
               <mask id={maskId}>
