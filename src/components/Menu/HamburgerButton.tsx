@@ -27,7 +27,7 @@ export default function HamburgerButton({
       aria-label={ariaLabel}
       aria-expanded={isOpen}
       onClick={() => onChange(!isOpen)}
-      className={`group relative h-6 w-7 cursor-pointer flex flex-col justify-between items-start text-text hover:text-heading ${className}`.trim()}
+      className={`group relative h-5 lg:h-6 w-6 lg:w-7 cursor-pointer flex flex-col justify-between items-start text-text hover:text-heading ${className}`.trim()}
       {...props}
     >
       <span

@@ -49,7 +49,7 @@ export default function LanguagePicker() {
         className={`faded-bg text-primary ${open ? "ring-2 ring-primary/60" : ""}`}
       >
         <div className="flex items-center justify-center">
-          <span className="text-xl leading-none" aria-hidden="true">
+          <span className="text-sm sm:text-xl leading-none" aria-hidden="true">
             {currentLanguage.flag || "🌐"}
           </span>
         </div>

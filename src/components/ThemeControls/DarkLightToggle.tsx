@@ -27,7 +27,7 @@ export default function DarkLightToggle() {
           <svg
             viewBox="32 32 36 36"
             xmlns="http://www.w3.org/2000/svg"
-            className="block w-4 h-4 sm:w-[14px] sm:h-[14px]"
+            className="block w-3 h-3 sm:w-4 sm:h-4"
           >
             <defs>
               <mask id={maskId}>
@@ -52,7 +52,7 @@ export default function DarkLightToggle() {
             viewBox="13 13 74 74"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="block w-4 h-4 sm:w-[18px] sm:h-[18px]"
+            className="block w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]"
           >
             <circle cx="50" cy="50" r="18" fill="var(--color-primary)" />
             <g
