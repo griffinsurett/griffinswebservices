@@ -2,21 +2,10 @@
 // src/layouts/HeadTags.astro
 /**
  * Head Tags Component
- * 
- * Placeholder for additional head-level tags and scripts.
- * Can include:
- * - Analytics scripts (Google Analytics, Plausible, etc.)
- * - Font preloads
- * - External script tags
- * - Additional meta tags
- * 
- * Separated into its own component for easier maintenance
- * and conditional loading of third-party scripts.
+ *
+ * Includes consent-aware analytics (GTM with Consent Mode v2).
+ * GTM only loads after user grants performance consent.
  */
-// import GoogleTagManager from "@/components/analytics/GoogleTagManager.astro";
-// import LanguageDetectionScript from "@/integrations/preferences/language/components/LanguageDetectionScript.astro";
+import GoogleTagManager from "@/integrations/analytics/GoogleTagManager.astro";
 ---
-<!-- <GoogleTagManager /> -->
-<!-- <LanguageDetectionScript /> -->
-<!-- Additional head tags can be added here as needed -->
-<!-- Example: Google Analytics, Plausible, font preloads, etc. -->
+<GoogleTagManager />
