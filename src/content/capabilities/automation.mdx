@@ -7,6 +7,10 @@ heading:
   after: "."
 order: 7
 icon: "fa6-solid:robot"
+solutions:
+  - business-websites
+  - e-commerce-websites
+  - web-applications
 ---
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/CapabilitiesSection.astro";
@@ -14,12 +18,21 @@ import CapabilitiesSection from "@/layouts/CapabilitiesSection.astro";
 <TrustStatement text="We connect your website to the rest of your stack so leads, orders, and internal workflows move automatically." />
 
 <CapabilitiesSection
+  capabilitiesHeading="Automation disciplines we bring to every project."
+  highlights={[
+    { title: "Workflow Mapping", description: "We document every handoff so automation mirrors how your business actually works." },
+    { title: "Custom Scripts & Integrations", description: "From Airtable + Notion automations to serverless workers, we ship the glue that keeps teams in sync." },
+    { title: "Scheduled Jobs", description: "Reports, syncs, and maintenance tasks that run reliably without manual intervention." },
+    { title: "Monitoring & Alerting", description: "Error logging, retries, and status reporting so you know when something breaks." },
+  ]}
   highlightsTitle="Automation Ops"
   highlightsHeading="Systems that talk to each other."
   highlightsDescription="We architect lightweight services or low-code automations that trigger actions, sync databases, and keep your team out of spreadsheets."
-  highlights={[
-    { title: "Workflow mapping", description: "We document every handoff so automation mirrors how your business actually works." },
-    { title: "Custom scripts", description: "From Airtable + Notion automations to serverless workers, we ship the glue that keeps teams in sync." },
-    { title: "Monitoring", description: "Error logging, retries, and status reporting so you know when something breaks." },
-  ]}
+  ctaTitle="Ready to automate the busywork?"
+  ctaHeading={{
+    before: "Let your systems",
+    text: "do the heavy lifting.",
+    after: ""
+  }}
+  ctaDescription="Free up your team with automations that move data, trigger actions, and keep everything in sync."
 />
