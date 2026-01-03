@@ -158,6 +158,18 @@ const fullSidebar = sidebar ? {
 
 {slug && (
   <ContentRenderer
+    query={related("capabilities", "solutions", slug).orderBy(sortByOrder())}
+    variant="IconListVariant"
+    columns={2}
+    gap="lg"
+    title="Capabilities"
+    heading={`What goes into ${title?.toLowerCase() || "this solution"}`}
+    description={`The expertise and disciplines we bring to every ${title?.toLowerCase() || "project"}.`}
+  />
+)}
+
+{slug && (
+  <ContentRenderer
     query={related("benefits", "solutions", slug)}
     variant="BenefitsVariant"
     columns={2}

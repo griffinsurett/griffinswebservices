@@ -209,14 +209,14 @@ body {
 @layer base {
   html {
     scroll-behavior: smooth;
-    overscroll-behavior: none;
+    /* overscroll-behavior: none; */
     @apply bg-gradient;
   }
 
   body {
     font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
     background-color: transparent;
-    overscroll-behavior: none;
+    /* overscroll-behavior: none; */
     @apply overflow-x-hidden;
   }
 
