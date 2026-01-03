@@ -82,48 +82,4 @@ const displayTitle =
 
     {/* MDX Content */}
     {Content && <Content />}
-
-    {isCapabilities && relatedSolutionsQuery && relatedBlogsQuery && (
-      <>
-        <ContentRenderer
-          query={relatedSolutionsQuery}
-          variant="CardVariant"
-          title="Solutions"
-          heading={{
-            before: "Solutions that include",
-            text: displayTitle,
-          }}
-          description={`Explore our website packages that include ${displayTitle.toLowerCase()} as part of the build.`}
-          ctaHref="#services-quote-hero"
-          ctaText="Get Your Free Quote"
-          columns={3}
-        />
-
-        {/* <ContentRenderer
-          query={relatedBlogsQuery}
-          variant="BlogVariant"
-          columns={3}
-          title="Related Articles"
-          heading={{
-            before: "Learn more about",
-            text: displayTitle,
-          }}
-          description={`Insights and guides related to ${displayTitle.toLowerCase()}.`}
-        /> */}
-      </>
-    )}
-
-    {isSolutions && relatedCapabilitiesQuery && (
-      <ContentRenderer
-        query={relatedCapabilitiesQuery}
-        variant="CardVariant"
-        title="Capabilities"
-        heading={{
-          before: "Capabilities inside",
-          text: displayTitle,
-        }}
-        description={`Core skills and expertise packaged inside ${displayTitle.toLowerCase()}.`}
-        columns={3}
-      />
-    )}
 </BaseLayout>

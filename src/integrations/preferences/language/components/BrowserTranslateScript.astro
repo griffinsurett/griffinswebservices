@@ -209,9 +209,52 @@ const {
       return true;
     }
 
+    var currentComboValue = combo.value;
+
+    // For reverting to English, Google Translate doesn't reliably restore content
+    // when setting combo to empty. We need to use their restore function or reload.
+    if (normalized === "") {
+      // Try to find and trigger Google Translate's restore mechanism
+      var restoreButton = document.querySelector('.goog-te-banner-frame')?.contentDocument?.querySelector('[id*="restore"]');
+
+      // Method 1: Set combo to empty and dispatch change
+      combo.value = "";
+      combo.dispatchEvent(new Event("change"));
+
+      // Method 2: Clear the googtrans cookie completely (forces fresh state on next load)
+      clearCookie("googtrans");
+      // Also clear from root domain
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname;
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname;
+
+      // Method 3: Trigger Google's internal restore by manipulating their state
+      // Google stores translation state in a hidden iframe - clearing cookies should help on next interaction
+
+      // If the page doesn't revert properly after a short delay, force a soft reload
+      setTimeout(function() {
+        // Check if page still appears translated (Google adds 'translated-ltr' or 'translated-rtl' class)
+        var htmlEl = document.documentElement;
+        var stillTranslated = htmlEl.classList.contains('translated-ltr') ||
+                             htmlEl.classList.contains('translated-rtl') ||
+                             document.body.classList.contains('translated-ltr') ||
+                             document.body.classList.contains('translated-rtl');
+
+        if (stillTranslated) {
+          // Page didn't revert - do a soft reload to restore original content
+          // Using location.reload(false) to use cache
+          window.location.reload();
+        }
+      }, 300);
+
+      document.documentElement.removeAttribute("data-preferred-language");
+      document.documentElement.lang = "en";
+      state.currentLanguage = "en";
+      state.pendingGoogleLanguage = null;
+      return true;
+    }
+
     // For language-to-language switches (not involving English),
     // Google Translate needs to go back to English first, then to the new language
-    var currentComboValue = combo.value;
     if (currentComboValue && currentComboValue !== "" && normalized && normalized !== "") {
       // Currently translated to a language, switching to another language
       // First reset to English
@@ -227,18 +270,13 @@ const {
         }
       }, 100);
     } else {
-      // Simple case: English to language, or language to English
+      // Simple case: English to language
       combo.value = normalized;
       combo.dispatchEvent(new Event("change"));
     }
 
-    if (normalized) {
-      document.documentElement.dataset.preferredLanguage = languageCode;
-      document.documentElement.lang = languageCode;
-    } else {
-      document.documentElement.removeAttribute("data-preferred-language");
-      document.documentElement.lang = "en";
-    }
+    document.documentElement.dataset.preferredLanguage = languageCode;
+    document.documentElement.lang = languageCode;
 
     state.currentLanguage = languageCode;
     state.pendingGoogleLanguage = null;
