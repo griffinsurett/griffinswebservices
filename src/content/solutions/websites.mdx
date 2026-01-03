@@ -1,0 +1,116 @@
+---
+title: "Websites"
+description: "Custom websites built to establish credibility, generate leads, and grow your business online."
+heading:
+  before: "Websites that"
+  text: "work for your business"
+  after: "not against it."
+order: 1
+icon: "fa6-solid:globe"
+parent: new-builds
+---
+import TrustStatement from "@/components/TrustStatement.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import ContentSection from "@/layouts/ContentSection.astro";
+import CTASection from "@/layouts/CTASection.astro";
+import BottomContentSection from "@/layouts/BottomContentSection.astro";
+import { query, sortByOrder, related } from "@/utils/query";
+import { children } from "@/utils/query/snippets";
+
+<TrustStatement text="Every website we build is designed around your business goals — not generic templates or one-size-fits-all solutions." />
+
+{/* Portfolio Screen Showcase */}
+<div class="block lg:min-h-screen inner-section">
+  <ContentRenderer
+    query={query("projects")}
+    variant="PortfolioScreenVariant"
+    clientLoadPlaceholder={true}
+  />
+</div>
+
+{/* Benefits */}
+<ContentRenderer
+  query={related("benefits", "solutions", "websites")}
+  variant="BenefitsVariant"
+  columns={2}
+  gap="lg"
+  title="Why Choose Us"
+  heading="What Makes Our Websites Different"
+/>
+
+<ContentSection
+  heading={{
+    title: "Your website should be your hardest-working employee",
+    before: "Stop settling for",
+    text: "websites that just exist.",
+    after: "Get one that performs.",
+    description: "Whether you need a business website to generate leads or an e-commerce store to drive sales, we build sites that deliver measurable results."
+  }}
+  primaryCTA={{
+    text: "Get Your Free Quote",
+    href: "#solutions-quote-hero",
+    rightIcon: "lu:arrow-right"
+  }}
+  secondaryCTA={{
+    text: "See our work",
+    href: "#solutions-projects"
+  }}
+  sidebar={{
+    icon: frontmatter.icon,
+    title: "Built for your goals",
+    eyebrow: "Why our websites work",
+    description: "Custom design, lightning-fast performance, and search-engine-friendly architecture that helps customers find you and take action.",
+    footIcon: "🚀",
+    footTitle: "Launch in weeks, not months",
+    footDescription: "We don't drag projects out. Your site goes live fast without cutting corners.",
+    features: [
+      { title: "Custom design that fits your brand", description: "No cookie-cutter templates. We design a unique look that reflects your business." },
+      { title: "Built for speed and SEO", description: "Lightning-fast load times and search-engine-friendly architecture." },
+      { title: "Mobile-first responsive design", description: "Looks and works perfectly on phones, tablets, and desktops." },
+      { title: "Easy content management", description: "Update text, images, and pages yourself without calling a developer." },
+      { title: "Ongoing support available", description: "Hosting, maintenance, and updates so you're never stuck." },
+    ]
+  }}
+>
+  <div slot="text" class="space-y-6 text-lg text-muted">
+    <p>Your website is often the first impression potential customers get of your business. A slow, outdated, or confusing site doesn't just look bad — it actively costs you customers and credibility.</p>
+    <p>We build websites that make that first impression count. Whether you're a service business looking to generate leads or a product company ready to sell online, we create sites tailored to your specific goals.</p>
+    <p>Every website we deliver is fast, mobile-friendly, and built to be found on search engines. And when you need changes, we make it easy to update content yourself or get support from our team.</p>
+  </div>
+</ContentSection>
+
+{/* Website Types - IconListVariant showing children */}
+<ContentRenderer
+  query={children("solutions", "websites").orderBy(sortByOrder())}
+  variant="IconListVariant"
+  title="Website Types"
+  heading="Choose the Right Website for Your Business"
+  description="Different businesses need different types of websites. Each option is built around specific goals and delivers the features you actually need."
+/>
+
+{/* Bottom Content Section - Testimonials, Portfolio, FAQ */}
+<BottomContentSection
+  collection="solutions"
+  slug="websites"
+  pageTitle="Our Websites"
+  faq={{
+    customQuery: related("faq", "solutions", "websites"),
+    heading: "Common Questions About Our Websites"
+  }}
+/>
+
+<CTASection
+  id="solutions-cta"
+  className="min-h-[60vh]"
+  title="Get Started"
+  heading={{
+    before: "Ready to launch a",
+    text: "website that works?",
+    after: ""
+  }}
+  description="Stop losing customers to competitors with better websites. Let's build something that delivers real results."
+  primaryCTA={{
+    text: "Get Your Free Quote",
+    link: "#solutions-quote-hero",
+  }}
+/>

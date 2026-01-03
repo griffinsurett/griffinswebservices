@@ -13,8 +13,9 @@ import TrustStatement from '@/components/TrustStatement.astro';
 import DoubleCard from '@/layouts/DoubleCard.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import CTASection from '@/layouts/CTASection.astro';
+import BottomContentSection from '@/layouts/BottomContentSection.astro';
 import { query, sortByOrder } from '@/utils/query';
-import { roots } from '@/utils/query/snippets';
+import { roots, children, related } from '@/utils/query/snippets';
 
 <TrustStatement text="Lawyers, accountants, consultants, and advisors—your website is often the first impression for prospects worth thousands in lifetime value. We build sites that communicate expertise, answer objections, and make booking a consultation feel like the obvious next step." />
 
@@ -38,7 +39,7 @@ import { roots } from '@/utils/query/snippets';
 />
 
 <ContentRenderer
-  query={query("solutions")}
+  query={children("solutions", "new-builds")}
   variant="IconListVariant"
   heading="Premium Websites for Professionals, Built for Your Growth."
   title="Web Solutions"
@@ -46,16 +47,14 @@ import { roots } from '@/utils/query/snippets';
   autoAdvanceDelay={2000}
 />
 
-<ContentRenderer
-  query={query("testimonials")}
-  variant="TestimonialCarouselVariant"
-/>
-
-<ContentRenderer
-  query={query("faq").orderBy(sortByOrder())}
-  variant="AccordionVariant"
-  allowMultiple={false}
-  title="FAQs"
+<BottomContentSection
+  collection="industries"
+  slug="professional-services"
+  pageTitle="Professional Service Websites"
+  faq={{
+    customQuery: related("faq", "industries", "professional-services").orderBy(sortByOrder()),
+    heading: "Common Questions About Professional Service Websites"
+  }}
 />
 
 <CTASection

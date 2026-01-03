@@ -15,8 +15,9 @@ import TrustStatement from '@/components/TrustStatement.astro';
 import DoubleCard from '@/layouts/DoubleCard.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import CTASection from '@/layouts/CTASection.astro';
+import BottomContentSection from '@/layouts/BottomContentSection.astro';
 import { query, sortByOrder } from '@/utils/query';
-import { roots } from '@/utils/query/snippets';
+import { roots, children, related } from '@/utils/query/snippets';
 
 <TrustStatement text="When someone's hungry and searching, you have seconds to win them over. We create fast, mobile-optimized sites that showcase your food beautifully, make online ordering seamless, and turn first-time visitors into regulars." />
 
@@ -40,7 +41,7 @@ import { roots } from '@/utils/query/snippets';
 />
 
 <ContentRenderer
-  query={query("solutions")}
+  query={children("solutions", "new-builds")}
   variant="IconListVariant"
   heading="Premium Websites for Restaurants, Built for Your Growth."
   title="Web Solutions"
@@ -48,16 +49,14 @@ import { roots } from '@/utils/query/snippets';
   autoAdvanceDelay={2000}
 />
 
-<ContentRenderer
-  query={query("testimonials")}
-  variant="TestimonialCarouselVariant"
-/>
-
-<ContentRenderer
-  query={query("faq").orderBy(sortByOrder())}
-  variant="AccordionVariant"
-  allowMultiple={false}
-  title="FAQs"
+<BottomContentSection
+  collection="industries"
+  slug="restaurants-food-service"
+  pageTitle="Restaurant Websites"
+  faq={{
+    customQuery: related("faq", "industries", "restaurants-food-service").orderBy(sortByOrder()),
+    heading: "Common Questions About Restaurant Websites"
+  }}
 />
 
 <CTASection

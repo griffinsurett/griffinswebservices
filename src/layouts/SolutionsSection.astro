@@ -158,24 +158,23 @@ const fullSidebar = sidebar ? {
 
 {slug && (
   <ContentRenderer
-    query={related("capabilities", "solutions", slug).orderBy(sortByOrder())}
-    variant="IconListVariant"
-    columns={2}
-    gap="lg"
-    title="Capabilities"
-    heading={`What goes into ${title?.toLowerCase() || "this solution"}`}
-    description={`The expertise and disciplines we bring to every ${title?.toLowerCase() || "project"}.`}
-  />
-)}
-
-{slug && (
-  <ContentRenderer
     query={related("benefits", "solutions", slug)}
     variant="BenefitsVariant"
     columns={2}
     gap="lg"
     title={benefitsTitle}
     heading={benefitsHeading || `What Makes Our ${title} Different`}
+  />
+)}
+
+{slug && (
+  <ContentRenderer
+    query={related("features", "solutions", slug).orderBy(sortByOrder())}
+    variant="IconListVariant"
+    columns={2}
+    gap="lg"
+    heading={`Optional add-ons for your ${title?.toLowerCase() || "project"}`}
+    description={`Enhance your ${title?.toLowerCase() || "solution"} with these additional features and capabilities.`}
   />
 )}
 

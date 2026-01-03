@@ -13,8 +13,9 @@ import TrustStatement from '@/components/TrustStatement.astro';
 import DoubleCard from '@/layouts/DoubleCard.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import CTASection from '@/layouts/CTASection.astro';
+import BottomContentSection from '@/layouts/BottomContentSection.astro';
 import { query, sortByOrder } from '@/utils/query';
-import { roots } from '@/utils/query/snippets';
+import { roots, children, related } from '@/utils/query/snippets';
 
 <TrustStatement text="Whether you're launching a streetwear brand or scaling a supplement line, your store needs to load fast, look premium, and make buying effortless. We build e-commerce experiences that reduce cart abandonment and maximize revenue per visitor." />
 
@@ -38,7 +39,7 @@ import { roots } from '@/utils/query/snippets';
 />
 
 <ContentRenderer
-  query={query("solutions")}
+  query={children("solutions", "new-builds")}
   variant="IconListVariant"
   heading="Premium Online Stores for E-Commerce, Built for Your Growth."
   title="Web Solutions"
@@ -46,16 +47,14 @@ import { roots } from '@/utils/query/snippets';
   autoAdvanceDelay={2000}
 />
 
-<ContentRenderer
-  query={query("testimonials")}
-  variant="TestimonialCarouselVariant"
-/>
-
-<ContentRenderer
-  query={query("faq").orderBy(sortByOrder())}
-  variant="AccordionVariant"
-  allowMultiple={false}
-  title="FAQs"
+<BottomContentSection
+  collection="industries"
+  slug="e-commerce"
+  pageTitle="E-Commerce Websites"
+  faq={{
+    customQuery: related("faq", "industries", "e-commerce").orderBy(sortByOrder()),
+    heading: "Common Questions About E-Commerce Websites"
+  }}
 />
 
 <CTASection

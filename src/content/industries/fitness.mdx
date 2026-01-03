@@ -13,8 +13,9 @@ import TrustStatement from '@/components/TrustStatement.astro';
 import DoubleCard from '@/layouts/DoubleCard.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import CTASection from '@/layouts/CTASection.astro';
+import BottomContentSection from '@/layouts/BottomContentSection.astro';
 import { query, sortByOrder } from '@/utils/query';
-import { roots } from '@/utils/query/snippets';
+import { roots, children, related } from '@/utils/query/snippets';
 
 <TrustStatement text="From personal trainers to gym owners, your online presence should be as strong as your results. We build high-energy, mobile-first websites that display your services, highlight client success stories, and make booking sessions effortless." />
 
@@ -38,7 +39,7 @@ import { roots } from '@/utils/query/snippets';
 />
 
 <ContentRenderer
-  query={query("solutions")}
+  query={children("solutions", "new-builds")}
   variant="IconListVariant"
   heading="Premium Websites for Fitness, Built for Your Growth."
   title="Web Solutions"
@@ -46,16 +47,14 @@ import { roots } from '@/utils/query/snippets';
   autoAdvanceDelay={2000}
 />
 
-<ContentRenderer
-  query={query("testimonials")}
-  variant="TestimonialCarouselVariant"
-/>
-
-<ContentRenderer
-  query={query("faq").orderBy(sortByOrder())}
-  variant="AccordionVariant"
-  allowMultiple={false}
-  title="FAQs"
+<BottomContentSection
+  collection="industries"
+  slug="fitness"
+  pageTitle="Fitness Websites"
+  faq={{
+    customQuery: related("faq", "industries", "fitness").orderBy(sortByOrder()),
+    heading: "Common Questions About Fitness Websites"
+  }}
 />
 
 <CTASection

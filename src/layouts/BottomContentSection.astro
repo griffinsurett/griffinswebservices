@@ -1,0 +1,197 @@
+---
+// src/layouts/BottomContentSection.astro
+/**
+ * Reusable bottom content section for pages
+ * Bundles Testimonials, Filtered Portfolio, and FAQs together
+ *
+ * Automatically derives slug from URL for related content queries.
+ * All three sections are fully customizable or can be disabled.
+ */
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query, sortByOrder, related } from "@/utils/query";
+import { capitalizeWords } from "@/utils/string";
+import { parseUrlPath } from "@/utils/paths";
+import type { CollectionKey } from "astro:content";
+
+interface HeadingContent {
+  before?: string;
+  text?: string;
+  after?: string;
+}
+
+interface TestimonialsConfig {
+  /** Whether to show testimonials section */
+  show?: boolean;
+  /** Custom query - if not provided, uses query("testimonials") */
+  customQuery?: any;
+  /** Filter by minimum rating */
+  minRating?: number;
+}
+
+interface PortfolioConfig {
+  /** Whether to show portfolio section */
+  show?: boolean;
+  /** Custom query for filters - defaults to query("industries") */
+  filterQuery?: any;
+  /** Related collection for portfolio items - defaults to "projects" */
+  relatedCollection?: CollectionKey;
+  /** Field to relate on - defaults to "industry" */
+  relatedField?: string;
+  /** Section title */
+  title?: string;
+  /** Section heading */
+  heading?: string | HeadingContent;
+  /** Section description */
+  description?: string;
+  /** Show filter count badges */
+  showCount?: boolean;
+  /** Show filter tabs */
+  showFilters?: boolean;
+  /** Show navigation arrows */
+  showArrows?: boolean;
+}
+
+interface FAQConfig {
+  /** Whether to show FAQ section */
+  show?: boolean;
+  /** Collection to relate FAQs to - e.g., "solutions", "industries", "capabilities" */
+  relatedCollection?: CollectionKey;
+  /** Slug to relate FAQs to - defaults to current page slug */
+  relatedSlug?: string;
+  /** Custom query - overrides relatedCollection/relatedSlug */
+  customQuery?: any;
+  /** Section title */
+  title?: string;
+  /** Section heading - defaults to "Common Questions About {pageTitle}" */
+  heading?: string;
+  /** Allow multiple accordions open */
+  allowMultiple?: boolean;
+}
+
+interface Props {
+  /** Current page's collection for context (e.g., "solutions", "industries") */
+  collection?: CollectionKey;
+  /** Override the auto-detected slug */
+  slug?: string;
+  /** Override the page title for dynamic headings */
+  pageTitle?: string;
+
+  /** Testimonials configuration */
+  testimonials?: TestimonialsConfig | boolean;
+
+  /** Filtered Portfolio configuration */
+  portfolio?: PortfolioConfig | boolean;
+
+  /** FAQ configuration */
+  faq?: FAQConfig | boolean;
+
+  /** Additional slot content between sections */
+  className?: string;
+}
+
+const {
+  collection: propCollection,
+  slug: propSlug,
+  pageTitle: propPageTitle,
+  testimonials = true,
+  portfolio = true,
+  faq = true,
+  className = "",
+} = Astro.props;
+
+// Derive slug and collection from URL if not provided
+const { collection: urlCollection, slug: urlSlug } = parseUrlPath(Astro.url.pathname);
+const collection = propCollection || urlCollection as CollectionKey;
+const slug = propSlug || urlSlug;
+
+// Default page title from slug
+const pageTitle = propPageTitle || capitalizeWords(slug?.replace(/-/g, " ") || "");
+
+// Normalize config objects
+const testimonialsConfig: TestimonialsConfig = typeof testimonials === 'boolean'
+  ? { show: testimonials }
+  : { show: true, ...testimonials };
+
+const portfolioConfig: PortfolioConfig = typeof portfolio === 'boolean'
+  ? { show: portfolio }
+  : { show: true, ...portfolio };
+
+const faqConfig: FAQConfig = typeof faq === 'boolean'
+  ? { show: faq }
+  : { show: true, ...faq };
+
+// Build queries
+const testimonialsQuery = testimonialsConfig.customQuery || (
+  testimonialsConfig.minRating
+    ? query("testimonials").where((entry: any) => entry.data.rating >= testimonialsConfig.minRating!)
+    : query("testimonials")
+);
+
+const portfolioFilterQuery = portfolioConfig.filterQuery || query("industries").orderBy(sortByOrder());
+
+const faqQuery = faqConfig.customQuery || (
+  faqConfig.relatedCollection && (faqConfig.relatedSlug || slug)
+    ? related("faq", faqConfig.relatedCollection, faqConfig.relatedSlug || slug).orderBy(sortByOrder())
+    : collection && slug
+      ? related("faq", collection, slug).orderBy(sortByOrder())
+      : query("faq").orderBy(sortByOrder())
+);
+
+// Default headings
+const faqHeading = faqConfig.heading || `Common Questions About ${pageTitle}`;
+---
+
+<div class={`bottom-content-section ${className}`.trim()}>
+  {/* Testimonials Section */}
+  {testimonialsConfig.show && (
+    <ContentRenderer
+      query={testimonialsQuery}
+      variant="TestimonialCarouselVariant"
+    />
+  )}
+
+  {/* Slot for content between testimonials and portfolio */}
+  {Astro.slots.has("after-testimonials") && (
+    <slot name="after-testimonials" />
+  )}
+
+  {/* Filtered Portfolio Section */}
+  {portfolioConfig.show && (
+    <ContentRenderer
+      query={portfolioFilterQuery}
+      variant="FilteredPortfolioVariant"
+      relatedCollection={portfolioConfig.relatedCollection || "projects"}
+      relatedField={portfolioConfig.relatedField || "industry"}
+      title={portfolioConfig.title || "Portfolio"}
+      heading={portfolioConfig.heading || "Websites that deliver real results"}
+      description={portfolioConfig.description || "From contractors to e-commerce brands, we build sites that look great, load fast, and convert visitors into customers."}
+      filter={{ showCount: portfolioConfig.showCount ?? false }}
+      showFilters={portfolioConfig.showFilters ?? true}
+      showArrows={portfolioConfig.showArrows ?? true}
+    />
+  )}
+
+  {/* Slot for content between portfolio and FAQ */}
+  {Astro.slots.has("after-portfolio") && (
+    <slot name="after-portfolio" />
+  )}
+
+  {/* FAQ Section */}
+  {faqConfig.show && (
+    <ContentRenderer
+      query={faqQuery}
+      variant="AccordionVariant"
+      allowMultiple={faqConfig.allowMultiple ?? false}
+      title={faqConfig.title || "FAQs"}
+      heading={faqHeading}
+    />
+  )}
+
+  {/* Slot for content after FAQ */}
+  {Astro.slots.has("after-faq") && (
+    <slot name="after-faq" />
+  )}
+
+  {/* Default slot */}
+  <slot />
+</div>
