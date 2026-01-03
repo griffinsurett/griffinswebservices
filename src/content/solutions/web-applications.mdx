@@ -12,52 +12,117 @@ redirectFrom:
   - "/solutions/custom-full-stack-applications"
 ---
 import TrustStatement from "@/components/TrustStatement.astro";
-import SolutionsSection from "@/layouts/SolutionsSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import ContentSection from "@/layouts/ContentSection.astro";
+import CTASection from "@/layouts/CTASection.astro";
+import BottomContentSection from "@/layouts/BottomContentSection.astro";
+import { query, sortByOrder, related } from "@/utils/query";
+import { children } from "@/utils/query/snippets";
 
 <TrustStatement text="Every application is architected from scratch to match your exact workflow—no compromises or workarounds." />
 
-<SolutionsSection
-  icon={frontmatter.icon}
-  features={[
-    { title: "Built to your exact requirements", description: "No compromises or workarounds. We build software that matches how you actually work." },
-    { title: "Modern, scalable architecture", description: "Clean code and proven technologies that grow with your business and won't become outdated." },
-    { title: "Secure by design", description: "User authentication, role-based permissions, and data encryption baked in from the start." },
-    { title: "Third-party integrations", description: "Connect with the tools you already use—CRMs, payment processors, APIs, and more." },
-    { title: "Real-time dashboards and reporting", description: "See what's happening in your business at a glance with custom analytics and visualizations." },
-    { title: "Mobile-responsive design", description: "Works beautifully on desktop, tablet, and mobile so your team can work from anywhere." },
-    { title: "Ongoing support and maintenance", description: "We don't disappear after launch. Hosting, updates, and support plans available." },
-  ]}
-  quickFacts={[
-    { title: "Timeline", description: "8-16 weeks typical" },
-    { title: "Process", description: "Discovery, design, build, launch" },
-    { title: "After launch", description: "Hosting + support included" },
-  ]}
-  contentHeading={{
+{/* Portfolio Screen Showcase */}
+<div class="block lg:min-h-screen inner-section">
+  <ContentRenderer
+    query={query("projects")}
+    variant="PortfolioScreenVariant"
+    clientLoadPlaceholder={true}
+  />
+</div>
+
+{/* Benefits */}
+<ContentRenderer
+  query={related("benefits", "solutions", "web-applications")}
+  variant="BenefitsVariant"
+  columns={2}
+  gap="lg"
+  title="Why Choose Us"
+  heading="What Makes Our Web Applications Different"
+/>
+
+<ContentSection
+  heading={{
     title: "Your business is unique. Your software should be too.",
     before: "Stop forcing your workflow",
     text: "into generic software.",
     after: "Get a solution built for you.",
     description: "Off-the-shelf tools force you to work around their limitations. Custom applications work exactly how you need them to—no compromises, no workarounds."
   }}
+  primaryCTA={{
+    text: "Get Your Free Quote",
+    href: "#solutions-quote-hero",
+    rightIcon: "lu:arrow-right"
+  }}
+  secondaryCTA={{
+    text: "See our work",
+    href: "#solutions-projects"
+  }}
   sidebar={{
+    icon: frontmatter.icon,
     title: "From concept to production",
     eyebrow: "How we build",
     description: "We partner with you from discovery through launch and beyond. You get a dedicated team that understands your business and builds software that grows with it.",
     footIcon: "🛠",
     footTitle: "Built to last",
-    footDescription: "Clean architecture, thorough documentation, and ongoing support mean your investment keeps paying off."
+    footDescription: "Clean architecture, thorough documentation, and ongoing support mean your investment keeps paying off.",
+    features: [
+      { title: "Discovery & requirements mapping", description: "We learn your workflows before writing any code." },
+      { title: "Iterative design & prototyping", description: "See and test interfaces before full development." },
+      { title: "Modern, maintainable architecture", description: "Built with frameworks and patterns that scale." },
+      { title: "Thorough documentation", description: "Your team can maintain and extend what we build." },
+      { title: "Ongoing support available", description: "Hosting, maintenance, and enhancements after launch." },
+    ]
   }}
-  textContent={[
-    "Every business has unique processes, data flows, and requirements. When you try to force those into generic software, you end up with workarounds, manual processes, and frustrated teams. Custom software eliminates all of that.",
-    "We build web applications that match exactly how you work. Customer portals, internal tools, booking systems, dashboards, workflow automation—whatever you need, designed around your specific requirements and integrated with your existing tools.",
-    "Our process starts with understanding your business deeply. We map out requirements, design interfaces, and build iteratively with your feedback at every step. You're never left guessing what we're building or why."
-  ]}
-  benefitsHeading="What Makes Our Web Apps Different"
-  ctaTitle="Ready to build something custom?"
-  ctaHeading={{
+>
+  <div slot="text" class="space-y-6 text-lg text-muted">
+    <p>Every business has unique processes, data flows, and requirements. When you try to force those into generic software, you end up with workarounds, manual processes, and frustrated teams. Custom software eliminates all of that.</p>
+    <p>We build web applications that match exactly how you work. Customer portals, internal tools, booking systems, dashboards, workflow automation—whatever you need, designed around your specific requirements and integrated with your existing tools.</p>
+    <p>Our process starts with understanding your business deeply. We map out requirements, design interfaces, and build iteratively with your feedback at every step. You're never left guessing what we're building or why.</p>
+  </div>
+</ContentSection>
+
+{/* Application Types - IconListVariant showing child solutions */}
+<ContentRenderer
+  query={children("solutions", "web-applications").orderBy(sortByOrder())}
+  variant="IconListVariant"
+  title="Application Types"
+  heading="Choose the Right Application for Your Needs"
+  description="Different problems require different solutions. Each option is built around specific use cases and delivers the functionality you actually need."
+/>
+
+{/* Features - Add-ons from features collection */}
+<ContentRenderer
+  query={related("features", "solutions", "web-applications").orderBy(sortByOrder())}
+  variant="IconListVariant"
+  columns={2}
+  gap="lg"
+  heading="Optional add-ons for your web application"
+  description="Enhance your application with these additional features and capabilities."
+/>
+
+{/* Bottom Content Section - Testimonials, Portfolio, FAQ */}
+<BottomContentSection
+  collection="solutions"
+  slug="web-applications"
+  pageTitle="Our Web Applications"
+  faq={{
+    customQuery: related("faq", "solutions", "web-applications"),
+    heading: "Common Questions About Our Web Applications"
+  }}
+/>
+
+<CTASection
+  id="solutions-cta"
+  className="min-h-[60vh]"
+  title="Ready to build something custom?"
+  heading={{
     before: "Let's create your",
     text: "web application",
     after: "today."
   }}
-  ctaDescription="Stop forcing your workflows into generic software. Get an application built exactly for how your business works."
+  description="Stop forcing your workflows into generic software. Get an application built exactly for how your business works."
+  primaryCTA={{
+    text: "Get Your Free Quote",
+    link: "#solutions-quote-hero",
+  }}
 />
