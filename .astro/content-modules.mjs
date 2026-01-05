@@ -214,5 +214,10 @@ export default new Map([
 ["src/content/capabilities/web-development.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fcapabilities%2Fweb-development.mdx&astroContentModuleFlag=true")],
 ["src/content/capabilities/website-maintenance-support.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fcapabilities%2Fwebsite-maintenance-support.mdx&astroContentModuleFlag=true")],
 ["src/content/capabilities/workflow-automation.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fcapabilities%2Fworkflow-automation.mdx&astroContentModuleFlag=true")],
-["src/content/capabilities/web-design.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fcapabilities%2Fweb-design.mdx&astroContentModuleFlag=true")]]);
+["src/content/capabilities/web-design.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fcapabilities%2Fweb-design.mdx&astroContentModuleFlag=true")],
+["src/content/technologies/typescript.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Ftechnologies%2Ftypescript.mdx&astroContentModuleFlag=true")],
+["src/content/technologies/tailwindcss.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Ftechnologies%2Ftailwindcss.mdx&astroContentModuleFlag=true")],
+["src/content/technologies/sanity.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Ftechnologies%2Fsanity.mdx&astroContentModuleFlag=true")],
+["src/content/technologies/express.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Ftechnologies%2Fexpress.mdx&astroContentModuleFlag=true")],
+["src/content/technologies/playwright.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Ftechnologies%2Fplaywright.mdx&astroContentModuleFlag=true")]]);
 		

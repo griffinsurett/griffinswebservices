@@ -164,6 +164,7 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         capabilities: refSchema("capabilities"),
+        solutions: refSchema("solutions"),
       }),
   }),
 

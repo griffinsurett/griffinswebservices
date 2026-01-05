@@ -111,6 +111,11 @@ const heroDescription =
         showFilters: true,
         showArrows: true
       }}
+      technologies={{
+        customQuery: byTag("technologies", "featured").orderBy(sortByOrder()).limit(8),
+        title: "Featured Technologies",
+        description: "Frameworks, platforms, and infrastructure we rely on to keep sites fast, secure, and easy to evolve."
+      }}
       faq={{
         customQuery: byTag("faq", "featured").orderBy(sortByOrder()),
         title: "FAQs"

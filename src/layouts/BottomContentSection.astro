@@ -68,6 +68,21 @@ interface FAQConfig {
   allowMultiple?: boolean;
 }
 
+interface TechnologiesConfig {
+  /** Whether to show technologies section */
+  show?: boolean;
+  /** Override query - useful for featured sets */
+  customQuery?: any;
+  /** Reference field to derive related technologies from (e.g., "solutions") */
+  relatedField?: string;
+  /** Override slug when deriving related technologies */
+  relatedSlug?: string;
+  /** Section title */
+  title?: string;
+  /** Section description */
+  description?: string;
+}
+
 interface Props {
   /** Current page's collection for context (e.g., "solutions", "industries") */
   collection?: CollectionKey;
@@ -85,6 +100,9 @@ interface Props {
   /** FAQ configuration */
   faq?: FAQConfig | boolean;
 
+  /** Technologies configuration */
+  technologies?: TechnologiesConfig | boolean;
+
   /** Additional slot content between sections */
   className?: string;
 }
@@ -96,6 +114,7 @@ const {
   testimonials = true,
   portfolio = true,
   faq = true,
+  technologies = false,
   className = "",
 } = Astro.props;
 
@@ -120,6 +139,10 @@ const faqConfig: FAQConfig = typeof faq === 'boolean'
   ? { show: faq }
   : { show: true, ...faq };
 
+const technologiesConfig: TechnologiesConfig = typeof technologies === 'boolean'
+  ? { show: technologies }
+  : { show: true, ...technologies };
+
 // Build queries
 const testimonialsQuery = testimonialsConfig.customQuery || (
   testimonialsConfig.minRating
@@ -136,6 +159,18 @@ const faqQuery = faqConfig.customQuery || (
       ? related("faq", collection, slug).orderBy(sortByOrder())
       : query("faq").orderBy(sortByOrder())
 );
+
+const technologiesQuery = technologiesConfig.show
+  ? technologiesConfig.customQuery || (
+      (technologiesConfig.relatedField || collection) && (technologiesConfig.relatedSlug || slug)
+        ? related(
+            "technologies",
+            (technologiesConfig.relatedField || collection) as string,
+            technologiesConfig.relatedSlug || slug,
+          )
+        : undefined
+    )
+  : undefined;
 
 // Default headings
 const faqHeading = faqConfig.heading || `Common Questions About ${pageTitle}`;
@@ -174,6 +209,16 @@ const faqHeading = faqConfig.heading || `Common Questions About ${pageTitle}`;
   {/* Slot for content between portfolio and FAQ */}
   {Astro.slots.has("after-portfolio") && (
     <slot name="after-portfolio" />
+  )}
+
+  {/* Technologies Section */}
+  {technologiesConfig.show && technologiesQuery && (
+    <ContentRenderer
+      query={technologiesQuery}
+      variant="TechnologiesVariant"
+      title={technologiesConfig.title || "Technologies"}
+      description={technologiesConfig.description}
+    />
   )}
 
   {/* FAQ Section */}
