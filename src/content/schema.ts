@@ -293,6 +293,8 @@ export const baseSchema = ({ image }: { image: Function }) =>
     featuredImage: imageInputSchema({ image }).optional(),
     bannerImage: imageInputSchema({ image }).optional(),
     hasPage: z.boolean().optional(),
+    // Controls whether children of this item get pages (only applies to items with children)
+    childHasPage: z.boolean().optional(),
     rootPath: z.boolean().optional(),
     icon: iconSchema({ image }).optional(),
     seo: seoSchema({ image }),
@@ -397,6 +399,8 @@ export const metaSchema = ({ image }: { image: Function }) =>
     addToMenu: z.array(AddToMenuFields).optional(),
     redirectFrom: redirectFromSchema,
     itemsHasPage: z.boolean().default(true),
+    // Default childHasPage for all parent items in this collection
+    itemsChildHasPage: z.boolean().optional(),
     itemsRootPath: z.boolean().default(false),
     itemsAddToMenu: z.array(ItemsAddToMenuFields).optional(),
     // Link behavior for all items in this collection (can be overridden per-item)

@@ -57,6 +57,9 @@
         "hasPage": {
           "type": "boolean"
         },
+        "childHasPage": {
+          "type": "boolean"
+        },
         "rootPath": {
           "type": "boolean"
         },

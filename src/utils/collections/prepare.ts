@@ -21,10 +21,18 @@ export interface PreparedFields {
 
 export type PreparedItem = BaseData & PreparedFields;
 
+/** Normalize parent reference to first parent slug (handles array or string) */
+function getFirstParentSlug(parent: string | string[] | undefined): string | undefined {
+  if (!parent) return undefined;
+  if (Array.isArray(parent)) return parent[0];
+  return parent;
+}
+
 export async function prepareEntry<T extends CollectionKey>(
   entry: CollectionEntry<T>,
   collection: T,
-  meta: MetaData
+  meta: MetaData,
+  entriesMap?: Map<string, CollectionEntry<T>>
 ): Promise<PreparedItem> {
   // ✅ Lazy import utilities
   const { shouldItemHavePage, shouldItemUseRootPath } = await import(
@@ -36,6 +44,10 @@ export async function prepareEntry<T extends CollectionKey>(
 
   const identifier = getItemKey(entry);
   const data = entry.data as Record<string, any>;
+
+  // Resolve parent entry if item has a parent and we have entries map
+  const parentSlug = getFirstParentSlug(data.parent);
+  const parentEntry = parentSlug && entriesMap ? entriesMap.get(parentSlug) : undefined;
 
   // Check for link behavior config (item-level overrides collection-level)
   const linkBehavior = mergeLinkBehavior(
@@ -54,7 +66,7 @@ export async function prepareEntry<T extends CollectionKey>(
   } else {
     // Standard URL generation
     const hasExistingUrl = data.url !== undefined;
-    const hasPage = shouldItemHavePage(entry, meta);
+    const hasPage = shouldItemHavePage(entry, meta, parentEntry);
 
     if (!hasExistingUrl && hasPage) {
       const useRootPath = shouldItemUseRootPath(entry, meta);
@@ -96,7 +108,14 @@ export async function prepareCollectionEntries<T extends CollectionKey>(
   collection: T,
   meta: MetaData
 ): Promise<PreparedItem[]> {
+  // Build a map of entries by slug for efficient parent lookup
+  const entriesMap = new Map<string, CollectionEntry<T>>();
+  for (const entry of entries) {
+    const key = getItemKey(entry);
+    if (key) entriesMap.set(key, entry);
+  }
+
   return Promise.all(
-    entries.map((entry) => prepareEntry(entry, collection, meta))
+    entries.map((entry) => prepareEntry(entry, collection, meta, entriesMap))
   );
 }
