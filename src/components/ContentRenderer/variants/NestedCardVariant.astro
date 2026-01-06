@@ -1,0 +1,109 @@
+---
+// src/components/ContentRenderer/variants/NestedCardVariant.astro
+/**
+ * Nested Card Variant - Cards that show items with their children as a checklist
+ * Each card displays the item's icon, title, description, and a hero checklist
+ * of its children (using the icon + title format)
+ *
+ * Items already have url/title/description/icon from prepareEntry.
+ * Pass childCollection to specify which collection to query for children.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import type { CollectionKey } from "astro:content";
+import type { ChildCardData } from "@/components/LoopComponents/ChildCard";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Section from "@/components/Section.astro";
+import ChildCardRenderer from "@/components/LoopTemplates/ChildCardRenderer";
+import { children } from "@/utils/query";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  /** Column count: 1-3 or "auto" (responsive based on item count) */
+  columns?: 1 | 2 | 3 | "auto";
+  /** Collection to query for children. If not provided, derives from collectionUrl. */
+  childCollection?: CollectionKey;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "outer-section",
+  columns = "auto",
+  id,
+  collectionUrl,
+  childCollection,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+
+// Calculate effective columns: "auto" = min(3, itemCount), otherwise use specified value
+const maxColumns = columns === "auto" ? 3 : columns;
+const effectiveColumns = Math.min(maxColumns, safeItems.length || 1) as 1 | 2 | 3;
+
+// Derive the collection from the collectionUrl or use childCollection
+// collectionUrl is like "/capabilities" so we strip the leading slash
+const collectionFromUrl = collectionUrl?.replace(/^\//, "") as CollectionKey | undefined;
+const targetCollection = childCollection || collectionFromUrl;
+
+// Fetch children for each item and build ChildCardData
+const cardItems: ChildCardData[] = await Promise.all(
+  safeItems.map(async (item: any) => {
+    // Item has slug from prepareEntry
+    const itemSlug = item.slug || item.id;
+
+    let childItems: { title: string; icon: any }[] = [];
+
+    if (targetCollection && itemSlug) {
+      const queryBuilder = children(targetCollection, itemSlug);
+      const result = await queryBuilder.get();
+      const childEntries = result.entries || [];
+
+      childItems = childEntries.map((child: any) => ({
+        title: child.data?.title || "",
+        icon: child.data?.icon || null,
+      }));
+    }
+
+    return {
+      icon: item.icon,
+      title: item.title,
+      description: item.description,
+      url: item.url,
+      childItems,
+    };
+  })
+);
+
+const showHeader = Boolean(title || heading || description);
+---
+
+{safeItems.length > 0 && (
+  <Section id={id} class={`relative overflow-hidden ${className}`.trim()}>
+    <div class="inner-section">
+      {showHeader && (
+        <div class="heading-padding">
+          <SectionHeader
+            title={title}
+            heading={heading}
+            description={description}
+          />
+        </div>
+      )}
+
+      <ChildCardRenderer
+        client:visible
+        items={cardItems}
+        columns={effectiveColumns}
+        className={showHeader ? "mt-12" : ""}
+        animation={{
+          once: false,
+          threshold: 0.15,
+          rootMargin: "-10% 0px -10% 0px",
+        }}
+      />
+    </div>
+  </Section>
+)}

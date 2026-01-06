@@ -80,9 +80,10 @@ const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || 
 
 {capabilitiesHeading && slug && (
   <ContentRenderer
-    variant="CardVariant"
+    variant="NestedCardVariant"
     query={children("capabilities", slug)}
     heading={capabilitiesHeading}
+    childCollection="capabilities"
   />
 )}
 

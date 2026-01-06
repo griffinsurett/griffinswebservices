@@ -87,7 +87,7 @@ export default function TestimonialCard({
             layout="horizontal"
             alignment="left"
             className="gap-2"
-            imageClassName="w-12 h-12 rounded-full overflow-hidden flex-shrink-0"
+            imageClassName="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-primary light:to-bg2 dark:to-primary/25"
             titleClassName="h4"
             titleTag="h4"
             descriptionClassName="text-text text-sm"

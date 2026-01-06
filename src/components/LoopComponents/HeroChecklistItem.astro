@@ -1,0 +1,99 @@
+---
+// src/components/LoopComponents/HeroChecklistItem.astro
+import type { IconType } from "@/content/schema";
+import { renderIcon } from "@/integrations/icons";
+import type { AstroComponentFactory } from "astro/runtime/server";
+
+export interface Props {
+  /** Optional icon override. Accepts icon names, emoji, or a component reference */
+  icon?: IconType | Record<string, any> | AstroComponentFactory | null;
+  /** Wrapper element tag (defaults to "li") */
+  as?: "li" | "div";
+  /** Tailwind classes applied to the outer list item */
+  class?: string;
+  /** Classes applied to the icon wrapper */
+  iconWrapperClassName?: string;
+  /** Classes applied to the icon itself */
+  iconClassName?: string;
+  /** Classes applied to the text wrapper */
+  textClassName?: string;
+}
+
+const {
+  icon,
+  as = "li",
+  class: className = "",
+  iconWrapperClassName = "faded-bg p-1.5 rounded-full flex items-center justify-center text-accent flex-shrink-0",
+  iconClassName = "w-3 h-3 lg:w-4 lg:h-4",
+  textClassName = "text-text text-base lg:text-lg leading-relaxed",
+} = Astro.props as Props;
+
+const hasIconSlot = Astro.slots.has("icon");
+const IconComponent =
+  typeof icon === "function" ? (icon as AstroComponentFactory) : undefined;
+const wrapperClasses = `list-none flex items-center gap-1.5 ${className}`.trim();
+---
+
+{
+  as === "div" ? (
+    <div class={wrapperClasses}>
+      <span class={iconWrapperClassName}>
+        {
+          hasIconSlot ? (
+            <slot name="icon" />
+          ) : IconComponent ? (
+            <IconComponent />
+          ) : icon ? (
+            renderIcon(icon as IconType, { size: "sm", className: iconClassName })
+          ) : (
+            <svg
+              class={iconClassName}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          )
+        }
+      </span>
+      <span class={textClassName}>
+        <slot />
+      </span>
+    </div>
+  ) : (
+    <li class={wrapperClasses}>
+      <span class={iconWrapperClassName}>
+        {
+          hasIconSlot ? (
+            <slot name="icon" />
+          ) : IconComponent ? (
+            <IconComponent />
+          ) : icon ? (
+            renderIcon(icon as IconType, { size: "sm", className: iconClassName })
+          ) : (
+            <svg
+              class={iconClassName}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          )
+        }
+      </span>
+      <span class={textClassName}>
+        <slot />
+      </span>
+    </li>
+  )
+}
