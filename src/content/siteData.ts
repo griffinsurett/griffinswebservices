@@ -1,5 +1,6 @@
 // src/siteData.ts - Compatible with both Astro and React
 const siteDomain = import.meta.env.PUBLIC_SITE_DOMAIN;
+import Logo from "@/assets/Logo.jpg"
 
 export const siteData = {
   title: "Griffin's Web Services",
@@ -15,6 +16,10 @@ export const siteData = {
   ceoTitle: "Founder & CEO",
   ceoQuote:
     "A website should do two things extremely well: be easy for your customers to use and be structured in a way that search engines are confident recommending.",
+  logo: {
+    src: Logo.src,
+    alt: "Griffin's Web Services Logo",
+  },
 };
 
 export const ctaData = {

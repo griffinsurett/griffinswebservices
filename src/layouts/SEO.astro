@@ -16,9 +16,10 @@
  * Generates absolute URLs for social sharing.
  */
 
-// Default OG image - use logo from public folder
-const defaultOGImage = { src: "/2dfavicons/android-chrome-512x512.png" };
 import { siteData } from "@/content/siteData";
+
+// Fallback image: siteData.logo first, favicon as last resort
+const fallbackImage = siteData.logo?.src || "/2dfavicons/android-chrome-512x512.png";
 import { getImageUrl } from "@/utils/images";
 import type { ImageInput, SEOData } from "@/content/schema";
 
@@ -45,7 +46,7 @@ const {
 // Base values from props
 const baseTitle = title || "Page";
 const baseDescription = description || siteData.description;
-const baseImageUrl = getImageUrl(image, defaultOGImage.src);
+const baseImageUrl = getImageUrl(image, fallbackImage);
 
 // Meta tag values (with SEO overrides)
 const finalMetaTitle = seo?.metaTitle || `${baseTitle} | ${siteData.title}`;
@@ -107,7 +108,7 @@ const structuredData = {
     "url": siteData.url,
     "logo": {
       "@type": "ImageObject",
-      "url": makeAbsolute(defaultOGImage.src),
+      "url": makeAbsolute(fallbackImage),
       "width": 60,
       "height": 60
     }
