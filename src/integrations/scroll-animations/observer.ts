@@ -118,11 +118,9 @@ class ScrollAnimationObserver {
     // Use centralized scroll event bus instead of direct listener
     this.unsubscribeScroll = scrollEventBus.subscribe(this.handleScrollEvent);
 
-    // Defer observation to avoid blocking main thread during page load
-    requestAnimationFrame(() => {
-      this.observeAll();
-      this.setupMutationObserver();
-    });
+    // Observe elements immediately to avoid flash of hidden content on hero
+    this.observeAll();
+    this.setupMutationObserver();
   }
 
   private handleScrollEvent = (payload: ScrollEventPayload) => {
@@ -285,20 +283,11 @@ export function initScrollAnimations(options?: AnimationObserverOptions) {
   return instance;
 }
 
-// Auto-initialize when DOM is ready, deferred to avoid blocking
+// Auto-initialize when DOM is ready - run immediately to avoid flash of hidden content
 if (typeof window !== "undefined") {
-  const deferInit = () => {
-    // Use requestIdleCallback for non-critical initialization, fallback to setTimeout
-    if ("requestIdleCallback" in window) {
-      (window as any).requestIdleCallback(() => initScrollAnimations(), { timeout: 100 });
-    } else {
-      setTimeout(() => initScrollAnimations(), 0);
-    }
-  };
-
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", deferInit);
+    document.addEventListener("DOMContentLoaded", () => initScrollAnimations());
   } else {
-    deferInit();
+    initScrollAnimations();
   }
 }
