@@ -3,8 +3,7 @@
 
 import "../styles/fonts.css";  // Critical fonts - loaded first for optimal LCP
 import "../styles/global.css";
-// TEMPORARILY DISABLED FOR TESTING
-// import "../integrations/scroll-animations/styles/animations.css";  // Scroll animations (CSS-only + JS-observed)
+import "../integrations/scroll-animations/styles/animations.css";  // Scroll animations (CSS-only + JS-observed)
 import "../integrations/preferences/accessibility/styles/accessibility.css";  // Accessibility styles - MUST load LAST to override Tailwind classes
 ---
 
@@ -58,7 +57,7 @@ import "../integrations/preferences/accessibility/styles/accessibility.css";  //
   })();
 </script>
 
-<!-- Scroll animations - TEMPORARILY DISABLED FOR TESTING -->
-<!-- <script>
+<!-- Scroll animations -->
+<script>
   import "@/integrations/scroll-animations/observer";
-</script> -->
+</script>
