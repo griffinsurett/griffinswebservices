@@ -14,6 +14,7 @@
  */
 
 import { createIntersectionObserver } from "@/utils/IntersectionObserver";
+import { scrollEventBus, type ScrollEventPayload } from "@/utils/scrollEventBus";
 
 type LazyVideoElement = HTMLVideoElement & {
   dataset: HTMLVideoElement["dataset"] & {
@@ -99,8 +100,10 @@ class ScrollAnimationObserver {
   private seenElements = new WeakSet<Element>(); // Track elements that have been visible at least once
   private defaultThreshold: number;
   private defaultRootMargin: string;
-  private lastScrollY: number = 0;
   private scrollDirection: "up" | "down" = "down";
+  private unsubscribeScroll: (() => void) | null = null;
+  private mutationDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private pendingMutations: MutationRecord[] = [];
 
   constructor(options: AnimationObserverOptions = {}) {
     this.defaultThreshold = options.defaultThreshold ?? 0.1;
@@ -112,8 +115,8 @@ class ScrollAnimationObserver {
       return;
     }
 
-    // Track scroll direction - defer scrollY read to first scroll event to avoid forced reflow
-    window.addEventListener("scroll", this.handleScroll, { passive: true });
+    // Use centralized scroll event bus instead of direct listener
+    this.unsubscribeScroll = scrollEventBus.subscribe(this.handleScrollEvent);
 
     // Defer observation to avoid blocking main thread during page load
     requestAnimationFrame(() => {
@@ -122,10 +125,8 @@ class ScrollAnimationObserver {
     });
   }
 
-  private handleScroll = () => {
-    const currentScrollY = window.scrollY;
-    this.scrollDirection = currentScrollY > this.lastScrollY ? "down" : "up";
-    this.lastScrollY = currentScrollY;
+  private handleScrollEvent = (payload: ScrollEventPayload) => {
+    this.scrollDirection = payload.direction;
   };
 
   private observeAll() {
@@ -222,10 +223,16 @@ class ScrollAnimationObserver {
 
   private setupMutationObserver() {
     const supportsScrollTimeline = CSS.supports('animation-timeline: view()');
+    const DEBOUNCE_MS = 100; // Debounce mutations to reduce main thread blocking
 
-    const mutationObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
+    const processPendingMutations = () => {
+      const mutations = this.pendingMutations;
+      this.pendingMutations = [];
+      this.mutationDebounceTimer = null;
+
+      // Process all batched mutations at once
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
           if (node instanceof HTMLElement) {
             // Check if the node itself has data-animate
             if (node.hasAttribute("data-animate")) {
@@ -246,8 +253,19 @@ class ScrollAnimationObserver {
               });
             }
           }
-        });
-      });
+        }
+      }
+    };
+
+    const mutationObserver = new MutationObserver((mutations) => {
+      // Batch mutations instead of processing immediately
+      this.pendingMutations.push(...mutations);
+
+      // Debounce: clear existing timer and set a new one
+      if (this.mutationDebounceTimer !== null) {
+        clearTimeout(this.mutationDebounceTimer);
+      }
+      this.mutationDebounceTimer = setTimeout(processPendingMutations, DEBOUNCE_MS);
     });
 
     mutationObserver.observe(document.body, {
