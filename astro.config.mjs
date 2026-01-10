@@ -6,6 +6,7 @@ import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import partytown from '@astrojs/partytown';
 import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 import { buildRedirectConfig } from './src/utils/redirects';
 import { manualChunks, assetFileNames } from './vite.chunks.js';
 import iconGeneratorIntegration from './src/integrations/icons/icon-generator.integration.mjs';
@@ -20,7 +21,12 @@ console.log(`Site URL: ${siteUrl}`);
 export default defineConfig({
   site: siteUrl,
   server: { port: 9999 },
-  
+  adapter: vercel({
+    webAnalytics: { enabled: true },
+    speedInsights: { enabled: true },
+  }),
+  output: 'static',
+
   vite: {
     plugins: [tailwindcss()],
     build: {
