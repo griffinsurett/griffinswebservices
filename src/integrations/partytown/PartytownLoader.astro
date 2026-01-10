@@ -10,10 +10,6 @@
  *
  * Usage:
  *   <PartytownLoader forward={['dataLayer.push']} />
- *
- * The component injects a small inline script that:
- * 1. Checks if any type="text/partytown" scripts exist
- * 2. Only if they do, dynamically loads the partytown bootstrap
  */
 
 export interface Props {
@@ -26,31 +22,21 @@ export interface Props {
 const { forward = ['dataLayer.push'], debug = false } = Astro.props;
 
 const forwardConfig = JSON.stringify(forward);
-const libPath = '/~partytown/';
 ---
 
-<script is:inline define:vars={{ forwardConfig, debug, libPath }}>
+<script is:inline define:vars={{ forwardConfig, debug }}>
   // Conditional Partytown loader - only loads if partytown scripts exist
   (function() {
     // Check if there are any partytown scripts on the page
-    var partytownScripts = document.querySelectorAll('script[type="text/partytown"]');
+    if (!document.querySelector('script[type="text/partytown"]')) return;
 
-    if (partytownScripts.length === 0) {
-      // No partytown scripts, skip loading the bootstrap
-      return;
-    }
+    // Partytown scripts exist, configure and load
+    var f = JSON.parse(forwardConfig);
+    window.partytown = { lib: '/~partytown/', debug: debug, forward: f };
 
-    // Partytown scripts exist, load the bootstrap
-    var forward = JSON.parse(forwardConfig);
-
-    // Set up partytown config
-    window.partytown = {
-      lib: libPath,
-      debug: debug,
-      forward: forward
-    };
-
-    // Inline the partytown snippet (minified version of @builder.io/partytown/snippet)
-    !function(t,e,n,i,a,s,c,l,d,p,u,f){if(!window.crossOriginIsolated&&!navigator.serviceWorker)return;c=t[i]=Object.assign(t[i]||{},{lib:libPath,debug:debug}),c[a]=(c[a]||[]).concat(forward),function(t,e,n,i,a,s,c,l){function d(){s||(s=1,"/"==(c=(a.lib||"/~partytown/")+(a.debug?"debug/":""))[0]&&(l=e.querySelectorAll('script[type="text/partytown"]'),i!=t?i.dispatchEvent(new CustomEvent("pt1",{detail:t})):(setTimeout(h,1e4),e.addEventListener("pt0",f),n.serviceWorker?n.serviceWorker.register(c+"partytown-sw.js",{scope:c}).then((function(t){t.active?p():t.installing&&t.installing.addEventListener("statechange",(function(t){"activated"==t.target.state&&p()}))}),console.error):h())))}function p(n){u=e.createElement(n?"script":"iframe"),t._pttab=Date.now(),n||(u.style.display="block",u.style.width="0",u.style.height="0",u.style.border="0",u.style.visibility="hidden",u.setAttribute("aria-hidden",!0)),u.src=c+"partytown-"+(n?"atomics.js?v=0.11.2":"sandbox-sw.html?"+t._pttab),e.querySelector(a.sandboxParent||"body").appendChild(u)}function h(n,i){for(f(),s==t&&(a.forward||[]).map((function(e){delete t[e.split(".")[0]]})),n=0;n<l.length;n++)(i=e.createElement("script")).innerHTML=l[n].innerHTML,i.nonce=a.nonce,e.head.appendChild(i);u&&u.parentNode.removeChild(u)}function f(){clearTimeout(d)}"complete"==e.readyState?d():(t.addEventListener("DOMContentLoaded",d),t.addEventListener("load",d))}(t,e,n,i,c)}(window,document,navigator,top,"partytown","forward");
+    // Load partytown bootstrap dynamically
+    var s = document.createElement('script');
+    s.src = '/~partytown/partytown.js';
+    document.head.appendChild(s);
   })();
 </script>
