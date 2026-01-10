@@ -8,9 +8,7 @@
  *
  * Includes:
  * - Translation Loader (lightweight - full script loads on demand)
- *
- * Note: Vercel Analytics & Speed Insights are now handled by the @astrojs/vercel adapter
- * in astro.config.mjs with webAnalytics and speedInsights options.
+ * - Vercel Analytics & Speed Insights (for static builds)
  *
  * Usage in BaseLayout.astro:
  *   <body>
@@ -20,6 +18,8 @@
  */
 
 import TranslationLoader from "@/integrations/preferences/language/components/TranslationLoader.astro";
+import SpeedInsights from "@vercel/speed-insights/astro";
+import Analytics from "@vercel/analytics/astro";
 
 export interface Props {
   /** Enable Chrome/Edge native Translator API (default: true) */
@@ -39,3 +39,7 @@ const {
   enableNative={enableNativeTranslation}
   enableGoogle={enableGoogleTranslation}
 />
+
+<!-- Vercel Analytics & Speed Insights -->
+<SpeedInsights />
+<Analytics />
