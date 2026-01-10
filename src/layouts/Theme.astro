@@ -57,7 +57,8 @@ import "../integrations/preferences/accessibility/styles/accessibility.css";  //
   })();
 </script>
 
-<!-- Scroll animations -->
+<!-- Scroll animations (deferred to avoid blocking initial render) -->
 <script>
+  // Import observer directly to avoid pulling in React via index barrel exports
   import "@/integrations/scroll-animations/observer";
 </script>
