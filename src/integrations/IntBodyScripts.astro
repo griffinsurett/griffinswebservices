@@ -8,7 +8,7 @@
  *
  * Includes:
  * - Vercel Analytics & Speed Insights
- * - Browser Translation Script (handles Google Translate / Native API)
+ * - Translation Loader (lightweight - full script loads on demand)
  *
  * Usage in BaseLayout.astro:
  *   <body>
@@ -18,7 +18,7 @@
  */
 
 import Vercel from "@/integrations/vercel/Vercel.astro";
-import BrowserTranslateScript from "@/integrations/preferences/language/components/BrowserTranslateScript.astro";
+import TranslationLoader from "@/integrations/preferences/language/components/TranslationLoader.astro";
 
 export interface Props {
   /** Enable Chrome/Edge native Translator API (default: true) */
@@ -36,8 +36,8 @@ const {
 <!-- Analytics: Vercel Analytics & Speed Insights -->
 <Vercel />
 
-<!-- Translation: Browser/Google Translate integration -->
-<BrowserTranslateScript
+<!-- Translation: Lightweight loader - full script loads only when needed -->
+<TranslationLoader
   enableNative={enableNativeTranslation}
   enableGoogle={enableGoogleTranslation}
 />
