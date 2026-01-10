@@ -1,7 +1,6 @@
 // src/hooks/interactions/useScrollInteraction.ts
 import { useCallback, useEffect, useRef, type RefObject } from "react";
 import { resolveHost, getPositionForHost, type HostElement } from "./utils";
-import { scrollEventBus, type ScrollEventPayload } from "@/utils/scrollEventBus";
 
 export type ScrollDirection = "up" | "down";
 export type ScrollSource = "scroll" | "wheel";
@@ -116,34 +115,9 @@ export const useScrollInteraction = ({
     lastPosRef.current = getPositionForHost(host);
   }, [elementRef]);
 
-  // Determine if we're tracking window or a specific element
-  const isWindowLevel = !elementRef || elementRef.current === null;
-
-  // For window-level scrolling, use the centralized scroll event bus
   useEffect(() => {
-    if (!isWindowLevel) return;
-    if (internalFlagRef?.current) return;
-
-    const handleBusEvent = (payload: ScrollEventPayload) => {
-      // Update position tracking
-      const delta = payload.scrollY - lastPosRef.current;
-      lastPosRef.current = payload.scrollY;
-
-      if (delta !== 0) {
-        emitActivity(delta, payload.source);
-      }
-    };
-
-    const unsubscribe = scrollEventBus.subscribe(handleBusEvent);
-    return unsubscribe;
-  }, [isWindowLevel, emitActivity, internalFlagRef]);
-
-  // For element-level scrolling, use direct event listeners
-  useEffect(() => {
-    if (isWindowLevel) return;
-
     const host = hostRef.current || resolveHost(elementRef);
-    if (!host || host === window) return;
+    if (!host) return;
 
     const handleWheel = (event: WheelEvent) => {
       if (trustedOnly && !event.isTrusted) return;
@@ -163,15 +137,13 @@ export const useScrollInteraction = ({
       emitActivity(deltaY, "wheel");
     };
 
-    (host as HTMLElement).addEventListener("wheel", handleWheel, { passive: true });
-    return () => (host as HTMLElement).removeEventListener("wheel", handleWheel);
-  }, [isWindowLevel, elementRef, emitActivity, internalFlagRef, onWheelActivity, trustedOnly, wheelSensitivity]);
+    (host as Window | HTMLElement).addEventListener("wheel", handleWheel as EventListener, { passive: true });
+    return () => (host as Window | HTMLElement).removeEventListener("wheel", handleWheel as EventListener);
+  }, [elementRef, emitActivity, internalFlagRef, onWheelActivity, trustedOnly, wheelSensitivity]);
 
   useEffect(() => {
-    if (isWindowLevel) return;
-
     const host = hostRef.current || resolveHost(elementRef);
-    if (!host || host === window) return;
+    if (!host) return;
 
     const handleScroll = () => {
       if (internalFlagRef?.current) return;
@@ -183,9 +155,9 @@ export const useScrollInteraction = ({
       }
     };
 
-    (host as HTMLElement).addEventListener("scroll", handleScroll, { passive: true });
-    return () => (host as HTMLElement).removeEventListener("scroll", handleScroll);
-  }, [isWindowLevel, elementRef, emitActivity, internalFlagRef]);
+    (host as Window | HTMLElement).addEventListener("scroll", handleScroll, { passive: true });
+    return () => (host as Window | HTMLElement).removeEventListener("scroll", handleScroll);
+  }, [elementRef, emitActivity, internalFlagRef]);
 
   useEffect(() => () => clearEndTimer(), [clearEndTimer]);
 

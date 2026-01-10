@@ -1,11 +1,12 @@
 import type { ClientDirective } from 'astro';
 import {
+  createScrollHandler,
+  createWheelHandler,
   createKeydownHandler,
   createImmediateHandler,
   meetsScrollThreshold,
 } from './shared/eventHandlers';
 import { createHydrationTrigger } from './shared/hydrationHelpers';
-import { scrollEventBus } from '@/utils/scrollEventBus';
 
 type DirectiveConfig =
   | boolean
@@ -47,20 +48,16 @@ const scrollDirective: ClientDirective = (load, options) => {
   const controller = new AbortController();
   const triggerHydration = createHydrationTrigger(load, controller);
 
-  // Use centralized scroll event bus instead of adding duplicate listeners
-  const unsubscribe = scrollEventBus.subscribe((payload) => {
-    if (threshold === 0 || payload.scrollY > threshold) {
-      triggerHydration();
-      unsubscribe();
-    }
+  window.addEventListener('scroll', createScrollHandler(triggerHydration, threshold), {
+    passive: true,
+    signal: controller.signal,
   });
 
-  // Abort handler to clean up subscription
-  controller.signal.addEventListener('abort', () => {
-    unsubscribe();
+  window.addEventListener('wheel', createWheelHandler(triggerHydration, threshold), {
+    passive: true,
+    signal: controller.signal,
   });
 
-  // Keep touchmove and keydown as they're not covered by the scroll bus
   window.addEventListener('touchmove', createImmediateHandler(triggerHydration), {
     passive: true,
     signal: controller.signal,
