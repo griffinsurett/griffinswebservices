@@ -1,12 +1,10 @@
 /* src/styles/language-switcher.css */
 /**
  * Language Switcher Styles
- * 
+ *
  * Styling for the language dropdown component.
  * Uses plain CSS values for Tailwind 4 compatibility.
  */
-
-@import "tailwindcss";
 
 /* Button */
 .language-switcher-button {

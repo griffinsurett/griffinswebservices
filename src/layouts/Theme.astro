@@ -7,6 +7,15 @@ import "../integrations/scroll-animations/styles/animations.css";  // Scroll ani
 import "../integrations/preferences/accessibility/styles/accessibility.css";  // Accessibility styles - MUST load LAST to override Tailwind classes
 ---
 
+<!-- Preload critical font - starts download immediately before CSS is parsed -->
+<link
+  rel="preload"
+  href="/fonts/TikTok_Sans/TikTokSans-Latin.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+
 <!-- Favicons -->
 <link rel="shortcut icon" href="/2dfavicons/favicon.ico" />
 <link rel="icon" type="image/png" sizes="16x16" href="/2dfavicons/favicon-16x16.png" />
