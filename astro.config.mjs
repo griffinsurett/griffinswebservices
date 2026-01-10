@@ -4,7 +4,6 @@ import { loadEnv } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
-import partytown from '@astrojs/partytown';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import { buildRedirectConfig } from './src/utils/redirects';
@@ -21,10 +20,7 @@ console.log(`Site URL: ${siteUrl}`);
 export default defineConfig({
   site: siteUrl,
   server: { port: 9999 },
-  adapter: vercel({
-    webAnalytics: { enabled: true },
-    speedInsights: { enabled: true },
-  }),
+  adapter: vercel(),
   output: 'static',
 
   vite: {
@@ -54,12 +50,6 @@ export default defineConfig({
     mdx(),
     react({
       include: ['**/react/*', '**/components/**/*.jsx', '**/components/**/*.tsx', '**/hooks/**/*.js', '**/hooks/**/*.ts'],
-    }),
-    partytown({
-      config: {
-        forward: ['dataLayer.push'],
-        debug: process.env.NODE_ENV === 'development',
-      },
     }),
     sitemap(),
   ],
