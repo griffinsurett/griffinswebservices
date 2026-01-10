@@ -2,14 +2,15 @@
 // src/layouts/IndustriesSection.astro
 /**
  * Reusable section for industry pages
- * Renders trust statement, testimonials, and CTA
+ * Renders trust statement and CTA
+ * Uses BottomContentSection for testimonials and FAQ
  *
  * Automatically derives slug from URL and fetches title from content collection
  */
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import CTASection from "@/layouts/CTASection.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
-import { query, related, safeGetEntry } from "@/utils/query";
+import BottomContentSection from "@/layouts/BottomContentSection.astro";
+import { safeGetEntry } from "@/utils/query";
 import { capitalizeWords } from "@/utils/string";
 import { parseUrlPath } from "@/utils/paths";
 
@@ -71,22 +72,18 @@ const defaultTrustStatement = `We've helped ${title.toLowerCase()} businesses la
 {/* Slot for additional content */}
 <slot />
 
-{/* Testimonials */}
-<ContentRenderer
-  query={query("testimonials")}
-  variant="TestimonialCarouselVariant"
+{/* Bottom Content Section - Testimonials, FAQ */}
+<BottomContentSection
+  collection="industries"
+  slug={slug}
+  pageTitle={title}
+  portfolio={false}
+  technologies={false}
+  faq={{
+    title: faqTitle,
+    heading: faqHeading || `Common Questions About ${title || "This Industry"}`,
+  }}
 />
-
-{/* Related FAQs */}
-{slug && (
-  <ContentRenderer
-    query={related("faq", "industries", slug)}
-    variant="AccordionVariant"
-    allowMultiple={false}
-    title={faqTitle}
-    heading={faqHeading || `Common Questions About ${title || "This Industry"}`}
-  />
-)}
 
 {/* CTA Section */}
 {ctaHeading && (

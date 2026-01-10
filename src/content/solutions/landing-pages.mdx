@@ -8,54 +8,127 @@ heading:
 order: 1
 icon: "fa6-solid:file-lines"
 parent: new-builds
+itemLayout: "../../layouts/collections/WebSolutionLayout.astro"
 ---
-import TrustStatement from "@/components/TrustStatement.astro";
-import SolutionsSection from "@/layouts/SolutionsSection.astro";
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import CTASection from '@/layouts/CTASection.astro';
+import BottomContentSection from '@/layouts/BottomContentSection.astro';
+import TrustStatement from '@/components/TrustStatement.astro';
+import DoubleCard from '@/layouts/DoubleCard.astro';
+import FrontPageHero from '@/layouts/FrontPageHero.astro';
+import { query, sortByOrder, byTag } from '@/utils/query';
+import { roots, related, children } from '@/utils/query/snippets';
+import { animationProps } from '@/integrations/scroll-animations/props';
 
-<TrustStatement text="Every page is strategically designed to maximize your ad ROI and convert clicks into customers." />
-
-<SolutionsSection
-  icon={frontmatter.icon}
-  features={[
-    { title: "Conversion-focused design", description: "Every element strategically placed to guide visitors toward one goal: taking action on your offer." },
-    { title: "Lightning-fast load times", description: "Pages that load in under 2 seconds. Slow pages kill conversions and waste your ad spend." },
-    { title: "Mobile-optimized experience", description: "Designed mobile-first because most ad traffic comes from phones. No pinching or zooming required." },
-    { title: "A/B testing ready", description: "Built to test different headlines, images, and CTAs so you can optimize based on real data." },
-    { title: "Form and CRM integration", description: "Leads flow directly into your inbox, CRM, or marketing automation—no manual data entry." },
-    { title: "Tracking pixels installed", description: "Google Analytics, Meta Pixel, and conversion tracking set up correctly from day one." },
-    { title: "Thank you page included", description: "Custom confirmation page that reinforces the next step and keeps engagement going." },
+<FrontPageHero
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+  subheading="We build high-converting landing pages designed for ads, campaigns, and promotions that drive real results."
+  checklist={[
+    "Conversion-Focused Design",
+    "A/B Testing Ready",
+    "Fast Load Times for Better Ad Scores",
+    "Analytics & Conversion Tracking"
   ]}
-  quickFacts={[
-    { title: "Timeline", description: "5-7 days to launch" },
-    { title: "What's included", description: "Page + thank you + tracking" },
-    { title: "Optimization", description: "A/B variants available" },
-  ]}
-  contentHeading={{
-    title: "Stop wasting ad spend on bad pages",
-    before: "Your ads are working.",
-    text: "Your landing page isn't.",
-    after: "Let's fix that.",
-    description: "You're paying for every click. If those clicks land on a slow, confusing, or generic page, you're throwing money away. A great landing page turns that ad spend into actual customers."
+  primaryCTA={{
+    text: "Get Started",
+    link: "/contact-us",
+    rightIcon: "lu:arrow-right",
   }}
-  sidebar={{
-    title: "Built for one thing: conversions",
-    eyebrow: "Why our pages perform",
-    description: "We obsess over the details that make people click. Compelling headlines, clear value props, strategic CTAs, and zero distractions.",
-    footIcon: "💰",
-    footTitle: "Maximize your ad ROI",
-    footDescription: "Every dollar you spend on ads works harder when it lands on a page designed to convert."
-  }}
-  textContent={[
-    "Most landing pages fail because they try to do too much. They're cluttered with navigation, competing messages, and distractions that pull visitors away from the one action you want them to take.",
-    "We build focused landing pages with one goal: getting visitors to convert. That means compelling headlines that grab attention, clear value propositions that explain why they should care, social proof that builds trust, and a single, obvious call-to-action.",
-    "Fast load times, mobile optimization, and proper tracking are table stakes. We handle all the technical details so you can focus on running your campaigns and watching the leads come in."
-  ]}
-  benefitsHeading="What Makes Our Landing Pages Different"
-  ctaTitle="Ready to maximize your ad spend?"
-  ctaHeading={{
-    before: "Let's build your",
-    text: "high-converting page",
-    after: "today."
-  }}
-  ctaDescription="Stop wasting money on ads that lead to slow, confusing pages. Get a landing page engineered for conversions."
+  scrollToSection="#under-hero"
+  id="solutions-hero"
 />
+
+<div id="under-hero">
+
+<div
+  class="block lg:min-h-screen inner-section"
+  {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
+>
+  <ContentRenderer
+    query={query("projects").where((entry) => entry.data.solutions?.some((s) => s.slug === "landing-pages"))}
+    variant="PortfolioScreenVariant"
+    clientLoadPlaceholder={true}
+  />
+</div>
+
+<ContentRenderer
+  query={children("solutions", "landing-pages")}
+  id="landing-page-types"
+  title="Landing Page Types"
+  heading="Landing Pages for Every Campaign"
+  description="Whether you're running ads, launching a product, or promoting an event, we build landing pages optimized for your specific goals."
+/>
+
+<DoubleCard />
+
+<ContentRenderer
+  query={query("philosophy").orderBy(sortByOrder())}
+  variant="IconListVariant"
+  id="philosophy"
+  title="Our Approach"
+  heading="Why Our Landing Pages Convert"
+  description="Every landing page we build follows conversion-focused principles — clear messaging, fast load times, and intentional design that guides visitors toward action."
+/>
+
+<ContentRenderer
+  query={related("benefits", "solutions", "landing-pages").orderBy(sortByOrder())}
+  variant="BenefitsVariant"
+  id="benefits"
+  title="What This Means for You"
+  heading="What You Can Expect From Your Landing Page"
+  description="These principles translate into measurable results — higher conversion rates, better ad performance, and more leads from your campaigns."
+  columns={2}
+  gap="lg"
+/>
+
+<ContentRenderer
+  query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
+  variant="CardVariant"
+  id="capabilities"
+  title="Core Capabilities"
+  heading="The Capabilities Behind High-Converting Pages"
+  description="Building landing pages that convert requires more than good design. Our capabilities ensure every element works together to maximize results."
+  columns={3}
+  gap="lg"
+  showButtonSection={false}
+/>
+
+<TrustStatement
+  className="min-h-screen flex items-center justify-center inner-section"
+  text="We build landing pages engineered for conversion. Every element — from headline to button placement — is designed with one goal: turning visitors into leads or customers."
+/>
+
+<BottomContentSection
+  testimonials={{
+    customQuery: query("testimonials").where((entry) => entry.data.rating >= 4)
+  }}
+  portfolio={{
+    filterQuery: query('industries').orderBy(sortByOrder()),
+    title: "Portfolio",
+    heading: "Landing pages that deliver results",
+    description: "See how our landing pages have helped businesses improve ad performance and increase conversions.",
+    showCount: false,
+    showFilters: true,
+    showArrows: true
+  }}
+  technologies={{
+    customQuery: byTag("technologies", "featured").orderBy(sortByOrder()).limit(8),
+    title: "Technologies",
+    description: "The tools and platforms we use to build fast, conversion-optimized landing pages."
+  }}
+  faq={{
+    collection: "solutions",
+    slug: "landing-pages",
+    title: "FAQs",
+    heading: "Common Questions About Landing Pages"
+  }}
+/>
+
+<CTASection
+  title="Get Started"
+  heading="Ready to Launch Your Landing Page?"
+  description="Let's build a landing page that converts — designed for your campaign, optimized for results."
+/>
+
+</div>

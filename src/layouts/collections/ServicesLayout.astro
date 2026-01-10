@@ -5,18 +5,15 @@
  *
  * A specialized layout for service-type collection items.
  * Features:
- * - QuoteHero with title, description, and quote form
+ * - QuoteHero for solutions and capabilities
  * - MDX content rendering
- * - Related items section (solutions show capabilities, capabilities show solutions)
+ *
+ * Note: Parent solutions (websites, web-applications, landing-pages) use
+ * WebSolutionLayout directly via their frontmatter layout property.
  */
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import QuoteHero from "@/layouts/QuoteHero.astro";
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, related, sortByDate } from "@/utils/query";
-import { capitalizeWords } from "@/utils/string";
-import { getItemKey } from "@/utils/collections/core";
 import type { CollectionLayoutProps } from "./types";
-import DoubleCard from "../DoubleCard.astro";
 
 const {
   entry,
@@ -33,53 +30,26 @@ const {
   title,
   description,
   price,
-  parent,
   heading,
 } = data;
 
-// Get the current entry's slug for filtering related items
-const currentSlug = entry ? getItemKey(entry) : "";
-
-// Determine collection type for conditional rendering
-const isCapabilities = collection === "capabilities";
-const isSolutions = collection === "solutions";
-
-const relatedSolutionsQuery = isCapabilities
-  ? related("solutions", "capabilities", currentSlug)
-  : null;
-
-const relatedCapabilitiesQuery = isSolutions
-  ? related("capabilities", "solutions", currentSlug)
-  : null;
-
-const relatedBlogsQuery = isCapabilities
-  ? related("blog", "capabilities", currentSlug).orderBy(
-      sortByDate("publishDate", "desc"),
-    )
-  : null;
-
 // Build the description with price if available
 const heroDescription = price ? `${description} ${price}` : description;
-
-// Capitalize the slug for display
-const displayTitle =
-  title || capitalizeWords(entry?.slug?.replace(/-/g, " ") || "");
 ---
 
 <BaseLayout {...seoProps}>
-    {/* Quote Hero Section */}
-    <QuoteHero
-      title={title}
-      heading={heading}
-      description={heroDescription}
-      primaryCTA={{
-        text: `View All ${collectionMeta?.data?.title || "Services"}`,
-        link: `/${collection}`,
-        rightIcon: "lu:arrow-left",
-      }}
-      id="services-quote-hero"
-    />
+  <QuoteHero
+    title={title}
+    heading={heading}
+    description={heroDescription}
+    primaryCTA={{
+      text: `View All ${collectionMeta?.data?.title || "Services"}`,
+      link: `/${collection}`,
+      rightIcon: "lu:arrow-left",
+    }}
+    id="services-quote-hero"
+  />
 
-    {/* MDX Content */}
-    {Content && <Content />}
+  {/* MDX Content */}
+  {Content && <Content />}
 </BaseLayout>

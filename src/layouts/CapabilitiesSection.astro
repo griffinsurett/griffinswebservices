@@ -3,12 +3,14 @@
 /**
  * Reusable section for capability pages
  * Renders children capabilities, highlights, and CTA
+ * Uses BottomContentSection for testimonials, portfolio, FAQ, and technologies
  *
  * Automatically derives slug from URL and fetches title from content collection
  */
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import CTASection from "@/layouts/CTASection.astro";
-import { children, query, related, safeGetEntry, sortByDate } from "@/utils/query";
+import BottomContentSection from "@/layouts/BottomContentSection.astro";
+import { children, related, safeGetEntry, sortByDate } from "@/utils/query";
 import { capitalizeWords } from "@/utils/string";
 import { parseUrlPath } from "@/utils/paths";
 
@@ -97,30 +99,6 @@ const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || 
   />
 )}
 
-<ContentRenderer
-  query={query("testimonials")}
-  variant="TestimonialCarouselVariant"
-/>
-
-{slug && (
-  <ContentRenderer
-    query={related("faq", "capabilities", slug)}
-    variant="AccordionVariant"
-    allowMultiple={false}
-    title={faqTitle}
-    heading={faqHeading || `Common Questions About ${title || "This Capability"}`}
-  />
-)}
-
-{slug && (
-  <ContentRenderer
-    query={related("technologies", "capabilities", slug)}
-    variant="TechnologiesVariant"
-    title="Technologies"
-    description={`The tools and frameworks we use to deliver ${title?.toLowerCase() || "this capability"}.`}
-  />
-)}
-
 <slot />
 
 {slug && (
@@ -136,6 +114,25 @@ const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || 
     description={`Insights and guides related to ${title?.toLowerCase() || "this capability"}.`}
   />
 )}
+
+{/* Bottom Content Section - Testimonials, Portfolio, FAQ, Technologies */}
+<BottomContentSection
+  collection="capabilities"
+  slug={slug}
+  pageTitle={title}
+  portfolio={false}
+  faq={{
+    title: faqTitle,
+    heading: faqHeading || `Common Questions About ${title || "This Capability"}`,
+  }}
+  technologies={{
+    show: true,
+    relatedField: "capabilities",
+    relatedSlug: slug,
+    title: "Technologies",
+    description: `The tools and frameworks we use to deliver ${title?.toLowerCase() || "this capability"}.`,
+  }}
+/>
 
 {ctaHeading && (
   <CTASection

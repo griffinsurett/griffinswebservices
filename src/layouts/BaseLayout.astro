@@ -2,28 +2,28 @@
 // src/layouts/BaseLayout.astro
 /**
  * Base Layout - Root HTML Structure
- * 
+ *
  * The foundation layout for all pages in the application.
  * Provides:
  * - HTML document structure
  * - Head section with meta tags, SEO, theme setup
  * - Body with main content slot and footer
  * - Global styles import
- * 
+ *
  * All other layouts should extend or use this as their base.
  * Ensures consistent structure and metadata across the entire site.
  */
 
 // Note: fonts.css and global.css are imported in Theme.astro
-import HeadTags from "./HeadTags.astro";
 import SEO from "./SEO.astro";
 import Theme from "./Theme.astro";
-import BodyTags from "./BodyTags.astro";
-import AccessibilityScript from "@/integrations/preferences/accessibility/components/AccessibilityScript.astro";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
-// Language detection removed - page always loads in English first
-// Translation only happens when user explicitly selects a language
+
+// Integration bundles - consolidate all integration scripts
+import IntHeadScripts from "@/integrations/IntHeadScripts.astro";
+import IntBodyScripts from "@/integrations/IntBodyScripts.astro";
+import IntFooterScripts from "@/integrations/IntFooterScripts.astro";
 
 export interface Props {
   [key: string]: any;  // Accept any props for SEO component
@@ -38,14 +38,13 @@ const { ...seoProps } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Theme />
-    <AccessibilityScript />
     <meta name="generator" content={Astro.generator} />
 
     {/* SEO meta tags */}
     <SEO title={seoProps.title} {...seoProps} />
-    
-    {/* Additional head tags (analytics scripts, etc.) */}
-    <HeadTags />
+
+    {/* Integration head scripts (GTM, Consent, Accessibility, Language Detection) */}
+    <IntHeadScripts />
 
     {/* Optional noindex for unpublished content */}
     {seoProps.noindex && <meta name="robots" content="noindex,nofollow" />}
@@ -58,8 +57,9 @@ const { ...seoProps } = Astro.props;
     >
       Skip to main content
     </a>
-    {/* Body-level scripts and elements */}
-    <BodyTags />
+
+    {/* Integration body scripts (Vercel Analytics, Translation) */}
+    <IntBodyScripts />
 
     {/* Main app container with flex column for sticky footer */}
     <div id="app" class="min-h-screen flex flex-col">
@@ -75,9 +75,12 @@ const { ...seoProps } = Astro.props;
       >
         <slot />
       </main>
-      
-      {/* Footer at bottom - now contains both consent and accessibility */}
+
+      {/* Footer at bottom */}
       <Footer />
     </div>
+
+    {/* Integration footer scripts (cookie banners, widgets, etc.) */}
+    <IntFooterScripts />
   </body>
 </html>

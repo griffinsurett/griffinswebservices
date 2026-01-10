@@ -417,7 +417,7 @@
             "type": "number",
             "default": 0
           },
-          "layout": {
+          "itemLayout": {
             "type": "string"
           },
           "parent": {

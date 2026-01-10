@@ -1,0 +1,43 @@
+---
+// src/integrations/IntBodyScripts.astro
+/**
+ * Integration Body Scripts Bundle
+ *
+ * Consolidates all integration scripts/components that should load in the <body>.
+ * Import this single component near the start of your body.
+ *
+ * Includes:
+ * - Vercel Analytics & Speed Insights
+ * - Browser Translation Script (handles Google Translate / Native API)
+ *
+ * Usage in BaseLayout.astro:
+ *   <body>
+ *     <IntBodyScripts />
+ *     <!-- rest of body content -->
+ *   </body>
+ */
+
+import Vercel from "@/integrations/vercel/Vercel.astro";
+import BrowserTranslateScript from "@/integrations/preferences/language/components/BrowserTranslateScript.astro";
+
+export interface Props {
+  /** Enable Chrome/Edge native Translator API (default: true) */
+  enableNativeTranslation?: boolean;
+  /** Enable Google Translate SDK fallback (default: true) */
+  enableGoogleTranslation?: boolean;
+}
+
+const {
+  enableNativeTranslation = true,
+  enableGoogleTranslation = true,
+} = Astro.props;
+---
+
+<!-- Analytics: Vercel Analytics & Speed Insights -->
+<Vercel />
+
+<!-- Translation: Browser/Google Translate integration -->
+<BrowserTranslateScript
+  enableNative={enableNativeTranslation}
+  enableGoogle={enableGoogleTranslation}
+/>

@@ -8,115 +8,127 @@ heading:
 order: 1
 icon: "fa6-solid:globe"
 parent: new-builds
+itemLayout: "../../layouts/collections/WebSolutionLayout.astro"
 ---
-import TrustStatement from "@/components/TrustStatement.astro";
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import ContentSection from "@/layouts/ContentSection.astro";
-import CTASection from "@/layouts/CTASection.astro";
-import BottomContentSection from "@/layouts/BottomContentSection.astro";
-import { query, sortByOrder, related } from "@/utils/query";
-import { children } from "@/utils/query/snippets";
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import CTASection from '@/layouts/CTASection.astro';
+import BottomContentSection from '@/layouts/BottomContentSection.astro';
+import TrustStatement from '@/components/TrustStatement.astro';
+import DoubleCard from '@/layouts/DoubleCard.astro';
+import FrontPageHero from '@/layouts/FrontPageHero.astro';
+import { query, sortByOrder, byTag } from '@/utils/query';
+import { roots, related, children } from '@/utils/query/snippets';
+import { animationProps } from '@/integrations/scroll-animations/props';
 
-<TrustStatement text="Every website we build is designed around your business goals — not generic templates or one-size-fits-all solutions." />
+<FrontPageHero
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+  subheading="We build fast, professional websites that help businesses establish credibility and convert visitors into customers."
+  checklist={[
+    "Custom Design & Development",
+    "Mobile-First Responsive Layouts",
+    "SEO-Ready Architecture",
+    "Built for Long-Term Growth"
+  ]}
+  primaryCTA={{
+    text: "Get Started",
+    link: "/contact-us",
+    rightIcon: "lu:arrow-right",
+  }}
+  scrollToSection="#under-hero"
+  id="solutions-hero"
+/>
 
-{/* Portfolio Screen Showcase */}
-<div class="block lg:min-h-screen inner-section">
+<div id="under-hero">
+
+<div
+  class="block lg:min-h-screen inner-section"
+  {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
+>
   <ContentRenderer
-    query={query("projects")}
+    query={query("projects").where((entry) => entry.data.solutions?.some((s) => s.slug === "websites" || s.slug === "business-websites"))}
     variant="PortfolioScreenVariant"
     clientLoadPlaceholder={true}
   />
 </div>
 
-{/* Benefits */}
 <ContentRenderer
-  query={related("benefits", "solutions", "websites")}
+  query={children("solutions", "websites")}
+  id="website-types"
+  title="Website Solutions"
+  heading="Website Types We Build"
+  description="From simple business sites to complex e-commerce platforms, we build websites tailored to your specific needs and goals."
+/>
+
+<DoubleCard />
+
+<ContentRenderer
+  query={query("philosophy").orderBy(sortByOrder())}
+  variant="IconListVariant"
+  id="philosophy"
+  title="Our Approach"
+  heading="Why Our Websites Work When Others Don't"
+  description="Every website we build follows clear principles that prioritize performance, stability, and maintainability — so your site doesn't just launch strong, it continues working as your business grows."
+/>
+
+<ContentRenderer
+  query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
   variant="BenefitsVariant"
+  id="benefits"
+  title="What This Means for You"
+  heading="What You Can Expect From Your Website"
+  description="These principles translate directly into real-world benefits — things you and your customers notice immediately."
   columns={2}
   gap="lg"
-  title="Why Choose Us"
-  heading="What Makes Our Websites Different"
 />
 
-<ContentSection
-  heading={{
-    title: "Your website should be your hardest-working employee",
-    before: "Stop settling for",
-    text: "websites that just exist.",
-    after: "Get one that performs.",
-    description: "Whether you need a business website to generate leads or an e-commerce store to drive sales, we build sites that deliver measurable results."
-  }}
-  primaryCTA={{
-    text: "Get Your Free Quote",
-    href: "#solutions-quote-hero",
-    rightIcon: "lu:arrow-right"
-  }}
-  secondaryCTA={{
-    text: "See our work",
-    href: "#solutions-projects"
-  }}
-  sidebar={{
-    icon: frontmatter.icon,
-    title: "Built for your goals",
-    eyebrow: "Why our websites work",
-    description: "Custom design, lightning-fast performance, and search-engine-friendly architecture that helps customers find you and take action.",
-    footIcon: "🚀",
-    footTitle: "Launch in weeks, not months",
-    footDescription: "We don't drag projects out. Your site goes live fast without cutting corners.",
-    features: [
-      { title: "Custom design that fits your brand", description: "No cookie-cutter templates. We design a unique look that reflects your business." },
-      { title: "Built for speed and SEO", description: "Lightning-fast load times and search-engine-friendly architecture." },
-      { title: "Mobile-first responsive design", description: "Looks and works perfectly on phones, tablets, and desktops." },
-      { title: "Easy content management", description: "Update text, images, and pages yourself without calling a developer." },
-      { title: "Ongoing support available", description: "Hosting, maintenance, and updates so you're never stuck." },
-    ]
-  }}
->
-  <div slot="text" class="space-y-6 text-lg text-muted">
-    <p>Your website is often the first impression potential customers get of your business. A slow, outdated, or confusing site doesn't just look bad — it actively costs you customers and credibility.</p>
-    <p>We build websites that make that first impression count. Whether you're a service business looking to generate leads or a product company ready to sell online, we create sites tailored to your specific goals.</p>
-    <p>Every website we deliver is fast, mobile-friendly, and built to be found on search engines. And when you need changes, we make it easy to update content yourself or get support from our team.</p>
-  </div>
-</ContentSection>
-
-{/* Website Types - IconListVariant showing children */}
 <ContentRenderer
-  query={children("solutions", "websites").orderBy(sortByOrder())}
-  variant="IconListVariant"
-  title="Website Types"
-  heading="Choose the Right Website for Your Business"
-  description="Different businesses need different types of websites. Each option is built around specific goals and delivers the features you actually need."
+  query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
+  variant="CardVariant"
+  id="capabilities"
+  title="Core Capabilities"
+  heading="The Capabilities Behind Every Website"
+  description="Everything above depends on having the right technical foundation. Our capabilities work together to ensure your website stays fast, stable, and dependable."
+  columns={3}
+  gap="lg"
+  showButtonSection={false}
 />
 
-{/* Bottom Content Section - Testimonials, Portfolio, FAQ */}
+<TrustStatement
+  className="min-h-screen flex items-center justify-center inner-section"
+  text="We build websites designed to hold up over time. Hosting and ongoing maintenance keep performance, stability, and security consistent as your business grows."
+/>
+
 <BottomContentSection
-  collection="solutions"
-  slug="websites"
-  pageTitle="Our Websites"
-  faq={{
-    customQuery: related("faq", "solutions", "websites"),
-    heading: "Common Questions About Our Websites"
+  testimonials={{
+    customQuery: query("testimonials").where((entry) => entry.data.rating >= 4)
+  }}
+  portfolio={{
+    filterQuery: query('industries').orderBy(sortByOrder()),
+    title: "Portfolio",
+    heading: "Websites that deliver real results",
+    description: "From contractors to e-commerce brands, we build sites that look great, load fast, and convert visitors into customers.",
+    showCount: false,
+    showFilters: true,
+    showArrows: true
   }}
   technologies={{
-    relatedField: "solutions",
-    relatedSlug: "websites",
-    title: "Referenced Technologies",
-    description: "Platforms, frameworks, and infrastructure we reach for when building websites that need to stay fast and dependable."
+    customQuery: byTag("technologies", "featured").orderBy(sortByOrder()).limit(8),
+    title: "Technologies",
+    description: "The frameworks and platforms we use to build fast, secure websites."
+  }}
+  faq={{
+    collection: "solutions",
+    slug: "websites",
+    title: "FAQs",
+    heading: "Common Questions About Websites"
   }}
 />
 
 <CTASection
-  id="solutions-cta"
-  className="min-h-[60vh]"
   title="Get Started"
-  heading={{
-    before: "Ready to launch a",
-    text: "website that works?",
-    after: ""
-  }}
-  description="Stop losing customers to competitors with better websites. Let's build something that delivers real results."
-  primaryCTA={{
-    text: "Get Your Free Quote",
-    link: "#solutions-quote-hero",
-  }}
+  heading="Ready to Build Your Website?"
+  description="Let's create a website that works for your business — fast, professional, and built to grow."
 />
+
+</div>

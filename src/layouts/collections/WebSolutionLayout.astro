@@ -1,0 +1,25 @@
+---
+// src/layouts/collections/WebSolutionLayout.astro
+/**
+ * Web Solution Layout - Minimal layout for parent solutions
+ *
+ * Simply provides BaseLayout with a slot for MDX content.
+ * All content (including FrontPageHero) is defined in the MDX files.
+ *
+ * Used by websites.mdx, web-applications.mdx, landing-pages.mdx
+ */
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import type { CollectionLayoutProps } from "./types";
+
+const {
+  entry,
+  collection,
+  collectionMeta,
+  Content,
+  seoProps = {},
+} = Astro.props as CollectionLayoutProps;
+---
+
+<BaseLayout {...seoProps}>
+  {Content && <Content />}
+</BaseLayout>

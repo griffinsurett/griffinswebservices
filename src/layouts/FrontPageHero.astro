@@ -19,6 +19,10 @@ interface CTA {
 export interface Props {
   heading?: HeadingContent;
   description?: string;
+  /** Subheading text shown above the checklist */
+  subheading?: string;
+  /** Checklist items shown in the hero */
+  checklist?: string[];
   primaryCTA?: CTA;
   className?: string;
   id?: string;
@@ -28,7 +32,9 @@ export interface Props {
 const defaultDescription =
   "Hand-crafted websites, automated systems, and ongoing support so you can sell more, grow faster, and stay secure without juggling multiple vendors.";
 
-const HeroServicesList = [
+const defaultSubheading = "We're a New Jersey based Web Agency that creates fast, engaging websites built to grow your business.";
+
+const defaultChecklist = [
   "Website Design & Development",
   "Secure Hosting, Maintenance & Support",
   "SEO Ready Architecture",
@@ -38,6 +44,8 @@ const HeroServicesList = [
 const {
   heading,
   description = siteData.description ?? defaultDescription,
+  subheading = defaultSubheading,
+  checklist = defaultChecklist,
   primaryCTA = {
     text: "Book An Intro Call",
     link: "#contact",
@@ -81,12 +89,11 @@ const {
               role="heading"
               aria-level="2"
             >
-              We're a New Jersey based Web Agency that creates fast, engaging
-              websites built to grow your business.
+              {subheading}
             </p>
             <ul class="space-y-2 lg:space-y-3 py-2 lg:py-0">
               {
-                HeroServicesList.map((service) => (
+                checklist.map((service) => (
                   <li class="list-none flex items-center gap-1.5">
                     <span class="faded-bg p-1.5 rounded-full flex items-center justify-center text-accent flex-shrink-0">
                       <svg

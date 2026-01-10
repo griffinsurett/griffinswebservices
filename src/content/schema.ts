@@ -310,7 +310,7 @@ export const baseSchema = ({ image }: { image: Function }) =>
         return new Date(val);
       }),
     order: z.number().default(0),
-    layout: z.string().optional(),
+    itemLayout: z.string().optional(),
     // Parent reference for content hierarchy (slug of parent item in same collection)
     parent: z.union([z.string(), z.array(z.string())]).optional(),
     heading: headingSchema.optional(),

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 const MOTION_ATTRIBUTE_FILTER: string[] = [
   "data-a11y-motion",
   "data-a11y-animations",
+  "data-a11y-images",
 ];
 
 /**
@@ -21,8 +22,10 @@ export function readMotionPreference(): boolean {
     root.getAttribute("data-a11y-motion") === "reduced";
   const userPausedAnimations =
     root.getAttribute("data-a11y-animations") === "true";
+  const userHidesImages =
+    root.getAttribute("data-a11y-images") === "hide";
 
-  return systemPrefersReduced || userPrefersReduced || userPausedAnimations;
+  return systemPrefersReduced || userPrefersReduced || userPausedAnimations || userHidesImages;
 }
 
 /**

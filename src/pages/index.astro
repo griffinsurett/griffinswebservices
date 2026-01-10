@@ -47,12 +47,21 @@ const heroDescription =
       />
     </div>
 
+       <!-- SOLUTIONS -->
+    <ContentRenderer
+      query={children("solutions", "new-builds")}
+      id="solutions"
+      title="Web Solutions"
+      heading="Ways We Turn Strategy Into Working Solutions"
+      description="Different businesses need different outcomes. Whether it's a marketing site, an e-commerce storefront, or a full-scale web application — our solutions are built around real goals, not arbitrary page counts or feature lists."
+    />
+
     <DoubleCard />
 
     <!-- PHILOSOPHY -->
     <ContentRenderer
       query={query("philosophy").orderBy(sortByOrder())}
-      variant="CardVariant"
+      variant="IconListVariant"
       id="philosophy"
       title="Philosophy"
       heading="Why Our Websites Work When Others Don't"
@@ -69,16 +78,6 @@ const heroDescription =
       description="These principles translate directly into real-world benefits — things you and your customers notice immediately when using your website."
       columns={2}
       gap="lg"
-    />
-
-    <!-- SOLUTIONS -->
-    <ContentRenderer
-      query={children("solutions", "new-builds")}
-      variant="IconListVariant"
-      id="solutions"
-      title="Web Solutions"
-      heading="Ways We Turn Strategy Into Working Solutions"
-      description="Different businesses need different outcomes. Our solutions are built around real goals — generating leads, establishing credibility, and converting visitors — not arbitrary page counts or feature lists."
     />
 
     <!-- CAPABILITIES -->

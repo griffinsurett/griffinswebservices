@@ -76,6 +76,121 @@ function detachReadingMask() {
   }
 }
 
+// Image hiding - stores original images to restore later
+const hiddenImagesMap = new WeakMap<HTMLElement, HTMLImageElement>();
+
+function hideImages() {
+  // Handle regular images
+  const images = document.querySelectorAll<HTMLImageElement>("img:not([data-a11y-hidden])");
+
+  images.forEach((img) => {
+    const alt = img.alt || "Image";
+
+    // Create placeholder wrapper
+    const placeholder = document.createElement("div");
+    placeholder.className = "a11y-image-placeholder";
+    placeholder.setAttribute("data-a11y-placeholder", "true");
+    placeholder.setAttribute("role", "img");
+    placeholder.setAttribute("aria-label", alt);
+    placeholder.style.cssText = `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100px;
+      padding: 1em;
+      background: #f0f0f0;
+      border: 2px dashed #999;
+      border-radius: 4px;
+      text-align: center;
+    `;
+
+    // Create alt text content
+    const altText = document.createElement("span");
+    altText.style.cssText = `
+      font-style: italic;
+      color: #666;
+      padding: 0.5em 1em;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    `;
+    altText.textContent = `📷 ${alt}`;
+    placeholder.appendChild(altText);
+
+    // Store reference and replace
+    img.setAttribute("data-a11y-hidden", "true");
+    hiddenImagesMap.set(placeholder, img);
+    img.parentNode?.insertBefore(placeholder, img);
+    img.style.display = "none";
+  });
+
+  // Handle Lottie containers
+  const lottieContainers = document.querySelectorAll<HTMLElement>('.logo-class:not([data-a11y-hidden])');
+  lottieContainers.forEach((container) => {
+    const alt = container.getAttribute("aria-label") || "Animation";
+
+    // Create placeholder
+    const placeholder = document.createElement("div");
+    placeholder.className = "a11y-image-placeholder";
+    placeholder.setAttribute("data-a11y-placeholder", "true");
+    placeholder.setAttribute("role", "img");
+    placeholder.setAttribute("aria-label", alt);
+    placeholder.style.cssText = `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      min-width: 40px;
+      padding: 0.5em;
+      background: #f0f0f0;
+      border: 2px dashed #999;
+      border-radius: 4px;
+      text-align: center;
+    `;
+
+    // Create alt text content
+    const altText = document.createElement("span");
+    altText.style.cssText = `
+      font-style: italic;
+      color: #666;
+      padding: 0.25em 0.5em;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 10px;
+    `;
+    altText.textContent = `🎬 ${alt}`;
+    placeholder.appendChild(altText);
+
+    // Store reference and replace
+    container.setAttribute("data-a11y-hidden", "true");
+    hiddenImagesMap.set(placeholder, container as unknown as HTMLImageElement);
+    container.parentNode?.insertBefore(placeholder, container);
+    container.style.display = "none";
+  });
+}
+
+function showImages() {
+  const placeholders = document.querySelectorAll<HTMLElement>("[data-a11y-placeholder]");
+
+  placeholders.forEach((placeholder) => {
+    const element = hiddenImagesMap.get(placeholder);
+    if (element) {
+      element.style.display = "";
+      element.removeAttribute("data-a11y-hidden");
+      placeholder.remove();
+      hiddenImagesMap.delete(placeholder);
+    }
+  });
+
+  // Also restore any elements that might have been hidden without placeholder
+  document.querySelectorAll<HTMLElement>("[data-a11y-hidden]").forEach((el) => {
+    el.style.display = "";
+    el.removeAttribute("data-a11y-hidden");
+  });
+}
+
 export function applyPreferences(prefs: A11yPreferences) {
   const root = document.documentElement;
   const resolvedWeight =
@@ -182,6 +297,13 @@ export function applyPreferences(prefs: A11yPreferences) {
     "data-a11y-images",
     prefs.content.hideImages ? "hide" : "show"
   );
+
+  // Handle image hiding with JavaScript (CSS pseudo-elements don't work on img tags)
+  if (prefs.content.hideImages) {
+    hideImages();
+  } else {
+    showImages();
+  }
   root.setAttribute(
     "data-a11y-sounds",
     prefs.content.muteSounds ? "mute" : "play"
@@ -230,6 +352,9 @@ function removePreferences() {
   // Detach handlers
   detachReadingGuide();
   detachReadingMask();
+
+  // Restore hidden images
+  showImages();
 }
 
 /**
@@ -243,9 +368,9 @@ export function useAccessibility() {
     {
       raw: false, // Use JSON mode
       syncTabs: true, // Sync across tabs
-      validate: (value) => {
+      validate: (value): boolean => {
         // Basic validation
-        return (
+        return !!(
           value &&
           typeof value === "object" &&
           "text" in value &&

@@ -78,16 +78,108 @@
   })();
 </script>
 
-<!-- Deferred: Initialize reading guide/mask event handlers after DOM ready -->
+<!-- Deferred: Initialize reading guide/mask/hide images after DOM ready -->
 <script>
   (function() {
+    function hideImagesOnLoad() {
+      // Check if hideImages is enabled
+      const root = document.documentElement;
+      if (root.getAttribute('data-a11y-images') !== 'hide') return;
+
+      // Handle regular images
+      const images = document.querySelectorAll<HTMLImageElement>('img:not([data-a11y-hidden])');
+      images.forEach((img) => {
+        const alt = img.alt || 'Image';
+
+        // Create placeholder wrapper
+        const placeholder = document.createElement('div');
+        placeholder.className = 'a11y-image-placeholder';
+        placeholder.setAttribute('data-a11y-placeholder', 'true');
+        placeholder.setAttribute('role', 'img');
+        placeholder.setAttribute('aria-label', alt);
+        placeholder.style.cssText = `
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 100px;
+          padding: 1em;
+          background: #f0f0f0;
+          border: 2px dashed #999;
+          border-radius: 4px;
+          text-align: center;
+        `;
+
+        // Create alt text content
+        const altText = document.createElement('span');
+        altText.style.cssText = `
+          font-style: italic;
+          color: #666;
+          padding: 0.5em 1em;
+          background: white;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        `;
+        altText.textContent = '📷 ' + alt;
+        placeholder.appendChild(altText);
+
+        // Store reference and replace
+        img.setAttribute('data-a11y-hidden', 'true');
+        img.parentNode?.insertBefore(placeholder, img);
+        img.style.display = 'none';
+      });
+
+      // Handle Lottie containers
+      const lottieContainers = document.querySelectorAll<HTMLElement>('.logo-class:not([data-a11y-hidden])');
+      lottieContainers.forEach((container) => {
+        const alt = container.getAttribute('aria-label') || 'Animation';
+
+        // Create placeholder
+        const placeholder = document.createElement('div');
+        placeholder.className = 'a11y-image-placeholder';
+        placeholder.setAttribute('data-a11y-placeholder', 'true');
+        placeholder.setAttribute('role', 'img');
+        placeholder.setAttribute('aria-label', alt);
+        placeholder.style.cssText = `
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 40px;
+          min-width: 40px;
+          padding: 0.5em;
+          background: #f0f0f0;
+          border: 2px dashed #999;
+          border-radius: 4px;
+          text-align: center;
+        `;
+
+        // Create alt text content
+        const altText = document.createElement('span');
+        altText.style.cssText = `
+          font-style: italic;
+          color: #666;
+          padding: 0.25em 0.5em;
+          background: white;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 10px;
+        `;
+        altText.textContent = '🎬 ' + alt;
+        placeholder.appendChild(altText);
+
+        // Store reference and replace
+        container.setAttribute('data-a11y-hidden', 'true');
+        container.parentNode?.insertBefore(placeholder, container);
+        container.style.display = 'none';
+      });
+    }
+
     function initA11yHandlers() {
       const prefs = (window as any).__a11yPrefs;
-      if (!prefs) return;
       const root = document.documentElement;
 
       // Reading Guide
-      if (prefs.reading.readingGuide && !document.querySelector('[data-reading-guide]')) {
+      if (prefs?.reading?.readingGuide && !document.querySelector('[data-reading-guide]')) {
         const guide = document.createElement('div');
         guide.setAttribute('data-reading-guide', 'true');
         guide.style.cssText = 'position:fixed;left:0;right:0;height:2px;background-color:rgba(255,0,0,0.6);pointer-events:none;z-index:9999;box-shadow:0 0 8px rgba(255,0,0,0.4);';
@@ -98,14 +190,46 @@
       }
 
       // Reading Mask cursor tracking
-      if (prefs.reading.readingMask) {
+      if (prefs?.reading?.readingMask) {
         document.addEventListener('mousemove', (e) => {
           root.style.setProperty('--cursor-x', e.clientX + 'px');
           root.style.setProperty('--cursor-y', e.clientY + 'px');
         }, { passive: true });
       }
 
-      delete (window as any).__a11yPrefs;
+      // Hide images (creates placeholders with alt text)
+      hideImagesOnLoad();
+
+      // Also run after window load to catch lazy-loaded images
+      window.addEventListener('load', hideImagesOnLoad);
+
+      // Set up MutationObserver to catch dynamically added images
+      if (root.getAttribute('data-a11y-images') === 'hide') {
+        const observer = new MutationObserver((mutations) => {
+          let hasNewImages = false;
+          for (const mutation of mutations) {
+            if (mutation.type === 'childList') {
+              for (const node of mutation.addedNodes) {
+                if (node instanceof HTMLElement) {
+                  if (node.tagName === 'IMG' || node.querySelector('img:not([data-a11y-hidden])')) {
+                    hasNewImages = true;
+                    break;
+                  }
+                }
+              }
+            }
+            if (hasNewImages) break;
+          }
+          if (hasNewImages) {
+            hideImagesOnLoad();
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+      }
+
+      if (prefs) {
+        delete (window as any).__a11yPrefs;
+      }
     }
 
     if (document.readyState === 'loading') {

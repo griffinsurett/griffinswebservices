@@ -41,10 +41,10 @@ const DEFAULT_INDEX_LAYOUT_PATH = '@/layouts/collections/CollectionIndexLayout.a
 function resolveLayoutModule(layoutPath: string): any {
   // Extract just the filename
   const filename = layoutPath.split('/').pop() || 'CollectionLayout.astro';
-  
+
   // Find in glob imports (they're relative paths like ../BlogLayout.astro)
   const relativePath = `../${filename}`;
-  
+
   const module = allLayouts[relativePath];
   
   if (!module || typeof module !== 'object' || !('default' in module)) {
@@ -76,7 +76,7 @@ export async function getLayoutComponent(layoutPath?: string) {
 
   try {
     const component = resolveLayoutModule(path);
-    
+
     // Cache the component
     layoutCache.set(path, component);
     return component;
@@ -108,7 +108,7 @@ export function getLayoutPath(
   return getItemProperty(
     item?.data,
     meta,
-    'layout',          // item-level property
+    'itemLayout',          // item-level property
     'itemsLayout',         // collection-level property
     undefined              // default (will use CollectionLayout)
   );

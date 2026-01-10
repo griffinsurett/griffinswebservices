@@ -304,32 +304,39 @@ html[data-a11y-font="readable"] body * {
    CONTENT SIMPLIFICATION
    ============================================================================ */
 
-/* Hide Images */
-[data-a11y-images="hide"] img:not([alt=""]) {
+/* Hide Images - CSS-only approach using opacity and outline */
+[data-a11y-images="hide"] img {
+  opacity: 0 !important;
+  outline: 2px dashed #999 !important;
+  outline-offset: -2px !important;
+  background: #f0f0f0 !important;
+}
+
+/* For images inside picture elements */
+[data-a11y-images="hide"] picture img {
+  opacity: 0 !important;
+}
+
+[data-a11y-images="hide"] picture {
   position: relative;
-  width: 100%;
-  height: auto;
-  min-height: 100px;
-}
-
-[data-a11y-images="hide"] img:not([alt=""])::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  display: block;
   background: #f0f0f0;
-  border: 2px dashed #999;
+  outline: 2px dashed #999;
 }
 
-[data-a11y-images="hide"] img:not([alt=""])::after {
-  content: '📷 ' attr(alt);
+/* Show alt text using a wrapper approach - requires JS to inject alt text spans */
+[data-a11y-images="hide"] [data-img-alt] {
+  position: relative;
+  display: block;
+}
+
+[data-a11y-images="hide"] [data-img-alt]::after {
+  content: '📷 ' attr(data-img-alt);
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 1em;
+  padding: 0.75em 1em;
   background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -338,6 +345,8 @@ html[data-a11y-font="readable"] body * {
   text-align: center;
   max-width: 90%;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* Mute Sounds */
