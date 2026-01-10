@@ -10,6 +10,7 @@ import { buildRedirectConfig } from './src/utils/redirects';
 import { manualChunks, assetFileNames } from './vite.chunks.js';
 import iconGeneratorIntegration from './src/integrations/icons/icon-generator.integration.mjs';
 import clientDirectivesIntegration from './src/integrations/client-directives/client-directives.integration.mjs';
+import conditionalPartytown from './src/integrations/partytown/partytown.integration.mjs';
 
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 const redirects = await buildRedirectConfig();
@@ -52,6 +53,7 @@ export default defineConfig({
       include: ['**/react/*', '**/components/**/*.jsx', '**/components/**/*.tsx', '**/hooks/**/*.js', '**/hooks/**/*.ts'],
     }),
     sitemap(),
+    conditionalPartytown(),
   ],
   
   build: {
