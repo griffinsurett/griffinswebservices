@@ -15,7 +15,8 @@ export interface PreparedFields {
   slug: string;
   url?: string;
   displayValue?: string;
-  Content?: AstroComponentFactory;
+  /** Lazy render function - call to get Content component when needed */
+  render?: () => Promise<{ Content: AstroComponentFactory }>;
   content?: string;
 }
 
@@ -60,7 +61,7 @@ export async function prepareEntry<T extends CollectionKey>(
 
   if (linkBehavior) {
     // Use link behavior to determine URL and display value
-    const linkResult = applyLinkBehavior(data, linkBehavior, collection, identifier);
+    const linkResult = applyLinkBehavior(data, linkBehavior, collection as string, identifier);
     itemUrl = linkResult.url;
     displayValue = linkResult.displayValue;
   } else {
@@ -74,31 +75,23 @@ export async function prepareEntry<T extends CollectionKey>(
     }
   }
 
-  let Content: AstroComponentFactory | undefined;
-  const entryWithRender = entry as any;
-  if (entryWithRender && typeof entryWithRender.render === "function") {
-    try {
-      const rendered = await entryWithRender.render();
-      Content = rendered.Content;
-    } catch (error) {
-      console.warn(
-        `Failed to render content for ${collection}/${identifier}:`,
-        error
-      );
-    }
-  }
-
+  // Store raw body for variants that need it - don't render Content here
+  // Rendering MDX Content is expensive and should only happen when actually displayed
+  // Variants that need full content (like AccordionVariant) can call entry.render() themselves
   let content: string | undefined;
   if ("body" in entry) {
     content = (entry as any).body;
   }
+
+  // Store render function for lazy rendering - only called when Content is actually needed
+  const renderFn = (entry as any).render;
 
   return {
     ...data,
     slug: identifier,
     ...(itemUrl && { url: itemUrl }),
     ...(displayValue && { displayValue }),
-    ...(Content && { Content }),
+    ...(renderFn && { render: renderFn }),
     ...(content && { content }),
   } as PreparedItem;
 }

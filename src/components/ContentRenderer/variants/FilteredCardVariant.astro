@@ -179,31 +179,53 @@ const showCTA =
       </div>
     )}
 
-    <ContentBridge items={safeItems} bridgeId={id}>
-      <Fragment slot="default">
-        <FilteredCardRenderer
-          client:visible
-          items={safeItems.map((item, index) => ({
-            ...item,
-            contentSlotId: `${id}-slot-${index}`,
-          }))}
-          filter={filter}
-          filterSize={filterSize}
-          filterClassName={filterClassName}
-          columns={columns}
-          showBody={showBody}
-          className={gridMarginClass}
-          getCardClassName={resolveCardClassName}
-          getRingDuration={resolveRingDuration}
-          featureCardProps={featureCardPropOverrides}
-          animation={{
-            once: false,
-            threshold: 0.15,
-            rootMargin: "-10% 0px -10% 0px",
-          }}
-        />
-      </Fragment>
-    </ContentBridge>
+    {/* Only use ContentBridge when showBody is true - avoids expensive MDX rendering */}
+    {showBody ? (
+      <ContentBridge items={safeItems} bridgeId={id}>
+        <Fragment slot="default">
+          <FilteredCardRenderer
+            client:visible
+            items={safeItems.map((item, index) => ({
+              ...item,
+              contentSlotId: `${id}-slot-${index}`,
+            }))}
+            filter={filter}
+            filterSize={filterSize}
+            filterClassName={filterClassName}
+            columns={columns}
+            showBody={showBody}
+            className={gridMarginClass}
+            getCardClassName={resolveCardClassName}
+            getRingDuration={resolveRingDuration}
+            featureCardProps={featureCardPropOverrides}
+            animation={{
+              once: false,
+              threshold: 0.15,
+              rootMargin: "-10% 0px -10% 0px",
+            }}
+          />
+        </Fragment>
+      </ContentBridge>
+    ) : (
+      <FilteredCardRenderer
+        client:visible
+        items={safeItems}
+        filter={filter}
+        filterSize={filterSize}
+        filterClassName={filterClassName}
+        columns={columns}
+        showBody={false}
+        className={gridMarginClass}
+        getCardClassName={resolveCardClassName}
+        getRingDuration={resolveRingDuration}
+        featureCardProps={featureCardPropOverrides}
+        animation={{
+          once: false,
+          threshold: 0.15,
+          rootMargin: "-10% 0px -10% 0px",
+        }}
+      />
+    )}
 
     {showCTA && (
       <div class={`buttons-section-center ${ctaInlineOnDesktop ? "lg:hidden" : ""}`.trim()}>

@@ -57,7 +57,7 @@ export default defineConfig({
   ],
   
   build: {
-    inlineStylesheets: 'always',
+    inlineStylesheets: 'always',  // Inline CSS avoids render-blocking external stylesheets
     split: true,
   },
 
