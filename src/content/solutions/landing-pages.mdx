@@ -41,17 +41,6 @@ import { animationProps } from '@/integrations/scroll-animations/props';
 
 <div id="under-hero">
 
-<div
-  class="block lg:min-h-screen inner-section"
-  {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
->
-  <ContentRenderer
-    query={query("projects")}
-    variant="PortfolioScreenVariant"
-    clientLoadPlaceholder={true}
-  />
-</div>
-
 <ContentRenderer
   query={children("solutions", "landing-pages")}
   id="landing-page-types"
