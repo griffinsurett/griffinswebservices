@@ -88,21 +88,27 @@ function Modal({
   useEffect(() => {
     if (!mounted || !isOpen || allowScroll) return;
 
-    const originalOverflow = document.body.style.overflow;
-    const originalPaddingRight = document.body.style.paddingRight;
+    const html = document.documentElement;
+    const body = document.body;
+
+    const originalHtmlOverflow = html.style.overflow;
+    const originalBodyOverflow = body.style.overflow;
+    const originalPaddingRight = body.style.paddingRight;
 
     // Prevent layout shift from scrollbar
     const scrollbarWidth =
-      window.innerWidth - document.documentElement.clientWidth;
+      window.innerWidth - html.clientWidth;
 
-    document.body.style.overflow = "hidden";
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
     if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
+      body.style.paddingRight = `${scrollbarWidth}px`;
     }
 
     return () => {
-      document.body.style.overflow = originalOverflow;
-      document.body.style.paddingRight = originalPaddingRight;
+      html.style.overflow = originalHtmlOverflow;
+      body.style.overflow = originalBodyOverflow;
+      body.style.paddingRight = originalPaddingRight;
     };
   }, [mounted, isOpen, allowScroll]);
 

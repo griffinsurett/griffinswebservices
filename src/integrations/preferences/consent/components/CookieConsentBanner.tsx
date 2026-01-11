@@ -118,6 +118,7 @@ export default function CookieConsentBanner() {
                     variant="link"
                     onClick={handleOpenSettings}
                     type="button"
+                    className="text-sm"
                   >
                     Manage preferences
                   </Button>

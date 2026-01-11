@@ -21,7 +21,7 @@ export default function BorderTitle({
   duration = 1200,
   hoverSweep = true,
   pillClassName = "text-xs lg:text-sm px-3 py-2 lg:px-4.5 lg:py-2 tracking-wider",
-  visibleRootMargin = { top: -100, right: 0, bottom: -100, left: 0 },
+  visibleRootMargin = { top: -50, right: 0, bottom: -100, left: 0 },
 }: BorderTitleProps) {
   const prefersReducedMotion = useMotionPreference();
 
