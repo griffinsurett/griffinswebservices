@@ -48,24 +48,37 @@ const heroDescription =
     </div>
 
        <!-- SOLUTIONS -->
-    <ContentRenderer
+    <!-- <ContentRenderer
       query={children("solutions", "new-builds")}
       id="solutions"
       title="Web Solutions"
       heading="Ways We Turn Strategy Into Working Solutions"
-      description="Different businesses need different outcomes. Whether it's a marketing site, an e-commerce storefront, or a full-scale web application — our solutions are built around real goals, not arbitrary page counts or feature lists."
-    />
+      description="Different businesses need different outcomes. Our solutions are built around real goals — generating leads, establishing credibility, and converting visitors — not arbitrary page counts or feature lists."
+    /> -->
 
     <DoubleCard />
 
     <!-- PHILOSOPHY -->
-    <ContentRenderer
+    <!-- <ContentRenderer
       query={query("philosophy").orderBy(sortByOrder())}
       variant="IconListVariant"
       id="philosophy"
       title="Philosophy"
       heading="Why Our Websites Work When Others Don't"
       description="Most websites don't fail all at once. They quietly slow down, become harder to manage, or stop supporting the business they were built for. We take a different approach. Every website we build is guided by clear principles that prioritize performance, stability, and maintainability — so your site doesn't just launch strong, it continues working as your business grows. We intentionally build websites in a way that minimizes ongoing maintenance without sacrificing reliability, security, or long-term performance."
+    /> -->
+
+        <!-- CAPABILITIES -->
+    <ContentRenderer
+      query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
+      variant="CardVariant"
+      id="capabilities"
+      title="Core Capabilities"
+      heading="The Capabilities That Make the Work Possible"
+      description="Everything above depends on having the right technical foundation and ongoing oversight. Our capabilities work together to ensure your website stays fast, stable, and dependable over time."
+      columns={3}
+      gap="lg"
+      showButtonSection={false}
     />
 
     <!-- BENEFITS -->
@@ -78,19 +91,6 @@ const heroDescription =
       description="These principles translate directly into real-world benefits — things you and your customers notice immediately when using your website."
       columns={2}
       gap="lg"
-    />
-
-    <!-- CAPABILITIES -->
-    <ContentRenderer
-      query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
-      variant="CardVariant"
-      id="capabilities"
-      title="Core Capabilities"
-      heading="The Capabilities That Make the Work Possible"
-      description="Everything above depends on having the right technical foundation and ongoing oversight. Our capabilities work together to ensure your website stays fast, stable, and dependable over time."
-      columns={3}
-      gap="lg"
-      showButtonSection={false}
     />
 
     <!-- TRUST STATEMENT -->
