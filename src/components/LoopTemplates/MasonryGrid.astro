@@ -12,6 +12,16 @@ export interface MasonryCardData {
   icon?: string;
   order?: number;
   Content?: any;
+  /** Lazy render function - call to get Content component */
+  render?: () => Promise<{ Content: any }>;
+}
+
+interface ResolvedCardData {
+  title: string;
+  description?: string;
+  icon?: string;
+  order?: number;
+  Content?: any;
 }
 
 interface Props {
@@ -21,12 +31,33 @@ interface Props {
 
 const { items, className = "" } = Astro.props;
 
+// Resolve lazy render functions to Content components
+const resolvedItems: ResolvedCardData[] = await Promise.all(
+  items.map(async (item) => {
+    // If Content is already provided, use it
+    if (item.Content) {
+      return item as ResolvedCardData;
+    }
+    // If render function is provided, call it to get Content
+    if (item.render) {
+      try {
+        const { Content } = await item.render();
+        return { ...item, Content } as ResolvedCardData;
+      } catch (e) {
+        // Fallback without Content if render fails
+        return item as ResolvedCardData;
+      }
+    }
+    return item as ResolvedCardData;
+  })
+);
+
 // Distribute items into columns for balanced heights
 // Alternates items between left and right columns
-const leftColumn: MasonryCardData[] = [];
-const rightColumn: MasonryCardData[] = [];
+const leftColumn: ResolvedCardData[] = [];
+const rightColumn: ResolvedCardData[] = [];
 
-items.forEach((item, index) => {
+resolvedItems.forEach((item, index) => {
   if (index % 2 === 0) {
     leftColumn.push(item);
   } else {

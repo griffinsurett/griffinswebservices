@@ -40,13 +40,15 @@ interface ContentItem {
   };
   // Support rendered MDX content (from prepareEntry)
   Content?: any;
+  // Lazy render function - call to get Content component
+  render?: () => Promise<{ Content: any }>;
   // Legacy support for rendered content
   rendered?: {
     Content?: any;
   };
 }
 
-interface Props extends BaseVariantProps {
+interface Props extends Omit<BaseVariantProps, "items"> {
   imagePosition?: "left" | "right";
   imagePlaceholder?: string;
   imageAlt?: string;
@@ -87,7 +89,26 @@ const {
   ctaText,
 } = Astro.props as Props;
 
-const safeItems = toArray(items);
+const rawItems = toArray(items);
+
+// Resolve lazy render functions to Content components (only for text contentType)
+const safeItems = contentType === "text"
+  ? await Promise.all(
+      rawItems.map(async (item: ContentItem) => {
+        if (item.Content || item.rendered?.Content) return item;
+        if (item.render) {
+          try {
+            const { Content } = await item.render();
+            return { ...item, Content };
+          } catch {
+            return item;
+          }
+        }
+        return item;
+      })
+    )
+  : rawItems;
+
 const hasSlotContent = Astro.slots.has("default");
 const hasItems = safeItems.length > 0;
 const showHeader = Boolean(title || heading || description);
