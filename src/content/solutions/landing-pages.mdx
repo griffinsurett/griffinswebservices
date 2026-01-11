@@ -7,7 +7,7 @@ heading:
   after: "into customers."
 order: 1
 icon: "fa6-solid:file-lines"
-parent: new-builds
+parent: websites
 itemLayout: "../../layouts/collections/WebSolutionLayout.astro"
 ---
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
@@ -46,7 +46,7 @@ import { animationProps } from '@/integrations/scroll-animations/props';
   {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
 >
   <ContentRenderer
-    query={query("projects").where((entry) => entry.data.solutions?.some((s) => s.slug === "landing-pages"))}
+    query={query("projects")}
     variant="PortfolioScreenVariant"
     clientLoadPlaceholder={true}
   />

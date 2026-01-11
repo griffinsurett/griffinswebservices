@@ -1,10 +1,10 @@
 ---
 title: "Websites"
-description: "Custom websites built to establish credibility, generate leads, and grow your business online."
+description: "We're a New Jersey based Web Agency that creates fast, engaging websites built to grow your business."
 heading:
-  before: "Websites that"
-  text: "work for your business"
-  after: "not against it."
+  before: "Launch a Website That Actually Works."
+  text: "Fast. Secure. Built to Grow."
+  after: ""
 order: 1
 icon: "fa6-solid:globe"
 parent: new-builds
@@ -23,11 +23,10 @@ import { animationProps } from '@/integrations/scroll-animations/props';
 <FrontPageHero
   heading={frontmatter.heading}
   description={frontmatter.description}
-  subheading="We build fast, professional websites that help businesses establish credibility and convert visitors into customers."
   checklist={[
-    "Custom Design & Development",
-    "Mobile-First Responsive Layouts",
-    "SEO-Ready Architecture",
+    "Website Design & Development",
+    "Secure Hosting, Maintenance & Support",
+    "SEO Ready Architecture",
     "Built for Long-Term Growth"
   ]}
   primaryCTA={{
@@ -46,7 +45,7 @@ import { animationProps } from '@/integrations/scroll-animations/props';
   {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
 >
   <ContentRenderer
-    query={query("projects").where((entry) => entry.data.solutions?.some((s) => s.slug === "websites" || s.slug === "business-websites"))}
+    query={query("projects")}
     variant="PortfolioScreenVariant"
     clientLoadPlaceholder={true}
   />
