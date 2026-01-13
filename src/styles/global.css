@@ -1,7 +1,12 @@
 /* src/styles/global.css */
 @import "tailwindcss";
+
+/* Tell Tailwind to scan integration components for class usage */
+@source "../integrations";
+
 @import "../integrations/preferences/language/styles/language-switcher.css";
 @import "../integrations/preferences/shared/styles/preferences.css";
+@import "../integrations/preferences/accessibility/styles/accessibility.css";
 @import "./legal.css";
 @import "./system.css";
 @import "./menu.css";
@@ -340,6 +345,11 @@ body {
 
 @utility heading-accent-text {
   color: var(--color-primary);
+}
+
+/* Text color for use on primary/accent backgrounds (buttons, gradients, etc.) */
+@utility text-bg {
+  @apply dark:text-primary-light light:text-primary-dark;
 }
 
 @utility logo-class {

@@ -1,5 +1,11 @@
 /* src/integrations/preferences/accessibility/styles/accessibility.css */
-@reference "../../../../styles/global.css";
+/*
+ * This file is imported by global.css, so all Tailwind utilities are available.
+ * Do NOT add @reference or @import directives to global.css here (circular import).
+ */
+
+/* Safelist classes used dynamically in AccessibilityModal.tsx (ternary expressions) */
+@source inline("a11y-modal-shell a11y-scroll-region a11y-card a11y-card--compact a11y-card--spacious a11y-toggle a11y-toggle--active a11y-toggle--idle a11y-header-action a11y-slider");
 
 /* ============================================================================
    CSS VARIABLES - Applied via JavaScript
