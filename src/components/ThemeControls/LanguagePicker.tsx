@@ -8,8 +8,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { CircleCheckbox } from "./checkboxes/CircleCheckbox";
-import LanguageDropdown from "@/integrations/preferences/language/components/LanguageDropdown";
-import { useLanguageSwitcher } from "@/integrations/preferences/language/hooks/useLanguageSwitcher";
+import LanguageDropdown from "@/integrations/preferences/language/ui/LanguageDropdown";
+import { useLanguageSwitcher } from "@/integrations/preferences/language/core/hooks/useLanguageSwitcher";
 
 export default function LanguagePicker() {
   const [open, setOpen] = useState(false);

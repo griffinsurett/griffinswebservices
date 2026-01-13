@@ -1,0 +1,40 @@
+import { f as createVNode, F as Fragment, _ as __astro_tag_component__ } from './astro/server_CJgvfkPK.mjs';
+import 'clsx';
+
+const frontmatter = {
+  "title": "Can you help with the words and images?",
+  "description": "Yes. We provide copywriting and content support, plus guidance on imagery and brand assets. We can also source on-brand stock content when needed.",
+  "order": 6,
+  "category": "Content",
+  "tags": ["featured"],
+  "solutions": ["blogs", "business-websites", "landing-pages"],
+  "capabilities": ["web-design"]
+};
+function getHeadings() {
+  return [];
+}
+function _createMdxContent(props) {
+  return createVNode(Fragment, {});
+}
+function MDXContent(props = {}) {
+  const {wrapper: MDXLayout} = props.components || ({});
+  return MDXLayout ? createVNode(MDXLayout, {
+    ...props,
+    children: createVNode(_createMdxContent, {
+      ...props
+    })
+  }) : _createMdxContent();
+}
+
+const url = "src/content/faq/can-you-help-with-the-words-and-images.mdx";
+const file = "/Users/griffinsurett/coding/2025-Website-Projects/2026/griffinswebservices/src/content/faq/can-you-help-with-the-words-and-images.mdx";
+const Content = (props = {}) => MDXContent({
+  ...props,
+  components: { Fragment: Fragment, ...props.components, },
+});
+Content[Symbol.for('mdx-component')] = true;
+Content[Symbol.for('astro.needsHeadRendering')] = !Boolean(frontmatter.layout);
+Content.moduleId = "/Users/griffinsurett/coding/2025-Website-Projects/2026/griffinswebservices/src/content/faq/can-you-help-with-the-words-and-images.mdx";
+__astro_tag_component__(Content, 'astro:jsx');
+
+export { Content, Content as default, file, frontmatter, getHeadings, url };

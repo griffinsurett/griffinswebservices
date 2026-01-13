@@ -15,6 +15,25 @@
   --a11y-animation-duration: 0.3s;
   --cursor-x: 50%;
   --cursor-y: 50%;
+
+  /* ============================================================================
+     INTEGRATION THEMING TOKENS
+     These provide sensible defaults that inherit from the site's theme.
+     ============================================================================ */
+  --int-a11y-highlight-bg: rgba(255, 255, 0, 0.25);
+  --int-a11y-highlight-bg-subtle: rgba(255, 255, 0, 0.15);
+  --int-a11y-focus-color: var(--color-primary, var(--color-accent, #4CAF50));
+  --int-a11y-focus-shadow: color-mix(in srgb, var(--int-a11y-focus-color) 30%, transparent);
+  --int-a11y-mask-overlay: rgba(0, 0, 0, 0.7);
+  --int-a11y-image-bg: var(--color-bg2, #f0f0f0);
+  --int-a11y-image-border: var(--color-muted, #999);
+  --int-a11y-tooltip-bg: var(--color-bg, white);
+  --int-a11y-tooltip-border: var(--color-border-dim, #ddd);
+  --int-a11y-tooltip-text: var(--color-text, #666);
+  --int-a11y-tooltip-shadow: rgba(0, 0, 0, 0.1);
+  --int-a11y-modal-shadow: rgba(8, 15, 52, 0.35);
+  --int-a11y-slider-shadow: rgba(12, 20, 40, 0.55);
+  --int-a11y-slider-shadow-active: rgba(12, 20, 40, 0.65);
 }
 
 /* Font weight mappings - TODO: semibold override needs more work */
@@ -216,7 +235,7 @@ html[data-a11y-font="readable"] body * {
 
 /* Link Highlighting */
 [data-a11y-links="true"] a {
-  background-color: rgba(255, 255, 0, 0.25);
+  background-color: var(--int-a11y-highlight-bg);
   padding: 2px 4px;
   border-radius: 2px;
   text-decoration: underline;
@@ -230,9 +249,9 @@ html[data-a11y-font="readable"] body * {
 [data-a11y-titles="true"] h4,
 [data-a11y-titles="true"] h5,
 [data-a11y-titles="true"] h6 {
-  background-color: rgba(255, 255, 0, 0.15);
+  background-color: var(--int-a11y-highlight-bg-subtle);
   padding: 0.25em 0.5em;
-  border-left: 4px solid #4CAF50;
+  border-left: 4px solid var(--int-a11y-focus-color);
   margin-bottom: 0.5em;
 }
 
@@ -269,7 +288,7 @@ html[data-a11y-font="readable"] body * {
   background: radial-gradient(
     circle 400px at var(--cursor-x) var(--cursor-y),
     transparent 0%,
-    rgba(0, 0, 0, 0.7) 100%
+    var(--int-a11y-mask-overlay) 100%
   );
   pointer-events: none;
   z-index: 9998;
@@ -278,18 +297,20 @@ html[data-a11y-font="readable"] body * {
 
 /* Focus Highlighting */
 [data-a11y-focus="true"] *:focus {
-  outline: 3px solid #4CAF50 !important;
+  outline: 3px solid var(--int-a11y-focus-color) !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.3) !important;
+  box-shadow: 0 0 0 4px var(--int-a11y-focus-shadow) !important;
 }
 
 [data-a11y-focus="true"] *:focus-visible {
-  outline: 3px solid #4CAF50 !important;
+  outline: 3px solid var(--int-a11y-focus-color) !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.3) !important;
+  box-shadow: 0 0 0 4px var(--int-a11y-focus-shadow) !important;
 }
 
-/* Big Cursor */
+/* Big Cursor
+   Note: SVG data URIs cannot use CSS variables. These use universal
+   white/black colors for maximum visibility across all themes. */
 [data-a11y-cursor="big"] {
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><circle cx="24" cy="24" r="16" fill="white" stroke="black" stroke-width="3"/><circle cx="24" cy="24" r="8" fill="black"/></svg>') 24 24, auto;
 }
@@ -297,7 +318,7 @@ html[data-a11y-font="readable"] body * {
 [data-a11y-cursor="big"] a,
 [data-a11y-cursor="big"] button,
 [data-a11y-cursor="big"] [role="button"] {
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><circle cx="24" cy="24" r="16" fill="white" stroke="blue" stroke-width="3"/><circle cx="24" cy="24" r="8" fill="blue"/></svg>') 24 24, pointer;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><circle cx="24" cy="24" r="16" fill="white" stroke="black" stroke-width="3"/><circle cx="24" cy="24" r="8" fill="black"/></svg>') 24 24, pointer;
 }
 
 /* ============================================================================
@@ -307,9 +328,9 @@ html[data-a11y-font="readable"] body * {
 /* Hide Images - CSS-only approach using opacity and outline */
 [data-a11y-images="hide"] img {
   opacity: 0 !important;
-  outline: 2px dashed #999 !important;
+  outline: 2px dashed var(--int-a11y-image-border) !important;
   outline-offset: -2px !important;
-  background: #f0f0f0 !important;
+  background: var(--int-a11y-image-bg) !important;
 }
 
 /* For images inside picture elements */
@@ -320,8 +341,8 @@ html[data-a11y-font="readable"] body * {
 [data-a11y-images="hide"] picture {
   position: relative;
   display: block;
-  background: #f0f0f0;
-  outline: 2px dashed #999;
+  background: var(--int-a11y-image-bg);
+  outline: 2px dashed var(--int-a11y-image-border);
 }
 
 /* Show alt text using a wrapper approach - requires JS to inject alt text spans */
@@ -337,14 +358,14 @@ html[data-a11y-font="readable"] body * {
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 0.75em 1em;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--int-a11y-tooltip-bg);
+  border: 1px solid var(--int-a11y-tooltip-border);
   border-radius: 4px;
   font-style: italic;
-  color: #666;
+  color: var(--int-a11y-tooltip-text);
   text-align: center;
   max-width: 90%;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px var(--int-a11y-tooltip-shadow);
   z-index: 1;
   pointer-events: none;
 }
@@ -407,7 +428,7 @@ html[data-a11y-font="readable"] body * {
 @layer components {
   .a11y-modal-shell {
     @apply rounded-[28px] card-bg-2 text-text backdrop-blur-md overflow-hidden flex flex-col max-h-[78vh] md:max-h-[85vh];
-    box-shadow: 0 20px 60px rgba(8, 15, 52, 0.35);
+    box-shadow: 0 20px 60px var(--int-a11y-modal-shadow);
   }
 
   .a11y-scroll-region {
@@ -473,7 +494,7 @@ html[data-a11y-font="readable"] body * {
     border-radius: 999px;
     background: var(--color-primary);
     border: 2px solid var(--color-bg);
-    box-shadow: 0 10px 25px rgba(12, 20, 40, 0.55);
+    box-shadow: 0 10px 25px var(--int-a11y-slider-shadow);
     margin-top: -8px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
@@ -484,13 +505,13 @@ html[data-a11y-font="readable"] body * {
     border-radius: 999px;
     background: var(--color-primary);
     border: 2px solid var(--color-bg);
-    box-shadow: 0 10px 25px rgba(12, 20, 40, 0.55);
+    box-shadow: 0 10px 25px var(--int-a11y-slider-shadow);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .a11y-slider:active::-webkit-slider-thumb,
   .a11y-slider:active::-moz-range-thumb {
     transform: scale(1.05);
-    box-shadow: 0 12px 30px rgba(12, 20, 40, 0.65);
+    box-shadow: 0 12px 30px var(--int-a11y-slider-shadow-active);
   }
 }

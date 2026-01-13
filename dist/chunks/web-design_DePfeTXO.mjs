@@ -1,0 +1,210 @@
+import { f as createVNode, F as Fragment, _ as __astro_tag_component__ } from './astro/server_CJgvfkPK.mjs';
+import { n as $$TrustStatement } from './BaseLayout_BXen9sOm.mjs';
+import { $ as $$CapabilitiesSection } from './CapabilitiesSection_DDRFyxyg.mjs';
+import { $ as $$WrittenLayout } from './WrittenLayout_D2d4Cq2s.mjs';
+import 'clsx';
+
+const frontmatter = {
+  "title": "Web Design",
+  "description": "Custom marketing websites designed to look elite, stay consistent, tell your story, and convert reliably. We pair research-backed layouts with modular components so future launches stay on-brand.",
+  "heading": {
+    "before": "Modern",
+    "text": "Web design",
+    "after": "driven by clear UI systems and intentional user experience."
+  },
+  "order": 1,
+  "icon": "fa6-solid:wand-magic-sparkles",
+  "solutions": ["blogs", "business-websites", "landing-pages", "e-commerce-websites", "business-websites"]
+};
+function getHeadings() {
+  return [];
+}
+function _createMdxContent(props) {
+  const _components = {
+    p: "p",
+    ...props.components
+  };
+  return createVNode(Fragment, {
+    children: [createVNode($$TrustStatement, {
+      text: "Every design is custom—built around your brand, your goals, and your customers."
+    }), "\n", createVNode($$CapabilitiesSection, {
+      capabilitiesHeading: "Design disciplines that shape every project.",
+      highlights: [{
+        title: "Modular Design Systems",
+        description: "Reusable sections and design tokens keep every new page on-brand while letting campaigns launch quickly."
+      }, {
+        title: "Future-Ready Scalability",
+        description: "Composable architectures make it simple to add products, pages, or integrations without replatforming."
+      }, {
+        title: "Flexible User Experiences",
+        description: "Copy, hierarchy, and motion are tuned for each buyer journey so prospects always know the next step."
+      }, {
+        title: "Integrated Collaboration",
+        description: "Design, content, and engineering teams work from the same system so approvals stay fast and handoffs clean."
+      }],
+      highlightsTitle: "Web Design System",
+      highlightsHeading: "Modular web design built for modern business.",
+      highlightsDescription: "We design modern, conversion-focused websites that pair editorial polish with research-backed UX flows, motion systems, and content choreography so prospects know exactly what you do, why it matters, and how to take the next step.",
+      ctaTitle: "Ready for a website that looks the part?",
+      ctaHeading: {
+        before: "Your brand deserves",
+        text: "design that converts.",
+        after: ""
+      },
+      ctaDescription: "Stop blending in with template-based competitors. Get a custom design system that makes your business look as good online as you are in person.",
+      children: createVNode($$WrittenLayout, {
+        title: "Strategy-First Web Design",
+        heading: "The process behind polished, performant web experiences that scale with your roadmap.",
+        description: "Our written playbooks capture the research, testing, and collaboration rituals we use on every engagement so you always know how we arrive at design decisions.",
+        tocTitle: "Table of Contents",
+        children: [createVNode("section", {
+          children: [createVNode("h2", {
+            children: "What design questions do we answer before we open Figma?"
+          }), createVNode("p", {
+            children: createVNode(_components.p, {
+              children: "Every engagement starts with discovery sessions that map the business case for the site, the audiences we need to influence, and the moments where design either accelerates or slows a deal. We pair stakeholder interviews with analytics and CRM insights so visual direction is tied to measurable goals, not just aesthetic preferences."
+            })
+          }), createVNode("ul", {
+            children: [createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Audience modeling:"
+              }), " We synthesize buying committees, objections, and desired outcomes so layout decisions support each persona’s journey."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Message hierarchy:"
+              }), " Copy decks identify the promise, proof, and proof-of-life content required for each page before wireframes are created."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Competitive scans:"
+              }), " We evaluate design languages in and outside your industry to determine when to differentiate and when to lean on familiar UI conventions."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Success metrics:"
+              }), " Conversion, engagement, and accessibility targets are documented so we can validate every design choice later in the build."]
+            })]
+          })]
+        }), createVNode("section", {
+          children: [createVNode("h2", {
+            children: "How do we design for scale without sacrificing craft?"
+          }), createVNode("p", {
+            children: createVNode(_components.p, {
+              children: "We build modular systems that let marketing teams launch pages quickly while keeping every component purposeful. Tokens, states, and spacing rules are documented alongside pixel-perfect comps so future campaigns can be executed without calling the original design team."
+            })
+          }), createVNode("h3", {
+            children: "Systems we maintain throughout the project"
+          }), createVNode("ul", {
+            children: [createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Foundations:"
+              }), " Color, typography, elevation, and motion principles that translate across devices and dark or light backgrounds."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Pattern libraries:"
+              }), " Hero, testimonial, pricing, feature, and resource patterns with clear guidance on copy length, imagery specs, and animation behavior."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Content choreography:"
+              }), " Guidance on how modules stack, collapse, or switch order on different breakpoints to maintain narrative flow."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "State documentation:"
+              }), " Hover, focus, active, and error states captured in the same file so developers never guess about interaction feedback."]
+            })]
+          })]
+        }), createVNode("section", {
+          children: [createVNode("h2", {
+            children: "Collaboration rituals that keep stakeholders aligned"
+          }), createVNode("p", {
+            children: createVNode(_components.p, {
+              children: "Transparency keeps projects moving. We treat the design file as a shared workspace, not a black box, and run structured reviews so executives, marketing, and engineers all see their requirements addressed."
+            })
+          }), createVNode("ol", {
+            children: [createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Weekly demos:"
+              }), " We show in-progress flows, note what changed, and capture risks or dependencies so surprises never spill into development."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Async annotations:"
+              }), " Loom walkthroughs and contextual comments summarize rationale for each section, making it simple for busy teams to react on their schedule."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Implementation pairing:"
+              }), " Designers and engineers meet during component build-out to validate spacing, typography, and animation so the final product matches the approved design."]
+            })]
+          })]
+        }), createVNode("section", {
+          children: [createVNode("h2", {
+            children: "Accessibility, compliance, and performance are requirements"
+          }), createVNode("p", {
+            children: createVNode(_components.p, {
+              children: "Inclusive design is a baseline, not a nice-to-have. We evaluate flows against WCAG 2.2 AA principles, consider privacy obligations, and ensure the visuals we design can be implemented without bloating the experience."
+            })
+          }), createVNode("ul", {
+            children: [createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Readable contrast and typography:"
+              }), " We test color palettes within our system and provide alternative treatments when brand colors need adjustment for compliance."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Keyboard + screen reader specs:"
+              }), " Focus order, aria labels, and live-region behaviors are documented alongside each component."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Asset budgets:"
+              }), " Motion and imagery guidelines include size targets, export instructions, and fallbacks for reduced-motion preferences."]
+            })]
+          })]
+        }), createVNode("section", {
+          children: [createVNode("h2", {
+            children: "What you receive at handoff"
+          }), createVNode("p", {
+            children: createVNode(_components.p, {
+              children: "By the time development starts you own a complete design system, not just static mockups. Teams can ship future updates because we share the same source of truth the studio used during production."
+            })
+          }), createVNode("ul", {
+            children: [createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Interactive prototypes:"
+              }), " Clickable flows that communicate transitions, hover states, and micro-interactions."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Component library:"
+              }), " Tokenized components in Figma organized by category with naming conventions that mirror the engineering stack."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Content outlines:"
+              }), " Approved messaging, SEO considerations, and guidelines for long-form storytelling elements."]
+            }), createVNode("li", {
+              children: [createVNode("strong", {
+                children: "Launch playbook:"
+              }), " QA checklist covering accessibility, performance budgets, analytics tagging, and stakeholder sign-offs."]
+            })]
+          })]
+        })]
+      })
+    })]
+  });
+}
+function MDXContent(props = {}) {
+  const {wrapper: MDXLayout} = props.components || ({});
+  return MDXLayout ? createVNode(MDXLayout, {
+    ...props,
+    children: createVNode(_createMdxContent, {
+      ...props
+    })
+  }) : _createMdxContent(props);
+}
+
+const url = "src/content/capabilities/web-design.mdx";
+const file = "/Users/griffinsurett/coding/2025-Website-Projects/2026/griffinswebservices/src/content/capabilities/web-design.mdx";
+const Content = (props = {}) => MDXContent({
+  ...props,
+  components: { Fragment: Fragment, ...props.components, },
+});
+Content[Symbol.for('mdx-component')] = true;
+Content[Symbol.for('astro.needsHeadRendering')] = !Boolean(frontmatter.layout);
+Content.moduleId = "/Users/griffinsurett/coding/2025-Website-Projects/2026/griffinswebservices/src/content/capabilities/web-design.mdx";
+__astro_tag_component__(Content, 'astro:jsx');
+
+export { Content, Content as default, file, frontmatter, getHeadings, url };

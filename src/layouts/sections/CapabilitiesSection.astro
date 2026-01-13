@@ -1,0 +1,149 @@
+---
+// src/layouts/CapabilitiesSection.astro
+/**
+ * Reusable section for capability pages
+ * Renders children capabilities, highlights, and CTA
+ * Uses BottomContentSection for testimonials, portfolio, FAQ, and technologies
+ *
+ * Automatically derives slug from URL and fetches title from content collection
+ */
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import CTASection from "@/layouts/heroes/CTASection.astro";
+import BottomContentSection from "@/layouts/sections/BottomContentSection.astro";
+import { children, related, safeGetEntry, sortByDate } from "@/utils/query";
+import { capitalizeWords } from "@/utils/string";
+import { parseUrlPath } from "@/utils/paths";
+
+interface Highlight {
+  title: string;
+  description: string;
+}
+
+interface HeadingContent {
+  before?: string;
+  text?: string;
+  after?: string;
+}
+
+interface CTAButton {
+  text: string;
+  link: string;
+}
+
+interface Props {
+  /** Heading for child capabilities section */
+  capabilitiesHeading?: string;
+  /** Highlights to display */
+  highlights?: Highlight[];
+  /** Title for highlights section */
+  highlightsTitle?: string;
+  /** Heading for highlights section */
+  highlightsHeading?: string;
+  /** Description for highlights section */
+  highlightsDescription?: string;
+  /** FAQ section title */
+  faqTitle?: string;
+  /** FAQ section heading */
+  faqHeading?: string;
+  /** CTA section title */
+  ctaTitle?: string;
+  /** CTA section heading */
+  ctaHeading?: string | HeadingContent;
+  /** CTA section description */
+  ctaDescription?: string;
+  /** CTA primary button */
+  ctaPrimaryButton?: CTAButton;
+  /** CTA section ID */
+  ctaId?: string;
+}
+
+const {
+  capabilitiesHeading,
+  highlights = [],
+  highlightsTitle,
+  highlightsHeading,
+  highlightsDescription,
+  faqTitle = "FAQs",
+  faqHeading,
+  ctaTitle,
+  ctaHeading,
+  ctaDescription,
+  ctaPrimaryButton,
+  ctaId = "capabilities-cta",
+} = Astro.props;
+
+// Derive slug from URL path using utility
+const { slug } = parseUrlPath(Astro.url.pathname);
+
+// Fetch the entry to get the title
+const entry = slug ? await safeGetEntry("capabilities", slug) : undefined;
+const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || "");
+---
+
+{capabilitiesHeading && slug && (
+  <ContentRenderer
+    variant="NestedCardVariant"
+    query={children("capabilities", slug)}
+    heading={capabilitiesHeading}
+    childCollection="capabilities"
+  />
+)}
+
+{highlights.length > 0 && (
+  <ContentRenderer
+    items={highlights}
+    variant="SplitHighlightsVariant"
+    title={highlightsTitle}
+    heading={highlightsHeading}
+    description={highlightsDescription}
+  />
+)}
+
+<slot />
+
+{slug && (
+  <ContentRenderer
+    query={related("blog", "capabilities", slug).orderBy(sortByDate("publishDate", "desc"))}
+    variant="BlogVariant"
+    columns={3}
+    title="Related Articles"
+    heading={{
+      before: "Learn more about",
+      text: title,
+    }}
+    description={`Insights and guides related to ${title?.toLowerCase() || "this capability"}.`}
+  />
+)}
+
+{/* Bottom Content Section - Testimonials, Portfolio, FAQ, Technologies */}
+<BottomContentSection
+  collection="capabilities"
+  slug={slug}
+  pageTitle={title}
+  portfolio={false}
+  faq={{
+    title: faqTitle,
+    heading: faqHeading || `Common Questions About ${title || "This Capability"}`,
+  }}
+  technologies={{
+    show: true,
+    relatedField: "capabilities",
+    relatedSlug: slug,
+    title: "Technologies",
+    description: `The tools and frameworks we use to deliver ${title?.toLowerCase() || "this capability"}.`,
+  }}
+/>
+
+{ctaHeading && (
+  <CTASection
+    id={ctaId}
+    className="min-h-[60vh]"
+    title={ctaTitle}
+    heading={ctaHeading}
+    description={ctaDescription}
+    primaryCTA={ctaPrimaryButton || {
+      text: "Get Your Free Quote",
+      link: "#capabilities-quote-hero",
+    }}
+  />
+)}

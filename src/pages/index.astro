@@ -5,11 +5,11 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import { query, sortByOrder, sortByDate, byTag } from "@/utils/query";
 import { siteData } from "@/content/siteData";
 import { roots, related, children } from "@/utils/query/snippets";
-import CTASection from "@/layouts/CTASection.astro";
-import FrontPageHero from "@/layouts/FrontPageHero.astro";
-import DoubleCard from "@/layouts/DoubleCard.astro";
+import CTASection from "@/layouts/heroes/CTASection.astro";
+import FrontPageHero from "@/layouts/heroes/FrontPageHero.astro";
+import DoubleCard from "@/layouts/sections/DoubleCard.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
-import BottomContentSection from "@/layouts/BottomContentSection.astro";
+import BottomContentSection from "@/layouts/sections/BottomContentSection.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
 
 const heroHeading = {

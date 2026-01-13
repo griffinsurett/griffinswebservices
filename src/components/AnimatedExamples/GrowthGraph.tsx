@@ -1,7 +1,7 @@
 // src/components/AnimatedExamples/GrowthGraph.tsx
 import { useState, useEffect, useId } from "react";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
-import DecorativeWrapper from "@/integrations/preferences/accessibility/components/DecorativeWrapper";
+import DecorativeWrapper from "@/integrations/preferences/accessibility/ui/DecorativeWrapper";
 
 export interface GrowthGraphProps {
   className?: string;

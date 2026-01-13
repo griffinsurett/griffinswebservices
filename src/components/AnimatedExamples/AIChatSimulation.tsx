@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Icon from "@/components/Icon";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
-import DecorativeWrapper from "@/integrations/preferences/accessibility/components/DecorativeWrapper";
+import DecorativeWrapper from "@/integrations/preferences/accessibility/ui/DecorativeWrapper";
 
 export interface AIChatSimulationProps {
   /** Additional className */

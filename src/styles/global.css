@@ -1,7 +1,7 @@
 /* src/styles/global.css */
 @import "tailwindcss";
-@import "../integrations/preferences/language/language-switcher.css";
-@import "../integrations/preferences/styles/preferences.css";
+@import "../integrations/preferences/language/styles/language-switcher.css";
+@import "../integrations/preferences/shared/styles/preferences.css";
 @import "./legal.css";
 @import "./system.css";
 @import "./menu.css";

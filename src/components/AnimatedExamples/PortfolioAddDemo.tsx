@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
-import DecorativeWrapper from "@/integrations/preferences/accessibility/components/DecorativeWrapper";
+import DecorativeWrapper from "@/integrations/preferences/accessibility/ui/DecorativeWrapper";
 
 export interface PortfolioAddDemoProps {
   className?: string;

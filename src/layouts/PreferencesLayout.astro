@@ -12,16 +12,16 @@
  */
 
 // Cookie Consent Preferences
-import CookiePreferencesButton from "@/integrations/preferences/consent/components/CookiePreferencesButton";
-import CookieConsentBanner from "@/integrations/preferences/consent/components/CookieConsentBanner";
-import ConsentScript from "@/integrations/preferences/consent/components/ConsentScript.astro";
+import CookiePreferencesButton from "@/integrations/preferences/consent/ui/CookiePreferencesButton";
+import CookieConsentBanner from "@/integrations/preferences/consent/ui/CookieConsentBanner";
+import ConsentScript from "@/integrations/preferences/consent/core/scripts/ConsentScript.astro";
 
 // Accessibility Preferences
-import AccessibilityButton from "@/integrations/preferences/accessibility/components/AccessibilityButton";
+import AccessibilityButton from "@/integrations/preferences/accessibility/ui/AccessibilityButton";
 // Note: AccessibilityScript and accessibility.css are imported in Theme.astro for early loading
 
-import BrowserTranslateScript from "@/integrations/preferences/language/components/BrowserTranslateScript.astro";
-import "@/integrations/preferences/language/language-switcher.css";
+import BrowserTranslateScript from "@/integrations/preferences/language/core/scripts/BrowserTranslateScript.astro";
+import "@/integrations/preferences/language/styles/language-switcher.css";
 import DividerHeading from "@/components/DividerHeading/DividerHeading";
 import Button from "@/components/Button/Button";
 

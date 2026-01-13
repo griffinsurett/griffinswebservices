@@ -1,0 +1,208 @@
+---
+// src/layouts/SolutionsSection.astro
+/**
+ * Reusable section for solution pages
+ * Renders ContentSection, benefits, and CTA
+ * Uses BottomContentSection for testimonials and FAQ
+ *
+ * Automatically derives slug from URL and fetches title from content collection
+ */
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import ContentSection from "@/layouts/sections/ContentSection.astro";
+import CTASection from "@/layouts/heroes/CTASection.astro";
+import BottomContentSection from "@/layouts/sections/BottomContentSection.astro";
+import { sortByOrder, related, safeGetEntry } from "@/utils/query";
+import { capitalizeWords } from "@/utils/string";
+import { parseUrlPath } from "@/utils/paths";
+
+interface Feature {
+  title: string;
+  description?: string;
+}
+
+interface Benefit {
+  title: string;
+  description?: string;
+  icon?: string;
+}
+
+interface QuickFact {
+  title: string;
+  description: string;
+}
+
+interface HeadingContent {
+  title?: string;
+  before?: string;
+  text?: string;
+  after?: string;
+  description?: string;
+}
+
+interface CTAButton {
+  text: string;
+  href?: string;
+  link?: string;
+  rightIcon?: string;
+}
+
+interface SidebarContent {
+  icon?: string;
+  title?: string;
+  eyebrow?: string;
+  description?: string;
+  footIcon?: string;
+  footTitle?: string;
+  footDescription?: string;
+  features?: Feature[];
+}
+
+interface Props {
+  /** Solution icon */
+  icon?: string;
+  /** Features list (displayed in sidebar) */
+  features?: Feature[];
+  /** Quick facts */
+  quickFacts?: QuickFact[];
+  /** Content section heading */
+  contentHeading: HeadingContent;
+  /** Primary CTA button for content section */
+  primaryCTA?: CTAButton;
+  /** Secondary CTA button for content section */
+  secondaryCTA?: CTAButton;
+  /** Sidebar content */
+  sidebar: SidebarContent;
+  /** Text content paragraphs */
+  textContent: string[];
+  /** Benefits section title */
+  benefitsTitle?: string;
+  /** Benefits section heading */
+  benefitsHeading?: string;
+  /** FAQ section title */
+  faqTitle?: string;
+  /** FAQ section heading */
+  faqHeading?: string;
+  /** CTA section title */
+  ctaTitle?: string;
+  /** CTA section heading */
+  ctaHeading?: string | HeadingContent;
+  /** CTA section description */
+  ctaDescription?: string;
+  /** CTA primary button */
+  ctaPrimaryButton?: CTAButton;
+  /** CTA section ID */
+  ctaId?: string;
+}
+
+const {
+  icon,
+  features = [],
+  quickFacts = [],
+  contentHeading,
+  primaryCTA = {
+    text: "Get Your Free Quote",
+    href: "#solutions-quote-hero",
+    rightIcon: "lu:arrow-right"
+  },
+  secondaryCTA = {
+    text: "See our work",
+    href: "#solutions-projects"
+  },
+  sidebar,
+  textContent = [],
+  benefitsTitle = "Why Choose Us",
+  benefitsHeading,
+  faqTitle = "FAQs",
+  faqHeading,
+  ctaTitle,
+  ctaHeading,
+  ctaDescription,
+  ctaPrimaryButton,
+  ctaId = "solutions-cta",
+} = Astro.props;
+
+// Derive slug from URL path using utility
+const { slug } = parseUrlPath(Astro.url.pathname);
+
+// Fetch the entry to get the title
+const entry = slug ? await safeGetEntry("solutions", slug) : undefined;
+const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || "");
+
+// Build the full sidebar with features included
+const fullSidebar = sidebar ? {
+  ...sidebar,
+  icon: sidebar.icon || icon,
+  features
+} : undefined;
+---
+
+<ContentSection
+  heading={contentHeading}
+  primaryCTA={primaryCTA}
+  secondaryCTA={secondaryCTA}
+  sidebar={fullSidebar}
+>
+  <div slot="text" class="space-y-6 text-lg text-muted">
+    {textContent.map((paragraph) => (
+      <p>{paragraph}</p>
+    ))}
+  </div>
+
+  {quickFacts.length > 0 && (
+    <ContentRenderer
+      slot="quick-facts"
+      items={quickFacts}
+      variant="QuickFactsVariant"
+      columns={1}
+    />
+  )}
+</ContentSection>
+
+{slug && (
+  <ContentRenderer
+    query={related("benefits", "solutions", slug)}
+    variant="BenefitsVariant"
+    columns={2}
+    gap="lg"
+    title={benefitsTitle}
+    heading={benefitsHeading || `What Makes Our ${title} Different`}
+  />
+)}
+
+{slug && (
+  <ContentRenderer
+    query={related("features", "solutions", slug).orderBy(sortByOrder())}
+    variant="IconListVariant"
+    columns={2}
+    gap="lg"
+    heading={`Optional add-ons for your ${title?.toLowerCase() || "project"}`}
+    description={`Enhance your ${title?.toLowerCase() || "solution"} with these additional features and capabilities.`}
+  />
+)}
+
+{/* Bottom Content Section - Testimonials, FAQ */}
+<BottomContentSection
+  collection="solutions"
+  slug={slug}
+  pageTitle={title}
+  portfolio={false}
+  technologies={false}
+  faq={{
+    title: faqTitle,
+    heading: faqHeading || `Common Questions About ${title || "This Solution"}`,
+  }}
+/>
+
+{ctaHeading && (
+  <CTASection
+    id={ctaId}
+    className="min-h-[60vh]"
+    title={ctaTitle}
+    heading={ctaHeading}
+    description={ctaDescription}
+    primaryCTA={ctaPrimaryButton || {
+      text: "Get Your Free Quote",
+      link: "#solutions-quote-hero",
+    }}
+  />
+)}

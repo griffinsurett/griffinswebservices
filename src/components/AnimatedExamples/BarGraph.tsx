@@ -2,7 +2,7 @@
 // Lightweight bar graph with inline counter animation - no external Counter dependency
 import { useEffect, useRef, useState } from "react";
 import { useMotionPreference } from "@/hooks/useMotionPreference";
-import DecorativeWrapper from "@/integrations/preferences/accessibility/components/DecorativeWrapper";
+import DecorativeWrapper from "@/integrations/preferences/accessibility/ui/DecorativeWrapper";
 
 // Inline animated number component to avoid importing heavy Counter chunk
 function AnimatedNumber({
