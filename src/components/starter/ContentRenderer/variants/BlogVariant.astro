@@ -1,0 +1,172 @@
+---
+// src/components/starter/ContentRenderer/variants/BlogVariant.astro
+/**
+ * Blog Variant - Article/blog post layout with metadata
+ * Features: Featured image, author with avatar, date, animated border on hover
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import BlogCard from "@/components/LoopComponents/BlogCard";
+import Section from "@/components/project/Section.astro";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import Button from "@/components/starter/Button/Button";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import { toArray } from "@/utils/array";
+import { find, isCollectionReference } from "@/utils/query";
+
+interface Props extends BaseVariantProps {
+  columns?: 1 | 2 | 3;
+  ctaHref?: string;
+  ctaText?: string;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "",
+  columns = 2,
+  collectionUrl,
+  collectionTitle,
+  id,
+  showButtonSection = true,
+  ctaHref,
+  ctaText,
+} = Astro.props as Props;
+
+// SectionHeader handles heading normalization automatically
+const showHeader = Boolean(title || heading || description);
+
+const safeItems = toArray(items);
+
+// Resolve author data for each item
+const resolvedItems = await Promise.all(
+  safeItems.map(async (item: any) => {
+    let authorData: { name: string; image?: string } | undefined;
+
+    if (isCollectionReference(item.author)) {
+      const authorEntry = await find(item.author.collection, item.author.id);
+      if (authorEntry) {
+        const data = authorEntry.data as Record<string, any>;
+        // Get author image - handle both direct image and object with src
+        let authorImage: string | undefined;
+        if (data.featuredImage) {
+          authorImage =
+            typeof data.featuredImage === "string"
+              ? data.featuredImage
+              : data.featuredImage?.src?.src || data.featuredImage?.src;
+        }
+        authorData = {
+          name: data.title || data.name || "",
+          image: authorImage,
+        };
+      }
+    }
+
+    // Get featured image - handle both direct image and object with src
+    let featuredImage: string | undefined;
+    let featuredImageAlt: string | undefined;
+    if (item.featuredImage) {
+      if (typeof item.featuredImage === "string") {
+        featuredImage = item.featuredImage;
+      } else if (item.featuredImage?.src) {
+        featuredImage =
+          typeof item.featuredImage.src === "string"
+            ? item.featuredImage.src
+            : item.featuredImage.src?.src;
+        featuredImageAlt = item.featuredImage.alt;
+      }
+    }
+
+    return {
+      title: item.title,
+      description: item.description,
+      url: item.url,
+      featuredImage,
+      featuredImageAlt,
+      publishDate: item.publishDate || item.date,
+      author: authorData,
+    };
+  })
+);
+
+const columnClasses = {
+  1: "grid-cols-1",
+  2: "grid-cols-1 lg:grid-cols-2",
+  3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+};
+
+// Animation configuration (matching CardRenderer)
+const staggerDelay = 100; // ms between each card animation
+const shouldStagger = resolvedItems.length >= 2;
+
+const getStaggerDelay = (index: number): number => {
+  if (!shouldStagger) return 0;
+  const positionInRow = index % columns;
+  return positionInRow * staggerDelay;
+};
+---
+
+<Section id={id} class={`outer-section ${className}`.trim()}>
+  <div class="inner-section">
+    {
+      showHeader && (
+        <div class="heading-padding">
+          <SectionHeader
+            title={title}
+            heading={heading}
+            description={description}
+          />
+        </div>
+      )
+    }
+
+    {
+      resolvedItems.length > 0 && (
+        <ul class={`grid ${columnClasses[columns]} gap-8 list-none`}>
+          {resolvedItems.map((item, index) => (
+            <li
+              class="h-full"
+              data-animate="fade-in-up"
+              data-animate-delay={
+                shouldStagger ? String(getStaggerDelay(index)) : undefined
+              }
+              data-animate-threshold="0.15"
+              data-animate-root-margin="-10% 0px -10% 0px"
+            >
+              <BlogCard
+                client:visible
+                title={item.title}
+                description={item.description}
+                url={item.url}
+                featuredImage={item.featuredImage}
+                featuredImageAlt={item.featuredImageAlt}
+                publishDate={item.publishDate}
+                author={item.author}
+              />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      showButtonSection &&
+        shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+        (ctaText || title || collectionTitle) &&
+        (ctaHref || collectionUrl) && (
+          <div class="mt-12 text-center">
+            <Button
+              href={ctaHref ?? collectionUrl}
+              rightIcon="lu:arrow-right"
+              variant="primary"
+              size="lg"
+            >
+              {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+            </Button>
+          </div>
+        )
+    }
+  </div>
+</Section>

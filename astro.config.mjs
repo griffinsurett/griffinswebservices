@@ -20,7 +20,7 @@ console.log(`Site URL: ${siteUrl}`);
 
 export default defineConfig({
   site: siteUrl,
-  server: { port: 9998 },
+  server: { port: 9999 },
   adapter: vercel(),
   output: 'static',
 

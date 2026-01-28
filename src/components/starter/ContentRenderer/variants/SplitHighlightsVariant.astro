@@ -1,0 +1,168 @@
+---
+// src/components/starter/ContentRenderer/variants/SplitHighlightsVariant.astro
+/**
+ * SplitHighlightsVariant
+ * Two-part editorial section with a SectionHeader column and supporting copy,
+ * followed by a responsive grid of highlight cards.
+ * Designed for capability/solution pages that need a narrative followed by
+ * supporting proof points (similar to the provided inspiration screenshot).
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import Section from "@/components/project/Section.astro";
+import Button from "@/components/starter/Button/Button";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import { toArray } from "@/utils/array";
+
+type ColumnCount = 1 | 2 | 3 | 4;
+
+interface Props extends BaseVariantProps {
+  columns?: ColumnCount;
+  ctaHref?: string;
+  ctaText?: string;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "",
+  columns = 4,
+  collectionUrl,
+  collectionTitle,
+  id,
+  showButtonSection = false,
+  ctaHref,
+  ctaText,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+const sectionTitle = title ?? collectionTitle;
+const showHeader = Boolean(sectionTitle || heading);
+const hasDescription = typeof description === "string" && description.trim().length > 0;
+const showTopRegion = showHeader || hasDescription;
+
+const columnClasses: Record<ColumnCount, string> = {
+  1: "grid-cols-1",
+  2: "grid-cols-1 md:grid-cols-2",
+  3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+  4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+};
+const gridClass = columnClasses[columns] ?? columnClasses[3];
+
+const showCTA =
+  showButtonSection &&
+  shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+  (ctaText || title || collectionTitle) &&
+  (ctaHref || collectionUrl);
+
+const toRecord = (item: unknown): Record<string, any> => {
+  if (!item) return {};
+  if (typeof item === "string") return { title: item };
+  if (typeof item === "object") {
+    const record = item as Record<string, any>;
+    if (record.data && typeof record.data === "object") {
+      return record.data as Record<string, any>;
+    }
+    return record;
+  }
+  return {};
+};
+
+const pickString = (record: Record<string, any>, keys: string[]) => {
+  for (const key of keys) {
+    const value = record?.[key];
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value.trim();
+    }
+  }
+  return undefined;
+};
+
+const getItemTitle = (record: Record<string, any>) =>
+  pickString(record, ["title", "heading", "name"]);
+const getItemDescription = (record: Record<string, any>) =>
+  pickString(record, ["description", "summary", "body", "text"]);
+const getItemEyebrow = (record: Record<string, any>) =>
+  pickString(record, ["eyebrow", "tagline", "label", "before"]);
+---
+
+<Section id={id} class={`outer-section relative ${className}`.trim()}>
+  <div class="inner-section space-y-16">
+    {showTopRegion && (
+      <div class="grid gap-10 lg:gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
+        {showHeader && (
+          <SectionHeader
+            title={sectionTitle}
+            heading={heading}
+            className="space-y-4 text-left"
+            headingClassName="h2 text-4xl lg:text-5xl leading-tight"
+            titleVisibleRootMargin={0}
+          />
+        )}
+
+        {hasDescription && (
+          <div class="text-lg text-muted leading-relaxed space-y-5">
+            <p>{description}</p>
+          </div>
+        )}
+      </div>
+    )}
+
+    {safeItems.length > 0 && (
+      <div class={`grid gap-6 ${gridClass}`.trim()}>
+        {safeItems.map((item, index) => {
+          const record = toRecord(item);
+          const itemTitle = getItemTitle(record);
+          const itemDescription = getItemDescription(record);
+          const eyebrow = getItemEyebrow(record);
+          const key = record.slug ?? record.id ?? record.title ?? `highlight-${index}`;
+
+          if (!itemTitle && !itemDescription) {
+            return null;
+          }
+
+          // Stagger delay: 100ms between each card
+          const staggerDelay = index * 100;
+
+          return (
+            <article
+              key={key}
+              class="relative overflow-hidden rounded-3xl border border-white/10 card-bg p-6 lg:p-8 shadow-2xl"
+              data-animate="fade-in-up"
+              data-animate-directional="true"
+              data-animate-delay={staggerDelay}
+            >
+              {eyebrow && (
+                <p class="text-xs uppercase tracking-[0.3em] text-accent font-semibold mb-3">
+                  {eyebrow}
+                </p>
+              )}
+              {itemTitle && <h3 class="text-xl lg:text-2xl text-heading font-semibold">{itemTitle}</h3>}
+              {itemDescription && (
+                <p class="mt-3 text-base text-muted leading-relaxed">
+                  {itemDescription}
+                </p>
+              )}
+            </article>
+          );
+        })}
+      </div>
+    )}
+
+    {showCTA && (
+      <div class="buttons-section-center">
+        <Button
+          href={ctaHref ?? collectionUrl}
+          rightIcon="lu:arrow-right"
+          variant="secondary"
+          client:visible
+        >
+          {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+        </Button>
+      </div>
+    )}
+  </div>
+</Section>

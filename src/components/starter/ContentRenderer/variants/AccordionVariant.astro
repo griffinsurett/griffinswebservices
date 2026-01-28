@@ -1,0 +1,127 @@
+---
+// src/components/starter/ContentRenderer/variants/AccordionVariant.astro
+/**
+ * AccordionVariant
+ * Legacy-inspired accordion section with BorderTitle header + CTA block.
+ * Still relies on ContentBridge so React accordions can consume Astro content.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import ContentBridge from "../ContentBridge/ContentBridge.astro";
+import Accordion from "@/components/LoopTemplates/Accordion";
+import Button from "@/components/starter/Button/Button";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import Section from "@/components/project/Section.astro";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  allowMultiple?: boolean;
+  ctaHref?: string;
+  ctaText?: string;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "",
+  allowMultiple = false,
+  collectionUrl,
+  collectionTitle,
+  id,
+  ctaHref,
+  ctaText,
+  showButtonSection = true,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+const sectionTitle = title ?? collectionTitle;
+
+// SectionHeader handles heading normalization automatically
+const showHeader = Boolean(sectionTitle || heading || description);
+---
+
+<Section id={id} class={`outer-section relative ${className}`.trim()}>
+  <div class="inner-section">
+    <div class="flex flex-col lg:flex-row lg:gap-12">
+      {/* Left side - Sticky header on desktop */}
+      {
+        showHeader && (
+          <div class="lg:w-1/2 sticky-section lg:self-start">
+            <SectionHeader
+              title={sectionTitle}
+              heading={heading}
+              description={description}
+              className="text-center lg:text-left max-w-3xl lg:max-w-none"
+              titleClassName="tracking-[0.25em]"
+              headingClassName="h2 mb-4"
+              descriptionClassName="large-text text-text/80"
+            />
+            {showButtonSection &&
+              shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+              (ctaText || title || collectionTitle) &&
+              (ctaHref || collectionUrl) && (
+                <div class="hidden lg:block mt-8">
+                  <Button
+                    client:visible
+                    href={ctaHref ?? collectionUrl}
+                    rightIcon="lu:arrow-right"
+                    variant="secondary"
+                    size="lg"
+                  >
+                    {ctaText ??
+                      `View All ${(title ?? collectionTitle ?? "").trim()}`}
+                  </Button>
+                </div>
+              )}
+          </div>
+        )
+      }
+
+      {/* Right side - Accordion questions */}
+      {
+        safeItems.length > 0 && (
+          <div class={`${showHeader ? "lg:w-1/2" : "w-full"} mt-12 lg:mt-0`}>
+            <ContentBridge items={safeItems} bridgeId={id}>
+              <Fragment slot="default">
+                <Accordion
+                  items={safeItems.map((item, index) => ({
+                    slug: item.slug,
+                    title: item.title || "Untitled",
+                    description: item.description,
+                    contentSlotId: `${id}-slot-${index}`,
+                  }))}
+                  allowMultiple={allowMultiple}
+                  className="space-y-4"
+                  client:visible
+                />
+              </Fragment>
+            </ContentBridge>
+          </div>
+        )
+      }
+    </div>
+
+    {/* Mobile CTA button */}
+    {
+      showButtonSection &&
+        shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+        (ctaText || title || collectionTitle) &&
+        (ctaHref || collectionUrl) && (
+          <div class="buttons-section-center lg:hidden">
+            <Button
+              client:visible
+              href={ctaHref ?? collectionUrl}
+              rightIcon="lu:arrow-right"
+              variant="secondary"
+              size="lg"
+            >
+              {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+            </Button>
+          </div>
+        )
+    }
+  </div>
+</Section>

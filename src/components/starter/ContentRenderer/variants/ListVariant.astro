@@ -1,0 +1,81 @@
+---
+// src/components/starter/ContentRenderer/variants/ListVariant.astro
+/**
+ * List Variant - Vertical stack of links
+ * Features: Simple list of links using Button component
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import Button from "@/components/starter/Button/Button";
+import Section from "@/components/project/Section.astro";
+import DividerHeading from "@/components/project/DividerHeading/DividerHeading";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  ctaHref?: string;
+  ctaText?: string;
+}
+
+const {
+  items = [],
+  title,
+  description,
+  className = "",
+  collectionUrl,
+  collectionTitle,
+  id,
+  showButtonSection = true,
+  ctaHref,
+  ctaText,
+  showHeadingDivider = false,
+  showHeadingSection = true,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+---
+
+<Section id={id} class={`${className}`}>
+  {showHeadingSection && (title || description) && (
+    <DividerHeading
+      title={title}
+      showDivider={false}
+      className="mb-4"
+      headingClassName="h4 text-heading"
+    />
+  )}
+
+  {safeItems.length > 0 && (
+    <nav class="flex flex-col gap-2 list-none" aria-label={title ? `${title} links` : undefined}>
+      {safeItems.map((item) => (
+        <Button href={item.url} className="text-text" variant="link">
+          {item.title}
+        </Button>
+      ))}
+    </nav>
+  )}
+
+  {showButtonSection &&
+    shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+    (ctaText || title || collectionTitle) &&
+    (ctaHref || collectionUrl) && (
+    <div class="mt-12">
+      <Button href={ctaHref ?? collectionUrl} variant="tertiary">
+        {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+        <svg
+          class="ml-2 w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"
+          />
+        </svg>
+      </Button>
+    </div>
+  )}
+</Section>

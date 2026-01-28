@@ -1,0 +1,216 @@
+---
+// src/components/project/Hero.astro
+/**
+ * Hero Component
+ *
+ * A specialized wrapper for hero sections with LCP-optimized animations.
+ * Extends Section component with hero-specific defaults and customization.
+ *
+ * Features:
+ * - Full viewport height by default (customizable)
+ * - LCP-optimized animations (fast scale-fade on mobile, full animation on desktop)
+ * - Responsive animation breakpoints
+ * - Background media support
+ * - Flexible content alignment
+ */
+
+import Section from "@/components/project/Section.astro";
+import BackgroundMedia from "@/components/starter/BackgroundMedia.astro";
+
+type AnimationType =
+  | "fade-in"
+  | "fade-in-up"
+  | "fade-in-down"
+  | "fade-in-left"
+  | "fade-in-right"
+  | "fade-in-scale"
+  | "scale-in"
+  | "none";
+
+type HeroSize = "full" | "large" | "medium" | "small";
+type ContentAlign = "center" | "left" | "right";
+type ContentVerticalAlign = "center" | "top" | "bottom";
+type AnimateBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
+
+export interface Props {
+  /** Unique identifier for the hero section */
+  id?: string;
+  /** Additional CSS classes */
+  class?: string;
+  className?: string;
+  /** Hero height preset */
+  size?: HeroSize;
+  /** Custom min-height (overrides size) */
+  minHeight?: string;
+  /** Horizontal content alignment */
+  contentAlign?: ContentAlign;
+  /** Vertical content alignment */
+  contentVerticalAlign?: ContentVerticalAlign;
+  /** Animation type for the hero */
+  animate?: AnimationType;
+  /** Minimum breakpoint for full animation (mobile gets fast scale-fade below this) */
+  animateBreakpoint?: AnimateBreakpoint;
+  /** Custom root margin for intersection observer (for full-screen heroes) */
+  animateRootMargin?: string;
+  /** Animation plays only once */
+  animateOnce?: boolean;
+  /** Background media configuration */
+  backgroundMedia?: {
+    image?: {
+      src: any;
+      alt?: string;
+      imageClass?: string;
+    };
+    video?: {
+      src: string;
+      poster?: string;
+    };
+    overlayClass?: string;
+  };
+  /** Inner content wrapper class */
+  innerClassName?: string;
+  /** Pass-through props */
+  [key: string]: any;
+}
+
+const sizeMap: Record<HeroSize, string> = {
+  full: "min-h-screen",
+  large: "min-h-[85vh]",
+  medium: "min-h-[65vh]",
+  small: "min-h-[50vh]",
+};
+
+const alignMap: Record<ContentAlign, string> = {
+  center: "justify-center",
+  left: "justify-start",
+  right: "justify-end",
+};
+
+const verticalAlignMap: Record<ContentVerticalAlign, string> = {
+  center: "items-center",
+  top: "items-start pt-24",
+  bottom: "items-end pb-24",
+};
+
+const {
+  id = "hero",
+  class: classAttr,
+  className,
+  size = "full",
+  minHeight,
+  contentAlign = "center",
+  contentVerticalAlign = "center",
+  animate = "fade-in-up",
+  animateBreakpoint = "lg",
+  animateRootMargin = "-40% 0px -10% 0px",
+  animateOnce = false,
+  backgroundMedia,
+  innerClassName = "",
+  ...rest
+} = Astro.props;
+
+const heightClass = minHeight ? "" : sizeMap[size];
+const heightStyle = minHeight ? `min-height: ${minHeight}` : undefined;
+
+// Add breakpoint class for CSS-based animation control
+const breakpointClass = animate !== "none" ? `hero-animate-${animateBreakpoint}` : "";
+
+const classes = [
+  heightClass,
+  "flex",
+  alignMap[contentAlign],
+  verticalAlignMap[contentVerticalAlign],
+  "relative",
+  "overflow-hidden",
+  breakpointClass,
+  classAttr,
+  className,
+].filter(Boolean).join(" ");
+---
+
+<Section
+  id={id}
+  class={classes}
+  style={heightStyle}
+  animate={animate !== "none" ? animate : undefined}
+  animateRootMargin={animateRootMargin}
+  animateOnce={animateOnce}
+  {...rest}
+>
+  {/* Background media layer */}
+  {backgroundMedia && (
+    <BackgroundMedia backgroundMedia={{
+      ...backgroundMedia,
+      image: backgroundMedia.image ? {
+        ...backgroundMedia.image,
+        aboveTheFold: true, // Always LCP optimized for heroes
+      } : undefined,
+    }} />
+  )}
+
+  {/* Content layer */}
+  <div class={`relative z-10 w-full ${innerClassName}`}>
+    <slot />
+  </div>
+
+  {/* Content outside the inner wrapper (e.g., scroll indicator) */}
+  <slot name="after" />
+</Section>
+
+<style is:global>
+  /* Disable hero animations below breakpoint - show content immediately */
+  /* sm: 640px */
+  @media (max-width: 639px) {
+    .hero-animate-sm[data-animate],
+    .hero-animate-md[data-animate],
+    .hero-animate-lg[data-animate],
+    .hero-animate-xl[data-animate],
+    .hero-animate-2xl[data-animate] {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+
+  /* md: 768px */
+  @media (max-width: 767px) {
+    .hero-animate-md[data-animate],
+    .hero-animate-lg[data-animate],
+    .hero-animate-xl[data-animate],
+    .hero-animate-2xl[data-animate] {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+
+  /* lg: 1024px */
+  @media (max-width: 1023px) {
+    .hero-animate-lg[data-animate],
+    .hero-animate-xl[data-animate],
+    .hero-animate-2xl[data-animate] {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+
+  /* xl: 1280px */
+  @media (max-width: 1279px) {
+    .hero-animate-xl[data-animate],
+    .hero-animate-2xl[data-animate] {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+
+  /* 2xl: 1536px */
+  @media (max-width: 1535px) {
+    .hero-animate-2xl[data-animate] {
+      opacity: 1 !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+</style>

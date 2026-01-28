@@ -1,0 +1,111 @@
+---
+import LottieLogo from "./LottieLogo";
+import TextLogoStatic from "./TextLogoStatic.astro";
+import { Image } from "astro:assets";
+import POSTER_SRC from "@/assets/GWS-animated.png";
+import { siteData } from "@/content/siteData";
+
+export interface Props {
+  loading?: "lazy" | "eager";
+  trigger?: "auto" | "scroll" | "visible" | "load";
+  textFadeMs?: number;
+  animateOutText?: boolean;
+  class?: string;
+  useLottie?: boolean;
+  logoMediaClass?: string;
+  logoWidths?: number[];
+  logoSizes?: string;
+  titleFirstClass?: string;
+  titleRestClass?: string;
+  loop?: boolean;
+  altContext?: string;
+}
+
+const {
+  loading = "eager",
+  trigger = "auto",
+  textFadeMs = 1200,
+  animateOutText = false,
+  class: className = "",
+  useLottie = true,
+  logoMediaClass,
+  logoWidths,
+  logoSizes,
+  titleFirstClass,
+  titleRestClass,
+  loop = true,
+  altContext,
+} = Astro.props;
+
+// Build alt text: "Griffin's Web Services Logo" + optional context
+const alt = altContext
+  ? `Griffin's Web Services Logo - ${altContext}`
+  : "Griffin's Web Services Logo";
+
+const shouldUseLottie =
+  useLottie &&
+  (trigger === "scroll" ||
+    trigger === "visible" ||
+    trigger === "load");
+
+const DEFAULT_LOGO_WIDTHS = [45, 80, 90];
+const DEFAULT_LOGO_SIZES = "(min-width: 1024px) 45px, 40px";
+const DEFAULT_LOGO_CLASSES =
+  "block w-[43px] h-[43px] lg:w-[45px] lg:h-[45px] object-contain animate-spin-once";
+
+const LOGO_WIDTHS = logoWidths ?? DEFAULT_LOGO_WIDTHS;
+const LOGO_SIZES = logoSizes ?? DEFAULT_LOGO_SIZES;
+const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
+---
+
+<a
+  href="/"
+  translate="no"
+  class={`notranslate flex justify-center items-center gap-1.5 ${className}`}
+>
+  {shouldUseLottie ? (
+    <LottieLogo
+      alt={alt}
+      loading={loading}
+      trigger={trigger}
+      className="logo-class"
+      mediaClasses={logoClasses}
+      loop={loop}
+      client:scroll
+    >
+      <Image
+        src={POSTER_SRC}
+        alt=""
+        loading={loading}
+        decoding="async"
+        class={logoClasses}
+        widths={LOGO_WIDTHS}
+        sizes={LOGO_SIZES}
+        fetchpriority={loading === "eager" ? "high" : "low"}
+        aria-hidden="true"
+      />
+    </LottieLogo>
+  ) : (
+    <Image
+      src={POSTER_SRC}
+      alt={alt}
+      loading={loading}
+      decoding="async"
+      class={logoClasses}
+      widths={LOGO_WIDTHS}
+      sizes={LOGO_SIZES}
+      fetchpriority={loading === "eager" ? "high" : undefined}
+    />
+  )}
+
+  <div>
+    <TextLogoStatic
+      title={siteData.title}
+      className="flex flex-col p-0 m-0"
+      fadeDuration={textFadeMs}
+      animateOutText={animateOutText}
+      firstClass={titleFirstClass}
+      restClass={titleRestClass}
+    />
+  </div>
+</a>
