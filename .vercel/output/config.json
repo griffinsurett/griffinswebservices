@@ -1,0 +1,314 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"src": "^/about$",
+			"headers": {
+				"Location": "/about-us"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/aboutus$",
+			"headers": {
+				"Location": "/about-us"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/accessibility-compliance$",
+			"headers": {
+				"Location": "/capabilities/accessibility-compliance"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/analytics-tracking$",
+			"headers": {
+				"Location": "/capabilities/analytics-tracking"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/authors$",
+			"headers": {
+				"Location": "/industries/authors"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/automation$",
+			"headers": {
+				"Location": "/capabilities/automation"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/contact$",
+			"headers": {
+				"Location": "/contact-us"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/contactus$",
+			"headers": {
+				"Location": "/contact-us"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/contractors$",
+			"headers": {
+				"Location": "/industries/contractors"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/e-commerce$",
+			"headers": {
+				"Location": "/industries/e-commerce"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/fitness$",
+			"headers": {
+				"Location": "/industries/fitness"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/hosting$",
+			"headers": {
+				"Location": "/capabilities/hosting"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/legal/cookie-policy$",
+			"headers": {
+				"Location": "/cookie-policy"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/legal/privacy-policy$",
+			"headers": {
+				"Location": "/privacy-policy"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/legal/terms-of-service$",
+			"headers": {
+				"Location": "/terms-of-service"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/marketing-agencies$",
+			"headers": {
+				"Location": "/industries/marketing-agencies"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/professional-services$",
+			"headers": {
+				"Location": "/industries/professional-services"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/restaurants-food-service$",
+			"headers": {
+				"Location": "/industries/restaurants-food-service"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/seo$",
+			"headers": {
+				"Location": "/capabilities/seo"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/analytics-tracking$",
+			"headers": {
+				"Location": "/capabilities/analytics-tracking"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/app-maintenance$",
+			"headers": {
+				"Location": "/app-maintenance"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/booking-systems$",
+			"headers": {
+				"Location": "/booking-systems"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/business-websites$",
+			"headers": {
+				"Location": "/business-websites"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/custom-full-stack-applications$",
+			"headers": {
+				"Location": "/web-applications"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/customer-portals$",
+			"headers": {
+				"Location": "/customer-portals"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/dashboards-reporting$",
+			"headers": {
+				"Location": "/dashboards-reporting"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/databases$",
+			"headers": {
+				"Location": "/databases"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/e-commerce-websites$",
+			"headers": {
+				"Location": "/e-commerce-websites"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/internal-tools$",
+			"headers": {
+				"Location": "/internal-tools"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/landing-pages$",
+			"headers": {
+				"Location": "/landing-pages"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/platform-migrations$",
+			"headers": {
+				"Location": "/platform-migrations"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/reorganization-expansion$",
+			"headers": {
+				"Location": "/reorganization-expansion"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/restaurant-websites$",
+			"headers": {
+				"Location": "/industries/restaurants-food-service"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/site-cleanup$",
+			"headers": {
+				"Location": "/site-cleanup"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/standard-websites$",
+			"headers": {
+				"Location": "/business-websites"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/web-applications$",
+			"headers": {
+				"Location": "/web-applications"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/website-maintenance$",
+			"headers": {
+				"Location": "/website-maintenance"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/website-redesign$",
+			"headers": {
+				"Location": "/website-redesign"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/solutions/websites$",
+			"headers": {
+				"Location": "/websites"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/uptime-monitoring$",
+			"headers": {
+				"Location": "/capabilities/uptime-monitoring"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/web-design$",
+			"headers": {
+				"Location": "/capabilities/web-design"
+			},
+			"status": 301
+		},
+		{
+			"src": "^/web-development$",
+			"headers": {
+				"Location": "/capabilities/web-development"
+			},
+			"status": 301
+		},
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/_astro/(.*)$",
+			"headers": {
+				"cache-control": "public, max-age=31536000, immutable"
+			},
+			"continue": true
+		},
+		{
+			"src": "^/.*$",
+			"dest": "/404.html",
+			"status": 404
+		}
+	]
+}

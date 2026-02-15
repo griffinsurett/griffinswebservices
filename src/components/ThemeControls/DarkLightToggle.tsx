@@ -3,7 +3,11 @@ import { CircleCheckbox } from "./checkboxes/CircleCheckbox";
 import { UseMode } from "@/hooks/theme/UseMode";
 import "./DarkLightToggle.css";
 
-export default function DarkLightToggle() {
+interface DarkLightToggleProps {
+  gradientId: string;
+}
+
+export default function DarkLightToggle({ gradientId }: DarkLightToggleProps) {
   const [isLight, setIsLight] = UseMode();
   const maskId = useId();
 
@@ -41,7 +45,7 @@ export default function DarkLightToggle() {
               cy="50"
               r={18}
               mask={`url(#${maskId})`}
-              fill="var(--color-primary)"
+              fill={`url(#${gradientId})`}
             />
           </svg>
         </div>
@@ -54,9 +58,9 @@ export default function DarkLightToggle() {
             xmlns="http://www.w3.org/2000/svg"
             className="block w-3.5 h-3.5 sm:w-[18px] sm:h-[18px]"
           >
-            <circle cx="50" cy="50" r="18" fill="var(--color-primary)" />
+            <circle cx="50" cy="50" r="18" fill={`url(#${gradientId})`} />
             <g
-              stroke="var(--color-primary)"
+              stroke={`url(#${gradientId})`}
               strokeWidth="4"
               strokeLinecap="round"
             >
