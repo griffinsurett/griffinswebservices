@@ -55,6 +55,8 @@ const {
   id = "hero",
   scrollToSection,
 } = Astro.props as Props;
+
+const checklistGradientId = `${id}-hero-check-gradient`;
 ---
 
 <Hero
@@ -91,6 +93,21 @@ const {
             >
               {subheading}
             </p>
+            <svg
+              aria-hidden="true"
+              width="0"
+              height="0"
+              focusable="false"
+              class="pointer-events-none w-0 h-0 overflow-hidden"
+            >
+              <defs>
+                <linearGradient id={checklistGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="currentColor" class="text-primary-100" />
+                  <stop offset="55%" stop-color="currentColor" class="text-primary" />
+                  <stop offset="100%" stop-color="currentColor" class="text-primary-800" />
+                </linearGradient>
+              </defs>
+            </svg>
             <ul class="space-y-2 lg:space-y-3 py-2 lg:py-0">
               {
                 checklist.map((service) => (
@@ -100,7 +117,7 @@ const {
                         class="w-3 h-3 lg:w-4 lg:h-4"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="currentColor"
+                        stroke={`url(#${checklistGradientId})`}
                         stroke-width="2.5"
                         stroke-linecap="round"
                         stroke-linejoin="round"
