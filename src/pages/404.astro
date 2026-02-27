@@ -2,13 +2,14 @@
 // src/pages/404.astro
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Button from "@/components/Button/Button";
+import SectionHeader from "@/components/SectionHeader.astro";
 ---
 <BaseLayout title="Page Not Found" description="The page you requested does not exist." robots="noindex, nofollow">
   <section
     class="min-h-screen grid place-items-center p-[clamp(1.5rem,4vw,3.5rem)] bg-[radial-gradient(circle_at_8%_12%,color-mix(in_srgb,var(--color-primary)_26%,transparent),transparent_40%),radial-gradient(circle_at_92%_92%,color-mix(in_srgb,var(--color-primary)_20%,transparent),transparent_42%)]"
   >
     <div
-      class="w-full max-w-[1050px] rounded-[1.25rem] border border-[color-mix(in_srgb,var(--color-primary)_35%,transparent)] p-[clamp(1.5rem,4vw,3rem)] [background:linear-gradient(160deg,color-mix(in_srgb,var(--color-bg2)_84%,#000000_16%),color-mix(in_srgb,var(--color-bg)_90%,#000000_10%))] [box-shadow:0_18px_50px_color-mix(in_srgb,var(--color-primary)_20%,#000000),inset_0_1px_0_color-mix(in_srgb,var(--color-primary)_25%,transparent)]"
+      class="card-bg w-full max-w-[1050px] rounded-[1.25rem] p-[clamp(1.5rem,4vw,3rem)] [box-shadow:0_18px_50px_color-mix(in_srgb,var(--color-primary)_20%,#000000)]"
     >
       <div
         class="max-h-[15rem] overflow-hidden mb-[0.8rem] opacity-100 motion-safe:animate-[hideLoaderStage_300ms_ease_2s_forwards] motion-reduce:hidden"
@@ -23,18 +24,21 @@ import Button from "@/components/Button/Button";
           <span class="block h-full w-[42%] rounded-full bg-[linear-gradient(90deg,color-mix(in_srgb,var(--color-primary)_70%,white_30%),var(--color-primary))] motion-safe:animate-[loadingBar_1.25s_ease-in-out_infinite] motion-reduce:animate-none"></span>
         </div>
 
-        <div class="mt-[1.25rem] mb-[1rem]">
+        <div class="mt-[1.25rem] mb-[1rem] flex justify-center">
           <span class="inline-block h-[2.3rem] w-[2.3rem] rounded-full border-[0.28rem] border-solid border-[color-mix(in_srgb,var(--color-primary)_24%,transparent)] border-t-[var(--color-primary)] motion-safe:animate-spin motion-reduce:animate-none [animation-duration:0.95s]"></span>
         </div>
       </div>
 
-      <div class="max-h-0 overflow-hidden opacity-0 translate-y-[0.65rem] motion-safe:animate-[revealMessageStage_380ms_ease_2s_forwards] motion-reduce:max-h-none motion-reduce:overflow-visible motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:animate-none">
-        <h1 class="mb-4 max-w-[24ch] [font-family:var(--font-header)] text-[clamp(1.85rem,3.7vw,3rem)] leading-[1.15] text-[color-mix(in_srgb,var(--color-text)_88%,white_12%)]">This page is not loading slowly. It is just not here.</h1>
-        <p class="m-0 max-w-[68ch] text-[clamp(1rem,1.4vw,1.18rem)] leading-[1.7] text-[color-mix(in_srgb,var(--color-text)_90%,#ffffff_10%)]">
-          If this looked like a loading issue, that is on us for making this page too convincing.
-          This URL does not point to a real page, so your request has nowhere to go.
-        </p>
-        <p class="mt-[0.7rem] m-0 max-w-[68ch] text-[clamp(1rem,1.4vw,1.18rem)] leading-[1.7] text-[color-mix(in_srgb,var(--color-text)_90%,#ffffff_10%)]">
+      <div class="max-h-0 overflow-hidden opacity-0 translate-y-[0.65rem] text-left motion-safe:animate-[revealMessageStage_380ms_ease_2s_forwards] motion-reduce:max-h-none motion-reduce:overflow-visible motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:animate-none">
+        <SectionHeader
+          title="404 Error"
+          heading="This page is not loading slowly. It is just not here."
+          headingTag="h1"
+          className="mb-8 text-left"
+          headingClassName="max-w-[24ch]"
+          description="If this looked like a loading issue, that is on us for making this page too convincing. This URL does not point to a real page, so your request has nowhere to go."
+        />
+        <p class="mt-[0.3rem] m-0 large-text">
           Think of this as a wrong turn, not a broken website. Let us send you somewhere useful instead.
         </p>
 
