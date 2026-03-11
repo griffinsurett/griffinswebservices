@@ -100,7 +100,10 @@ export default function CookieConsentBanner() {
         ssr={false}
         ariaLabel="Cookie consent banner"
       >
-        <div className="outer-card-transition group text-left">
+        <div
+          id="cookie-consent-banner"
+          className="outer-card-transition group text-left"
+        >
           <div className="outer-card-style card-bg-2">
             <div
               className="inner-card-style inner-card-transition inner-card-color"
