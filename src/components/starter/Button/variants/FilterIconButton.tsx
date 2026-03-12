@@ -58,6 +58,15 @@ export default function FilterIconButton({
   ...props
 }: FilterIconButtonProps) {
   const currentSize = sizeClasses[size];
+  const iconData = icon
+    ? {
+        icon: {
+          icon,
+          className: active ? "text-bg" : "",
+        },
+        title: label,
+      }
+    : undefined;
 
   const buttonClasses = [
     currentSize.padding,
@@ -77,7 +86,7 @@ export default function FilterIconButton({
     <ButtonBase {...props} unstyled className={buttonClasses}>
       {icon ? (
         <IconListItem
-          data={{ icon, title: label }}
+          data={iconData}
           layout="vertical"
           alignment="center"
           className={`${currentSize.gap} items-center`}
