@@ -11,6 +11,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [hidden] = useState(false);
   const iconGradientId = useId();
+  const accentGradientId = useId();
 
   return (
     <div
@@ -40,11 +41,16 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
             <stop offset="55%" stopColor="currentColor" className="text-primary" />
             <stop offset="100%" stopColor="currentColor" className="text-primary-800" />
           </linearGradient>
+          <linearGradient id={accentGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="currentColor" className="text-accent-100" />
+            <stop offset="55%" stopColor="currentColor" className="text-accent" />
+            <stop offset="100%" stopColor="currentColor" className="text-accent-800" />
+          </linearGradient>
         </defs>
       </svg>
       <LanguagePicker />
       <DarkLightToggle gradientId={iconGradientId} />
-      <AccentPicker gradientId={iconGradientId} />
+      <AccentPicker gradientId={accentGradientId} />
     </div>
   );
 }
