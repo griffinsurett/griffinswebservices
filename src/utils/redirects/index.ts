@@ -64,13 +64,13 @@ export function buildRedirectConfig(includeWarnings: boolean = true): RedirectCo
     seen.add(redirect.from);
     config[redirect.from] = redirect.to;
   }
-  
+
   // Add path alias redirects (lower priority)
   for (const redirect of pathAliasRedirects) {
     if (seen.has(redirect.from)) {
       continue;
     }
-    
+
     seen.add(redirect.from);
     config[redirect.from] = redirect.to;
   }

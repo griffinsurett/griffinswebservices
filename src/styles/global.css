@@ -237,7 +237,7 @@ body {
   html {
     scroll-behavior: smooth;
     /* overscroll-behavior: none; */
-    @apply bg-gradient;
+    background: transparent;
   }
 
   body {
@@ -521,6 +521,11 @@ body {
  * 4. COMPONENT PATTERNS
  * ============================================================ */
 @layer components {
+  .site-fixed-bg {
+    @apply bg-cover bg-center;
+    background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
+  }
+
   /* Hero & decorative elements */
   .hero-gradient-bg {
     @apply bg-cover bg-center;
