@@ -42,6 +42,19 @@ export default function MobileMenuDrawer({
     resetMenuStack();
   }, [resetMenuStack]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const body = document.body;
+
+    root.classList.toggle("mobile-menu-open", isOpen);
+    body.classList.toggle("mobile-menu-open", isOpen);
+
+    return () => {
+      root.classList.remove("mobile-menu-open");
+      body.classList.remove("mobile-menu-open");
+    };
+  }, [isOpen]);
+
   const toggleMenu = useCallback(
     (forced?: boolean) => {
       setIsOpen((prev) => {

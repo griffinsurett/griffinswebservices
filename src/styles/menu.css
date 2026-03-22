@@ -60,3 +60,7 @@
     max-height: calc(100dvh - 4rem);
   }
 }
+
+.mobile-menu-open .site-header {
+  background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
+}
