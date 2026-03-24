@@ -62,20 +62,24 @@ const fallbackIcon = "fa6-solid:circle-dot";
                 size="sm"
                 aria-label={displayValue}
               >
-                <Icon
-                  icon={iconName}
-                  size="md"
-                  className="w-5 h-5 mr-1 shrink-0 text-primary"
-                />
+                <span class="inline-flex h-7 w-7 items-center justify-center rounded-full card-icon-color shrink-0 mr-1">
+                  <Icon
+                    icon={iconName}
+                    size="md"
+                    className="w-3.5 h-3.5"
+                  />
+                </span>
                 <span class="text-base">{displayValue}</span>
               </Button>
             ) : (
               <div class="flex items-center gap-3">
-                <Icon
-                  icon={iconName}
-                  size="md"
-                  className="w-5 h-5 shrink-0 text-primary"
-                />
+                <span class="inline-flex h-7 w-7 items-center justify-center rounded-full card-icon-color shrink-0">
+                  <Icon
+                    icon={iconName}
+                    size="md"
+                    className="w-3.5 h-3.5"
+                  />
+                </span>
                 <span class="text-heading font-semibold text-base">
                   {displayValue}
                 </span>

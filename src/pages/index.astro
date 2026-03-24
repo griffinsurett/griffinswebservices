@@ -56,6 +56,18 @@ const heroDescription =
       description="Different businesses need different outcomes. Our solutions are built around real goals — generating leads, establishing credibility, and converting visitors — not arbitrary page counts or feature lists."
     /> -->
 
+        <!-- BENEFITS -->
+    <ContentRenderer
+      query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
+      variant="BenefitsVariant"
+      id="benefits"
+      title="What This Means for You"
+      heading="What You Can Expect From Your Website"
+      description="These principles translate directly into real-world benefits — things you and your customers notice immediately when using your website."
+      columns={2}
+      gap="lg"
+    />
+
     <DoubleCard />
 
     <!-- PHILOSOPHY -->
@@ -79,18 +91,6 @@ const heroDescription =
       columns={3}
       gap="lg"
       showButtonSection={false}
-    />
-
-    <!-- BENEFITS -->
-    <ContentRenderer
-      query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
-      variant="BenefitsVariant"
-      id="benefits"
-      title="What This Means for You"
-      heading="What You Can Expect From Your Website"
-      description="These principles translate directly into real-world benefits — things you and your customers notice immediately when using your website."
-      columns={2}
-      gap="lg"
     />
 
     <!-- TRUST STATEMENT -->
