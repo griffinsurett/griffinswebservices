@@ -1,26 +1,20 @@
 [
   {
-    "id": "2",
+    "id": "1",
     "title": "LinkedIn",
     "link": "https://www.linkedin.com/in/griffin-surett/",
     "icon": "lucide:linkedin"
   },
   {
-    "id": "3",
-    "title": "GitHub",
-    "link": "https://github.com/griffinsurett",
-    "icon": "lucide:github"
-  },
-  {
-    "id": "4",
+    "id": "2",
     "title": "Facebook",
-    "link": "https://facebook.com/griffinswebservices",
+    "link": "https://www.facebook.com/profile.php?id=61588357260507",
     "icon": "simple-icons:facebook"
   },
   {
-    "id": "5",
+    "id": "3",
     "title": "Instagram",
-    "link": "https://instagram.com/griffinjoshs",
+    "link": "https://www.instagram.com/griffinswebservices/",
     "icon": "lucide:instagram"
   }
 ]

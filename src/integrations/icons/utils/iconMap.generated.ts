@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/integrations/icons/utils/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuGithub, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMinus, LuPlus, LuSend, LuSettings, LuSparkles } from 'react-icons/lu';
+import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMinus, LuPlus, LuSend, LuSettings, LuSparkles } from 'react-icons/lu';
 import { FaAddressBook, FaArrowRight, FaArrowTrendUp, FaArrowsLeftRight, FaArrowsRotate, FaArrowsUpDownLeftRight, FaAws, FaBinoculars, FaBolt, FaBoxOpen, FaBoxesStacked, FaBrain, FaBriefcase, FaBullseye, FaCalendarCheck, FaCartArrowDown, FaCartShopping, FaChartLine, FaChartSimple, FaCircleDot, FaClipboardCheck, FaClock, FaClockRotateLeft, FaCloud, FaCloudflare, FaCode, FaCommentDots, FaCompass, FaCookieBite, FaCreditCard, FaCss3Alt, FaCubes, FaDatabase, FaDiagramProject, FaDisplay, FaDumbbell, FaEnvelope, FaEnvelopeOpenText, FaEye, FaFeather, FaFigma, FaFileLines, FaFilePen, FaFlagCheckered, FaGaugeHigh, FaGears, FaGithub, FaGlobe, FaGoogle, FaHandPointer, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHtml5, FaImage, FaImages, FaInbox, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMinimize, FaMobileScreenButton, FaNetworkWired, FaNewspaper, FaNodeJs, FaObjectGroup, FaPalette, FaPaperPlane, FaPenNib, FaPenRuler, FaPenToSquare, FaPersonRunning, FaPhone, FaPhp, FaPlug, FaPlugCircleBolt, FaPuzzlePiece, FaPython, FaReact, FaRectangleAd, FaRoad, FaRobot, FaRocket, FaRotate, FaRotateLeft, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaSitemap, FaStamp, FaStore, FaSwatchbook, FaTableList, FaUniversalAccess, FaUsers, FaUsersGear, FaUtensils, FaWandMagicSparkles, FaWordpress, FaXmark } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiExpress, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiTailwindcss, SiTypescript, SiVercel, SiWebflow } from 'react-icons/si';
 
@@ -124,7 +124,6 @@ export const iconMap = {
   'lu:chevron-right': LuChevronRight,
   'lu:clock': LuClock,
   'lu:code': LuCode,
-  'lu:github': LuGithub,
   'lu:globe': LuGlobe,
   'lu:image': LuImage,
   'lu:instagram': LuInstagram,
