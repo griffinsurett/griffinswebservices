@@ -7,7 +7,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import Hero from "@/components/Hero.astro";
 import ScrollIndicator from "@/components/ScrollIndicator.astro";
 import { query } from "@/utils/query";
-import { siteData } from "@/content/siteData";
+import { ctaData, siteData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
 
 interface CTA {
@@ -46,15 +46,18 @@ const {
   description = siteData.description ?? defaultDescription,
   subheading = defaultSubheading,
   checklist = defaultChecklist,
-  primaryCTA = {
-    text: "Book An Intro Call",
-    link: "#contact",
-    rightIcon: "lu:arrow-right",
-  },
+  primaryCTA: incomingPrimaryCTA,
   className = "",
   id = "hero",
   scrollToSection,
 } = Astro.props as Props;
+
+const primaryCTA: CTA = {
+  text: ctaData.text,
+  link: ctaData.link,
+  ...incomingPrimaryCTA,
+  rightIcon: incomingPrimaryCTA?.rightIcon ?? "lu:arrow-up-right",
+};
 
 const checklistGradientId = `${id}-hero-check-gradient`;
 ---

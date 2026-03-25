@@ -480,6 +480,23 @@
   transform: scale(1);
 }
 
+[data-animate="letter-reveal"] {
+  --trust-letter-hidden: #000;
+  --trust-letter-stagger: 22ms;
+}
+
+[data-animate="letter-reveal"] .trust-letter {
+  color: var(--trust-letter-hidden);
+  transition: color 240ms var(--animation-easing);
+  transition-delay: 0ms;
+  will-change: color;
+}
+
+[data-animate="letter-reveal"][data-visible="true"] .trust-letter {
+  color: currentColor;
+  transition-delay: calc(var(--letter-index, 0) * var(--trust-letter-stagger));
+}
+
 /* ─────────────────────────────────────────────────────────────── */
 /* JS SCALE ANIMATIONS (data-attribute based)                      */
 /* ─────────────────────────────────────────────────────────────── */

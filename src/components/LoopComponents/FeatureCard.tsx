@@ -17,8 +17,10 @@ export interface FeatureCardProps {
   title?: ReactNode;
   description?: ReactNode;
   className?: string;
+  innerClassName?: string;
   ringDuration?: number;
   listItemProps?: Partial<Omit<IconListItemProps, "data">>;
+  stretchToFill?: boolean;
   /** Enable body content rendering (MDX via contentSlotId or children) */
   showBody?: boolean;
   /** Slot ID for ContentBridge - loads MDX body content (requires showBody=true) */
@@ -117,8 +119,10 @@ export default function FeatureCard({
   title,
   description,
   className = "",
+  innerClassName = "",
   ringDuration = 800,
   listItemProps,
+  stretchToFill = false,
   showBody = false,
   contentSlotId,
   children,
@@ -197,11 +201,19 @@ export default function FeatureCard({
       : hasBody
         ? "mx-auto px-6 md:px-10 py-8 flex flex-col justify-center items-center relative card-bg"
         : "min-h-90 mx-auto px-6 md:px-10 py-8 flex flex-col justify-center items-center relative card-bg";
+  const resolvedInnerCardClass = [
+    stretchToFill ? "h-full" : "",
+    innerCardClass,
+    innerClassName,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const wrapperTextClass = resolvedLayout.includes("horizontal") ? "text-left" : "text-center";
   const hoverLift = !resolvedLayout.includes("horizontal") && isInteractive ? "hover:-translate-y-3" : "";
   const wrapperClassName = [
     isInteractive ? "group" : "",
+    stretchToFill ? "h-full" : "",
     wrapperTextClass,
     "outer-card-transition",
     hoverLift,
@@ -220,7 +232,7 @@ export default function FeatureCard({
         borderRadius="rounded-3xl"
         borderWidth={2}
         className={wrapperClassName}
-        innerClassName={innerCardClass}
+        innerClassName={resolvedInnerCardClass}
         linkProps={isInteractive ? { href: cardUrl } : undefined}
       >
         <div className="inner-card-style inner-card-transition inner-card-color" />

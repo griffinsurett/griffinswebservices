@@ -1,0 +1,88 @@
+---
+title: "Branding & Visual Systems"
+description: "Brand-supporting enhancements that turn existing website materials into reusable visual systems and content assets."
+heading:
+  before: "Brand and visual enhancements"
+  text: "that make the website easier to extend"
+  after: "across the rest of the business."
+order: 5
+icon: "fa6-solid:palette"
+---
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import TrustStatement from '@/components/TrustStatement.astro';
+import ContentSection from '@/layouts/sections/ContentSection.astro';
+import CTASection from '@/layouts/heroes/CTASection.astro';
+import { children } from '@/utils/query/snippets';
+import { ctaData } from '@/content/siteData';
+
+<TrustStatement text="The website often becomes the strongest expression of the brand. These enhancements turn that work into reusable assets, templates, and systems your team can keep using elsewhere." />
+
+<ContentSection
+  heading={{
+    title: "Brand systems are more useful when they come from real approved work",
+    before: "We turn the design language already working on the site into",
+    text: "reusable assets your team can keep building from",
+    after: ".",
+    description: "This enhancement group helps businesses extend the visual value of the website into templates, graphics, brand support materials, and repeatable design systems.",
+  }}
+  primaryCTA={{
+    text: ctaData.text,
+    href: ctaData.link,
+    rightIcon: "lu:arrow-right",
+  }}
+  secondaryCTA={{
+    text: "View Pricing",
+    href: "/pricing",
+    rightIcon: "lu:arrow-right",
+  }}
+  sidebar={{
+    icon: frontmatter.icon,
+    title: "A brand system built from what already works",
+    eyebrow: "What this covers",
+    description: "We use the visual direction established on the website to create practical design assets your team can actually reuse without starting from scratch every time.",
+    features: [
+      "Website design elements translated into reusable brand assets",
+      "Template systems for social, marketing, and repeat content",
+      "Creative support that keeps visuals consistent across channels",
+      "Editable kits that make day-to-day execution easier for your team",
+    ],
+    footIcon: "🎨",
+    footTitle: "Consistency without extra friction",
+    footDescription: "The goal is not more files. It is a visual system your team can keep applying confidently after the website launch.",
+  }}
+>
+  <div slot="text" class="space-y-6 text-lg text-muted">
+    <p>Once the website is live, many teams realize the site looks stronger than the rest of their materials. Social graphics, ad creatives, content templates, and other design assets often lag behind because no one converted the approved website direction into reusable brand tools.</p>
+    <p>We use these enhancements to turn the site into a more complete visual system. That might mean campaign graphics, Canva-based brand kits, reusable social templates, or consistency systems that help internal teams stay aligned without redesigning from zero every time.</p>
+    <p>The result is a brand that feels more cohesive across channels because the website is no longer the only place where the design quality shows up.</p>
+  </div>
+
+  <ContentRenderer
+    slot="quick-facts"
+    items={[
+      { title: "Best for", description: "Teams extending website visuals into marketing" },
+      { title: "Focus", description: "Templates, assets, consistency systems" },
+      { title: "Outcome", description: "A more reusable and cohesive visual brand" },
+    ]}
+    variant="QuickFactsVariant"
+    columns={1}
+  />
+</ContentSection>
+
+<ContentRenderer
+  query={children("enhancements", "branding-visual-systems")}
+  variant="CardVariant"
+  title="Enhancement Options"
+  heading="Branding & Visual System Enhancements We Create"
+  description="These are the brand-supporting add-ons we use to turn website design work into repeatable assets and systems."
+/>
+
+<CTASection
+  title="Get Started"
+  heading={{
+    before: "Want the visual quality of the site to",
+    text: "carry across the rest of your brand",
+    after: "?",
+  }}
+  description="We can scope the templates, assets, and consistency systems that make the website easier to extend into marketing and content work."
+/>

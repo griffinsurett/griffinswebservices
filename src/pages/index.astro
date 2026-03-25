@@ -3,8 +3,8 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortByOrder, sortByDate, byTag } from "@/utils/query";
-import { siteData } from "@/content/siteData";
-import { roots, related, children } from "@/utils/query/snippets";
+import { ctaData, siteData } from "@/content/siteData";
+import { roots, related, byItemKeys } from "@/utils/query/snippets";
 import CTASection from "@/layouts/heroes/CTASection.astro";
 import FrontPageHero from "@/layouts/heroes/FrontPageHero.astro";
 import DoubleCard from "@/layouts/sections/DoubleCard.astro";
@@ -28,8 +28,8 @@ const heroDescription =
     heading={heroHeading}
     description={heroDescription}
     primaryCTA={{
-      text: "Get Started",
-      link: "/contact-us",
+      text: ctaData.text,
+      link: ctaData.link,
     }}
     scrollToSection="#under-hero"
   />
@@ -47,14 +47,21 @@ const heroDescription =
       />
     </div>
 
-       <!-- SOLUTIONS -->
+    <!-- SOLUTIONS -->
     <!-- <ContentRenderer
-      query={children("solutions", "new-builds")}
+      query={byItemKeys("solutions", ["websites", "web-apps"])}
       id="solutions"
-      title="Web Solutions"
-      heading="Ways We Turn Strategy Into Working Solutions"
-      description="Different businesses need different outcomes. Our solutions are built around real goals — generating leads, establishing credibility, and converting visitors — not arbitrary page counts or feature lists."
+      title="Solutions"
+      heading="Web Solutions Built Around the System You Need"
+      description="Whether you need a business website or a custom application, the structure stays clear: core solutions first, pricing in one place, and enhancements layered in when they create real value."
     /> -->
+
+        <!-- TRUST STATEMENT -->
+    <TrustStatement
+      className="min-h-screen flex items-center justify-center inner-section"
+      textClassName="text-2xl md:text-3xl lg:text-4xl text-left lg:text-center leading-tight"
+      text="We build websites designed to hold up over time. Hosting and ongoing maintenance help keep performance, stability, and security consistent as your business grows. Every site includes search-friendly foundations, and when deeper SEO or marketing work is needed, we coordinate with trusted specialists without compromising the technical foundation."
+    />
 
         <!-- BENEFITS -->
     <ContentRenderer
@@ -68,8 +75,6 @@ const heroDescription =
       gap="lg"
     />
 
-    <DoubleCard />
-
     <!-- PHILOSOPHY -->
     <!-- <ContentRenderer
       query={query("philosophy").orderBy(sortByOrder())}
@@ -82,19 +87,17 @@ const heroDescription =
 
         <!-- CAPABILITIES -->
     <ContentRenderer
-      query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
+      query={related("capabilities", "solutions", "websites").orderBy(sortByOrder())}
       variant="CardVariant"
       id="capabilities"
-      title="Core Capabilities"
+      title="Our Capabilities"
       heading="The Capabilities That Make the Work Possible"
       description="Everything above depends on having the right technical foundation and ongoing oversight. Our capabilities work together to ensure your website stays fast, stable, and dependable over time."
-      columns={3}
       gap="lg"
       showButtonSection={false}
     />
 
-    <!-- TRUST STATEMENT -->
-    <TrustStatement className="min-h-screen flex items-center justify-center inner-section" text="We build websites designed to hold up over time. Hosting and ongoing maintenance help keep performance, stability, and security consistent as your business grows. Every site includes search-friendly foundations, and when deeper SEO or marketing work is needed, we coordinate with trusted specialists without compromising the technical foundation." />
+       <DoubleCard />
 
     <!-- Bottom Content Section - Testimonials, Portfolio, FAQ -->
     <BottomContentSection

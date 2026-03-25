@@ -1,0 +1,88 @@
+---
+title: "Search & AI Optimization"
+description: "Technical and structural enhancements that help your site get understood more clearly by search engines and AI systems."
+heading:
+  before: "Search and AI improvements"
+  text: "built into the structure"
+  after: "of the site."
+order: 1
+icon: "fa6-solid:magnifying-glass"
+---
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import TrustStatement from '@/components/TrustStatement.astro';
+import ContentSection from '@/layouts/sections/ContentSection.astro';
+import CTASection from '@/layouts/heroes/CTASection.astro';
+import { children } from '@/utils/query/snippets';
+import { ctaData } from '@/content/siteData';
+
+<TrustStatement text="Search visibility gets stronger when the site structure, page relationships, and on-page signals are set up correctly from the start instead of patched in after launch." />
+
+<ContentSection
+  heading={{
+    title: "Search visibility depends on cleaner structure",
+    before: "We improve how search engines and AI systems",
+    text: "read, connect, and trust your pages",
+    after: ".",
+    description: "These enhancements focus on the technical and structural details that help your best pages become easier to discover, easier to understand, and easier to expand over time.",
+  }}
+  primaryCTA={{
+    text: ctaData.text,
+    href: ctaData.link,
+    rightIcon: "lu:arrow-right",
+  }}
+  secondaryCTA={{
+    text: "View Pricing",
+    href: "/pricing",
+    rightIcon: "lu:arrow-right",
+  }}
+  sidebar={{
+    icon: frontmatter.icon,
+    title: "Built for visibility that lasts",
+    eyebrow: "What this covers",
+    description: "We look at page hierarchy, metadata, internal linking, content organization, and crawl signals so the site communicates the right priorities clearly.",
+    features: [
+      "Technical setup that supports cleaner crawling and indexing",
+      "Page-level structure improvements that strengthen relevance signals",
+      "Navigation and internal linking that reinforce important service paths",
+      "Content organization that helps future SEO and AI visibility efforts compound",
+    ],
+    footIcon: "🔎",
+    footTitle: "A stronger search foundation",
+    footDescription: "The goal is not just rankings now. It is a site structure that can keep supporting new services, pages, and content later.",
+  }}
+>
+  <div slot="text" class="space-y-6 text-lg text-muted">
+    <p>Search performance is rarely limited to one title tag or one page tweak. More often, the real problem is that the site structure never clearly communicated which pages matter most, how they relate to one another, or what each page is supposed to rank for.</p>
+    <p>We use this enhancement set to tighten the technical signals, clean up the page hierarchy, and improve how both humans and machines interpret the site. That includes metadata, crawlability, page structure, content framing, and the relationships between service pages.</p>
+    <p>The result is a site that is easier to expand strategically. When you add new services, locations, or supporting content later, the structure underneath it is already doing part of the work for you.</p>
+  </div>
+
+  <ContentRenderer
+    slot="quick-facts"
+    items={[
+      { title: "Best for", description: "Businesses investing in long-term visibility" },
+      { title: "Focus", description: "Structure, crawlability, clarity" },
+      { title: "Outcome", description: "Better discoverability and cleaner expansion paths" },
+    ]}
+    variant="QuickFactsVariant"
+    columns={1}
+  />
+</ContentSection>
+
+<ContentRenderer
+  query={children("enhancements", "search-ai-optimization")}
+  variant="CardVariant"
+  title="Enhancement Options"
+  heading="Search & AI Improvements We Layer Onto the Site"
+  description="These focused enhancements improve how pages are structured, interpreted, and surfaced without requiring a full rebuild."
+/>
+
+<CTASection
+  title="Get Started"
+  heading={{
+    before: "Want your site to be",
+    text: "easier to find and easier to trust",
+    after: "?",
+  }}
+  description="We can scope the structural, technical, and content improvements that make search visibility more durable."
+/>

@@ -30,15 +30,18 @@ const defaultDescription =
 const {
   heading,
   description = siteData.description ?? defaultDescription,
-  primaryCTA = {
-    text: "Book An Intro Call",
-    link: "#contact",
-    rightIcon: "lu:arrow-right",
-  },
+  primaryCTA: incomingPrimaryCTA,
   className = "",
   id = "hero",
   scrollToSection,
 } = Astro.props as Props;
+
+const primaryCTA: CTA = {
+  text: "Book An Intro Call",
+  link: "#contact",
+  ...incomingPrimaryCTA,
+  rightIcon: incomingPrimaryCTA?.rightIcon ?? "lu:arrow-up-right",
+};
 ---
 
 <section

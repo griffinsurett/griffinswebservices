@@ -8,6 +8,17 @@ function mapButtonSizeToIconSize(size?: ButtonSize): IconSize {
   return size ?? 'md';
 }
 
+function normalizeButtonIcon(icon: string): string {
+  const arrowIcons = new Set([
+    'lu:arrow-right',
+    'lucide:arrow-right',
+    'fa6-solid:arrow-right',
+    'arrow-right',
+  ]);
+
+  return arrowIcons.has(icon) ? 'lu:arrow-up-right' : icon;
+}
+
 export function renderButtonIcon(
   icon: string | ReactNode | undefined,
   size?: ButtonSize
@@ -16,7 +27,9 @@ export function renderButtonIcon(
 
   const iconSize = mapButtonSizeToIconSize(size);
   if (isValidElement(icon)) return icon;
-  if (typeof icon === 'string') return <Icon icon={icon} size={iconSize} />;
+  if (typeof icon === 'string') {
+    return <Icon icon={normalizeButtonIcon(icon)} size={iconSize} />;
+  }
   return null;
 }
 

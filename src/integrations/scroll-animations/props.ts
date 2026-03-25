@@ -159,6 +159,7 @@ export type AnimationType =
   | "fade-in-left"
   | "fade-in-right"
   | "fade-in-scale"
+  | "letter-reveal"
   | "scale-in"
   | "pop-in"
   | "zoom-in"

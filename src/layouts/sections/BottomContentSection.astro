@@ -49,6 +49,10 @@ interface PortfolioConfig {
   showFilters?: boolean;
   /** Show navigation arrows */
   showArrows?: boolean;
+  /** Custom CTA href */
+  ctaHref?: string;
+  /** Custom CTA text */
+  ctaText?: string;
 }
 
 interface FAQConfig {
@@ -203,6 +207,8 @@ const faqHeading = faqConfig.heading || `Common Questions About ${pageTitle}`;
       filter={{ showCount: portfolioConfig.showCount ?? false }}
       showFilters={portfolioConfig.showFilters ?? true}
       showArrows={portfolioConfig.showArrows ?? true}
+      ctaHref={portfolioConfig.ctaHref || "/projects"}
+      ctaText={portfolioConfig.ctaText || "View Portfolio"}
     />
   )}
 

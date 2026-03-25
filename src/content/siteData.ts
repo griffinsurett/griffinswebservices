@@ -23,6 +23,6 @@ export const siteData = {
 };
 
 export const ctaData = {
-  text: "Schedule a Consultation",
-  link: "/contact-us",
+  text: "Get Started Now!",
+  link: "/pricing",
 };

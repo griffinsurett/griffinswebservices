@@ -13,7 +13,7 @@ export default function ArrowLinkButton({
       unstyled
     >
       <span className="flex justify-center items-center rounded-full h-10 w-10 bg-accent">
-        <Icon icon="lu:arrow-right" size="lg" className="text-bg p-0" />
+        <Icon icon="lu:arrow-up-right" size="lg" className="text-bg p-0" />
       </span>
     </ButtonBase>
   );

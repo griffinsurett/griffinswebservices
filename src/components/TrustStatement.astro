@@ -1,19 +1,78 @@
 ---
 import Section from "@/components/Section.astro";
+import { animationProps } from "@/integrations/scroll-animations/props";
+import { splitTextIntoAnimatedWords } from "@/utils/text";
 
 interface Props {
   text: string;
   className?: string;
+  textClassName?: string;
 }
 
-const { text, className = "min-h-[40vh] flex items-center mx-auto inner-section" } = Astro.props;
+const {
+  text,
+  className = "min-h-[40vh] flex items-center mx-auto inner-section",
+  textClassName = "text-3xl md:text-4xl lg:text-5xl text-left lg:text-center",
+} = Astro.props;
+
+const words = splitTextIntoAnimatedWords(text);
 ---
 
 <Section
   tag="aside"
   class={`trust-statement ${className}`.trim()}
   aria-label="Trust statement"
+  animate="fade-in"
   animateOnce={false}
 >
-  <h2 class="text-3xl md:text-4xl lg:text-5xl text-left lg:text-center">{text}</h2>
+  <h2
+    class:list={[textClassName, "trust-statement-heading"]}
+    aria-label={text}
+    {...animationProps("letter-reveal", {
+      once: true,
+      threshold: 0.1,
+      rootMargin: "0px",
+      duration: 240,
+    })}
+  >
+    {
+      words.map((word) => (
+        <>
+          <span class="trust-word" aria-hidden="true">
+            {word.letters.map((letter) => (
+              <span
+                class="trust-letter"
+                style={`--letter-index:${letter.index}; --letter-index-reverse:${letter.reverseIndex};`}
+              >
+                {letter.char}
+              </span>
+            ))}
+          </span>
+          {!word.isLast && <span class="trust-space" aria-hidden="true"> </span>}
+        </>
+      ))
+    }
+  </h2>
 </Section>
+
+<style>
+  .trust-statement-heading {
+    color: var(--color-text);
+  }
+
+  .trust-word {
+    display: inline-flex;
+    white-space: nowrap;
+  }
+
+  .trust-space {
+    white-space: pre;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .trust-letter {
+      transition: none !important;
+      color: currentColor !important;
+    }
+  }
+</style>

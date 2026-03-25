@@ -10,6 +10,7 @@ import type { HeadingContent } from "@/content/schema";
 interface CTA {
   text: string;
   link: string;
+  rightIcon?: string;
 }
 
 export interface Props {
@@ -26,13 +27,17 @@ const defaultDescription =
 const {
   heading,
   description = siteData.description ?? defaultDescription,
-  primaryCTA = {
-    text: "Book An Intro Call",
-    link: "#contact",
-  },
+  primaryCTA: incomingPrimaryCTA,
   className = "",
   id = "hero",
 } = Astro.props as Props;
+
+const primaryCTA: CTA = {
+  text: "Book An Intro Call",
+  link: "#contact",
+  ...incomingPrimaryCTA,
+  rightIcon: incomingPrimaryCTA?.rightIcon ?? "lu:arrow-up-right",
+};
 
 ---
 
@@ -64,6 +69,7 @@ const {
             href={primaryCTA.link}
             variant="primary"
             size="lg"
+            rightIcon={primaryCTA.rightIcon}
           >
             {primaryCTA.text}
           </Button>

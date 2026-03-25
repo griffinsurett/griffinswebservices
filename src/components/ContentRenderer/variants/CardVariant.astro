@@ -18,6 +18,7 @@ import { toArray } from "@/utils/array";
 interface Props extends BaseVariantProps {
   /** Column count: 1-4 or "auto" (responsive max 3 based on item count) */
   columns?: 1 | 2 | 3 | 4 | "auto";
+  sectionLayout?: "default" | "split" | "auto";
   ctaHref?: string;
   ctaText?: string;
   card?: CardPropOverrides;
@@ -37,6 +38,7 @@ const {
   description,
   className = "outer-section",
   columns = "auto",
+  sectionLayout = "auto",
   collectionUrl,
   collectionTitle,
   id,
@@ -49,9 +51,28 @@ const {
 } = Astro.props as Props;
 
 const safeItems = toArray(items) as FeatureCardData[];
+const showHeader = Boolean(title || heading || description);
+const shouldAutoSplit =
+  showHeader &&
+  sectionLayout === "auto" &&
+  [2, 4, 8].includes(safeItems.length);
+const resolvedSectionLayout =
+  sectionLayout === "auto"
+    ? shouldAutoSplit
+      ? "split"
+      : "default"
+    : sectionLayout;
+const isSplitLayout = resolvedSectionLayout === "split";
 
-// Calculate effective columns: "auto" = min(3, itemCount), otherwise use specified value
-const maxColumns = columns === "auto" ? 3 : columns;
+// Calculate effective columns:
+// - regular auto layout = min(3, itemCount)
+// - split auto layout = 2 columns for balanced 2/4/8 card sets
+const maxColumns =
+  columns === "auto"
+    ? isSplitLayout
+      ? 2
+      : 3
+    : columns;
 const effectiveColumns = Math.min(maxColumns, safeItems.length || 1) as 1 | 2 | 3 | 4;
 
 const normalizeCardProps = (
@@ -74,6 +95,19 @@ const normalizeCardProps = (
 };
 
 const featureCardPropOverrides = normalizeCardProps(card);
+const splitFeatureCardPropOverrides: Partial<FeatureCardProps> | undefined = isSplitLayout
+  ? {
+      ...featureCardPropOverrides,
+      className: [featureCardPropOverrides?.className, "h-full"].filter(Boolean).join(" "),
+      innerClassName: [
+        featureCardPropOverrides?.innerClassName,
+        "h-full min-h-[25rem] lg:min-h-[27rem]",
+      ]
+        .filter(Boolean)
+        .join(" "),
+      stretchToFill: true,
+    }
+  : featureCardPropOverrides;
 
 const resolveCardClassName = (item: FeatureCardData): string => {
   if (!item || typeof item !== "object") return "";
@@ -91,108 +125,217 @@ const resolveRingDuration = (item: FeatureCardData): number => {
   return typeof record?.ringDuration === "number" ? record.ringDuration : 800;
 };
 
-// SectionHeader handles heading normalization automatically
-const showHeader = Boolean(title || heading || description);
 const gridMarginClass = showHeader ? "mt-12" : "";
 const showCTA =
   showButtonSection &&
   shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
   (ctaText || title || collectionTitle) &&
   (ctaHref || collectionUrl);
+const showSidebar = showHeader || showCTA;
+const sectionOverflowClass = isSplitLayout ? "" : "overflow-hidden";
 
 ---
 
-<Section id={id} class={`relative overflow-hidden ${className}`.trim()}>
+<Section id={id} class={`relative ${sectionOverflowClass} ${className}`.trim()}>
   <div class="inner-section">
-    {showHeader && (
-      <div
-        class={
-          ctaInlineOnDesktop && showCTA
-            ? "flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between"
-            : ""
-        }
-      >
-        <div class={ctaInlineOnDesktop && showCTA ? "lg:flex-1" : "heading-padding"}>
-          <SectionHeader
-            title={title}
-            heading={heading}
-            description={description}
-            className={
-              ctaInlineOnDesktop && showCTA ? "text-section lg:text-left" : undefined
-            }
-            descriptionClassName={
-              ctaInlineOnDesktop && showCTA ? "large-text lg:text-left" : undefined
-            }
-          />
-        </div>
+    {isSplitLayout ? (
+      showSidebar ? (
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-12 xl:gap-16">
+          <div class="flex flex-col gap-6 sticky-section lg:self-start">
+            {showHeader && (
+              <SectionHeader
+                title={title}
+                heading={heading}
+                description={description}
+                className="text-section text-left"
+                descriptionClassName="large-text text-left"
+              />
+            )}
 
-        {ctaInlineOnDesktop && showCTA && (
-          <div class="hidden lg:flex items-center">
-            <Button
-              href={ctaHref ?? collectionUrl}
-              rightIcon="lu:arrow-right"
-              variant="secondary"
-            >
-              {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
-            </Button>
+            {showCTA && (
+              <div class="flex items-start">
+                <Button
+                  href={ctaHref ?? collectionUrl}
+                  rightIcon="lu:arrow-right"
+                  variant="primary"
+                >
+                  {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          <div>
+            {showBody ? (
+              <ContentBridge items={safeItems} bridgeId={id}>
+                <Fragment slot="default">
+                  <CardRenderer
+                    client:visible
+                    items={safeItems.map((item, index) => ({
+                      ...item,
+                      contentSlotId: `${id}-slot-${index}`,
+                    }))}
+                    columns={effectiveColumns}
+                    showBody={showBody}
+                    getCardClassName={resolveCardClassName}
+                    getRingDuration={resolveRingDuration}
+                    featureCardProps={splitFeatureCardPropOverrides}
+                    animation={{
+                      once: false,
+                      threshold: 0.15,
+                      rootMargin: "-10% 0px -10% 0px",
+                    }}
+                  />
+                </Fragment>
+              </ContentBridge>
+            ) : (
+              <CardRenderer
+                client:visible
+                items={safeItems}
+                columns={effectiveColumns}
+                showBody={false}
+                getCardClassName={resolveCardClassName}
+                getRingDuration={resolveRingDuration}
+                featureCardProps={splitFeatureCardPropOverrides}
+                animation={{
+                  once: false,
+                  threshold: 0.15,
+                  rootMargin: "-10% 0px -10% 0px",
+                }}
+              />
+            )}
+          </div>
+        </div>
+      ) : showBody ? (
+        <ContentBridge items={safeItems} bridgeId={id}>
+          <Fragment slot="default">
+            <CardRenderer
+              client:visible
+              items={safeItems.map((item, index) => ({
+                ...item,
+                contentSlotId: `${id}-slot-${index}`,
+              }))}
+              columns={effectiveColumns}
+              showBody={showBody}
+              getCardClassName={resolveCardClassName}
+              getRingDuration={resolveRingDuration}
+              featureCardProps={splitFeatureCardPropOverrides}
+              animation={{
+                once: false,
+                threshold: 0.15,
+                rootMargin: "-10% 0px -10% 0px",
+              }}
+            />
+          </Fragment>
+        </ContentBridge>
+      ) : (
+        <CardRenderer
+          client:visible
+          items={safeItems}
+          columns={effectiveColumns}
+          showBody={false}
+          getCardClassName={resolveCardClassName}
+          getRingDuration={resolveRingDuration}
+          featureCardProps={featureCardPropOverrides}
+          animation={{
+            once: false,
+            threshold: 0.15,
+            rootMargin: "-10% 0px -10% 0px",
+          }}
+        />
+      )
+    ) : (
+      <>
+        {showHeader && (
+          <div
+            class={
+              ctaInlineOnDesktop && showCTA
+                ? "flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between"
+                : ""
+            }
+          >
+            <div class={ctaInlineOnDesktop && showCTA ? "lg:flex-1" : "heading-padding"}>
+              <SectionHeader
+                title={title}
+                heading={heading}
+                description={description}
+                className={
+                  ctaInlineOnDesktop && showCTA ? "text-section lg:text-left" : undefined
+                }
+                descriptionClassName={
+                  ctaInlineOnDesktop && showCTA ? "large-text lg:text-left" : undefined
+                }
+              />
+            </div>
+
+            {ctaInlineOnDesktop && showCTA && (
+              <div class="hidden lg:flex items-center">
+                <Button
+                  href={ctaHref ?? collectionUrl}
+                  rightIcon="lu:arrow-right"
+                  variant="secondary"
+                >
+                  {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+                </Button>
+              </div>
+            )}
           </div>
         )}
-      </div>
-    )}
 
-    {/* Only use ContentBridge when showBody is true - avoids expensive MDX rendering */}
-    {showBody ? (
-      <ContentBridge items={safeItems} bridgeId={id}>
-        <Fragment slot="default">
+        {showBody ? (
+          <ContentBridge items={safeItems} bridgeId={id}>
+            <Fragment slot="default">
+              <CardRenderer
+                client:visible
+                items={safeItems.map((item, index) => ({
+                  ...item,
+                  contentSlotId: `${id}-slot-${index}`,
+                }))}
+                columns={effectiveColumns}
+                showBody={showBody}
+                className={gridMarginClass}
+                getCardClassName={resolveCardClassName}
+                getRingDuration={resolveRingDuration}
+                featureCardProps={featureCardPropOverrides}
+                animation={{
+                  once: false,
+                  threshold: 0.15,
+                  rootMargin: "-10% 0px -10% 0px",
+                }}
+              />
+            </Fragment>
+          </ContentBridge>
+        ) : (
           <CardRenderer
             client:visible
-            items={safeItems.map((item, index) => ({
-              ...item,
-              contentSlotId: `${id}-slot-${index}`,
-            }))}
+            items={safeItems}
             columns={effectiveColumns}
-            showBody={showBody}
+            showBody={false}
             className={gridMarginClass}
             getCardClassName={resolveCardClassName}
             getRingDuration={resolveRingDuration}
-            featureCardProps={featureCardPropOverrides}
+            featureCardProps={splitFeatureCardPropOverrides}
             animation={{
               once: false,
               threshold: 0.15,
               rootMargin: "-10% 0px -10% 0px",
             }}
           />
-        </Fragment>
-      </ContentBridge>
-    ) : (
-      <CardRenderer
-        client:visible
-        items={safeItems}
-        columns={effectiveColumns}
-        showBody={false}
-        className={gridMarginClass}
-        getCardClassName={resolveCardClassName}
-        getRingDuration={resolveRingDuration}
-        featureCardProps={featureCardPropOverrides}
-        animation={{
-          once: false,
-          threshold: 0.15,
-          rootMargin: "-10% 0px -10% 0px",
-        }}
-      />
-    )}
+        )}
 
-    {showCTA && (
-      <div class={`buttons-section-center ${ctaInlineOnDesktop ? "lg:hidden" : ""}`.trim()}>
-        <Button
-          href={ctaHref ?? collectionUrl}
-          rightIcon="lu:arrow-right"
-          variant="secondary"
-          client:idle
-        >
-          {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
-        </Button>
-      </div>
+        {showCTA && (
+          <div class={`buttons-section-center ${ctaInlineOnDesktop ? "lg:hidden" : ""}`.trim()}>
+            <Button
+              href={ctaHref ?? collectionUrl}
+              rightIcon="lu:arrow-right"
+              variant="secondary"
+              client:idle
+            >
+              {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+            </Button>
+          </div>
+        )}
+      </>
     )}
   </div>
 </Section>

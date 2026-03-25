@@ -1,0 +1,88 @@
+---
+title: "Booking & E-commerce"
+description: "Revenue-focused enhancements for booking flows, online stores, payments, and checkout experience."
+heading:
+  before: "Booking and e-commerce systems"
+  text: "that make buying easier"
+  after: "for the customer and the team."
+order: 2
+icon: "fa6-solid:cart-shopping"
+---
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import TrustStatement from '@/components/TrustStatement.astro';
+import ContentSection from '@/layouts/sections/ContentSection.astro';
+import CTASection from '@/layouts/heroes/CTASection.astro';
+import { children } from '@/utils/query/snippets';
+import { ctaData } from '@/content/siteData';
+
+<TrustStatement text="When customers are ready to book or buy, the website should make that next step feel obvious, trustworthy, and friction-free." />
+
+<ContentSection
+  heading={{
+    title: "Revenue systems need more than a pretty front end",
+    before: "We build booking and checkout flows that",
+    text: "reduce hesitation and support conversion",
+    after: ".",
+    description: "From product setup to payment routing to appointment confirmations, these enhancements help the site function like an actual sales system instead of a brochure.",
+  }}
+  primaryCTA={{
+    text: ctaData.text,
+    href: ctaData.link,
+    rightIcon: "lu:arrow-right",
+  }}
+  secondaryCTA={{
+    text: "View Pricing",
+    href: "/pricing",
+    rightIcon: "lu:arrow-right",
+  }}
+  sidebar={{
+    icon: frontmatter.icon,
+    title: "Built for smoother transactions",
+    eyebrow: "What this covers",
+    description: "We scope the pieces that make online booking and e-commerce work reliably, from setup and configuration to customer-facing flow improvements.",
+    features: [
+      "Booking flows that reduce confusion and missed follow-up",
+      "Store setup that keeps products, services, and pricing organized",
+      "Payment integrations that connect the right tools securely",
+      "Checkout improvements that reduce friction before the final click",
+    ],
+    footIcon: "💳",
+    footTitle: "Better flow, better completion rates",
+    footDescription: "The goal is a transaction experience that feels polished to customers and easier to manage internally.",
+  }}
+>
+  <div slot="text" class="space-y-6 text-lg text-muted">
+    <p>If people can book online or pay through the site, the website stops being a simple marketing surface and starts acting like part of your operations. That means every step needs to be clear, connected, and dependable.</p>
+    <p>We use this enhancement group to tighten the systems behind booking flows, product setup, service configuration, payment processing, and checkout performance. The work is practical: fewer dead ends, fewer manual fixes, and less ambiguity for customers.</p>
+    <p>Whether you sell services, appointments, or products, these improvements make the site easier to transact through and easier for your team to maintain once the system is live.</p>
+  </div>
+
+  <ContentRenderer
+    slot="quick-facts"
+    items={[
+      { title: "Best for", description: "Bookings, stores, and service sales" },
+      { title: "Focus", description: "Setup, payment flow, checkout clarity" },
+      { title: "Outcome", description: "Smoother conversions and easier operations" },
+    ]}
+    variant="QuickFactsVariant"
+    columns={1}
+  />
+</ContentSection>
+
+<ContentRenderer
+  query={children("enhancements", "booking-e-commerce")}
+  variant="CardVariant"
+  title="Enhancement Options"
+  heading="Booking & E-commerce Enhancements We Implement"
+  description="These are the focused add-ons we use to help businesses sell, schedule, and collect payments with less friction."
+/>
+
+<CTASection
+  title="Get Started"
+  heading={{
+    before: "Need a site that can",
+    text: "book, sell, and get paid cleanly",
+    after: "?",
+  }}
+  description="We can scope the booking, payment, and checkout improvements that make the revenue side of the site easier to trust."
+/>

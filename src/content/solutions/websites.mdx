@@ -1,37 +1,40 @@
 ---
 title: "Websites"
-description: "We're a New Jersey based Web Agency that creates fast, engaging websites built to grow your business."
+description: "Website design and development for businesses that need a fast, reliable, professional web presence built to support long-term growth."
 heading:
-  before: "Launch a Website That Actually Works."
-  text: "Fast. Secure. Built to Grow."
+  before: "Website design and development"
+  text: "built to support growth"
   after: ""
 order: 1
 icon: "fa6-solid:globe"
-parent: new-builds
 itemLayout: "../../layouts/collections/WebSolutionLayout.astro"
+addToMenu:
+  - menu: "main-menu"
+    order: 2
 ---
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import CTASection from '@/layouts/heroes/CTASection.astro';
 import BottomContentSection from '@/layouts/sections/BottomContentSection.astro';
 import TrustStatement from '@/components/TrustStatement.astro';
 import DoubleCard from '@/layouts/sections/DoubleCard.astro';
-import FrontPageHero from '@/layouts/heroes/FrontPageHero.astro';
+import CenteredDualCTAHero from '@/layouts/heroes/CenteredDualCTAHero.astro';
+import WebsitePricingLayout from '@/layouts/sections/WebsitePricingLayout.astro';
+import { ctaData } from '@/content/siteData';
 import { query, sortByOrder, byTag } from '@/utils/query';
-import { roots, related, children } from '@/utils/query/snippets';
+import { related } from '@/utils/query/snippets';
 import { animationProps } from '@/integrations/scroll-animations/props';
 
-<FrontPageHero
+<CenteredDualCTAHero
   heading={frontmatter.heading}
   description={frontmatter.description}
-  checklist={[
-    "Website Design & Development",
-    "Secure Hosting, Maintenance & Support",
-    "SEO Ready Architecture",
-    "Built for Long-Term Growth"
-  ]}
   primaryCTA={{
-    text: "Get Started",
-    link: "/contact-us",
+    text: "New Website Options",
+    link: "#pricing",
+    rightIcon: "lu:arrow-right",
+  }}
+  secondaryCTA={{
+    text: "Existing Website Options",
+    link: "#existing-site-options",
     rightIcon: "lu:arrow-right",
   }}
   scrollToSection="#under-hero"
@@ -39,6 +42,32 @@ import { animationProps } from '@/integrations/scroll-animations/props';
 />
 
 <div id="under-hero">
+
+<WebsitePricingLayout
+  newWebsiteOptions={{
+    id: "pricing",
+    title: "Pricing",
+    heading: "Looking for a Brand-New Website Built to Hold Up and Convert?",
+    description: "Pick the website option that fits your business best and move forward with a site designed to feel polished, perform fast, and keep working as your company grows.",
+  }}
+  existingWebsiteOptions={{
+    id: "existing-site-options",
+    title: "Existing Website Support",
+    heading: "Already Have a Website That Needs Reliable Hosting or Ongoing Care?",
+    description: "Choose the ongoing support option that keeps your current site secure, stable, and professionally maintained while your business keeps moving.",
+  }}
+  existingWebsiteServices={{
+    id: "website-improvements",
+    title: "Website Improvements & Upgrades",
+    heading: "Focused Improvements for Existing Websites",
+    description: "When the site already exists, we handle the cleanup, restructuring, and platform-level changes needed to get it stable, clearer, and easier to grow.",
+  }}
+  enhancementOptions={{
+    title: "Need Something More Specific?",
+    heading: "Enhancements That Layer Onto the Core Website Work",
+    description: "When you need more than the core build or maintenance path, these enhancement options cover SEO, automation, booking, e-commerce, systems, and brand-supporting work.",
+  }}
+/>
 
 <div
   class="block lg:min-h-screen inner-section"
@@ -50,14 +79,6 @@ import { animationProps } from '@/integrations/scroll-animations/props';
     clientLoadPlaceholder={true}
   />
 </div>
-
-<ContentRenderer
-  query={children("solutions", "websites")}
-  id="website-types"
-  title="Website Solutions"
-  heading="Website Types We Build"
-  description="From simple business sites to complex e-commerce platforms, we build websites tailored to your specific needs and goals."
-/>
 
 <DoubleCard />
 
@@ -82,13 +103,12 @@ import { animationProps } from '@/integrations/scroll-animations/props';
 />
 
 <ContentRenderer
-  query={roots("capabilities").orderBy(sortByOrder()).limit(6)}
+  query={related("capabilities", "solutions", "websites").orderBy(sortByOrder())}
   variant="CardVariant"
   id="capabilities"
-  title="Core Capabilities"
+  title="Our Capabilities"
   heading="The Capabilities Behind Every Website"
   description="Everything above depends on having the right technical foundation. Our capabilities work together to ensure your website stays fast, stable, and dependable."
-  columns={3}
   gap="lg"
   showButtonSection={false}
 />

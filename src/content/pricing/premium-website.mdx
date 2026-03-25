@@ -1,0 +1,130 @@
+---
+title: "Premium Website"
+description: "A lightning fast higher-scope website package for businesses that need more strategy, more depth, and a more customized build from the start."
+order: 3
+icon: "👑"
+price: "$1500+"
+pricePrefix: "Starting at"
+features:
+  - "Everything in Standard Website, plus more scope and flexibility"
+  - "Expanded page count for larger site needs"
+  - "Higher-tier design work customized to your brand"
+  - "Professionally built to stay durable as your business grows"
+  - "Strategy-led planning for SEO, content structure, and search visibility"
+  - "A stronger foundation for future content expansion"
+  - "Custom functionality as needed"
+solutions:
+  - websites
+---
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import SmallChecklistItem from "@/components/LoopComponents/SmallChecklistItem.astro";
+import PremiumWebsiteQuoteForm from "@/components/Form/forms/PremiumWebsiteQuoteForm.astro";
+import { query } from "@/utils/query";
+
+<Section class="outer-section relative mt-15">
+  <div class="inner-section">
+    <div class="grid gap-8 xl:grid-cols-[0.9fr_1.1fr] xl:items-start">
+      <div class="space-y-6">
+        <SectionHeader
+          title="Premium Website Package"
+          heading="Request a custom website quote for a larger-scope build"
+          className="text-left"
+          headingClassName="h2 mb-5"
+        />
+
+        <ContentRenderer
+          query={query("testimonials")
+            .where((entry) => entry.data.featured === true)
+            .limit(3)}
+          variant="TestimonialCirclesVariant"
+          className="px-0"
+          counterStart={10}
+          counterEnd={100}
+          counterDuration={1800}
+          counterSuffix="+"
+          counterLabel="Happy Clients"
+        />
+
+        <p class="large-text max-w-2xl text-text">
+          This quote form is for businesses planning a new website that needs more strategy, more scope, and more system planning than a standard brochure site.
+        </p>
+
+        <div class="rounded-3xl border border-accent/15 card-bg p-6 shadow-xl">
+          <p class="text-sm font-semibold uppercase tracking-[0.22em] text-heading">Best fit for</p>
+          <ul class="mt-4 space-y-4">
+            <SmallChecklistItem
+              as="li"
+              class="items-start gap-3"
+              iconWrapperClassName="faded-bg flex items-center justify-center rounded-full p-1 text-accent flex-shrink-0"
+              iconClassName="h-3 w-3 lg:h-4 lg:w-4"
+              textClassName="text-text text-sm leading-relaxed"
+            >
+              Everything in Standard Website, plus more scope and flexibility
+            </SmallChecklistItem>
+            <SmallChecklistItem
+              as="li"
+              class="items-start gap-3"
+              iconWrapperClassName="faded-bg flex items-center justify-center rounded-full p-1 text-accent flex-shrink-0"
+              iconClassName="h-3 w-3 lg:h-4 lg:w-4"
+              textClassName="text-text text-sm leading-relaxed"
+            >
+              Expanded page count for larger site needs
+            </SmallChecklistItem>
+            <SmallChecklistItem
+              as="li"
+              class="items-start gap-3"
+              iconWrapperClassName="faded-bg flex items-center justify-center rounded-full p-1 text-accent flex-shrink-0"
+              iconClassName="h-3 w-3 lg:h-4 lg:w-4"
+              textClassName="text-text text-sm leading-relaxed"
+            >
+              Higher-tier design work customized to your brand
+            </SmallChecklistItem>
+            <SmallChecklistItem
+              as="li"
+              class="items-start gap-3"
+              iconWrapperClassName="faded-bg flex items-center justify-center rounded-full p-1 text-accent flex-shrink-0"
+              iconClassName="h-3 w-3 lg:h-4 lg:w-4"
+              textClassName="text-text text-sm leading-relaxed"
+            >
+              Professionally built to stay durable as your business grows
+            </SmallChecklistItem>
+            <SmallChecklistItem
+              as="li"
+              class="items-start gap-3"
+              iconWrapperClassName="faded-bg flex items-center justify-center rounded-full p-1 text-accent flex-shrink-0"
+              iconClassName="h-3 w-3 lg:h-4 lg:w-4"
+              textClassName="text-text text-sm leading-relaxed"
+            >
+              Strategy-led planning for SEO, content structure, and search visibility
+            </SmallChecklistItem>
+            <SmallChecklistItem
+              as="li"
+              class="items-start gap-3"
+              iconWrapperClassName="faded-bg flex items-center justify-center rounded-full p-1 text-accent flex-shrink-0"
+              iconClassName="h-3 w-3 lg:h-4 lg:w-4"
+              textClassName="text-text text-sm leading-relaxed"
+            >
+              A stronger foundation for future content expansion
+            </SmallChecklistItem>
+          </ul>
+        </div>
+
+        <div class="rounded-3xl border border-accent/15 card-bg p-6 shadow-xl">
+          <p class="text-sm font-semibold uppercase tracking-[0.22em] text-heading">Important note</p>
+          <p class="mt-4 text-sm leading-relaxed text-text/80">
+            This form is not for fixing problems on an existing website. If you need hosting, maintenance,
+            cleanup, or support for a site that already exists, use the{" "}
+            <a href="/pricing#existing-site-options" class="text-accent hover:underline">
+              existing website support options
+            </a>
+            {" "}instead.
+          </p>
+        </div>
+      </div>
+
+      <PremiumWebsiteQuoteForm />
+    </div>
+  </div>
+</Section>

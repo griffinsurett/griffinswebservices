@@ -2,25 +2,20 @@
 title: "Solutions"
 description: "Comprehensive web solutions tailored to your business needs"
 heading:
-  before: "Website packages that start with"
-  text: "your business goals"
-  after: "and end with measurable growth."
+  before: "Solutions built around"
+  text: "the type of system"
+  after: "your business actually needs."
 hasPage: false
 itemsHasPage: true
 itemsRootPath: true
 itemsLayout: "../../layouts/collections/ServicesLayout.astro"
-itemsAddToMenu:
-  - menu: "main-menu"
-addToMenu:
-  - menu: "main-menu"
-    order: 2
 ---
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
-import { query, sortByOrder } from '@/utils/query';
+import { byItemKeys } from '@/utils/query/snippets';
 
 <ContentRenderer
-  query={query("solutions").orderBy(sortByOrder())}
+  query={byItemKeys("solutions", ["websites", "web-apps"])}
   variant="CardVariant"
-  columns={3}
+  columns={2}
   gap="lg"
 />

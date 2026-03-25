@@ -10,7 +10,7 @@
   {
     "id": "email",
     "title": "Email Us",
-    "description": "griffinswebservices@gmail.com",
+    "description": "griffin@griffinswebservices.com",
     "icon": "fa6-solid:envelope",
     "tags": ["email"],
     "linkPrefix": "mailto:"

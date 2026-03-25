@@ -20,6 +20,7 @@ type AnimationType =
   | "fade-in-left"
   | "fade-in-right"
   | "fade-in-scale"
+  | "letter-reveal"
   | "scale-in"
   | "pop-in"
   | "zoom-in"
@@ -40,7 +41,7 @@ export interface Props {
   class?: string;
   className?: string;
   /** Animation type - triggers scroll-based animation */
-  animate?: AnimationType;
+  animate?: AnimationType | false;
   /** Use pure CSS animation (no JS) - uses animation-timeline: view() */
   animateCss?: boolean;
   /** Animation plays only once (JS animations only, default: true) */

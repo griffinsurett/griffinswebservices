@@ -1,21 +1,42 @@
 ---
-title: "Hosting"
-description: "Reliable, high-performance hosting with full management. We watch uptime, capacity, and security patches so your stack stays healthy around the clock."
+title: "Hosting & Infrastructure"
+description: "Reliable, high-performance hosting and infrastructure management that keeps your site secure, stable, and ready for growth."
 heading:
   before: "Managed"
   text: "hosting"
   after: "that keeps your site fast and secure."
 icon: "fa6-solid:server"
-order: 1
+order: 3
+redirectFrom:
+  - "/hosting-and-infrastructure"
+  - "/capabilities/hosting-and-infrastructure"
+  - "/website-maintenance"
+  - "/solutions/website-maintenance"
+  - "/app-maintenance"
+  - "/solutions/app-maintenance"
 solutions:
+  - websites
   - business-websites
   - e-commerce-websites
-  - web-applications
+  - web-apps
   - blogs
 ---
 
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
+import { related, sortByOrder } from "@/utils/query";
+
+<ContentRenderer
+  query={related("pricing", "capabilities", "hosting").orderBy(sortByOrder())}
+  variant="PricingVariant"
+  id="pricing"
+  title="Pricing"
+  heading="Hosting & Maintenance Plans"
+  description="Monthly plans that keep hosting, updates, backups, and ongoing technical support covered."
+  columns={3}
+  gap="lg"
+/>
 
 <TrustStatement text="Your hosting is managed by the same team that built your site—no third-party tickets, no finger-pointing." />
 

@@ -40,8 +40,7 @@ export default function PrimaryButton({
   );
 
   const wrapperClasses = [
-    "inline-flex",
-    fullWidth ? "w-full" : "w-auto",
+    fullWidth ? "inline-flex w-full" : "inline-flex w-full lg:w-auto",
     buttonWrapperClasses,
   ]
     .filter(Boolean)
