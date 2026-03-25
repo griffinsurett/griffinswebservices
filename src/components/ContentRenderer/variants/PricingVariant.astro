@@ -71,7 +71,7 @@ const isExternalHref = (href?: string) =>
           description={description}
           className="text-section mx-auto"
           headingClassName="h2 mb-6 text-center"
-          descriptionClassName="large-text text-center"
+          descriptionClassName="large-text mb-8 text-center"
         />
       </div>
     )}
@@ -96,24 +96,26 @@ const isExternalHref = (href?: string) =>
         const priceSuffix = typeof item.priceSuffix === "string" ? item.priceSuffix.trim() : "";
 
         return (
-          <li class:list={["h-full", isFeatured && "pt-5"]}>
+          <li class="h-full">
             <div class="relative h-full">
+              <article
+              class:list={[
+                "group relative flex h-full flex-col overflow-hidden rounded-3xl card-bg shadow-xl transition-all duration-500",
+                isFeatured && "!overflow-visible lg:-translate-y-4 lg:scale-[1.03] border-accent/45 shadow-accent/20",
+                !isFeatured && "hover:-translate-y-2 hover:border-accent/40",
+              ]}
+            >
               {isFeatured && (
                 <div class="absolute left-1/2 top-0 z-20 max-w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-1/2">
-                  <span class="inline-flex items-center gap-2 rounded-full border-2 border-primary bg-gradient-to-br from-primary light:to-bg2 dark:to-primary/25 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-bg shadow-lg shadow-primary/20">
-                    <span aria-hidden="true">👍</span>
-                    <span>Most Popular</span>
+                  <span class="inline-flex rounded-full border-2 border-primary p-[2px] shadow-lg shadow-primary/20">
+                    <span class="inline-flex whitespace-nowrap items-center gap-2 rounded-full primary-gradient px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-bg">
+                      <span aria-hidden="true">👍</span>
+                      <span>Most Popular</span>
+                    </span>
                   </span>
                 </div>
               )}
 
-              <article
-              class:list={[
-                "group relative flex h-full flex-col overflow-hidden rounded-3xl card-bg shadow-xl transition-all duration-500",
-                isFeatured && "lg:-translate-y-4 lg:scale-[1.03] border-accent/45 shadow-accent/20",
-                !isFeatured && "hover:-translate-y-2 hover:border-accent/40",
-              ]}
-            >
               <div class="inner-card-style inner-card-transition inner-card-color" aria-hidden="true"></div>
 
               {isFeatured && (
