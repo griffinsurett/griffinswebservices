@@ -100,22 +100,27 @@ const isExternalHref = (href?: string) =>
             <div class="relative h-full">
               <article
               class:list={[
-                "group relative flex h-full flex-col overflow-hidden rounded-3xl card-bg shadow-xl transition-all duration-500",
-                isFeatured && "!overflow-visible lg:-translate-y-4 lg:scale-[1.03] border-accent/45 shadow-accent/20",
-                !isFeatured && "hover:-translate-y-2 hover:border-accent/40",
+                "group relative flex h-full flex-col transition-all duration-500",
+                isFeatured && "lg:-translate-y-4 lg:scale-[1.03]",
+                !isFeatured && "hover:-translate-y-2",
               ]}
             >
               {isFeatured && (
                 <div class="absolute left-1/2 top-0 z-20 max-w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-1/2">
-                  <span class="inline-flex rounded-full border-2 border-primary p-[2px] shadow-lg shadow-primary/20">
-                    <span class="inline-flex whitespace-nowrap items-center gap-2 rounded-full primary-gradient px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-bg">
-                      <span aria-hidden="true">👍</span>
-                      <span>Most Popular</span>
-                    </span>
+                  <span class="inline-flex whitespace-nowrap items-center gap-2 rounded-full border-2 border-primary primary-gradient px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-bg shadow-lg shadow-primary/20">
+                    <span aria-hidden="true">👍</span>
+                    <span>Most Popular</span>
                   </span>
                 </div>
               )}
 
+              <div
+                class:list={[
+                  "relative flex h-full flex-col overflow-hidden rounded-3xl card-bg shadow-xl",
+                  isFeatured && "border-accent/45 shadow-accent/20",
+                  !isFeatured && "group-hover:border-accent/40",
+                ]}
+              >
               <div class="inner-card-style inner-card-transition inner-card-color" aria-hidden="true"></div>
 
               {isFeatured && (
@@ -209,6 +214,7 @@ const isExternalHref = (href?: string) =>
                     </div>
                   )}
                 </div>
+              </div>
               </div>
               </article>
             </div>
