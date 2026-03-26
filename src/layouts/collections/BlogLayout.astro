@@ -12,7 +12,7 @@
  * Specify in _meta.mdx with: itemsLayout: "BlogLayout"
  */
 
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import { getAuthorName, getImageSrc } from "./helpers/layoutHelpers";
 import type { CollectionLayoutProps } from "./types";
 
@@ -30,7 +30,7 @@ const data = entry?.data || {};
 const featuredImageSrc = getImageSrc(data.featuredImage);
 ---
 
-<BaseLayout {...seoProps}>
+<SiteLayout {...seoProps}>
   <div class="container mx-auto px-4 py-8">
     <article class="max-w-4xl mx-auto">
       {/* Featured image */}
@@ -80,4 +80,4 @@ const featuredImageSrc = getImageSrc(data.featuredImage);
       }
     </article>
   </div>
-</BaseLayout>
+</SiteLayout>

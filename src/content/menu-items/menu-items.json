@@ -4,6 +4,7 @@
     "title": "Home",
     "description": "Homepage link",
     "url": "/",
+    "icon": "fa6-solid:house",
     "order": 0,
     "openInNewTab": false,
     "menu": ["main-menu", "links-menu", "footer-menu-2"]

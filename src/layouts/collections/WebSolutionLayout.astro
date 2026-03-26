@@ -8,7 +8,7 @@
  *
  * Used by websites.mdx, web-apps.mdx, landing-pages.mdx
  */
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import type { CollectionLayoutProps } from "./types";
 
 const {
@@ -20,6 +20,6 @@ const {
 } = Astro.props as CollectionLayoutProps;
 ---
 
-<BaseLayout {...seoProps}>
+<SiteLayout {...seoProps}>
   {Content && <Content />}
-</BaseLayout>
+</SiteLayout>

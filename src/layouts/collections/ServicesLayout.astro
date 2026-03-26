@@ -11,7 +11,7 @@
  * Note: Parent solutions (websites, web-apps, landing-pages) use
  * WebSolutionLayout directly via their frontmatter layout property.
  */
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import QuoteHero from "@/layouts/heroes/QuoteHero.astro";
 import type { CollectionLayoutProps } from "./types";
 
@@ -37,7 +37,7 @@ const {
 const heroDescription = price ? `${description} ${price}` : description;
 ---
 
-<BaseLayout {...seoProps}>
+<SiteLayout {...seoProps}>
   <QuoteHero
     title={title}
     heading={heading}
@@ -52,4 +52,4 @@ const heroDescription = price ? `${description} ${price}` : description;
 
   {/* MDX Content */}
   {Content && <Content />}
-</BaseLayout>
+</SiteLayout>

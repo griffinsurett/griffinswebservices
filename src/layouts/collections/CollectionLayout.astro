@@ -9,7 +9,7 @@
  * - Metadata display (date, author, reading time)
  * - MDX content rendering
  */
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import SecondaryHero from "@/layouts/heroes/SecondaryHero.astro";
 import type { CollectionLayoutProps } from "./types";
 
@@ -26,7 +26,7 @@ const {
 const data = entry?.data || {};
 ---
 
-<BaseLayout {...seoProps}>
+<SiteLayout {...seoProps}>
     {/* Hero section - always displayed */}
     <SecondaryHero
       title={data.title}
@@ -47,4 +47,4 @@ const data = entry?.data || {};
         </article>
       )
     }
-</BaseLayout>
+</SiteLayout>

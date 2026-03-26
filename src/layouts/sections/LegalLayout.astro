@@ -35,7 +35,7 @@
  *   </LegalLayout>
  */
 
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import LastUpdated from "@/integrations/preferences/consent/ui/PrivacyPolicy/LastUpdated.astro";
 import SecondaryHero from "@/layouts/heroes/SecondaryHero.astro";
 import { siteData } from "@/content/siteData";
@@ -62,7 +62,7 @@ const {
 const fullTitle = `${title} — ${siteData.title}`;
 ---
 
-<BaseLayout title={fullTitle} description={description} {...baseLayoutProps}>
+<SiteLayout title={fullTitle} description={description} {...baseLayoutProps}>
     <SecondaryHero
       title={title}
       description={description}
@@ -82,4 +82,4 @@ const fullTitle = `${title} — ${siteData.title}`;
       {/* Legal Content */}
       <slot />
     </article>
-</BaseLayout>
+</SiteLayout>

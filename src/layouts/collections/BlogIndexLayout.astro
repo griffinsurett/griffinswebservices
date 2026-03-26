@@ -12,7 +12,7 @@
  * - If no MDX Content → Renders default grid
  */
 import type { CollectionKey } from "astro:content";
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import SecondaryHero from "@/layouts/heroes/SecondaryHero.astro";
 import { query, sortByDate } from "@/utils/query";
@@ -43,7 +43,7 @@ const pageDescription = seoProps?.description || collectionMeta?.description || 
 const heroImage = collectionMeta?.featuredImage;
 ---
 
-<BaseLayout {...seoProps}>
+<SiteLayout {...seoProps}>
     {/* Header - SecondaryHero with title and description */}
     <SecondaryHero
       title={pageTitle}
@@ -74,4 +74,4 @@ const heroImage = collectionMeta?.featuredImage;
     </div>
 
      <DoubleCard />
-</BaseLayout>
+</SiteLayout>

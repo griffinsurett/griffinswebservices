@@ -1,6 +1,6 @@
 ---
 // src/pages/index.astro
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortByOrder, sortByDate, byTag } from "@/utils/query";
 import { ctaData, siteData } from "@/content/siteData";
@@ -22,7 +22,7 @@ const heroDescription =
   "We're a New Jersey–based web agency focused on building high-quality websites for businesses that want something done right the first time. Every site we deliver is built with intention — prioritizing performance, reliability, and long-term value over shortcuts or throwaway builds.";
 ---
 
-<BaseLayout title="Fast, Secure Websites Built to Grow Your Business" description={siteData.description}>
+<SiteLayout title="Fast, Secure Websites Built to Grow Your Business" description={siteData.description}>
   <!-- HERO -->
   <FrontPageHero
     heading={heroHeading}
@@ -142,4 +142,4 @@ const heroDescription =
       heading="Ready to Build a Website That Works?"
     />
   </div>
-</BaseLayout>
+</SiteLayout>

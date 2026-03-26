@@ -683,6 +683,10 @@ body {
     @apply bg-gradient-to-br border-primary border-2 from-primary light:to-bg2 dark:to-primary/25 text-bg;
   }
 
+  .card-icon-color-2 {
+    @apply bg-gradient-to-br border-primary border-2 from-primary light:to-bg2 dark:to-primary text-bg;
+  }
+
   /* Filter icon wrapper - card-bg with accent, primary style on hover/active */
   .filter-icon-wrapper {
     @apply card-bg text-accent transition-all main-duration;

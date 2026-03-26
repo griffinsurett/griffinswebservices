@@ -1,7 +1,7 @@
 ---
-// src/components/ContentRenderer/variants/LinkTreeVariant.astro
+// src/components/ContentRenderer/variants/LinkPageVariant.astro
 /**
- * LinkTree Variant - Single-column links layout using FeatureCard styling.
+ * Link Page Variant - Single-column links page layout.
  */
 
 import LinkCard from "@/components/LoopComponents/LinkCard";
@@ -42,9 +42,8 @@ const contactLinks = await getCollection("contact-us");
       <div class="flex items-center justify-center">
         <Logo
           loading="eager"
-          trigger="visible"
+          trigger="load"
           animateOutText={false}
-          useLottie={true}
           loop={false}
           altContext="Links"
         />

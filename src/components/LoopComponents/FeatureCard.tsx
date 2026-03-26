@@ -1,7 +1,12 @@
 // src/components/LoopComponents/FeatureCard.tsx
 import AnimatedBorder from "../AnimatedBorder/AnimatedBorder";
 import IconListItem, { type IconListItemProps } from "./IconListItem";
-import { useEffect, useRef, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  type AnchorHTMLAttributes,
+  type ReactNode,
+} from "react";
 
 type IconValue = IconListItemProps["data"]["icon"];
 
@@ -16,6 +21,7 @@ export interface FeatureCardProps {
   icon?: IconValue;
   title?: ReactNode;
   description?: ReactNode;
+  linkProps?: AnchorHTMLAttributes<HTMLAnchorElement>;
   className?: string;
   innerClassName?: string;
   ringDuration?: number;
@@ -34,6 +40,9 @@ const TITLE_KEYS = ["title", "name", "heading", "label"];
 const DESCRIPTION_KEYS = ["description", "summary", "excerpt", "body", "content"];
 const IMAGE_KEYS = ["image", "img", "media"];
 const URL_KEYS = ["url"];
+const TARGET_KEYS = ["target"];
+const REL_KEYS = ["rel"];
+const OPEN_IN_NEW_TAB_KEYS = ["openInNewTab"];
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -84,6 +93,9 @@ const createOverrideSource = ({
 type NormalizedPayload = {
   content: IconListItemProps["data"];
   url?: string;
+  target?: string;
+  rel?: string;
+  openInNewTab?: boolean;
 };
 
 const normalizeFeatureCardData = (
@@ -94,10 +106,23 @@ const normalizeFeatureCardData = (
   const description = pickValue(sources, DESCRIPTION_KEYS);
   const image = pickValue(sources, IMAGE_KEYS);
   const urlValue = pickValue(sources, URL_KEYS);
+  const targetValue = pickValue(sources, TARGET_KEYS);
+  const relValue = pickValue(sources, REL_KEYS);
+  const openInNewTabValue = pickValue(sources, OPEN_IN_NEW_TAB_KEYS);
   const url =
     typeof urlValue === "string" && urlValue.trim().length > 0
       ? urlValue
       : undefined;
+  const target =
+    typeof targetValue === "string" && targetValue.trim().length > 0
+      ? targetValue.trim()
+      : undefined;
+  const rel =
+    typeof relValue === "string" && relValue.trim().length > 0
+      ? relValue.trim()
+      : undefined;
+  const openInNewTab =
+    typeof openInNewTabValue === "boolean" ? openInNewTabValue : undefined;
 
   const normalized: IconListItemProps["data"] = {};
   if (icon !== undefined) normalized.icon = icon as IconValue;
@@ -108,6 +133,9 @@ const normalizeFeatureCardData = (
   return {
     content: normalized,
     ...(url ? { url } : {}),
+    ...(target ? { target } : {}),
+    ...(rel ? { rel } : {}),
+    ...(typeof openInNewTab === "boolean" ? { openInNewTab } : {}),
   };
 };
 
@@ -118,6 +146,7 @@ export default function FeatureCard({
   icon,
   title,
   description,
+  linkProps,
   className = "",
   innerClassName = "",
   ringDuration = 800,
@@ -155,12 +184,37 @@ export default function FeatureCard({
     ...(overrideSource ? [overrideSource] : []),
     ...collectDataSources(data),
   ];
-  const { content: resolvedData, url: resolvedUrl } =
+  const {
+    content: resolvedData,
+    url: resolvedUrl,
+    target: resolvedTarget,
+    rel: resolvedRel,
+    openInNewTab,
+  } =
     dataSources.length > 0 ? normalizeFeatureCardData(dataSources) : EMPTY_PAYLOAD;
   const cardUrl =
     typeof resolvedUrl === "string" && resolvedUrl.trim().length > 0
       ? resolvedUrl.trim()
       : undefined;
+  const explicitTarget =
+    typeof linkProps?.target === "string" && linkProps.target.trim().length > 0
+      ? linkProps.target.trim()
+      : typeof resolvedTarget === "string" && resolvedTarget.length > 0
+        ? resolvedTarget
+        : undefined;
+  const shouldOpenInNewTab =
+    explicitTarget === "_blank" ||
+    openInNewTab === true ||
+    (typeof cardUrl === "string" && /^https?:\/\//i.test(cardUrl));
+  const finalTarget = explicitTarget ?? (shouldOpenInNewTab ? "_blank" : undefined);
+  const finalRel =
+    typeof linkProps?.rel === "string" && linkProps.rel.trim().length > 0
+      ? linkProps.rel.trim()
+      : typeof resolvedRel === "string" && resolvedRel.length > 0
+        ? resolvedRel
+        : shouldOpenInNewTab
+          ? "noopener noreferrer"
+          : undefined;
   const isInteractive = Boolean(cardUrl);
 
   const {
@@ -233,7 +287,16 @@ export default function FeatureCard({
         borderWidth={2}
         className={wrapperClassName}
         innerClassName={resolvedInnerCardClass}
-        linkProps={isInteractive ? { href: cardUrl } : undefined}
+        linkProps={
+          isInteractive
+            ? {
+                ...linkProps,
+                href: cardUrl,
+                target: finalTarget,
+                rel: finalRel,
+              }
+            : undefined
+        }
       >
         <div className="inner-card-style inner-card-transition inner-card-color" />
         <IconListItem

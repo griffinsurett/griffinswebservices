@@ -31,7 +31,7 @@ export const collections = {
   // ── menu-items.json ─────────────────────────────────────
   "menu-items": defineCollection({
     loader: MenuItemsLoader(),
-    schema: MenuItemFields,
+    schema: ({ image }) => MenuItemFields({ image }),
   }),
 
   "contact-us": defineCollection({

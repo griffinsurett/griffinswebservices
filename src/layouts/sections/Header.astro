@@ -18,7 +18,10 @@ import { related } from "@/utils/query/snippets";
       <!-- Logo -->
       <Logo loading="eager" trigger="scroll" animateOutText={true} altContext="Home" />
 
-      <ThemeControls className="hidden lg:flex" client:hover />
+      <ThemeControls
+        className="hidden lg:flex lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2"
+        client:hover
+      />
 
       <div class="flex items-center gap-4">
         <ThemeControls className="lg:hidden" client:hover />

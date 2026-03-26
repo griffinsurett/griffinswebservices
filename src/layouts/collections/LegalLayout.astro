@@ -13,7 +13,7 @@
  * Specify in _meta.mdx with: itemsLayout: "@/layouts/collections/LegalLayout.astro"
  */
 
-import BaseLayout from '@/layouts/BaseLayout.astro';
+import SiteLayout from '@/layouts/SiteLayout.astro';
 import LastUpdated from '@/integrations/preferences/consent/ui/PrivacyPolicy/LastUpdated.astro';
 import SecondaryHero from '@/layouts/heroes/SecondaryHero.astro';
 import type { CollectionLayoutProps } from './types';
@@ -44,7 +44,7 @@ const lastUpdated = formatDate(data.publishDate);
 const effectiveDate = formatDate(data.effectiveDate);
 ---
 
-<BaseLayout {...seoProps}>
+<SiteLayout {...seoProps}>
     <SecondaryHero
       title={data.title}
       description={data.description}
@@ -66,4 +66,4 @@ const effectiveDate = formatDate(data.effectiveDate);
       {/* Legal Content */}
       {Content && <Content />}
     </article>
-</BaseLayout>
+</SiteLayout>

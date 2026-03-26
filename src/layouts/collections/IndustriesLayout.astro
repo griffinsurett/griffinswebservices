@@ -9,7 +9,7 @@
  * - Portfolio screen showcase filtered by industry
  * - MDX content (which includes IndustriesSection)
  */
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import QuoteHero from "@/layouts/heroes/QuoteHero.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query } from "@/utils/query";
@@ -45,7 +45,7 @@ const displayTitle =
   title || capitalizeWords(entry?.slug?.replace(/-/g, " ") || "");
 ---
 
-<BaseLayout {...seoProps}>
+<SiteLayout {...seoProps}>
     {/* Quote Hero Section */}
     <QuoteHero
       title={title}
@@ -75,4 +75,4 @@ const displayTitle =
       {/* MDX Content - includes IndustriesSection */}
       {Content && <Content />}
     </div>
-</BaseLayout>
+</SiteLayout>

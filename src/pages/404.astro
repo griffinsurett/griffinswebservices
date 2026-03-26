@@ -1,10 +1,10 @@
 ---
 // src/pages/404.astro
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import Button from "@/components/Button/Button";
 import SectionHeader from "@/components/SectionHeader.astro";
 ---
-<BaseLayout title="Page Not Found" description="The page you requested does not exist." robots="noindex, nofollow">
+<SiteLayout title="Page Not Found" description="The page you requested does not exist." robots="noindex, nofollow">
   <section
     class="min-h-screen grid place-items-center p-[clamp(1.5rem,4vw,3.5rem)] bg-[radial-gradient(circle_at_8%_12%,color-mix(in_srgb,var(--color-primary)_26%,transparent),transparent_40%),radial-gradient(circle_at_92%_92%,color-mix(in_srgb,var(--color-primary)_20%,transparent),transparent_42%)]"
   >
@@ -49,7 +49,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
       </div>
     </div>
   </section>
-</BaseLayout>
+</SiteLayout>
 
 <style>
   @keyframes loadingBar {

@@ -64,27 +64,73 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
   class={`notranslate flex justify-center items-center gap-1.5 ${className}`}
 >
   {shouldUseLottie ? (
-    <LottieLogo
-      alt={alt}
-      loading={loading}
-      trigger={trigger}
-      className="logo-class"
-      mediaClasses={logoClasses}
-      loop={loop}
-      client:scroll
-    >
-      <Image
-        src={POSTER_SRC}
-        alt=""
+    trigger === "scroll" ? (
+      <LottieLogo
+        alt={alt}
         loading={loading}
-        decoding="async"
-        class={logoClasses}
-        widths={LOGO_WIDTHS}
-        sizes={LOGO_SIZES}
-        fetchpriority={loading === "eager" ? "high" : "low"}
-        aria-hidden="true"
-      />
-    </LottieLogo>
+        trigger={trigger}
+        className="logo-class"
+        mediaClasses={logoClasses}
+        loop={loop}
+        client:scroll
+      >
+        <Image
+          src={POSTER_SRC}
+          alt=""
+          loading={loading}
+          decoding="async"
+          class={logoClasses}
+          widths={LOGO_WIDTHS}
+          sizes={LOGO_SIZES}
+          fetchpriority={loading === "eager" ? "high" : "low"}
+          aria-hidden="true"
+        />
+      </LottieLogo>
+    ) : trigger === "visible" ? (
+      <LottieLogo
+        alt={alt}
+        loading={loading}
+        trigger={trigger}
+        className="logo-class"
+        mediaClasses={logoClasses}
+        loop={loop}
+        client:visible
+      >
+        <Image
+          src={POSTER_SRC}
+          alt=""
+          loading={loading}
+          decoding="async"
+          class={logoClasses}
+          widths={LOGO_WIDTHS}
+          sizes={LOGO_SIZES}
+          fetchpriority={loading === "eager" ? "high" : "low"}
+          aria-hidden="true"
+        />
+      </LottieLogo>
+    ) : (
+      <LottieLogo
+        alt={alt}
+        loading={loading}
+        trigger={trigger}
+        className="logo-class"
+        mediaClasses={logoClasses}
+        loop={loop}
+        client:load
+      >
+        <Image
+          src={POSTER_SRC}
+          alt=""
+          loading={loading}
+          decoding="async"
+          class={logoClasses}
+          widths={LOGO_WIDTHS}
+          sizes={LOGO_SIZES}
+          fetchpriority={loading === "eager" ? "high" : "low"}
+          aria-hidden="true"
+        />
+      </LottieLogo>
+    )
   ) : (
     <Image
       src={POSTER_SRC}

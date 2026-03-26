@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import SiteLayout from "@/layouts/SiteLayout.astro";
 import Section from "@/components/Section.astro";
 import Button from "@/components/Button/Button";
 import IconListItem from "@/components/LoopComponents/IconListItem";
@@ -35,7 +35,7 @@ const hasExternalLink = typeof link === "string" && /^(https?:)?\/\//.test(link)
 const backHref = `/${collection ?? "pricing"}`;
 ---
 
-<BaseLayout {...seoProps}>
+<SiteLayout {...seoProps}>
   {isPremiumWebsite ? (
     <>{Content && <Content />}</>
   ) : (
@@ -112,4 +112,4 @@ const backHref = `/${collection ?? "pricing"}`;
       </div>
     </Section>
   )}
-</BaseLayout>
+</SiteLayout>

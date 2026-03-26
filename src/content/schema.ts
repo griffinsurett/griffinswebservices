@@ -33,15 +33,17 @@ export const MenuReferenceField = {
 /* ─── Menu Schemas ──────────────────────────────────────────────────── */
 
 // Menu items loader schema
-export const MenuItemFields = z.object({
-  title: z.string().optional(),
-  description: z.string().optional(),
-  url: z.string().optional(),
-  order: z.number().optional(),
-  ...BaseMenuFields,
-  menu: refSchema("menus"),
-  aliases: z.array(z.string()).optional(),
-});
+export const MenuItemFields = ({ image }: { image: Function }) =>
+  z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    url: z.string().optional(),
+    icon: iconSchema({ image }).optional(),
+    order: z.number().optional(),
+    ...BaseMenuFields,
+    menu: refSchema("menus"),
+    aliases: z.array(z.string()).optional(),
+  });
 
 // Menus.json
 export const MenuSchema = z.object({
@@ -137,41 +139,43 @@ export const ItemsAddToMenuFields = z.object({
 // ADD TO MENU SCHEMA (HAS TITLE - INDIVIDUAL ITEMS)
 // ============================================================================
 
-export const AddToMenuFields = z.object({
-  ...MenuReferenceField,
-  ...BaseMenuFields,
-  
-  // Basic Overrides
-  id: z.string().optional(),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  url: z.string().optional(),
-  
-  // Hierarchy Overrides
-  parent: z.string().nullable().optional(),
-  ignoreChildren: z.boolean().optional(),
-  maxChildDepth: z.number().nullable().optional(),
-  
-  // Placement Overrides
-  forceRoot: z.boolean().optional(),
-  forcePlacement: PlacementStrategy.optional(),
-  customHierarchy: z.boolean().optional(),
-  
-  // Display Overrides
-  order: z.number().optional(),
-  
-  // Children Control
-  childrenBehavior: z.enum(['auto', 'none', 'custom']).optional().default('auto'),
-  includeOnlyChildren: z.array(z.string()).optional(),
-  excludeChildren: z.array(z.string()).optional(),
-  
-  // Metadata
-  metadata: z.record(z.any()).optional(),
-});
+export const AddToMenuFields = ({ image }: { image: Function }) =>
+  z.object({
+    ...MenuReferenceField,
+    ...BaseMenuFields,
+    
+    // Basic Overrides
+    id: z.string().optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    url: z.string().optional(),
+    icon: iconSchema({ image }).optional(),
+    
+    // Hierarchy Overrides
+    parent: z.string().nullable().optional(),
+    ignoreChildren: z.boolean().optional(),
+    maxChildDepth: z.number().nullable().optional(),
+    
+    // Placement Overrides
+    forceRoot: z.boolean().optional(),
+    forcePlacement: PlacementStrategy.optional(),
+    customHierarchy: z.boolean().optional(),
+    
+    // Display Overrides
+    order: z.number().optional(),
+    
+    // Children Control
+    childrenBehavior: z.enum(['auto', 'none', 'custom']).optional().default('auto'),
+    includeOnlyChildren: z.array(z.string()).optional(),
+    excludeChildren: z.array(z.string()).optional(),
+    
+    // Metadata
+    metadata: z.record(z.any()).optional(),
+  });
 
-export type MenuItemData = z.infer<typeof MenuItemFields>;
+export type MenuItemData = z.infer<ReturnType<typeof MenuItemFields>>;
 export type MenuData = z.infer<typeof MenuSchema>;
-export type AddToMenuData = z.infer<typeof AddToMenuFields>;
+export type AddToMenuData = z.infer<ReturnType<typeof AddToMenuFields>>;
 export type ItemsAddToMenuData = z.infer<typeof ItemsAddToMenuFields>;
 export type HierarchyModeType = z.infer<typeof HierarchyMode>;
 export type PlacementStrategyType = z.infer<typeof PlacementStrategy>;
@@ -297,7 +301,7 @@ export const baseSchema = ({ image }: { image: Function }) =>
     rootPath: z.boolean().optional(),
     icon: iconSchema({ image }).optional(),
     seo: seoSchema({ image }),
-    addToMenu: z.array(AddToMenuFields).optional(),
+    addToMenu: z.array(AddToMenuFields({ image })).optional(),
     redirectFrom: redirectFromSchema,
     draft: z.boolean().default(false),
     publishDate: z
@@ -395,7 +399,7 @@ export const metaSchema = ({ image }: { image: Function }) =>
     hasPage: z.boolean().default(true),
     featuredImage: imageInputSchema({ image }).optional(),
     seo: seoSchema({ image }),
-    addToMenu: z.array(AddToMenuFields).optional(),
+    addToMenu: z.array(AddToMenuFields({ image })).optional(),
     redirectFrom: redirectFromSchema,
     itemsHasPage: z.boolean().default(true),
     // Default childHasPage for all parent items in this collection
