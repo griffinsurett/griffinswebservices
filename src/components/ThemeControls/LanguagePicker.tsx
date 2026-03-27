@@ -11,7 +11,7 @@ import { CircleCheckbox } from "./checkboxes/CircleCheckbox";
 import LanguageDropdown from "@/integrations/preferences/language/ui/LanguageDropdown";
 import { useLanguageSwitcher } from "@/integrations/preferences/language/core/hooks/useLanguageSwitcher";
 
-export default function LanguagePicker() {
+export default function LanguagePicker({ onApplied }: { onApplied?: () => void } = {}) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -59,7 +59,9 @@ export default function LanguagePicker() {
         <LanguageDropdown
           open={open}
           onClose={() => setOpen(false)}
-          onLanguageChange={() => {}}
+          onLanguageChange={() => {
+            onApplied?.();
+          }}
           className="left-1/2 -translate-x-1/2"
         />
       )}

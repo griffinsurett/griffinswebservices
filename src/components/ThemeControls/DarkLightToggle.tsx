@@ -5,9 +5,10 @@ import "./DarkLightToggle.css";
 
 interface DarkLightToggleProps {
   gradientId: string;
+  onApplied?: () => void;
 }
 
-export default function DarkLightToggle({ gradientId }: DarkLightToggleProps) {
+export default function DarkLightToggle({ gradientId, onApplied }: DarkLightToggleProps) {
   const [isLight, setIsLight] = UseMode();
   const maskId = useId();
 
@@ -22,7 +23,10 @@ export default function DarkLightToggle({ gradientId }: DarkLightToggleProps) {
     <div className="flex h-10 shrink-0 items-center">
       <CircleCheckbox
         checked={isLight}
-        onChange={(event) => setIsLight(event.target.checked)}
+        onChange={(event) => {
+          setIsLight(event.target.checked);
+          onApplied?.();
+        }}
         aria-label="Toggle light mode"
         className="faded-bg"
       >

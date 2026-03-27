@@ -4,9 +4,10 @@ import AccentPickerContent from "./AccentPickerContent";
 
 interface AccentPickerProps {
   gradientId: string;
+  onApplied?: () => void;
 }
 
-export default function AccentPicker({ gradientId }: AccentPickerProps) {
+export default function AccentPicker({ gradientId, onApplied }: AccentPickerProps) {
   const [open, setOpen] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -43,7 +44,13 @@ export default function AccentPicker({ gradientId }: AccentPickerProps) {
         </svg>
       </CircleCheckbox>
 
-      {hasOpened && <AccentPickerContent open={open} onClose={() => setOpen(false)} />}
+      {hasOpened && (
+        <AccentPickerContent
+          open={open}
+          onClose={() => setOpen(false)}
+          onApplied={onApplied}
+        />
+      )}
     </div>
   );
 }
