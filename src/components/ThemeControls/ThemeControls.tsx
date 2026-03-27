@@ -244,7 +244,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
 
       {mobileOpen && (
         <div
-          className="absolute left-1/2 top-full z-10 mt-4 w-[min(18rem,calc(100vw-1.5rem))] -translate-x-1/2 rounded-2xl border card-bg p-3 shadow-2xl backdrop-blur-xl sm:hidden"
+          className="absolute left-1/2 top-full z-10 mt-4 w-[min(18rem,calc(100vw-1.5rem))] -translate-x-1/2 rounded-2xl card-bg-2 p-3 shadow-2xl sm:hidden"
           onPointerDown={(event) => event.stopPropagation()}
           role="menu"
           aria-label="Preferences"
