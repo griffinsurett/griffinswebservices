@@ -37,7 +37,7 @@ const contactLinks = await getCollection("contact-us");
 ---
 
 <Section id={id} class={`min-h-screen ${className}`}>
-  <div class="relative flex flex-col gap-4">
+  <div class="relative flex flex-col">
     <header
       class="relative z-20 hidden md:block"
       role="banner"
@@ -56,10 +56,6 @@ const contactLinks = await getCollection("contact-us");
             titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide font-bold no-translate"
             titleRestClass="font-light emphasized-text uppercase text-[0.7rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.2em]"
           />
-          <p class="mt-3 max-w-[18rem] text-sm leading-relaxed text-text/80">
-            We're a New Jersey based Web Agency that creates fast, engaging
-            websites built to grow your business.
-          </p>
         </div>
 
         <ThemeControls client:idle />
@@ -139,6 +135,11 @@ const contactLinks = await getCollection("contact-us");
     <div
       class="mx-auto flex w-full max-w-[34rem] flex-col gap-3 overflow-hidden px-4 sm:gap-7"
     >
+      <p class="hidden pt-4 text-center text-base leading-relaxed text-text/80 md:block">
+        We're a New Jersey based Web Agency that creates fast, engaging
+        websites built to grow your business.
+      </p>
+
       <div class="flex justify-center pt-1 md:hidden">
         <div class="flex max-w-[22rem] flex-col items-center text-center">
           <Logo
