@@ -12,7 +12,7 @@ export default function AccentPickerContent({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="absolute top-full mt-1 lg:mt-2 right-0 sm:left-0 sm:right-auto faded-bg rounded-xl p-2 lg:p-3 flex space-x-2 lg:space-x-3 overflow-x-auto hide-scrollbar shadow-lg z-50 w-max max-w-[calc(100vw-2.5rem)] sm:max-w-none">
+    <div className="absolute top-full left-1/2 z-50 mt-1 flex w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center justify-center gap-2 overflow-x-auto rounded-xl bg-bg/95 p-2 shadow-lg backdrop-blur-xl hide-scrollbar sm:left-0 sm:max-w-none sm:translate-x-0 sm:justify-start lg:mt-2 lg:gap-3 lg:p-3">
       {accents.map((color) => (
         <SquareCheckbox
           key={color}

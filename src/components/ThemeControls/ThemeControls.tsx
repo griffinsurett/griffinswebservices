@@ -12,6 +12,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [hidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileTrayInteractive, setMobileTrayInteractive] = useState(false);
   const iconGradientId = useId();
   const accentGradientId = useId();
 
@@ -42,6 +43,19 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
       document.removeEventListener("keydown", handleEscape);
       window.removeEventListener("resize", handleResize);
     };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    if (!mobileOpen) {
+      setMobileTrayInteractive(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setMobileTrayInteractive(true);
+    }, 140);
+
+    return () => window.clearTimeout(timer);
   }, [mobileOpen]);
 
   return (
@@ -96,7 +110,12 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
       </div>
 
       {mobileOpen && (
-        <div className="card-bg absolute left-1/2 top-full z-10 mt-2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-primary/20 px-2 py-2 shadow-xl sm:hidden">
+        <div
+          className={[
+            "absolute left-1/2 top-full z-10 mt-2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-primary/20 bg-bg/95 px-2 py-2 shadow-xl backdrop-blur-xl transition-opacity duration-150 sm:hidden",
+            mobileTrayInteractive ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
+          ].join(" ")}
+        >
           <LanguagePicker />
           <DarkLightToggle gradientId={iconGradientId} />
           <AccentPicker gradientId={accentGradientId} />
