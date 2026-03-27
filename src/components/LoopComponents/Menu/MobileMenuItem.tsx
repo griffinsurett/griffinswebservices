@@ -45,8 +45,8 @@ export default function MobileMenuItem({
 
   if (hasChildren) {
     return (
-      <li>
-        <div className="flex items-center gap-2">
+      <li className="w-fit max-w-full">
+        <div className="inline-flex max-w-full items-center gap-2">
           <Button
             variant="menuItemButton"
             className="hover-emphasis-text inline-flex items-center gap-2 text-left"
@@ -80,7 +80,7 @@ export default function MobileMenuItem({
   }
 
   return (
-    <li>
+    <li className="w-fit max-w-full">
       <Button
         variant="menuItemButton"
         href={url || "#"}

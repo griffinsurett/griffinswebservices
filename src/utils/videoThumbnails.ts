@@ -38,6 +38,15 @@ function getBaseName(videoPath: string): string {
   return path.basename(videoPath, path.extname(videoPath));
 }
 
+function toSafeNumberToken(value: number): string {
+  return String(value).replace(/\./g, "_");
+}
+
+function buildVariantKey(options: { timecodeSeconds: number; width: number }): string {
+  const timeToken = toSafeNumberToken(options.timecodeSeconds);
+  return `t${timeToken}-w${options.width}`;
+}
+
 export interface PosterResult {
   src: string;
   placeholderSrc?: string;
@@ -62,9 +71,10 @@ export async function generateVideoPoster(
   await ensureDir(THUMB_DIR);
 
   const baseName = getBaseName(videoPath);
-  const rawFrame = path.join(THUMB_DIR, `${baseName}-raw.jpg`);
-  const posterFile = path.join(THUMB_DIR, `${baseName}-poster.webp`);
-  const placeholderFile = path.join(THUMB_DIR, `${baseName}-placeholder.webp`);
+  const variantKey = buildVariantKey({ timecodeSeconds, width });
+  const rawFrame = path.join(THUMB_DIR, `${baseName}-${variantKey}-raw.jpg`);
+  const posterFile = path.join(THUMB_DIR, `${baseName}-${variantKey}-poster.webp`);
+  const placeholderFile = path.join(THUMB_DIR, `${baseName}-${variantKey}-placeholder.webp`);
 
   // Extract frame if not exists
   if (!fs.existsSync(rawFrame)) {
@@ -104,8 +114,8 @@ export async function generateVideoPoster(
   }
 
   return {
-    src: `${THUMB_ROUTE}/${baseName}-poster.webp`,
-    placeholderSrc: `${THUMB_ROUTE}/${baseName}-placeholder.webp`,
+    src: `${THUMB_ROUTE}/${baseName}-${variantKey}-poster.webp`,
+    placeholderSrc: `${THUMB_ROUTE}/${baseName}-${variantKey}-placeholder.webp`,
     width,
     height: posterHeight,
   };

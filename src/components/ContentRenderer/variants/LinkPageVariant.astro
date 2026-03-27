@@ -5,16 +5,15 @@
  */
 
 import LinkCard from "@/components/LoopComponents/LinkCard";
-import BackgroundMedia from "@/components/BackgroundMedia.astro";
-import Icon from "@/components/Icon";
 import LinkPageShareButton from "@/components/LinkPageShareButton";
 import Logo from "@/components/Logo/Logo.astro";
-import SocialIcon from "@/components/LoopComponents/SocialIcon";
 import Section from "@/components/Section.astro";
 import ThemeControls from "@/components/ThemeControls/ThemeControls.jsx";
-import meOnComputerImg from "@/assets/meoncomp.jpg";
+import HorizontalLegalFooter from "@/components/Footer/HorizontalLegalFooter";
+import DeferredVideo from "@/components/Video/DeferredVideo.astro";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import { toArray } from "@/utils/array";
+import { formatPhoneNumber } from "@/utils/string";
 import { getCollection } from "astro:content";
 
 interface Props extends BaseVariantProps {
@@ -31,15 +30,57 @@ const {
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
-const contactIconGradientId = `${id ?? "links"}-contact-icon-gradient`;
 const socialLinks = await getCollection("social-media");
 const contactLinks = await getCollection("contact-us");
+const phoneEntry = contactLinks.find(
+  (entry) =>
+    entry.id === "phone" ||
+    entry.data.linkPrefix === "tel:" ||
+    entry.data.tags?.includes("phone"),
+);
+const phoneValue = phoneEntry?.data.description?.trim();
+const formattedPhoneValue = phoneValue ? formatPhoneNumber(phoneValue) : "";
+const phoneHref = phoneValue
+  ? `${phoneEntry?.data.linkPrefix ?? "tel:"}${phoneValue}`
+  : undefined;
+const hasContactPageItem = safeItems.some(
+  (item) => typeof item?.url === "string" && item.url === "/contact-us",
+);
+const hasPhoneItem = safeItems.some(
+  (item) =>
+    typeof item?.url === "string" &&
+    (item.url === phoneHref || item.url === `tel:${phoneValue ?? ""}`),
+);
+const linkItems = [
+  ...safeItems,
+  ...(hasContactPageItem
+    ? []
+    : [
+        {
+          title: "Contact Us",
+          url: "/contact-us",
+          icon: "fa6-solid:address-card",
+          openInNewTab: false,
+        },
+      ]),
+  ...(phoneHref && !hasPhoneItem
+    ? [
+        {
+          title: formattedPhoneValue || "Call Us",
+          url: phoneHref,
+          icon: "fa6-solid:phone",
+          openInNewTab: false,
+        },
+      ]
+    : []),
+];
+const linkHeroVideoSrc = "/video3.mp4";
 ---
 
 <Section id={id} class={`min-h-screen ${className}`}>
   <div class="relative flex flex-col">
     <header
-      class="relative z-20 hidden md:block"
+      class="relative z-20 hidden w-full md:block"
       role="banner"
       aria-label="Links page header"
     >
@@ -71,35 +112,27 @@ const contactLinks = await getCollection("contact-us");
 
     <div class="w-full md:mx-auto md:max-w-[34rem] md:px-4">
       <div
-        class="relative aspect-video w-full overflow-hidden [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)]"
+        class="relative aspect-[277/180] w-full overflow-hidden [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)]"
       >
-        <div class="absolute inset-0 md:hidden">
-          <BackgroundMedia
-            backgroundMedia={{
-              image: {
-                src: meOnComputerImg,
-                imageClass: "object-cover object-center",
-                aboveTheFold: true,
-                quality: 38,
-                maxWidth: 900,
-              },
-              overlayClass: "bg-linear-to-t from-bg via-bg/20 to-black/10",
-            }}
-          />
-        </div>
-
-        <div class="absolute inset-0 hidden md:block">
+        <div class="absolute inset-0">
           <div
-            class="relative h-full w-full overflow-hidden rounded-[2rem] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)] shadow-2xl"
+            class="relative h-full w-full overflow-hidden md:rounded-[1rem] md:shadow-2xl"
           >
-            <img
-              src={meOnComputerImg.src}
-              alt=""
-              class="h-full w-full object-cover object-[center_20%]"
-              loading="eager"
-              fetchpriority="high"
-              decoding="sync"
-              aria-hidden="true"
+            <DeferredVideo
+              src={linkHeroVideoSrc}
+              alt="Griffin's Web Services introduction video"
+              wrapperClass="h-full w-full"
+              videoClass="h-full w-full object-cover object-center"
+              posterClass="h-full w-full"
+              autoplay={true}
+              muted={true}
+              loop={true}
+              controls={false}
+              playsinline={true}
+              lazy={true}
+              timecodeSeconds={0.5}
+              posterWidth={1080}
+              priority={true}
             />
             <div
               class="absolute inset-0 bg-linear-to-t from-bg via-bg/20 to-black/10"
@@ -115,9 +148,9 @@ const contactLinks = await getCollection("contact-us");
           aria-label="Links page header"
         >
           <div
-            class="mx-auto grid w-full max-w-[34rem] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-4"
+            class="grid grid-cols-[1fr_auto_1fr] items-center head-foot-section py-2 gap-4"
           >
-            <div></div>
+            <div aria-hidden="true"></div>
 
             <ThemeControls client:idle />
 
@@ -135,9 +168,11 @@ const contactLinks = await getCollection("contact-us");
     <div
       class="mx-auto flex w-full max-w-[34rem] flex-col gap-3 overflow-hidden px-4 sm:gap-7"
     >
-      <p class="hidden pt-4 text-center text-base leading-relaxed text-text/80 md:block">
-        We're a New Jersey based Web Agency that creates fast, engaging
-        websites built to grow your business.
+      <p
+        class="hidden pt-4 text-center text-base md:text-lg xl:text-xl leading-relaxed text-text/80 md:block"
+      >
+        We're a New Jersey based Web Agency that creates fast, engaging websites
+        built to grow your business.
       </p>
 
       <div class="flex justify-center pt-1 md:hidden">
@@ -158,109 +193,11 @@ const contactLinks = await getCollection("contact-us");
         </div>
       </div>
 
-      <svg
-        aria-hidden="true"
-        width="0"
-        height="0"
-        focusable="false"
-        class="pointer-events-none absolute h-0 w-0 overflow-hidden"
-      >
-        <defs>
-          <linearGradient
-            id={contactIconGradientId}
-            x1="0%"
-            y1="0%"
-            x2="100%"
-            y2="100%"
-          >
-            <stop offset="0%" stop-color="currentColor" class="text-primary-100"
-            ></stop>
-            <stop offset="55%" stop-color="currentColor" class="text-primary"
-            ></stop>
-            <stop
-              offset="100%"
-              stop-color="currentColor"
-              class="text-primary-800"></stop>
-          </linearGradient>
-        </defs>
-      </svg>
-
       {
-        contactLinks.length > 0 && (
-          <div class="relative z-10 flex justify-center pt-5 landscape:pt-0 lg:pt-0">
-            <ul class="flex flex-wrap justify-center gap-6 list-none">
-              {contactLinks.map((entry) => {
-                const value = entry.data.description?.trim();
-                const prefix = entry.data.linkPrefix ?? "";
-                const href = value ? `${prefix}${value}` : undefined;
-                const iconName = entry.data.icon ?? "fa6-solid:circle-dot";
-
-                return (
-                  <li class="contents">
-                    {href ? (
-                      <a
-                        href={href}
-                        class="inline-flex text-primary transition-all main-duration hover:-translate-y-1"
-                        aria-label={entry.data.title}
-                        title={entry.data.title}
-                      >
-                        {iconName === "fa6:phone" ||
-                        iconName === "fa6-solid:phone" ? (
-                          <svg
-                            viewBox="0 0 24 24"
-                            class="h-8 w-8"
-                            fill={`url(#${contactIconGradientId})`}
-                            aria-hidden="true"
-                          >
-                            <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.32.56 3.57.56a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C11.72 21 3 12.28 3 2.99a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.19 2.45.56 3.57a1 1 0 0 1-.24 1.02l-2.2 2.21Z" />
-                          </svg>
-                        ) : iconName === "fa6:envelope" ||
-                          iconName === "fa6-solid:envelope" ? (
-                          <svg
-                            viewBox="0 0 24 24"
-                            class="h-8 w-8"
-                            fill={`url(#${contactIconGradientId})`}
-                            aria-hidden="true"
-                          >
-                            <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v.38l-8.4 5.6a1.1 1.1 0 0 1-1.2 0L3 7.13v-.38Z" />
-                            <path d="M3 9.53v7.72A2.75 2.75 0 0 0 5.75 20h12.5A2.75 2.75 0 0 0 21 17.25V9.53l-7.57 5.05a2.6 2.6 0 0 1-2.86 0L3 9.53Z" />
-                          </svg>
-                        ) : (
-                          <Icon
-                            icon={iconName}
-                            size="lg"
-                            className="text-current"
-                          />
-                        )}
-                      </a>
-                    ) : (
-                      <div
-                        class="inline-flex text-primary"
-                        aria-label={entry.data.title}
-                        title={entry.data.title}
-                      >
-                        <span class="inline-flex h-12 w-12 items-center justify-center rounded-full">
-                          <Icon
-                            icon={iconName}
-                            size="md"
-                            className="text-current"
-                          />
-                        </span>
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )
-      }
-
-      {
-        safeItems.length > 0 && (
+        linkItems.length > 0 && (
           <nav class="relative z-10" aria-label="Links menu">
             <ul class="grid grid-cols-1 gap-4 list-none sm:gap-5">
-              {safeItems.map((item, index) => (
+              {linkItems.map((item, index) => (
                 <li
                   class="h-full"
                   data-animate="fade-in-up"
@@ -282,26 +219,14 @@ const contactLinks = await getCollection("contact-us");
           </nav>
         )
       }
-
-      {
-        socialLinks.length > 0 && (
-          <div class="flex justify-center">
-            <ul class="flex flex-wrap justify-center gap-3.5 list-none sm:gap-4">
-              {socialLinks.map((entry) => (
-                <li>
-                  <SocialIcon
-                    title={entry.data.title}
-                    url={entry.data.link}
-                    icon={entry.data.icon}
-                    size="md"
-                    client:visible
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
     </div>
+    <HorizontalLegalFooter
+      client:visible
+      socialLinks={socialLinks.map((entry) => ({
+        title: entry.data.title,
+        url: entry.data.link,
+        icon: entry.data.icon,
+      }))}
+    />
   </div>
 </Section>

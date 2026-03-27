@@ -6,6 +6,7 @@ import Icon from "@/components/Icon";
 import { UseMode } from "@/hooks/theme/UseMode";
 import { useAccentColor } from "@/hooks/useAccentColor";
 import { useLanguageSwitcher } from "@/integrations/preferences/language/core/hooks/useLanguageSwitcher";
+import { SquareCheckbox } from "./checkboxes/SquareCheckbox";
 
 interface ThemeControlsProps {
   className?: string;
@@ -193,7 +194,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
     <div
       ref={ref}
       className={[
-        "relative flex h-10 shrink-0 items-center justify-center",
+        "relative flex h-9 shrink-0 items-center justify-center sm:h-10",
         "transition-opacity duration-300 ease-in-out z-999999",
         hidden
           ? "opacity-0 pointer-events-none"
@@ -226,13 +227,13 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
 
       <button
         type="button"
-        className="faded-bg inline-flex h-10 w-10 items-center justify-center rounded-full text-primary transition-all main-duration sm:hidden"
+        className="faded-bg inline-flex h-8 w-8 items-center justify-center rounded-full text-primary transition-all main-duration sm:hidden"
         aria-label="Open preferences"
         aria-expanded={mobileOpen}
         aria-haspopup="menu"
         onClick={() => (mobileOpen ? closeMobileMenu() : openMobileMenu())}
       >
-        <Icon icon="lu:settings" size="md" className="text-current" />
+        <Icon icon="lu:settings" size="sm" className="h-4 w-4 text-current" />
       </button>
 
       <div className="hidden h-10 items-center gap-1.5 sm:flex">
@@ -365,23 +366,17 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
                 <span className="w-9" aria-hidden="true"></span>
               </div>
 
-              <div className="grid grid-cols-4 gap-3 px-2 pb-1">
+              <div className="grid grid-cols-4 gap-3 px-2 pt-1 pb-1">
                 {accents.map((color) => {
-                  const active = accent === color;
-
                   return (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => handleAccentSelect(color)}
-                      className={`h-10 w-10 rounded-xl border-2 transition-all ${
-                        active
-                          ? "border-primary shadow-lg shadow-primary/25"
-                          : "border-transparent"
-                      }`}
-                      style={{ backgroundColor: color }}
-                      aria-label={`Select accent color ${color}`}
-                    />
+                    <div key={color} className="flex items-center justify-center">
+                      <SquareCheckbox
+                        color={color}
+                        checked={accent === color}
+                        onChange={() => handleAccentSelect(color)}
+                        aria-label={`Select accent color ${color}`}
+                      />
+                    </div>
                   );
                 })}
               </div>

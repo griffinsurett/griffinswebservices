@@ -6,13 +6,5 @@
     "icon": "fa6-solid:phone",
     "tags": ["phone"],
     "linkPrefix": "tel:"
-  },
-  {
-    "id": "email",
-    "title": "Email Us",
-    "description": "griffin@griffinswebservices.com",
-    "icon": "fa6-solid:envelope",
-    "tags": ["email"],
-    "linkPrefix": "mailto:"
   }
 ]

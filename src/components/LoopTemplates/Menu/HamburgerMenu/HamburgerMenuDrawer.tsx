@@ -10,9 +10,16 @@ import { useCallback, useEffect, useState } from "react";
 import Modal from "@/components/Modal";
 import MobileMenuItem from "@/components/LoopComponents/Menu/MobileMenuItem";
 import HamburgerButton from "@/components/Menu/HamburgerButton";
+import HorizontalLegalFooter from "@/components/Footer/HorizontalLegalFooter";
+import type { IconType } from "@/content/schema";
 
 interface MobileMenuDrawerProps {
   items: any[];
+  socialLinks?: Array<{
+    title: string;
+    url?: string;
+    icon?: IconType;
+  }>;
   className?: string;
   hamburgerTransform?: boolean;
   closeButton?: boolean;
@@ -25,6 +32,7 @@ interface MenuLevel {
 
 export default function MobileMenuDrawer({
   items,
+  socialLinks = [],
   className = "",
   hamburgerTransform = true,
   closeButton = false,
@@ -111,69 +119,84 @@ export default function MobileMenuDrawer({
         ssr={false}
       >
         <nav
-          className={`${className} mobile-menu-nav landscape-hero h-full w-full flex flex-col justify-center overflow-hidden`}
+          className={`${className} mobile-menu-nav landscape-hero relative h-full w-full overflow-hidden`}
           aria-label="Mobile navigation"
         >
-          <div className="mobile-menu-content inner-section my-auto py-4">
-            <div className="relative w-full h-full overflow-hidden flex justify-left lg:justify-center">
+          <div className="mobile-menu-content inner-section absolute inset-x-0 top-24 bottom-56 md:bottom-44">
+            <div className="relative flex h-full w-full justify-center overflow-hidden">
               <div
-                className="flex h-full transition-transform duration-300 ease-in-out"
+                className="flex h-full w-full transition-transform duration-300 ease-in-out"
                 style={{ transform: `translateX(-${slideOffset}%)` }}
               >
                 {menuStack.map((level, index) => (
                   <div
                     key={`${level.title}-${index}`}
-                    className="w-full flex-shrink-0 h-full flex flex-col relative"
+                    className="h-full w-full flex-shrink-0"
                     aria-hidden={index !== menuStack.length - 1}
                   >
-                    {index > 0 && (
-                      <button
-                        type="button"
-                        onClick={handleBack}
-                        className="flex items-center gap-2 text-text hover:underline absolute left-0 top-0"
-                        aria-label={`Go back to ${
-                          menuStack[index - 1]?.title ?? "previous menu"
-                        }`}
-                      >
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 19l-7-7 7-7"
-                          />
-                        </svg>
-                        Back
-                      </button>
-                    )}
-
                     <div
-                      className={`flex-1 overflow-y-auto overflow-x-hidden pr-2 ${
-                        index > 0 ? "pt-12" : ""
+                      className={`mx-auto flex h-full w-full max-w-[18rem] flex-col text-left ${
+                        index === 0 ? "justify-center" : ""
                       }`}
                     >
-                      <ul className="menu-item-spacing pb-10">
-                        {level.items.map((item) => (
-                          <MobileMenuItem
-                            key={item.slug || item.id}
-                            {...item}
-                            onNavigate={handleNavigate}
-                            onOpenSubmenu={(submenu) =>
-                              handleOpenSubmenu(submenu.title, submenu.items)
-                            }
-                          />
-                        ))}
-                      </ul>
+                      {index > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleBack}
+                          className="mb-6 flex items-center gap-2 text-text hover:underline"
+                          aria-label={`Go back to ${
+                            menuStack[index - 1]?.title ?? "previous menu"
+                          }`}
+                        >
+                          <svg
+                            className="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 19l-7-7 7-7"
+                            />
+                          </svg>
+                          Back
+                        </button>
+                      )}
+
+                      <div
+                        className={`overflow-y-auto overflow-x-hidden pr-2 ${
+                          index > 0 ? "min-h-0 flex-1" : "max-h-full py-6"
+                        }`}
+                      >
+                        <ul className="menu-item-spacing text-left">
+                          {level.items.map((item) => (
+                            <MobileMenuItem
+                              key={item.slug || item.id}
+                              {...item}
+                              onNavigate={handleNavigate}
+                              onOpenSubmenu={(submenu) =>
+                                handleOpenSubmenu(submenu.title, submenu.items)
+                              }
+                            />
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+
+          <div className="absolute inset-x-0 bottom-0">
+            <div className="inner-section">
+              <HorizontalLegalFooter
+                socialLinks={socialLinks}
+                onLinkClick={() => toggleMenu(false)}
+              />
             </div>
           </div>
         </nav>

@@ -90,6 +90,36 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
     }, [lazy, autoPlay]);
 
     useEffect(() => {
+      const video = internalRef.current;
+      if (!video) return;
+
+      const markShellLoaded = () => {
+        const shell = video.closest<HTMLElement>("[data-video-shell]");
+        if (!shell || shell.dataset.videoLoaded === "true") return;
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            shell.dataset.videoLoaded = "true";
+          });
+        });
+      };
+
+      if (video.readyState >= 2) {
+        markShellLoaded();
+      }
+
+      video.addEventListener("loadeddata", markShellLoaded);
+      video.addEventListener("canplay", markShellLoaded);
+      video.addEventListener("playing", markShellLoaded);
+
+      return () => {
+        video.removeEventListener("loadeddata", markShellLoaded);
+        video.removeEventListener("canplay", markShellLoaded);
+        video.removeEventListener("playing", markShellLoaded);
+      };
+    }, []);
+
+    useEffect(() => {
       if (clientLoadPlaceholder && clientPosterSrc) {
         setResolvedPoster(clientPosterSrc);
         return;
@@ -114,7 +144,7 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
         {resolvedPlaceholderSrc && (
           <ClientImage
             src={resolvedPlaceholderSrc}
-            alt="Video placeholder"
+            alt=""
             className={`${mediaClasses} ${stackClasses}`.trim()}
             loading="eager"
             decoding="async"

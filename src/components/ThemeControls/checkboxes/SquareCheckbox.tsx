@@ -12,7 +12,7 @@ export function SquareCheckbox({
   ...props
 }: SquareCheckboxProps) {
   return (
-    <label className="inline-block cursor-pointer">
+    <label className="inline-flex shrink-0 cursor-pointer leading-none align-middle">
       <input
         type="checkbox"
         className="sr-only peer"
@@ -21,7 +21,7 @@ export function SquareCheckbox({
         {...props}
       />
       <span
-        className="w-7 h-7 sm:w-8 sm:h-8 block rounded-sm border-2 border-transparent peer-checked:border-primary-light peer-checked:shadow-lg transition-colors"
+        className="block aspect-square w-7 sm:w-8 rounded-[2px] border-2 border-transparent peer-checked:border-primary-light peer-checked:shadow-lg transition-colors"
         style={{ backgroundColor: color }}
       />
     </label>

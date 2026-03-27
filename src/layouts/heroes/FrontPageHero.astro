@@ -86,11 +86,11 @@ const checklistGradientId = `${id}-hero-check-gradient`;
 
         <!-- Right side: Portfolio showcase -->
         <div
-          class="flex-1 w-full h-full flex flex-col justify-between gap-3 sm:gap-6 md:gap-4 hero-portfolio"
+          class="relative flex-1 w-full h-full flex flex-col gap-3 sm:gap-4 hero-portfolio"
         >
           <!-- <div class="flex flex-col gap-4 lg:gap-3"> -->
             <p
-              class="text-base sm:text-xl md:text-2xl xl:text-3xl pr-5 lg:pr-auto"
+              class="m-0 text-base sm:text-xl md:text-2xl xl:text-3xl pr-5 lg:pr-auto"
               role="heading"
               aria-level="2"
             >
@@ -101,7 +101,7 @@ const checklistGradientId = `${id}-hero-check-gradient`;
               width="0"
               height="0"
               focusable="false"
-              class="pointer-events-none w-0 h-0 overflow-hidden"
+              class="absolute pointer-events-none w-0 h-0 overflow-hidden"
             >
               <defs>
                 <linearGradient id={checklistGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -111,7 +111,7 @@ const checklistGradientId = `${id}-hero-check-gradient`;
                 </linearGradient>
               </defs>
             </svg>
-            <ul class="space-y-2 lg:space-y-3 py-2 lg:py-0">
+            <ul class="m-0 space-y-2 lg:space-y-3 p-0">
               {
                 checklist.map((service) => (
                   <li class="list-none flex items-center gap-1.5">

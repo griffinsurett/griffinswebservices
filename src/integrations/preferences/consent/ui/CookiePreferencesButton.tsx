@@ -2,10 +2,19 @@
 import { useEffect, useState, lazy, Suspense, memo } from "react";
 import { subscribeToCookiePreferencesRequests } from "@/integrations/preferences/consent/core/utils/events";
 import Button from "@/components/Button/Button";
+import type { ButtonSize } from "@/components/Button/Button";
 
 const CookiePreferencesModal = lazy(() => import("./CookiePreferencesModal"));
 
-function CookiePreferencesButton() {
+interface CookiePreferencesButtonProps {
+  className?: string;
+  size?: ButtonSize;
+}
+
+function CookiePreferencesButton({
+  className = "",
+  size = "sm",
+}: CookiePreferencesButtonProps) {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -18,10 +27,11 @@ function CookiePreferencesButton() {
     <>
       <Button
         variant="link"
-        size="sm"
+        size={size}
         onClick={() => setShowModal(true)}
         aria-label="Manage cookie preferences"
         rightIcon="lucide:settings"
+        className={className}
       >
         Your Privacy Choices
       </Button>
