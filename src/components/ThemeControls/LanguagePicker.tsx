@@ -40,7 +40,7 @@ export default function LanguagePicker({ onApplied }: { onApplied?: () => void }
   };
 
   return (
-    <div ref={containerRef} className="relative inline-flex h-10 shrink-0">
+    <div ref={containerRef} className="relative inline-flex h-9 shrink-0">
       <CircleCheckbox
         checked={open}
         onChange={handleToggle}
@@ -49,7 +49,7 @@ export default function LanguagePicker({ onApplied }: { onApplied?: () => void }
         className={`faded-bg text-primary ${open ? "ring-2 ring-primary/60" : ""}`}
       >
         <div className="flex items-center justify-center">
-          <span className="text-[20px] leading-none" aria-hidden="true">
+          <span className="text-[18px] leading-none" aria-hidden="true">
             {currentLanguage.flag || "🌐"}
           </span>
         </div>

@@ -20,7 +20,7 @@ export default function DarkLightToggle({ gradientId, onApplied }: DarkLightTogg
   const dy = R * -0.2;
 
   return (
-    <div className="flex h-10 shrink-0 items-center">
+    <div className="flex h-9 shrink-0 items-center">
       <CircleCheckbox
         checked={isLight}
         onChange={(event) => {
@@ -35,7 +35,7 @@ export default function DarkLightToggle({ gradientId, onApplied }: DarkLightTogg
           <svg
             viewBox="32 32 36 36"
             xmlns="http://www.w3.org/2000/svg"
-            className="block h-5 w-5"
+            className="block h-[18px] w-[18px]"
           >
             <defs>
               <mask id={maskId}>
@@ -60,7 +60,7 @@ export default function DarkLightToggle({ gradientId, onApplied }: DarkLightTogg
             viewBox="13 13 74 74"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="block h-5 w-5"
+            className="block h-[18px] w-[18px]"
           >
             <circle cx="50" cy="50" r="18" fill={`url(#${gradientId})`} />
             <g

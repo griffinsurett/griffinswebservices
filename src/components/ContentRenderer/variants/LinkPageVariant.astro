@@ -10,7 +10,7 @@ import Logo from "@/components/Logo/Logo.astro";
 import Section from "@/components/Section.astro";
 import ThemeControls from "@/components/ThemeControls/ThemeControls.jsx";
 import HorizontalLegalFooter from "@/components/Footer/HorizontalLegalFooter";
-import DeferredVideo from "@/components/Video/DeferredVideo.astro";
+import BackgroundMedia from "@/components/BackgroundMedia.astro";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import { toArray } from "@/utils/array";
 import { formatPhoneNumber } from "@/utils/string";
@@ -114,33 +114,21 @@ const linkHeroVideoSrc = "/video3.mp4";
       <div
         class="relative aspect-[277/180] w-full overflow-hidden [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)]"
       >
-        <div class="absolute inset-0">
-          <div
-            class="relative h-full w-full overflow-hidden md:rounded-[1rem] md:shadow-2xl"
-          >
-            <DeferredVideo
-              src={linkHeroVideoSrc}
-              alt="Griffin's Web Services introduction video"
-              wrapperClass="h-full w-full"
-              videoClass="h-full w-full object-cover object-center"
-              posterClass="h-full w-full"
-              autoplay={true}
-              muted={true}
-              loop={true}
-              controls={false}
-              playsinline={true}
-              lazy={true}
-              timecodeSeconds={0.5}
-              posterWidth={1080}
-              priority={true}
-            />
-            <div
-              class="absolute inset-0 bg-linear-to-t from-bg via-bg/20 to-black/10"
-              aria-hidden="true"
-            >
-            </div>
-          </div>
-        </div>
+        <BackgroundMedia
+          backgroundMedia={{
+            video: {
+              src: linkHeroVideoSrc,
+              autoPlay: true,
+              muted: true,
+              loop: true,
+              playsInline: true,
+              controls: false,
+              preload: "metadata",
+              videoClass: "object-cover object-center",
+            },
+            overlayClass: "bg-linear-to-t from-black via-black/40 to-black/60",
+          }}
+        />
 
         <header
           class="absolute inset-x-0 top-0 z-20 md:hidden"
