@@ -213,10 +213,6 @@ body {
     display: none;
   }
 
-  .video-shell {
-    @apply rounded-3xl border border-muted/20 bg-muted/10 overflow-hidden;
-  }
-
   /* Override base background utility to use the gradient */
   .bg-bg {
     background-color: transparent;

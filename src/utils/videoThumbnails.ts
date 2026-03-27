@@ -59,9 +59,9 @@ export interface PosterResult {
  */
 export async function generateVideoPoster(
   videoSrc: string,
-  options: { timecodeSeconds?: number; width?: number } = {}
+  options: { timecodeSeconds?: number; generateThumbAt?: number; width?: number } = {}
 ): Promise<PosterResult> {
-  const { timecodeSeconds = 0, width = 1600 } = options;
+  const { timecodeSeconds = options.generateThumbAt ?? 0, width = 1600 } = options;
 
   const videoPath = resolveVideoPath(videoSrc);
   if (!fs.existsSync(videoPath)) {

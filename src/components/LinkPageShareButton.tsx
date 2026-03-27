@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Modal from "@/components/Modal";
 import Icon from "@/components/Icon";
-import LottieLogo from "@/components/Logo/LottieLogo";
 import TextLogo from "@/components/Logo/TextLogo";
 import { siteData } from "@/content/siteData";
 import LogoPoster from "@/assets/GWS-animated.png";
@@ -20,21 +19,12 @@ interface ShareTarget {
 function ShareSheetLogo() {
   return (
     <div className="notranslate flex items-center justify-center gap-1.5">
-      <LottieLogo
-        alt={`${siteData.title} Logo - Share`}
-        trigger="load"
-        loop={false}
-        className="logo-class"
-        mediaClasses="block w-[43px] h-[43px] lg:w-[45px] lg:h-[45px] object-contain animate-spin-once"
-        decorative={true}
-      >
-        <img
-          src={LogoPoster.src}
-          alt=""
-          className="block w-[43px] h-[43px] lg:w-[45px] lg:h-[45px] object-contain animate-spin-once"
-          aria-hidden="true"
-        />
-      </LottieLogo>
+      <img
+        src={LogoPoster.src}
+        alt=""
+        className="block w-[43px] h-[43px] lg:w-[45px] lg:h-[45px] object-contain animate-spin-once"
+        aria-hidden="true"
+      />
 
       <div>
         <TextLogo

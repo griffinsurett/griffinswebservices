@@ -7,6 +7,22 @@ import { useMotionPreference } from "@/hooks/useMotionPreference";
 import { useVisibility } from "../hooks/animations/useVisibility";
 import { useScrollInteraction } from "@/hooks/interactions/useScrollInteraction";
 
+const animationDataCache = new Map<string, Promise<any>>();
+
+const loadAnimationData = async (animationUrl: string) => {
+  let cached = animationDataCache.get(animationUrl);
+  if (!cached) {
+    cached = fetch(animationUrl).then((res) => {
+      if (!res.ok) {
+        throw new Error(`Failed to load animation: ${res.status} ${res.statusText}`);
+      }
+      return res.json();
+    });
+    animationDataCache.set(animationUrl, cached);
+  }
+  return cached;
+};
+
 // Helper: run after the browser is idle (fallback to setTimeout)
 const onIdle = (cb) => {
   if (typeof window !== "undefined" && "requestIdleCallback" in window) {
@@ -256,8 +272,7 @@ export default function OptimizedLottie({
         // 2) Get animation data (either pre-loaded or fetch from URL)
         let data = animationData;
         if (!data && animationUrl) {
-          const res = await fetch(animationUrl);
-          data = await res.json();
+          data = await loadAnimationData(animationUrl);
         }
         
         if (canceled || !data) return;

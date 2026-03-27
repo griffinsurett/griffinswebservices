@@ -19,14 +19,20 @@ export interface Props {
     };
     video?: {
       src: string;
+      sources?: Array<string | { src: string; type?: string; media?: string }>;
+      type?: string;
+      class?: string;
+      wrapperClass?: string;
+      poster?: string | { src?: string; width?: number; height?: number };
       autoPlay?: boolean;
       muted?: boolean;
       loop?: boolean;
       playsInline?: boolean;
       controls?: boolean;
       lazy?: boolean;
-      priority?: boolean;
       preload?: string;
+      ariaHidden?: boolean;
+      generateThumbAt?: number;
       timecodeSeconds?: number;
       posterWidth?: number;
       videoClass?: string;
@@ -58,13 +64,7 @@ const customQuality = backgroundMedia?.image?.quality;
 const maxWidth = backgroundMedia?.image?.maxWidth ?? 1920;
 const tabletWidth = Math.min(1024, maxWidth);
 const mobileWidth = Math.min(640, maxWidth);
-const videoPriority = backgroundMedia?.video?.priority ?? false;
-const videoLazy = backgroundMedia?.video?.lazy ?? true;
-const videoTimecodeSeconds = backgroundMedia?.video?.timecodeSeconds ?? 0;
-const videoPosterWidth = backgroundMedia?.video?.posterWidth ?? 1600;
-
-// Generate responsive images
-let responsiveImages = null;
+let optimizedBackgroundImage = null;
 
 if (backgroundMedia?.image?.src) {
   const rawSrc = backgroundMedia.image.src;
@@ -109,60 +109,119 @@ if (backgroundMedia?.image?.src) {
         }),
       ]);
 
-      responsiveImages = { mobile, tablet, desktop };
+      optimizedBackgroundImage = { mobile, tablet, desktop };
     } catch (error) {
       console.error('Failed to optimize background image:', error);
     }
   } else {
     // Already processed or is a string URL - use as-is
     const srcValue = isAlreadyProcessed ? rawSrc.src : rawSrc;
-    responsiveImages = {
+    optimizedBackgroundImage = {
       mobile: { src: srcValue },
       tablet: { src: srcValue },
       desktop: { src: srcValue },
     };
   }
 }
+
+const videoConfig = backgroundMedia?.video ?? null;
+
+const guessMime = (src = "") => {
+  if (src.endsWith(".webm")) return "video/webm";
+  if (src.endsWith(".mov")) return "video/quicktime";
+  if (src.endsWith(".ogg") || src.endsWith(".ogv")) return "video/ogg";
+  return "video/mp4";
+};
+
+const normalizeSources = (video: typeof videoConfig) => {
+  if (!video) return [];
+  if (Array.isArray(video.sources) && video.sources.length > 0) {
+    return video.sources
+      .map((source) => {
+        if (typeof source === "string") {
+          return { src: source, type: guessMime(source) };
+        }
+        if (source && typeof source === "object") {
+          const src = source.src ?? "";
+          const type = source.type ?? guessMime(src);
+          if (!src) return null;
+          return { src, type, media: source.media };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  }
+
+  if (video.src) {
+    return [
+      {
+        src: video.src,
+        type: video.type ?? guessMime(video.src),
+      },
+    ];
+  }
+
+  return [];
+};
+
+const videoSources = normalizeSources(videoConfig);
+const primarySource = videoSources[0];
+const additionalSources = videoSources.slice(1);
+const hasVideo = videoSources.length > 0;
+const hasBackgroundImage = Boolean(optimizedBackgroundImage?.mobile?.src);
+const showStandaloneBackgroundImage = hasBackgroundImage && !hasVideo;
+const resolvedFallbackPoster = optimizedBackgroundImage?.mobile?.src ?? undefined;
+const backgroundVideoClass = videoConfig?.videoClass ?? videoConfig?.class ?? "";
 ---
 
-{backgroundMedia?.video?.src ? (
+{showStandaloneBackgroundImage && (
+  <div
+    class={`absolute inset-0 z-0 ${backgroundMedia?.image?.imageClass || ""}`}
+    style={`background-image: url('${optimizedBackgroundImage?.mobile?.src}');`}
+    aria-hidden="true"
+  ></div>
+)}
+
+{hasVideo ? (
   <VideoShell
-    src={backgroundMedia.video.src}
-    class="absolute inset-0 z-0"
-    wrapperClass="w-full h-full"
+    src={primarySource?.src}
+    sources={additionalSources}
+    poster={videoConfig?.poster}
+    fallbackPoster={resolvedFallbackPoster}
+    class={`!absolute inset-0 z-0 w-full h-full ${videoConfig?.wrapperClass || ""}`}
+    mediaClass={`w-full h-full object-cover ${backgroundVideoClass}`.trim()}
     clientWrapperClass="w-full h-full overflow-hidden"
-    mediaClass={`w-full h-full object-cover ${backgroundMedia.video.videoClass || ""}`.trim()}
-    autoPlay={backgroundMedia.video.autoPlay !== false}
-    muted={backgroundMedia.video.muted !== false}
-    loop={backgroundMedia.video.loop !== false}
-    playsInline={backgroundMedia.video.playsInline !== false}
-    controls={backgroundMedia.video.controls || false}
-    preload={backgroundMedia.video.preload || "metadata"}
-    lazy={videoLazy}
-    priority={videoPriority}
-    timecodeSeconds={videoTimecodeSeconds}
-    posterWidth={videoPosterWidth}
-    ariaHidden={true}
+    autoPlay={videoConfig?.autoPlay ?? true}
+    muted={videoConfig?.muted}
+    loop={videoConfig?.loop}
+    playsInline={videoConfig?.playsInline}
+    controls={videoConfig?.controls}
+    preload={videoConfig?.preload}
+    lazy={videoConfig?.lazy}
+    sourceType={primarySource?.type ?? guessMime(primarySource?.src ?? "")}
+    generateThumbAt={videoConfig?.generateThumbAt ?? videoConfig?.timecodeSeconds ?? 0}
+    posterWidth={videoConfig?.posterWidth}
+    ariaHidden={videoConfig?.ariaHidden ?? true}
   />
-) : responsiveImages ? (
+) : optimizedBackgroundImage ? (
   <picture class="absolute inset-0 z-0">
     <source
       media="(max-width: 640px)"
-      srcset={responsiveImages.mobile.src}
+      srcset={optimizedBackgroundImage.mobile.src}
       type="image/webp"
     />
     <source
       media="(min-width: 641px) and (max-width: 1024px)"
-      srcset={responsiveImages.tablet.src}
+      srcset={optimizedBackgroundImage.tablet.src}
       type="image/webp"
     />
     <source
       media="(min-width: 1025px)"
-      srcset={responsiveImages.desktop.src}
+      srcset={optimizedBackgroundImage.desktop.src}
       type="image/webp"
     />
     <img
-      src={responsiveImages.desktop.src}
+      src={optimizedBackgroundImage.desktop.src}
       alt=""
       class={`w-full h-full object-cover ${backgroundMedia?.image?.imageClass || ""}`}
       loading={loading}

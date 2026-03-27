@@ -91,6 +91,7 @@ const linkHeroVideoSrc = "/video3.mp4";
           <Logo
             loading="eager"
             trigger="load"
+            useLottie={false}
             loop={false}
             animateOutText={false}
             altContext="Links"
@@ -124,9 +125,8 @@ const linkHeroVideoSrc = "/video3.mp4";
               playsInline: true,
               controls: false,
               lazy: true,
-              priority: true,
               preload: "none",
-              timecodeSeconds: 0.5,
+              generateThumbAt: 0.5,
               posterWidth: 960,
               videoClass: "rounded-none object-cover object-center",
             },
@@ -172,6 +172,7 @@ const linkHeroVideoSrc = "/video3.mp4";
           <Logo
             loading="eager"
             trigger="load"
+            useLottie={false}
             loop={false}
             animateOutText={false}
             altContext="Links"
