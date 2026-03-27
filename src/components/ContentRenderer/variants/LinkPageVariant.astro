@@ -43,7 +43,9 @@ const contactLinks = await getCollection("contact-us");
       role="banner"
       aria-label="Links page header"
     >
-      <div class="grid grid-cols-[1fr_auto_1fr] items-center head-foot-section py-2 gap-4">
+      <div
+        class="grid grid-cols-[1fr_auto_1fr] items-center head-foot-section py-2 gap-4"
+      >
         <div class="justify-self-start">
           <Logo
             loading="eager"
@@ -54,6 +56,10 @@ const contactLinks = await getCollection("contact-us");
             titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide font-bold no-translate"
             titleRestClass="font-light emphasized-text uppercase text-[0.7rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.2em]"
           />
+          <p class="mt-3 max-w-[18rem] text-sm leading-relaxed text-text/80">
+            We're a New Jersey based Web Agency that creates fast, engaging
+            websites built to grow your business.
+          </p>
         </div>
 
         <ThemeControls client:idle />
@@ -68,7 +74,9 @@ const contactLinks = await getCollection("contact-us");
     </header>
 
     <div class="w-full md:mx-auto md:max-w-[34rem] md:px-4">
-      <div class="relative aspect-video w-full overflow-hidden bottom-image-fade">
+      <div
+        class="relative aspect-video w-full overflow-hidden [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)]"
+      >
         <div class="absolute inset-0 md:hidden">
           <BackgroundMedia
             backgroundMedia={{
@@ -85,7 +93,9 @@ const contactLinks = await getCollection("contact-us");
         </div>
 
         <div class="absolute inset-0 hidden md:block">
-          <div class="relative h-full w-full overflow-hidden rounded-[2rem] bottom-image-fade shadow-2xl">
+          <div
+            class="relative h-full w-full overflow-hidden rounded-[2rem] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)] shadow-2xl"
+          >
             <img
               src={meOnComputerImg.src}
               alt=""
@@ -130,15 +140,21 @@ const contactLinks = await getCollection("contact-us");
       class="mx-auto flex w-full max-w-[34rem] flex-col gap-3 overflow-hidden px-4 sm:gap-7"
     >
       <div class="flex justify-center pt-1 md:hidden">
-        <Logo
-          loading="eager"
-          trigger="load"
-          loop={false}
-          animateOutText={false}
-          altContext="Links"
-          titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide font-bold no-translate"
-          titleRestClass="font-light emphasized-text uppercase text-[0.7rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.2em]"
-        />
+        <div class="flex max-w-[22rem] flex-col items-center text-center">
+          <Logo
+            loading="eager"
+            trigger="load"
+            loop={false}
+            animateOutText={false}
+            altContext="Links"
+            titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide font-bold no-translate"
+            titleRestClass="font-light emphasized-text uppercase text-[0.7rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.2em]"
+          />
+          <p class="mt-3 text-sm leading-relaxed text-text/80">
+            We're a New Jersey based Web Agency that creates fast, engaging
+            websites built to grow your business.
+          </p>
+        </div>
       </div>
 
       <svg
@@ -170,7 +186,7 @@ const contactLinks = await getCollection("contact-us");
 
       {
         contactLinks.length > 0 && (
-          <div class="relative z-10 flex justify-center pt-5 lg:pt-0">
+          <div class="relative z-10 flex justify-center pt-5 landscape:pt-0 lg:pt-0">
             <ul class="flex flex-wrap justify-center gap-6 list-none">
               {contactLinks.map((entry) => {
                 const value = entry.data.description?.trim();

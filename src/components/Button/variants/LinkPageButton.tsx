@@ -67,7 +67,7 @@ export default function LinkPageButton({
 
   const buttonClasses = [
     "group relative inline-flex w-full items-center overflow-hidden bg-transparent text-heading no-underline",
-    "button-style button-transition main-duration hover:-translate-y-1",
+    "button-style transition-transform main-duration hover:-translate-y-1",
     styles.shell,
     className,
   ]
