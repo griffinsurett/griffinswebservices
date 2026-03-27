@@ -5,6 +5,7 @@
  */
 
 import LinkCard from "@/components/LoopComponents/LinkCard";
+import LinkPageShareButton from "@/components/LinkPageShareButton";
 import Logo from "@/components/Logo/Logo.astro";
 import Icon from "@/components/Icon";
 import SocialIcon from "@/components/LoopComponents/SocialIcon";
@@ -55,164 +56,148 @@ const portfolioProjects = (await getPublishedCollection("projects")).map((entry)
 ---
 
 <Section id={id} class={`min-h-screen ${className}`}>
-  <header class="mb-8" role="banner" aria-label="Links page header">
-    <div
-      class="grid grid-cols-[1fr_auto_1fr] items-center head-foot-section py-2 gap-4"
-    >
-      <div class="flex items-center justify-start">
-        <ThemeControls client:hover />
+  <div class="relative flex flex-col gap-4 sm:gap-7">
+    <header role="banner" aria-label="Links page header">
+      <div class="grid grid-cols-[1fr_auto_1fr] items-center head-foot-section py-2 gap-4">
+        <div class="justify-self-start">
+          <Logo
+            loading="eager"
+            trigger="load"
+            animateOutText={false}
+            loop={false}
+            altContext="Links"
+            titleFirstClass="text-[2rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide font-bold no-translate"
+            titleRestClass="font-light emphasized-text uppercase text-[0.7rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.2em]"
+          />
+        </div>
+
+        <ThemeControls client:idle />
+
+        <div class="justify-self-end">
+          <LinkPageShareButton
+            shareTitle="Griffin's Web Services Links"
+            client:idle
+          />
+        </div>
       </div>
+    </header>
 
-      <div class="flex items-center justify-center">
-        <Logo
-          loading="eager"
-          trigger="load"
-          animateOutText={false}
-          loop={false}
-          altContext="Links"
-        />
-      </div>
+    <div class="mx-auto flex w-full max-w-[34rem] flex-col gap-4 overflow-hidden px-4 sm:gap-7">
+      {
+        contactLinks.length > 0 && (
+          <div class="relative z-10 flex justify-center">
+            <ul class="flex flex-wrap justify-center gap-6 list-none">
+              {contactLinks.map((entry) => {
+                const value = entry.data.description?.trim();
+                const prefix = entry.data.linkPrefix ?? "";
+                const href = value ? `${prefix}${value}` : undefined;
+                const iconName = entry.data.icon ?? "fa6-solid:circle-dot";
 
-      <div aria-hidden="true" class="flex items-center justify-end"></div>
-    </div>
-  </header>
-
-  <div class="mx-auto max-w-[34rem] px-4">
-    <div class="relative overflow-hidden px-5">
-        {
-          portfolioProjects.length > 0 && (
-            <div class="mx-auto mt-2 mb-8 w-full max-w-[920px]">
-              <div class="relative h-[240px] sm:h-[320px] lg:h-[360px]">
-                <ComputerScreen>
-                  <div class="relative h-full bottom-image-fade">
-                    <div class="relative z-10 h-full">
-                      <PortfolioScreenShowcase
-                        client:visible
-                        items={portfolioProjects}
-                      />
-                    </div>
-                  </div>
-                </ComputerScreen>
-              </div>
-            </div>
-          )
-        }
-
-              <div class="relative z-10">
-        {
-          contactLinks.length > 0 && (
-            <div class="flex justify-center">
-              <ul class="flex flex-wrap justify-center gap-3 list-none">
-                {contactLinks.map((entry) => {
-                  const value = entry.data.description?.trim();
-                  const prefix = entry.data.linkPrefix ?? "";
-                  const href = value ? `${prefix}${value}` : undefined;
-                  const iconName = entry.data.icon ?? "fa6-solid:circle-dot";
-
-                  return (
-                    <li>
-                      {href ? (
-                        <a
-                          href={href}
-                          class="inline-flex text-primary transition-all main-duration hover:-translate-y-1"
-                          aria-label={entry.data.title}
-                          title={entry.data.title}
-                        >
-                          <span class="inline-flex h-12 w-12 items-center justify-center rounded-full">
-                            <Icon
-                              icon={iconName}
-                              size="lg"
-                              className="text-current"
-                            />
-                          </span>
-                        </a>
-                      ) : (
-                        <div
-                          class="inline-flex text-primary"
-                          aria-label={entry.data.title}
-                          title={entry.data.title}
-                        >
-                          <span class="inline-flex h-12 w-12 items-center justify-center rounded-full">
-                            <Icon
-                              icon={iconName}
-                              size="md"
-                              className="text-current"
-                            />
-                          </span>
-                        </div>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )
-        }
-
-        {
-          (title || description) && (
-            <header class="mb-6 text-center sm:mb-8">
-              {/* {title && (
-              <p class="text-[0.7rem] font-semibold uppercase tracking-[0.42em] text-primary/80">
-                {title}
-              </p>
-            )} */}
-              {/* {description && (
-              <p class="mx-auto mt-2 max-w-[24rem] text-sm text-text/80 sm:text-[0.95rem]">
-                {description}
-              </p>
-            )} */}
-            </header>
-          )
-        }
-
-        {
-          safeItems.length > 0 && (
-            <nav aria-label="Links menu">
-              <ul class="grid grid-cols-1 gap-4 list-none sm:gap-5">
-                {safeItems.map((item, index) => (
-                  <li
-                    class="h-full"
-                    data-animate="fade-in-up"
-                    data-animate-once="true"
-                    data-animate-delay={String(index * 70)}
-                    data-animate-threshold="0.15"
-                    data-animate-root-margin="-10% 0px -10% 0px"
-                  >
-                    <LinkCard
-                      data={{
-                        ...item,
-                        ...(showIcons ? {} : { icon: undefined }),
-                      }}
-                      className="h-full"
-                    />
+                return (
+                  <li class="contents">
+                    {href ? (
+                      <a
+                        href={href}
+                        class="inline-flex text-primary transition-all main-duration hover:-translate-y-1"
+                        aria-label={entry.data.title}
+                        title={entry.data.title}
+                      >
+                        {/* <span class="inline-flex h-12 w-12 items-center justify-center rounded-full"> */}
+                          <Icon
+                            icon={iconName}
+                            size="lg"
+                            className="text-current"
+                          />
+                        {/* </span> */}
+                      </a>
+                    ) : (
+                      <div
+                        class="inline-flex text-primary"
+                        aria-label={entry.data.title}
+                        title={entry.data.title}
+                      >
+                        <span class="inline-flex h-12 w-12 items-center justify-center rounded-full">
+                          <Icon
+                            icon={iconName}
+                            size="md"
+                            className="text-current"
+                          />
+                        </span>
+                      </div>
+                    )}
                   </li>
-                ))}
-              </ul>
-            </nav>
-          )
-        }
+                );
+              })}
+            </ul>
+          </div>
+        )
+      }
 
-        {
-          socialLinks.length > 0 && (
-            <div class="mt-7 flex justify-center sm:mt-8">
-              <ul class="flex flex-wrap justify-center gap-3.5 list-none sm:gap-4">
-                {socialLinks.map((entry) => (
-                  <li>
-                    <SocialIcon
-                      title={entry.data.title}
-                      url={entry.data.link}
-                      icon={entry.data.icon}
-                      size="md"
+      {
+        portfolioProjects.length > 0 && (
+          <div class="mx-auto w-full max-w-[920px]">
+            <div class="relative h-[240px] sm:h-[320px] lg:h-[360px]">
+              <ComputerScreen>
+                <div class="relative h-full bottom-image-fade">
+                  <div class="relative z-10 h-full">
+                    <PortfolioScreenShowcase
                       client:visible
+                      items={portfolioProjects}
                     />
-                  </li>
-                ))}
-              </ul>
+                  </div>
+                </div>
+              </ComputerScreen>
             </div>
-          )
-        }
-      </div>
+          </div>
+        )
+      }
+
+      {
+        safeItems.length > 0 && (
+          <nav class="relative z-10" aria-label="Links menu">
+            <ul class="grid grid-cols-1 gap-4 list-none sm:gap-5">
+              {safeItems.map((item, index) => (
+                <li
+                  class="h-full"
+                  data-animate="fade-in-up"
+                  data-animate-once="true"
+                  data-animate-delay={String(index * 70)}
+                  data-animate-threshold="0.15"
+                  data-animate-root-margin="-10% 0px -10% 0px"
+                >
+                  <LinkCard
+                    data={{
+                      ...item,
+                      ...(showIcons ? {} : { icon: undefined }),
+                    }}
+                    className="h-full"
+                  />
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+
+      {
+        socialLinks.length > 0 && (
+          <div class="flex justify-center">
+            <ul class="flex flex-wrap justify-center gap-3.5 list-none sm:gap-4">
+              {socialLinks.map((entry) => (
+                <li>
+                  <SocialIcon
+                    title={entry.data.title}
+                    url={entry.data.link}
+                    icon={entry.data.icon}
+                    size="md"
+                    client:visible
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
     </div>
   </div>
 </Section>

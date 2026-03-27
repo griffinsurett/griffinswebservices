@@ -22,7 +22,7 @@ export function CircleCheckbox({
       />
 
       <span
-        className={`${className} w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all flex items-center justify-center relative circle-checkbox-visual`}
+        className={`${className} h-10 w-10 rounded-full transition-all flex items-center justify-center relative shrink-0 circle-checkbox-visual`}
       >
         {children}
       </span>
