@@ -41,6 +41,7 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
       clientPosterSrc,
       clientPlaceholderSrc,
       wrapperClass = "",
+      preload,
       ...rest
     },
     ref,
@@ -160,7 +161,7 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
           loop={loop}
           controls={controls}
           playsInline={playsInline}
-          preload={lazy ? "metadata" : "auto"}
+          preload={preload ?? (lazy ? "metadata" : "auto")}
           data-video-src={lazy ? src : undefined}
           src={!lazy ? src : undefined}
           style={{ zIndex: 1 }}

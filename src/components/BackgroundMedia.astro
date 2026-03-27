@@ -1,6 +1,7 @@
 ---
 // src/components/BackgroundMedia.astro
 import { getImage } from "astro:assets";
+import VideoShell from "@/components/Video/VideoShell.astro";
 
 export interface Props {
   backgroundMedia: {
@@ -23,7 +24,11 @@ export interface Props {
       loop?: boolean;
       playsInline?: boolean;
       controls?: boolean;
+      lazy?: boolean;
+      priority?: boolean;
       preload?: string;
+      timecodeSeconds?: number;
+      posterWidth?: number;
       videoClass?: string;
     };
     overlayClass?: string;
@@ -53,6 +58,10 @@ const customQuality = backgroundMedia?.image?.quality;
 const maxWidth = backgroundMedia?.image?.maxWidth ?? 1920;
 const tabletWidth = Math.min(1024, maxWidth);
 const mobileWidth = Math.min(640, maxWidth);
+const videoPriority = backgroundMedia?.video?.priority ?? false;
+const videoLazy = backgroundMedia?.video?.lazy ?? true;
+const videoTimecodeSeconds = backgroundMedia?.video?.timecodeSeconds ?? 0;
+const videoPosterWidth = backgroundMedia?.video?.posterWidth ?? 1600;
 
 // Generate responsive images
 let responsiveImages = null;
@@ -117,20 +126,24 @@ if (backgroundMedia?.image?.src) {
 ---
 
 {backgroundMedia?.video?.src ? (
-  <video
-    class={`absolute inset-0 z-0 w-full h-full object-cover ${backgroundMedia.video.videoClass || ""}`}
-    autoplay={backgroundMedia.video.autoPlay !== false}
+  <VideoShell
+    src={backgroundMedia.video.src}
+    class="absolute inset-0 z-0"
+    wrapperClass="w-full h-full"
+    clientWrapperClass="w-full h-full overflow-hidden"
+    mediaClass={`w-full h-full object-cover ${backgroundMedia.video.videoClass || ""}`.trim()}
+    autoPlay={backgroundMedia.video.autoPlay !== false}
     muted={backgroundMedia.video.muted !== false}
     loop={backgroundMedia.video.loop !== false}
-    playsinline={backgroundMedia.video.playsInline !== false}
+    playsInline={backgroundMedia.video.playsInline !== false}
     controls={backgroundMedia.video.controls || false}
     preload={backgroundMedia.video.preload || "metadata"}
-    poster={responsiveImages?.mobile?.src || ""}
-    aria-hidden="true"
-  >
-    <source src={backgroundMedia.video.src} type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
+    lazy={videoLazy}
+    priority={videoPriority}
+    timecodeSeconds={videoTimecodeSeconds}
+    posterWidth={videoPosterWidth}
+    ariaHidden={true}
+  />
 ) : responsiveImages ? (
   <picture class="absolute inset-0 z-0">
     <source
