@@ -5,18 +5,16 @@
  */
 
 import LinkCard from "@/components/LoopComponents/LinkCard";
+import BackgroundMedia from "@/components/BackgroundMedia.astro";
+import Icon from "@/components/Icon";
 import LinkPageShareButton from "@/components/LinkPageShareButton";
 import Logo from "@/components/Logo/Logo.astro";
-import Icon from "@/components/Icon";
 import SocialIcon from "@/components/LoopComponents/SocialIcon";
-import ComputerScreen from "@/components/LoopTemplates/ComputerScreen.astro";
-import PortfolioScreenShowcase from "@/components/LoopTemplates/Portfolio/PortfolioScreenShowcase";
-import ThemeControls from "@/components/ThemeControls/ThemeControls.jsx";
 import Section from "@/components/Section.astro";
+import ThemeControls from "@/components/ThemeControls/ThemeControls.jsx";
+import meOnComputerImg from "@/assets/meoncomp.jpg";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import { toArray } from "@/utils/array";
-import { getPublishedCollection } from "@/utils/collections";
-import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
 import { getCollection } from "astro:content";
 
 interface Props extends BaseVariantProps {
@@ -33,38 +31,25 @@ const {
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
+const contactIconGradientId = `${id ?? "links"}-contact-icon-gradient`;
 const socialLinks = await getCollection("social-media");
 const contactLinks = await getCollection("contact-us");
-const portfolioProjects = (await getPublishedCollection("projects")).map((entry) => ({
-  id: entry.id,
-  slug: entry.slug,
-  title: entry.data.title,
-  alt:
-    (typeof entry.data.featuredImage === "object" &&
-      entry.data.featuredImage &&
-      "alt" in entry.data.featuredImage &&
-      typeof entry.data.featuredImage.alt === "string" &&
-      entry.data.featuredImage.alt) ||
-    entry.data.title ||
-    "Project preview",
-  image:
-    getImageSrc(entry.data.featuredImage) ||
-    getImageSrc(entry.data.bannerImage),
-  projectUrl: entry.data.projectUrl,
-  url: entry.data.url,
-}));
 ---
 
 <Section id={id} class={`min-h-screen ${className}`}>
-  <div class="relative flex flex-col gap-4 sm:gap-7">
-    <header role="banner" aria-label="Links page header">
+  <div class="relative flex flex-col gap-4">
+    <header
+      class="relative z-20 hidden md:block"
+      role="banner"
+      aria-label="Links page header"
+    >
       <div class="grid grid-cols-[1fr_auto_1fr] items-center head-foot-section py-2 gap-4">
         <div class="justify-self-start">
           <Logo
             loading="eager"
             trigger="load"
-            animateOutText={false}
             loop={false}
+            animateOutText={false}
             altContext="Links"
             titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide font-bold no-translate"
             titleRestClass="font-light emphasized-text uppercase text-[0.7rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.2em]"
@@ -82,10 +67,110 @@ const portfolioProjects = (await getPublishedCollection("projects")).map((entry)
       </div>
     </header>
 
-    <div class="mx-auto flex w-full max-w-[34rem] flex-col gap-4 overflow-hidden px-4 sm:gap-7">
+    <div class="w-full md:mx-auto md:max-w-[34rem] md:px-4">
+      <div class="relative aspect-video w-full overflow-hidden bottom-image-fade">
+        <div class="absolute inset-0 md:hidden">
+          <BackgroundMedia
+            backgroundMedia={{
+              image: {
+                src: meOnComputerImg,
+                imageClass: "object-cover object-center",
+                aboveTheFold: true,
+                quality: 38,
+                maxWidth: 900,
+              },
+              overlayClass: "bg-linear-to-t from-bg via-bg/20 to-black/10",
+            }}
+          />
+        </div>
+
+        <div class="absolute inset-0 hidden md:block">
+          <div class="relative h-full w-full overflow-hidden rounded-[2rem] bottom-image-fade shadow-2xl">
+            <img
+              src={meOnComputerImg.src}
+              alt=""
+              class="h-full w-full object-cover object-[center_20%]"
+              loading="eager"
+              fetchpriority="high"
+              decoding="sync"
+              aria-hidden="true"
+            />
+            <div
+              class="absolute inset-0 bg-linear-to-t from-bg via-bg/20 to-black/10"
+              aria-hidden="true"
+            >
+            </div>
+          </div>
+        </div>
+
+        <header
+          class="absolute inset-x-0 top-0 z-20 md:hidden"
+          role="banner"
+          aria-label="Links page header"
+        >
+          <div
+            class="mx-auto grid w-full max-w-[34rem] grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-4"
+          >
+            <div></div>
+
+            <ThemeControls client:idle />
+
+            <div class="justify-self-end">
+              <LinkPageShareButton
+                shareTitle="Griffin's Web Services Links"
+                client:idle
+              />
+            </div>
+          </div>
+        </header>
+      </div>
+    </div>
+
+    <div
+      class="mx-auto flex w-full max-w-[34rem] flex-col gap-3 overflow-hidden px-4 sm:gap-7"
+    >
+      <div class="flex justify-center pt-1 md:hidden">
+        <Logo
+          loading="eager"
+          trigger="load"
+          loop={false}
+          animateOutText={false}
+          altContext="Links"
+          titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide font-bold no-translate"
+          titleRestClass="font-light emphasized-text uppercase text-[0.7rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.2em]"
+        />
+      </div>
+
+      <svg
+        aria-hidden="true"
+        width="0"
+        height="0"
+        focusable="false"
+        class="pointer-events-none absolute h-0 w-0 overflow-hidden"
+      >
+        <defs>
+          <linearGradient
+            id={contactIconGradientId}
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop offset="0%" stop-color="currentColor" class="text-primary-100"
+            ></stop>
+            <stop offset="55%" stop-color="currentColor" class="text-primary"
+            ></stop>
+            <stop
+              offset="100%"
+              stop-color="currentColor"
+              class="text-primary-800"></stop>
+          </linearGradient>
+        </defs>
+      </svg>
+
       {
         contactLinks.length > 0 && (
-          <div class="relative z-10 flex justify-center">
+          <div class="relative z-10 flex justify-center pt-5 lg:pt-0">
             <ul class="flex flex-wrap justify-center gap-6 list-none">
               {contactLinks.map((entry) => {
                 const value = entry.data.description?.trim();
@@ -102,13 +187,34 @@ const portfolioProjects = (await getPublishedCollection("projects")).map((entry)
                         aria-label={entry.data.title}
                         title={entry.data.title}
                       >
-                        {/* <span class="inline-flex h-12 w-12 items-center justify-center rounded-full"> */}
+                        {iconName === "fa6:phone" ||
+                        iconName === "fa6-solid:phone" ? (
+                          <svg
+                            viewBox="0 0 24 24"
+                            class="h-8 w-8"
+                            fill={`url(#${contactIconGradientId})`}
+                            aria-hidden="true"
+                          >
+                            <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.32.56 3.57.56a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C11.72 21 3 12.28 3 2.99a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.19 2.45.56 3.57a1 1 0 0 1-.24 1.02l-2.2 2.21Z" />
+                          </svg>
+                        ) : iconName === "fa6:envelope" ||
+                          iconName === "fa6-solid:envelope" ? (
+                          <svg
+                            viewBox="0 0 24 24"
+                            class="h-8 w-8"
+                            fill={`url(#${contactIconGradientId})`}
+                            aria-hidden="true"
+                          >
+                            <path d="M3 6.75A2.75 2.75 0 0 1 5.75 4h12.5A2.75 2.75 0 0 1 21 6.75v.38l-8.4 5.6a1.1 1.1 0 0 1-1.2 0L3 7.13v-.38Z" />
+                            <path d="M3 9.53v7.72A2.75 2.75 0 0 0 5.75 20h12.5A2.75 2.75 0 0 0 21 17.25V9.53l-7.57 5.05a2.6 2.6 0 0 1-2.86 0L3 9.53Z" />
+                          </svg>
+                        ) : (
                           <Icon
                             icon={iconName}
                             size="lg"
                             className="text-current"
                           />
-                        {/* </span> */}
+                        )}
                       </a>
                     ) : (
                       <div
@@ -129,25 +235,6 @@ const portfolioProjects = (await getPublishedCollection("projects")).map((entry)
                 );
               })}
             </ul>
-          </div>
-        )
-      }
-
-      {
-        portfolioProjects.length > 0 && (
-          <div class="mx-auto w-full max-w-[920px]">
-            <div class="relative h-[240px] sm:h-[320px] lg:h-[360px]">
-              <ComputerScreen>
-                <div class="relative h-full bottom-image-fade">
-                  <div class="relative z-10 h-full">
-                    <PortfolioScreenShowcase
-                      client:visible
-                      items={portfolioProjects}
-                    />
-                  </div>
-                </div>
-              </ComputerScreen>
-            </div>
           </div>
         )
       }

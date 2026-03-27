@@ -13,19 +13,17 @@ interface ThemeControlsProps {
 
 type MobilePanel = "root" | "language" | "accent";
 
-interface MobileActionButtonProps {
-  label: string;
-  onClick: () => void;
-  leading: React.ReactNode;
-  trailing: React.ReactNode;
-}
-
 function MobileActionButton({
   label,
   onClick,
   leading,
   trailing,
-}: MobileActionButtonProps) {
+}: {
+  label: string;
+  onClick: () => void;
+  leading: React.ReactNode;
+  trailing: React.ReactNode;
+}) {
   return (
     <button
       type="button"
@@ -245,7 +243,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
 
       {mobileOpen && (
         <div
-          className="absolute left-1/2 top-full z-10 mt-4 w-[min(18rem,calc(100vw-1.5rem))] -translate-x-1/2 rounded-[1.4rem] border border-primary/20 bg-bg/95 p-2 shadow-xl backdrop-blur-xl sm:hidden"
+          className="absolute left-1/2 top-full z-10 mt-4 w-[min(18rem,calc(100vw-1.5rem))] -translate-x-1/2 rounded-2xl border card-bg p-3 shadow-2xl backdrop-blur-xl sm:hidden"
           onPointerDown={(event) => event.stopPropagation()}
           role="menu"
           aria-label="Preferences"
@@ -261,7 +259,15 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
               <MobileActionButton
                 label="Language"
                 onClick={() => setMobilePanel("language")}
-                leading={<Icon icon="lu:globe" size="md" className="text-current" />}
+                leading={
+                  currentLanguage.flag ? (
+                    <span className="text-[20px] leading-none" aria-hidden="true">
+                      {currentLanguage.flag}
+                    </span>
+                  ) : (
+                    <Icon icon="lu:globe" size="md" className="text-current" />
+                  )
+                }
                 trailing={currentLanguage.flag || currentLanguage.code.toUpperCase()}
               />
               <MobileActionButton

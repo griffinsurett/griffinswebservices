@@ -111,10 +111,10 @@ export default function LinkPageShareButton({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="inline-flex h-10 w-10 items-center justify-center text-white transition-opacity main-duration hover:opacity-75"
+        className="inline-flex h-12 w-12 items-center justify-center text-text transition-colors main-duration hover:text-heading"
         aria-label="Open share sheet"
       >
-        <Icon icon="lu:share-2" size="md" className="text-current" />
+        <Icon icon="lu:share-2" size="lg" className="text-current" />
       </button>
 
       <Modal

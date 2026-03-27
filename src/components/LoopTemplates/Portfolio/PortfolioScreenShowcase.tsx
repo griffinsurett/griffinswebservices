@@ -22,6 +22,7 @@ interface PortfolioScreenShowcaseProps {
   className?: string;
   mediaEntries?: (PortfolioMediaEntry | undefined)[];
   optimizeFirstImage?: boolean;
+  showDevOverlay?: boolean;
 }
 
 interface ScreenProps {
@@ -31,6 +32,7 @@ interface ScreenProps {
   onCycleComplete: () => void;
   isActive: boolean;
   isTransitioning?: boolean;
+  showDevOverlay?: boolean;
 }
 
 const SLIDE_TRANSITION_DURATION_MS = 750;
@@ -44,6 +46,7 @@ function ComputerScreen({
   onCycleComplete,
   isActive,
   isTransitioning = false,
+  showDevOverlay = false,
 }: ScreenProps) {
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -94,7 +97,7 @@ function ComputerScreen({
       isTransitioning={isTransitioning}
       onScrollComplete={handleScrollComplete}
       resetOnActivate={true}
-      showDevOverlay={true}
+      showDevOverlay={showDevOverlay}
     >
       {renderMedia()}
     </ScrollableViewport>
@@ -105,6 +108,7 @@ export default function PortfolioScreenShowcase({
   items = [],
   className = "",
   mediaEntries: mediaEntriesProp = [],
+  showDevOverlay = false,
 }: PortfolioScreenShowcaseProps) {
   const slides = useMemo(() => normalizeItems(items), [items]);
   const mediaEntries = useMemo(() => normalizeItems(mediaEntriesProp), [mediaEntriesProp]);
@@ -261,6 +265,7 @@ export default function PortfolioScreenShowcase({
                 onCycleComplete={handleCycleComplete}
                 isActive={isActive}
                 isTransitioning={transitionStage !== "idle"}
+                showDevOverlay={showDevOverlay}
               />
             </div>
           );
