@@ -45,10 +45,8 @@ const {
   minHeight = "60vh",
 } = Astro.props;
 
-// Default heading to title if no heading is provided
+// Keep the eyebrow title and main heading separate.
 const displayHeading = heading || title;
-// Only pass title to BorderTitle if it's a string (not a HeadingContent object)
-const displayTitle = typeof displayHeading === 'string' ? displayHeading : title;
 
 // Prepare optimized background media
 const backgroundMedia = {
@@ -79,7 +77,7 @@ const backgroundMedia = {
     <div class="relative container mx-auto w-8/10 md:w-auto py-24 z-10">
       <div class="max-w-4xl mx-auto text-center text-bg">
         <SectionHeader
-          title={displayTitle}
+          title={title}
           titleClassName="mb-0"
           heading={displayHeading}
           headingTag="h1"

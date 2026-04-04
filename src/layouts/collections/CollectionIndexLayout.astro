@@ -35,6 +35,7 @@ const {
 } = Astro.props;
 
 const { title: pageTitle, description: pageDescription } = seoProps;
+const pageHeading = collectionMeta?.heading || pageTitle;
 
 // Use featuredImage from _meta.mdx if provided, otherwise undefined (will use default)
 const heroImage = collectionMeta.featuredImage;
@@ -44,6 +45,7 @@ const heroImage = collectionMeta.featuredImage;
     {/* Header - Always displayed */}
     <SecondaryHero
       title={pageTitle}
+      heading={pageHeading}
       description={pageDescription}
       image={heroImage}
       minHeight="50vh"

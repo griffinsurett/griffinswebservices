@@ -38,6 +38,7 @@ const {
 // Get title/description from seoProps or fall back to collectionMeta
 const pageTitle = seoProps?.title || collectionMeta?.title || "Blog";
 const pageDescription = seoProps?.description || collectionMeta?.description || "";
+const pageHeading = collectionMeta?.heading || pageTitle;
 
 // Use featuredImage from _meta.mdx if provided, otherwise undefined (will use default)
 const heroImage = collectionMeta?.featuredImage;
@@ -47,6 +48,7 @@ const heroImage = collectionMeta?.featuredImage;
     {/* Header - SecondaryHero with title and description */}
     <SecondaryHero
       title={pageTitle}
+      heading={pageHeading}
       description={pageDescription}
       image={heroImage}
     />

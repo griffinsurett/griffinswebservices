@@ -39,9 +39,11 @@ import SiteLayout from "@/layouts/SiteLayout.astro";
 import LastUpdated from "@/integrations/preferences/consent/ui/PrivacyPolicy/LastUpdated.astro";
 import SecondaryHero from "@/layouts/heroes/SecondaryHero.astro";
 import { siteData } from "@/content/siteData";
+import type { HeadingContent } from "@/content/schema";
 
 interface Props {
   title: string;
+  heading?: HeadingContent;
   description: string;
   lastUpdated: string;
   effectiveDate?: string;
@@ -51,6 +53,7 @@ interface Props {
 
 const {
   title,
+  heading,
   description,
   lastUpdated,
   effectiveDate,
@@ -65,6 +68,7 @@ const fullTitle = `${title} — ${siteData.title}`;
 <SiteLayout title={fullTitle} description={description} {...baseLayoutProps}>
     <SecondaryHero
       title={title}
+      heading={heading}
       description={description}
       minHeight="45vh"
     />
