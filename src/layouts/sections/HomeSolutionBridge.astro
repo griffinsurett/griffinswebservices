@@ -1,0 +1,150 @@
+---
+import { Image } from "astro:assets";
+import Section from "@/components/Section.astro";
+import BackgroundMedia from "@/components/BackgroundMedia.astro";
+import Button from "@/components/Button/Button";
+import FacebookStars from "@/components/FacebookStars";
+import Icon from "@/components/Icon";
+import Counter from "@/components/Counter.astro";
+import { contactCtaData, pricingCtaData } from "@/content/siteData";
+import { animationProps } from "@/integrations/scroll-animations/props";
+import performanceImg from "@/assets/100performance.png";
+import meoncompImg from "@/assets/meoncomp.jpg";
+
+const facebookReviewsLink =
+  "https://www.facebook.com/profile.php?id=61588357260507&sk=reviews";
+
+const features = [
+  {
+    icon: "lu:badge-check",
+    text: "Built To Perform And Convert",
+  },
+  {
+    icon: "lu:rocket",
+    text: "Fast Turnaround",
+  },
+  {
+    icon: "lu:shield-check",
+    text: "Support That Stays",
+  },
+];
+
+---
+
+<Section class="outer-section">
+  <div class="inner-section">
+    <div
+      class="relative flex flex-col gap-5"
+      {...animationProps("fade-in-up", { once: true, threshold: 0.1 })}
+    >
+      <div
+        class="pointer-events-none absolute left-8 top-8 z-20 w-64 overflow-hidden rounded-[1.4rem] border border-text/10 bg-bg/85 shadow-2xl backdrop-blur-xl max-lg:left-5 max-lg:top-0 max-lg:w-44 max-lg:-translate-y-[28%]"
+      >
+        <Image
+          src={performanceImg}
+          alt="100 performance score graphic"
+          widths={[320, 480, 640]}
+          sizes="(min-width: 1024px) 16rem, 11rem"
+          class="block aspect-[16/10] w-full object-cover"
+        />
+      </div>
+
+      <div
+        class="relative min-h-[41rem] overflow-hidden rounded-[2.4rem] border border-text/10 bg-bg3 shadow-2xl max-lg:min-h-[49rem]"
+      >
+        <BackgroundMedia
+          backgroundMedia={{
+            image: {
+              src: meoncompImg,
+              imageClass: "w-full h-full min-h-[41rem] object-cover max-lg:min-h-[49rem]",
+              maxWidth: 1600,
+            },
+            overlayClass: "bg-bg/70",
+          }}
+        />
+
+        <div
+          aria-hidden="true"
+          class="absolute inset-0 z-0 bg-[linear-gradient(90deg,rgba(10,11,18,0.78)_0%,rgba(10,11,18,0.18)_36%,rgba(10,11,18,0.78)_100%),linear-gradient(0deg,rgba(10,11,18,0.9)_0%,rgba(10,11,18,0.16)_32%,rgba(10,11,18,0.12)_100%)]"
+        ></div>
+
+        <div
+          class="absolute bottom-[8.6rem] left-[3.25rem] z-10 max-w-[31rem] p-0 max-lg:bottom-[10.8rem] max-lg:left-6 max-lg:right-6 max-lg:max-w-[18rem]"
+        >
+          <FacebookStars href={facebookReviewsLink} className="mb-3" />
+
+          <p class="mb-2 text-[clamp(1.15rem,1.4vw,1.8rem)] leading-[1.2] text-white/82">
+            Across the businesses we work with
+          </p>
+
+          <h2 class="mb-2 text-white text-[clamp(2.6rem,4vw,5rem)] leading-[1.02] font-bold tracking-[-0.04em]">
+            <Counter prefix="$" end={2.5} suffix="M+" class="!gap-[0.02em]" />
+          </h2>
+
+          <p class="text-[clamp(1.15rem,1.4vw,1.8rem)] leading-[1.2] text-white/82">
+            in combined annual revenue.
+          </p>
+        </div>
+
+        <div
+          class="absolute right-[3.25rem] top-[5.4rem] z-10 w-[min(38rem,45%)] max-lg:left-6 max-lg:right-6 max-lg:top-[6.4rem] max-lg:w-auto"
+        >
+          <h2
+            class="m-0 font-inherit text-white text-[clamp(2.15rem,3.2vw,3.9rem)] leading-[0.98] tracking-[-0.06em] text-balance max-lg:max-w-[25rem] max-lg:text-[clamp(2rem,8vw,3.6rem)]"
+          >
+            We build websites that look established, work hard, and give customers a reason to call.
+          </h2>
+
+          <p
+            class="mt-6 max-w-[31rem] font-inherit text-[1.05rem] leading-[1.55] text-white/84 max-lg:max-w-[24rem] max-lg:text-[0.98rem]"
+          >
+            We build your website on a strong base so it stays fast, clear, and easy to use over time. It is set up so search engines can read it well, and it is also ready for the way AI search is starting to find and show businesses. The goal is simple: help more people find you, trust what they see, and take the next step.
+          </p>
+        </div>
+
+        <ul
+          class="absolute inset-x-0 bottom-0 z-10 grid list-none grid-cols-3 gap-3 px-6 pb-7 pt-5 max-lg:grid-cols-1 max-lg:gap-2 max-lg:px-5 max-lg:pb-5 max-lg:pt-4"
+          aria-label="Website outcomes"
+        >
+          {features.map((feature) => (
+            <li
+              class="flex min-h-16 items-center justify-center gap-3 text-center text-[0.94rem] font-semibold uppercase tracking-[0.16em] text-white/94 max-lg:min-h-0 max-lg:justify-start max-lg:text-left max-lg:text-[0.84rem] max-lg:tracking-[0.14em]"
+            >
+              <span
+                class="inline-flex h-[2.2rem] w-[2.2rem] shrink-0 items-center justify-center rounded-full border border-white/32 bg-bg/40 text-white backdrop-blur-xl"
+                aria-hidden="true"
+              >
+                <Icon icon={feature.icon} size="md" className="text-current" />
+              </span>
+              <span>{feature.text}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="flex items-center justify-center gap-8 px-4 max-lg:flex-col max-lg:gap-4">
+        <Button
+          href={contactCtaData.link}
+          variant="primary"
+          size="lg"
+          rightIcon="lu:arrow-up-right"
+          className="!w-auto whitespace-nowrap"
+          buttonWrapperClasses="!w-auto"
+        >
+          {contactCtaData.text}
+        </Button>
+
+        <Button
+          href={pricingCtaData.link}
+          variant="link"
+          size="lg"
+          rightIcon="lu:arrow-up-right"
+          className="!w-auto whitespace-nowrap p-0 text-[1.1rem] font-semibold normal-case tracking-normal text-white/92 no-underline hover:text-white/92 hover:no-underline [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-[0.16rem] hover:[&_svg]:-translate-y-[0.16rem]"
+          buttonWrapperClasses="!w-auto"
+        >
+          See Pricing
+        </Button>
+      </div>
+    </div>
+  </div>
+</Section>

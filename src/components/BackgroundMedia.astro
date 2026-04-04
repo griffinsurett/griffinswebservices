@@ -168,19 +168,9 @@ const videoSources = normalizeSources(videoConfig);
 const primarySource = videoSources[0];
 const additionalSources = videoSources.slice(1);
 const hasVideo = videoSources.length > 0;
-const hasBackgroundImage = Boolean(optimizedBackgroundImage?.mobile?.src);
-const showStandaloneBackgroundImage = hasBackgroundImage && !hasVideo;
 const resolvedFallbackPoster = optimizedBackgroundImage?.mobile?.src ?? undefined;
 const backgroundVideoClass = videoConfig?.videoClass ?? videoConfig?.class ?? "";
 ---
-
-{showStandaloneBackgroundImage && (
-  <div
-    class={`absolute inset-0 z-0 ${backgroundMedia?.image?.imageClass || ""}`}
-    style={`background-image: url('${optimizedBackgroundImage?.mobile?.src}');`}
-    aria-hidden="true"
-  ></div>
-)}
 
 {hasVideo ? (
   <VideoShell

@@ -39,6 +39,17 @@ const {
 />
 
 <ContentRenderer
+  query={roots("enhancements")}
+  variant="CardVariant"
+  id={enhancementOptions.id ?? "enhancements"}
+  title={enhancementOptions.title ?? "Need Something More Specific?"}
+  heading={enhancementOptions.heading ?? "Enhancements That Layer Onto the Core Website Work"}
+  description={enhancementOptions.description ?? "When you need more than the core build or maintenance path, these enhancement options cover SEO, automation, booking, e-commerce, systems, and brand-supporting work."}
+  columns={enhancementOptions.columns ?? "auto"}
+  gap={enhancementOptions.gap ?? "lg"}
+/>
+
+<ContentRenderer
   query={related("pricing", "capabilities", "hosting").orderBy(sortByOrder())}
   variant="PricingVariant"
   id={existingWebsiteOptions.id ?? "existing-site-options"}
@@ -59,15 +70,4 @@ const {
   description={existingWebsiteServices.description ?? "When the site already exists, we handle the cleanup, restructuring, and platform-level changes needed to get it stable, clearer, and easier to grow."}
   columns={existingWebsiteServices.columns ?? "auto"}
   gap={existingWebsiteServices.gap ?? "lg"}
-/>
-
-<ContentRenderer
-  query={roots("enhancements")}
-  variant="CardVariant"
-  id={enhancementOptions.id ?? "enhancements"}
-  title={enhancementOptions.title ?? "Need Something More Specific?"}
-  heading={enhancementOptions.heading ?? "Enhancements That Layer Onto the Core Website Work"}
-  description={enhancementOptions.description ?? "When you need more than the core build or maintenance path, these enhancement options cover SEO, automation, booking, e-commerce, systems, and brand-supporting work."}
-  columns={enhancementOptions.columns ?? "auto"}
-  gap={enhancementOptions.gap ?? "lg"}
 />

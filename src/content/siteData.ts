@@ -26,3 +26,13 @@ export const ctaData = {
   text: "Get Started Now!",
   link: "/pricing",
 };
+
+export const contactCtaData = {
+  text: "Give Us a Call",
+  link: "/contact-us",
+};
+
+export const pricingCtaData = {
+  text: "View Pricing",
+  link: "/pricing",
+};

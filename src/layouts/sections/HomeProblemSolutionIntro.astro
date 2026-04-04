@@ -1,0 +1,130 @@
+---
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { animationProps } from "@/integrations/scroll-animations/props";
+
+interface IntroItem {
+  issue: string;
+}
+
+interface Props {
+  heading?: string;
+  items?: IntroItem[];
+  className?: string;
+  id?: string;
+}
+
+const defaultItems: IntroItem[] = [
+  {
+    issue: "You do not have a website yet, so customers have nothing strong to find, trust, or act on.",
+  },
+  {
+    issue: "Pages load slowly, feel clunky on mobile, or lose people before they act.",
+  },
+  {
+    issue: "The website was cheap to start, but the monthly cost keeps adding up without giving you real results.",
+  },
+  {
+    issue: "Your website depends on one person to keep it running, and if they disappear, everything feels uncertain.",
+  },
+  {
+    issue: "The site exists, but it is not turning visibility into inquiries, calls, or useful leads.",
+  },
+];
+
+const {
+  heading = "If you can identify with any of these problems?",
+  items = defaultItems,
+  className = "",
+  id = "problems-we-solve",
+} = Astro.props as Props;
+
+const getCardSpanClass = (index: number) => {
+  if (index < 3) return "lg:col-span-2";
+  return index === 3 ? "lg:col-span-3 lg:col-start-1" : "lg:col-span-3 lg:col-start-4";
+};
+---
+
+<Section id={id} class={`outer-section relative ${className}`.trim()}>
+  <div class="inner-section">
+    <div
+      class="mx-auto max-w-6xl space-y-8 lg:space-y-12"
+      {...animationProps("fade-in-up", { once: true, threshold: 0.08 })}
+    >
+      <SectionHeader
+        className="mx-auto max-w-5xl text-center"
+        heading={heading}
+        headingClassName="text-4xl md:text-5xl lg:text-6xl leading-[0.98] font-bold text-heading"
+      />
+
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-6 lg:gap-6">
+        {items.map((item, index) => (
+          <article
+            class:list={[
+              "group relative overflow-hidden rounded-[2rem] p-6 md:p-7",
+              "flex items-center gap-4 outer-card-transition outer-card-color",
+              getCardSpanClass(index),
+            ]}
+            {...animationProps("fade-in-up", {
+              once: true,
+              threshold: 0.12,
+            })}
+          >
+            <span class="problem-card__orb" aria-hidden="true">
+              <span class="problem-card__orb-core"></span>
+            </span>
+            <p class="problem-card__issue">{item.issue}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .problem-card__orb {
+    position: relative;
+    width: 3.6rem;
+    height: 3.6rem;
+    flex-shrink: 0;
+    border-radius: 43% 57% 60% 40% / 36% 42% 58% 64%;
+    background:
+      radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.14) 20%, transparent 38%),
+      radial-gradient(circle at 68% 24%, color-mix(in srgb, var(--color-primary) 88%, white 12%) 0%, transparent 34%),
+      radial-gradient(circle at 34% 76%, color-mix(in srgb, var(--color-primary) 58%, black 42%) 0%, transparent 46%),
+      linear-gradient(
+        140deg,
+        color-mix(in srgb, var(--color-primary) 72%, white 28%),
+        color-mix(in srgb, var(--color-primary) 94%, black 6%) 52%,
+        color-mix(in srgb, var(--color-primary) 62%, black 38%)
+      );
+    box-shadow:
+      0 16px 30px rgba(0, 0, 0, 0.28),
+      inset 0 1px 8px rgba(255, 255, 255, 0.28);
+    transform: rotate(-18deg);
+  }
+
+  .problem-card__orb-core {
+    position: absolute;
+    inset: 22%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 58%);
+    mix-blend-mode: screen;
+  }
+
+  .problem-card__issue {
+    margin: 0;
+    color: var(--color-heading);
+    font-size: clamp(1.05rem, 1.2vw, 1.35rem);
+    line-height: 1.35;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  @media (max-width: 1023px) {
+    .problem-card__orb {
+      width: 3.15rem;
+      height: 3.15rem;
+    }
+  }
+</style>

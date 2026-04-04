@@ -3,12 +3,13 @@
 import SiteLayout from "@/layouts/SiteLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortByOrder, sortByDate, byTag } from "@/utils/query";
-import { ctaData, siteData } from "@/content/siteData";
+import { contactCtaData, pricingCtaData, siteData } from "@/content/siteData";
 import { roots, related, byItemKeys } from "@/utils/query/snippets";
 import CTASection from "@/layouts/heroes/CTASection.astro";
 import FrontPageHero from "@/layouts/heroes/FrontPageHero.astro";
-import DoubleCard from "@/layouts/sections/DoubleCard.astro";
-import TrustStatement from "@/components/TrustStatement.astro";
+// import DoubleCard from "@/layouts/sections/DoubleCard.astro";
+import HomeProblemSolutionIntro from "@/layouts/sections/HomeProblemSolutionIntro.astro";
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import BottomContentSection from "@/layouts/sections/BottomContentSection.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
 
@@ -28,8 +29,8 @@ const heroDescription =
     heading={heroHeading}
     description={heroDescription}
     primaryCTA={{
-      text: ctaData.text,
-      link: ctaData.link,
+      text: contactCtaData.text,
+      link: contactCtaData.link,
     }}
     scrollToSection="#under-hero"
   />
@@ -56,21 +57,17 @@ const heroDescription =
       description="Whether you need a business website or a custom application, the structure stays clear: core solutions first, pricing in one place, and enhancements layered in when they create real value."
     /> -->
 
-        <!-- TRUST STATEMENT -->
-    <TrustStatement
-      className="min-h-screen flex items-center justify-center inner-section"
-      textClassName="text-2xl md:text-3xl lg:text-4xl text-left lg:text-center leading-tight"
-      text="We build websites designed to hold up over time. Hosting and ongoing maintenance help keep performance, stability, and security consistent as your business grows. Every site includes search-friendly foundations, and when deeper SEO or marketing work is needed, we coordinate with trusted specialists without compromising the technical foundation."
-    />
+    <HomeProblemSolutionIntro />
+
+    <!-- <HomeSolutionBridge /> -->
 
         <!-- BENEFITS -->
     <ContentRenderer
       query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
       variant="BenefitsVariant"
       id="benefits"
-      title="What This Means for You"
-      heading="What You Can Expect From Your Website"
-      description="These principles translate directly into real-world benefits — things you and your customers notice immediately when using your website."
+      heading="Then your business deserves some of these solutions."
+      description="These are the kinds of benefits the right website should start delivering for your business."
       columns={2}
       gap="lg"
     />
@@ -86,7 +83,7 @@ const heroDescription =
     /> -->
 
         <!-- CAPABILITIES -->
-    <ContentRenderer
+    <!-- <ContentRenderer
       query={related("capabilities", "solutions", "websites").orderBy(sortByOrder())}
       variant="CardVariant"
       id="capabilities"
@@ -95,9 +92,10 @@ const heroDescription =
       description="Everything above depends on having the right technical foundation and ongoing oversight. Our capabilities work together to ensure your website stays fast, stable, and dependable over time."
       gap="lg"
       showButtonSection={false}
-    />
+    /> -->
 
-       <DoubleCard />
+       <!-- <DoubleCard /> -->
+       <HomeSolutionBridge />
 
     <!-- Bottom Content Section - Testimonials, Portfolio, FAQ -->
     <BottomContentSection
@@ -140,6 +138,14 @@ const heroDescription =
     <CTASection
       title="Get Started"
       heading="Ready to Build a Website That Works?"
+      primaryCTA={{
+        text: contactCtaData.text,
+        link: contactCtaData.link,
+      }}
+      secondaryCTA={{
+        text: pricingCtaData.text,
+        link: pricingCtaData.link,
+      }}
     />
   </div>
 </SiteLayout>

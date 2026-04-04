@@ -53,6 +53,7 @@ const fallbackIcon = "fa6-solid:circle-dot";
         // Use displayValue if available (from linkBehavior), fallback to description
         const displayValue = item.displayValue ?? item.description;
         const iconName = item.icon ?? fallbackIcon;
+        const isPhoneItem = item.slug === "phone" || href?.startsWith("tel:");
         return (
           <li class="py-0" data-contact-id={item.slug}>
             {href ? (
@@ -62,24 +63,74 @@ const fallbackIcon = "fa6-solid:circle-dot";
                 size="sm"
                 aria-label={displayValue}
               >
-                <span class="inline-flex h-7 w-7 items-center justify-center rounded-full card-icon-color shrink-0 mr-1">
-                  <Icon
-                    icon={iconName}
-                    size="md"
-                    className="w-3.5 h-3.5"
-                  />
-                </span>
+                {
+                  isPhoneItem ? (
+                    <span class="inline-flex h-7 w-7 items-center justify-center shrink-0 mr-1" aria-hidden="true">
+                      <svg
+                        viewBox="0 0 24 24"
+                        class="h-5 w-5"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <defs>
+                          <linearGradient id="footer-phone-gradient" x1="4" y1="4" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="var(--color-primary-100)" />
+                            <stop offset="55%" stop-color="var(--color-primary)" />
+                            <stop offset="100%" stop-color="var(--color-primary-700)" />
+                          </linearGradient>
+                        </defs>
+                        <path
+                          d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.61 2.62a2 2 0 0 1-.45 2.11L8 9.88a16 16 0 0 0 6.12 6.12l1.43-1.27a2 2 0 0 1 2.11-.45c.84.28 1.72.49 2.62.61A2 2 0 0 1 22 16.92Z"
+                          fill="url(#footer-phone-gradient)"
+                        />
+                      </svg>
+                    </span>
+                  ) : (
+                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full card-icon-color shrink-0 mr-1">
+                      <Icon
+                        icon={iconName}
+                        size="md"
+                        className="w-3.5 h-3.5"
+                      />
+                    </span>
+                  )
+                }
                 <span class="text-base">{displayValue}</span>
               </Button>
             ) : (
               <div class="flex items-center gap-3">
-                <span class="inline-flex h-7 w-7 items-center justify-center rounded-full card-icon-color shrink-0">
-                  <Icon
-                    icon={iconName}
-                    size="md"
-                    className="w-3.5 h-3.5"
-                  />
-                </span>
+                {
+                  isPhoneItem ? (
+                    <span class="inline-flex h-7 w-7 items-center justify-center shrink-0" aria-hidden="true">
+                      <svg
+                        viewBox="0 0 24 24"
+                        class="h-5 w-5"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <defs>
+                          <linearGradient id="footer-phone-gradient-static" x1="4" y1="4" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="var(--color-primary-100)" />
+                            <stop offset="55%" stop-color="var(--color-primary)" />
+                            <stop offset="100%" stop-color="var(--color-primary-700)" />
+                          </linearGradient>
+                        </defs>
+                        <path
+                          d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.61 2.62a2 2 0 0 1-.45 2.11L8 9.88a16 16 0 0 0 6.12 6.12l1.43-1.27a2 2 0 0 1 2.11-.45c.84.28 1.72.49 2.62.61A2 2 0 0 1 22 16.92Z"
+                          fill="url(#footer-phone-gradient-static)"
+                        />
+                      </svg>
+                    </span>
+                  ) : (
+                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full card-icon-color shrink-0">
+                      <Icon
+                        icon={iconName}
+                        size="md"
+                        className="w-3.5 h-3.5"
+                      />
+                    </span>
+                  )
+                }
                 <span class="text-heading font-semibold text-base">
                   {displayValue}
                 </span>

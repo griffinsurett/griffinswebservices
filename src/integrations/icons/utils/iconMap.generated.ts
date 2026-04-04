@@ -2,16 +2,14 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/integrations/icons/utils/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMinus, LuPlus, LuSend, LuSettings, LuShare2, LuSparkles } from 'react-icons/lu';
-import { FaAddressBook, FaAddressCard, FaArrowRight, FaArrowTrendUp, FaArrowsLeftRight, FaArrowsRotate, FaArrowsUpDownLeftRight, FaAws, FaBinoculars, FaBolt, FaBoxOpen, FaBoxesStacked, FaBrain, FaBriefcase, FaBullseye, FaCalendarCheck, FaCartArrowDown, FaCartShopping, FaChartLine, FaChartSimple, FaCircleDot, FaClipboardCheck, FaClock, FaClockRotateLeft, FaCloud, FaCloudflare, FaCode, FaCommentDots, FaCompass, FaCookieBite, FaCreditCard, FaCss3Alt, FaCubes, FaDatabase, FaDiagramProject, FaDisplay, FaDumbbell, FaEnvelope, FaEnvelopeOpenText, FaEye, FaFeather, FaFigma, FaFileLines, FaFilePen, FaFlagCheckered, FaGaugeHigh, FaGears, FaGithub, FaGlobe, FaGoogle, FaHandPointer, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHouse, FaHtml5, FaImage, FaImages, FaInbox, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMinimize, FaMobileScreenButton, FaNetworkWired, FaNewspaper, FaNodeJs, FaObjectGroup, FaPalette, FaPaperPlane, FaPenNib, FaPenRuler, FaPenToSquare, FaPersonRunning, FaPhone, FaPhp, FaPlug, FaPlugCircleBolt, FaPuzzlePiece, FaPython, FaReact, FaRectangleAd, FaRoad, FaRobot, FaRocket, FaRotate, FaRotateLeft, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaSitemap, FaStamp, FaStore, FaSwatchbook, FaTableList, FaUniversalAccess, FaUser, FaUsers, FaUsersGear, FaUtensils, FaWandMagicSparkles, FaWordpress, FaXmark } from 'react-icons/fa6';
+import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBadgeCheck, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMinus, LuPlus, LuRocket, LuSend, LuSettings, LuShare2, LuShieldCheck, LuSparkles } from 'react-icons/lu';
+import { FaAddressCard, FaArrowRight, FaArrowTrendUp, FaArrowsRotate, FaArrowsUpDownLeftRight, FaAws, FaBinoculars, FaBolt, FaBoxOpen, FaBoxesStacked, FaBriefcase, FaBullseye, FaCalendarCheck, FaCartArrowDown, FaCartShopping, FaChartLine, FaChartSimple, FaCircleDot, FaClipboardCheck, FaClockRotateLeft, FaCloud, FaCloudflare, FaCode, FaCommentDots, FaCompass, FaCookieBite, FaCreditCard, FaCss3Alt, FaCubes, FaDiagramProject, FaDisplay, FaDumbbell, FaEnvelope, FaEnvelopeOpenText, FaEye, FaFeather, FaFigma, FaFileLines, FaFilePen, FaFlagCheckered, FaGaugeHigh, FaGears, FaGithub, FaGlobe, FaHandPointer, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHouse, FaHtml5, FaImage, FaImages, FaInbox, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMinimize, FaMobileScreenButton, FaNetworkWired, FaNodeJs, FaPalette, FaPaperPlane, FaPenNib, FaPenRuler, FaPenToSquare, FaPersonRunning, FaPhone, FaPhp, FaPlug, FaPlugCircleBolt, FaPuzzlePiece, FaPython, FaReact, FaRoad, FaRobot, FaRocket, FaRotate, FaRotateLeft, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShieldHalved, FaShieldHeart, FaShopify, FaSitemap, FaStamp, FaStore, FaTableList, FaUniversalAccess, FaUser, FaUtensils, FaWandMagicSparkles, FaWordpress, FaXmark } from 'react-icons/fa6';
 import { SiAstro, SiElementor, SiExpress, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiTailwindcss, SiTypescript, SiVercel, SiWebflow } from 'react-icons/si';
 
 export const iconMap = {
-  'fa6:address-book': FaAddressBook,
   'fa6:address-card': FaAddressCard,
   'fa6:arrow-right': FaArrowRight,
   'fa6:arrow-trend-up': FaArrowTrendUp,
-  'fa6:arrows-left-right': FaArrowsLeftRight,
   'fa6:arrows-rotate': FaArrowsRotate,
   'fa6:arrows-up-down-left-right': FaArrowsUpDownLeftRight,
   'fa6:aws': FaAws,
@@ -19,7 +17,6 @@ export const iconMap = {
   'fa6:bolt': FaBolt,
   'fa6:box-open': FaBoxOpen,
   'fa6:boxes-stacked': FaBoxesStacked,
-  'fa6:brain': FaBrain,
   'fa6:briefcase': FaBriefcase,
   'fa6:bullseye': FaBullseye,
   'fa6:calendar-check': FaCalendarCheck,
@@ -29,7 +26,6 @@ export const iconMap = {
   'fa6:chart-simple': FaChartSimple,
   'fa6:circle-dot': FaCircleDot,
   'fa6:clipboard-check': FaClipboardCheck,
-  'fa6:clock': FaClock,
   'fa6:clock-rotate-left': FaClockRotateLeft,
   'fa6:cloud': FaCloud,
   'fa6:cloudflare': FaCloudflare,
@@ -40,7 +36,6 @@ export const iconMap = {
   'fa6:credit-card': FaCreditCard,
   'fa6:css3-alt': FaCss3Alt,
   'fa6:cubes': FaCubes,
-  'fa6:database': FaDatabase,
   'fa6:diagram-project': FaDiagramProject,
   'fa6:display': FaDisplay,
   'fa6:dumbbell': FaDumbbell,
@@ -56,7 +51,6 @@ export const iconMap = {
   'fa6:gears': FaGears,
   'fa6:github': FaGithub,
   'fa6:globe': FaGlobe,
-  'fa6:google': FaGoogle,
   'fa6:hand-pointer': FaHandPointer,
   'fa6:handshake': FaHandshake,
   'fa6:headset': FaHeadset,
@@ -77,9 +71,7 @@ export const iconMap = {
   'fa6:minimize': FaMinimize,
   'fa6:mobile-screen-button': FaMobileScreenButton,
   'fa6:network-wired': FaNetworkWired,
-  'fa6:newspaper': FaNewspaper,
   'fa6:node-js': FaNodeJs,
-  'fa6:object-group': FaObjectGroup,
   'fa6:palette': FaPalette,
   'fa6:paper-plane': FaPaperPlane,
   'fa6:pen-nib': FaPenNib,
@@ -93,7 +85,6 @@ export const iconMap = {
   'fa6:puzzle-piece': FaPuzzlePiece,
   'fa6:python': FaPython,
   'fa6:react': FaReact,
-  'fa6:rectangle-ad': FaRectangleAd,
   'fa6:road': FaRoad,
   'fa6:robot': FaRobot,
   'fa6:rocket': FaRocket,
@@ -108,12 +99,9 @@ export const iconMap = {
   'fa6:sitemap': FaSitemap,
   'fa6:stamp': FaStamp,
   'fa6:store': FaStore,
-  'fa6:swatchbook': FaSwatchbook,
   'fa6:table-list': FaTableList,
   'fa6:universal-access': FaUniversalAccess,
   'fa6:user': FaUser,
-  'fa6:users': FaUsers,
-  'fa6:users-gear': FaUsersGear,
   'fa6:utensils': FaUtensils,
   'fa6:wand-magic-sparkles': FaWandMagicSparkles,
   'fa6:wordpress': FaWordpress,
@@ -121,6 +109,7 @@ export const iconMap = {
   'lu:arrow-left': LuArrowLeft,
   'lu:arrow-right': LuArrowRight,
   'lu:arrow-up-right': LuArrowUpRight,
+  'lu:badge-check': LuBadgeCheck,
   'lu:book-open': LuBookOpen,
   'lu:bot': LuBot,
   'lu:check': LuCheck,
@@ -135,9 +124,11 @@ export const iconMap = {
   'lu:lock': LuLock,
   'lu:minus': LuMinus,
   'lu:plus': LuPlus,
+  'lu:rocket': LuRocket,
   'lu:send': LuSend,
   'lu:settings': LuSettings,
   'lu:share-2': LuShare2,
+  'lu:shield-check': LuShieldCheck,
   'lu:sparkles': LuSparkles,
   'si:astro': SiAstro,
   'si:elementor': SiElementor,

@@ -11,6 +11,7 @@ import type { HeadingContent } from "@/content/schema";
 interface CTA {
   text: string;
   link: string;
+  rightIcon?: string;
 }
 
 export interface Props {
@@ -18,6 +19,7 @@ export interface Props {
   heading?: HeadingContent;
   description?: string;
   primaryCTA?: CTA;
+  secondaryCTA?: CTA;
   className?: string;
   id?: string;
 }
@@ -32,7 +34,9 @@ const {
   primaryCTA = {
     text: ctaData.text,
     link: ctaData.link,
+    rightIcon: "lu:arrow-up-right",
   },
+  secondaryCTA,
   className = "",
   id = "hero",
 } = Astro.props as Props;
@@ -74,14 +78,26 @@ const {
               counterSuffix="+"
               counterLabel="Happy Clients"
             />
-          <Button
-            href={primaryCTA.link}
-            variant="primary"
-            size="lg"
-            rightIcon="lu:arrow-up-right"
-          >
-            {primaryCTA.text}
-          </Button>
+          <div class="flex flex-col sm:flex-row items-center gap-3">
+            <Button
+              href={primaryCTA.link}
+              variant="primary"
+              size="lg"
+              rightIcon={primaryCTA.rightIcon ?? "lu:arrow-up-right"}
+            >
+              {primaryCTA.text}
+            </Button>
+            {secondaryCTA && (
+              <Button
+                href={secondaryCTA.link}
+                variant="secondary"
+                size="lg"
+                rightIcon={secondaryCTA.rightIcon ?? "lu:arrow-up-right"}
+              >
+                {secondaryCTA.text}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
