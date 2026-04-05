@@ -11,7 +11,6 @@ itemLayout: "../../layouts/collections/WebSolutionLayout.astro"
 ---
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import CTASection from '@/layouts/heroes/CTASection.astro';
-import BottomContentSection from '@/layouts/sections/BottomContentSection.astro';
 import TrustStatement from '@/components/TrustStatement.astro';
 import DoubleCard from '@/layouts/sections/DoubleCard.astro';
 import FrontPageHero from '@/layouts/heroes/FrontPageHero.astro';
@@ -88,31 +87,42 @@ import { animationProps } from '@/integrations/scroll-animations/props';
   text="We build landing pages engineered for conversion. Every element — from headline to button placement — is designed with one goal: turning visitors into leads or customers."
 />
 
-<BottomContentSection
-  testimonials={{
-    customQuery: query("testimonials").where((entry) => entry.data.rating >= 4)
-  }}
-  portfolio={{
-    filterQuery: query('industries').orderBy(sortByOrder()),
-    title: "Portfolio",
-    heading: "Landing pages that deliver results",
-    description: "See how our landing pages have helped businesses improve ad performance and increase conversions.",
-    showCount: false,
-    showFilters: true,
-    showArrows: true
-  }}
-  technologies={{
-    customQuery: byTag("technologies", "featured").orderBy(sortByOrder()).limit(8),
-    title: "Technologies",
-    description: "The tools and platforms we use to build fast, conversion-optimized landing pages."
-  }}
-  faq={{
-    collection: "solutions",
-    slug: "landing-pages",
-    title: "FAQs",
-    heading: "Common Questions About Landing Pages"
-  }}
-/>
+<div class="bottom-content-section">
+  <ContentRenderer
+    query={query("testimonials").where((entry) => entry.data.rating >= 4)}
+    variant="TestimonialCarouselVariant"
+  />
+
+  <ContentRenderer
+    query={query('industries').orderBy(sortByOrder())}
+    variant="FilteredPortfolioVariant"
+    relatedCollection="projects"
+    relatedField="industry"
+    title="Portfolio"
+    heading="Landing pages that deliver results"
+    description="See how our landing pages have helped businesses improve ad performance and increase conversions."
+    filter={{ showCount: false }}
+    showFilters={true}
+    showArrows={true}
+    ctaHref="/projects"
+    ctaText="View Portfolio"
+  />
+
+  <ContentRenderer
+    query={byTag("technologies", "featured").orderBy(sortByOrder()).limit(8)}
+    variant="TechnologiesVariant"
+    title="Technologies"
+    description="The tools and platforms we use to build fast, conversion-optimized landing pages."
+  />
+
+  <ContentRenderer
+    query={related("faq", "solutions", "landing-pages").orderBy(sortByOrder())}
+    variant="AccordionVariant"
+    allowMultiple={false}
+    title="FAQs"
+    heading="Common Questions About Landing Pages"
+  />
+</div>
 
 <CTASection
   title="Get Started"

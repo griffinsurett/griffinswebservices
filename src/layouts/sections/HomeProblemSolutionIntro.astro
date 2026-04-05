@@ -62,7 +62,7 @@ const getCardSpanClass = (index: number) => {
           <article
             class:list={[
               "group relative overflow-hidden rounded-[2rem] p-6 md:p-7",
-              "flex items-center gap-4 card-bg outer-card-transition",
+              "flex items-start gap-4 card-bg outer-card-transition",
               getCardSpanClass(index),
             ]}
             {...animationProps("fade-in-up", {
@@ -70,8 +70,8 @@ const getCardSpanClass = (index: number) => {
               threshold: 0.12,
             })}
           >
-            <span class="problem-card__orb" aria-hidden="true">
-              <span class="problem-card__orb-core"></span>
+            <span class="problem-card__number" aria-hidden="true">
+              {index + 1}.
             </span>
             <p class="problem-card__issue">{item.issue}</p>
           </article>
@@ -82,34 +82,16 @@ const getCardSpanClass = (index: number) => {
 </Section>
 
 <style>
-  .problem-card__orb {
-    position: relative;
-    width: 3.6rem;
-    height: 3.6rem;
+  .problem-card__number {
+    display: inline-block;
+    min-width: auto;
+    height: auto;
     flex-shrink: 0;
-    border-radius: 43% 57% 60% 40% / 36% 42% 58% 64%;
-    background:
-      radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.14) 20%, transparent 38%),
-      radial-gradient(circle at 68% 24%, color-mix(in srgb, var(--color-primary) 88%, white 12%) 0%, transparent 34%),
-      radial-gradient(circle at 34% 76%, color-mix(in srgb, var(--color-primary) 58%, black 42%) 0%, transparent 46%),
-      linear-gradient(
-        140deg,
-        color-mix(in srgb, var(--color-primary) 72%, white 28%),
-        color-mix(in srgb, var(--color-primary) 94%, black 6%) 52%,
-        color-mix(in srgb, var(--color-primary) 62%, black 38%)
-      );
-    box-shadow:
-      0 16px 30px rgba(0, 0, 0, 0.28),
-      inset 0 1px 8px rgba(255, 255, 255, 0.28);
-    transform: rotate(-18deg);
-  }
-
-  .problem-card__orb-core {
-    position: absolute;
-    inset: 22%;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 58%);
-    mix-blend-mode: screen;
+    color: var(--color-primary-light);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
   }
 
   .problem-card__issue {
@@ -122,9 +104,8 @@ const getCardSpanClass = (index: number) => {
   }
 
   @media (max-width: 1023px) {
-    .problem-card__orb {
-      width: 3.15rem;
-      height: 3.15rem;
+    .problem-card__number {
+      font-size: 1.7rem;
     }
   }
 </style>

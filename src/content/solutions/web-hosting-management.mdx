@@ -15,8 +15,8 @@ addToMenu:
 import TrustStatement from "@/components/TrustStatement.astro";
 import SolutionsSection from "@/layouts/sections/SolutionsSection.astro";
 import CTASection from "@/layouts/heroes/CTASection.astro";
-import BottomContentSection from "@/layouts/sections/BottomContentSection.astro";
-import { query, sortByOrder, byTag } from '@/utils/query';
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import { query, related, sortByOrder } from '@/utils/query';
 
 <TrustStatement text="You pay for the website once. Then $50/month keeps it live and running — cheap because of the way we build, flexible because your needs change." />
 
@@ -66,17 +66,20 @@ import { query, sortByOrder, byTag } from '@/utils/query';
   ctaDescription="Pick a hosting and maintenance plan that fits your business and let us handle the upkeep from here."
 />
 
-<BottomContentSection
-  testimonials={{
-    customQuery: query("testimonials").where((entry) => entry.data.rating >= 4)
-  }}
-  faq={{
-    collection: "solutions",
-    slug: "web-hosting-management",
-    title: "FAQs",
-    heading: "Common Questions About Hosting & Management"
-  }}
-/>
+<div class="bottom-content-section">
+  <ContentRenderer
+    query={query("testimonials").where((entry) => entry.data.rating >= 4)}
+    variant="TestimonialCarouselVariant"
+  />
+
+  <ContentRenderer
+    query={related("faq", "solutions", "web-hosting-management").orderBy(sortByOrder())}
+    variant="AccordionVariant"
+    allowMultiple={false}
+    title="FAQs"
+    heading="Common Questions About Hosting & Management"
+  />
+</div>
 
 <CTASection
   title="Get Started"

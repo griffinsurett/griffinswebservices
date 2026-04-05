@@ -11,6 +11,7 @@ interface LottieLogoProps {
   respectReducedMotion?: boolean;
   fadeMs?: number;
   loop?: boolean;
+  autoplay?: boolean;
   decorative?: boolean;
 }
 
@@ -24,6 +25,7 @@ export default function LottieLogo({
   respectReducedMotion = true,
   fadeMs = 180,
   loop = true,
+  autoplay = false,
   decorative = true,
   children,
 }: PropsWithChildren<LottieLogoProps>) {
@@ -52,7 +54,7 @@ export default function LottieLogo({
       fadeMs={fadeMs}
       rewindToStartOnTop
       loop={loop}
-      autoplay={false}
+      autoplay={autoplay}
       speed={0.5}
       renderer="svg"
       scrollThreshold={1}

@@ -15,7 +15,6 @@ import TrustStatement from '@/components/TrustStatement.astro';
 import DoubleCard from '@/layouts/sections/DoubleCard.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import CTASection from '@/layouts/heroes/CTASection.astro';
-import BottomContentSection from '@/layouts/sections/BottomContentSection.astro';
 import { query, sortByOrder } from '@/utils/query';
 import { roots, related, byItemKeys } from '@/utils/query/snippets';
 
@@ -49,15 +48,20 @@ import { roots, related, byItemKeys } from '@/utils/query/snippets';
   autoAdvanceDelay={2000}
 />
 
-<BottomContentSection
-  collection="industries"
-  slug="restaurants-food-service"
-  pageTitle="Restaurant Websites"
-  faq={{
-    customQuery: related("faq", "industries", "restaurants-food-service").orderBy(sortByOrder()),
-    heading: "Common Questions About Restaurant Websites"
-  }}
-/>
+<div class="bottom-content-section">
+  <ContentRenderer
+    query={query("testimonials")}
+    variant="TestimonialCarouselVariant"
+  />
+
+  <ContentRenderer
+    query={related("faq", "industries", "restaurants-food-service").orderBy(sortByOrder())}
+    variant="AccordionVariant"
+    allowMultiple={false}
+    title="FAQs"
+    heading="Common Questions About Restaurant Websites"
+  />
+</div>
 
 <CTASection
   title="Get Started"

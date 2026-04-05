@@ -18,6 +18,7 @@ export interface Props {
   titleFirstClass?: string;
   titleRestClass?: string;
   loop?: boolean;
+  autoplay?: boolean;
   altContext?: string;
 }
 
@@ -34,6 +35,7 @@ const {
   titleFirstClass,
   titleRestClass,
   loop = true,
+  autoplay = false,
   altContext,
 } = Astro.props;
 
@@ -72,6 +74,7 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
         className="logo-class"
         mediaClasses={logoClasses}
         loop={loop}
+        autoplay={autoplay}
         client:scroll
       >
         <Image
@@ -94,6 +97,7 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
         className="logo-class"
         mediaClasses={logoClasses}
         loop={loop}
+        autoplay={autoplay}
         client:visible
       >
         <Image
@@ -116,6 +120,7 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
         className="logo-class"
         mediaClasses={logoClasses}
         loop={loop}
+        autoplay={autoplay}
         client:load
       >
         <Image

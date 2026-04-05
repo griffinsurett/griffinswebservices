@@ -3,15 +3,14 @@
 /**
  * Reusable section for solution pages
  * Renders ContentSection, benefits, and CTA
- * Uses BottomContentSection for testimonials and FAQ
+ * Renders testimonials and FAQ inline
  *
  * Automatically derives slug from URL and fetches title from content collection
  */
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import ContentSection from "@/layouts/sections/ContentSection.astro";
 import CTASection from "@/layouts/heroes/CTASection.astro";
-import BottomContentSection from "@/layouts/sections/BottomContentSection.astro";
-import { sortByOrder, related, safeGetEntry } from "@/utils/query";
+import { query, sortByOrder, related, safeGetEntry } from "@/utils/query";
 import { capitalizeWords } from "@/utils/string";
 import { parseUrlPath } from "@/utils/paths";
 
@@ -180,18 +179,20 @@ const fullSidebar = sidebar ? {
   />
 )}
 
-{/* Bottom Content Section - Testimonials, FAQ */}
-<BottomContentSection
-  collection="solutions"
-  slug={slug}
-  pageTitle={title}
-  portfolio={false}
-  technologies={false}
-  faq={{
-    title: faqTitle,
-    heading: faqHeading || `Common Questions About ${title || "This Solution"}`,
-  }}
-/>
+<div class="bottom-content-section">
+  <ContentRenderer
+    query={query("testimonials")}
+    variant="TestimonialCarouselVariant"
+  />
+
+  <ContentRenderer
+    query={slug ? related("faq", "solutions", slug).orderBy(sortByOrder()) : query("faq").orderBy(sortByOrder())}
+    variant="AccordionVariant"
+    allowMultiple={false}
+    title={faqTitle}
+    heading={faqHeading || `Common Questions About ${title || "This Solution"}`}
+  />
+</div>
 
 {ctaHeading && (
   <CTASection

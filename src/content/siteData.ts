@@ -15,7 +15,7 @@ export const siteData = {
   ceoName: "Griffin Surett",
   ceoTitle: "Founder & CEO",
   ceoQuote:
-    "My goal is to build websites that business owners can rely on and marketing agencies can confidently hand off, with fast loading, clear structure, and the kind of performance that holds up when real traffic shows up.",
+    "My goal is to build websites that work for business owners, not against them, with fast loading, clear structure, and the kind of performance that makes it easy for people to trust what they see and take action without waiting.",
   logo: {
     src: Logo.src,
     alt: "Griffin's Web Services Logo",

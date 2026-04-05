@@ -10,8 +10,7 @@ import FrontPageHero from "@/layouts/heroes/FrontPageHero.astro";
 // import DoubleCard from "@/layouts/sections/DoubleCard.astro";
 import HomeProblemSolutionIntro from "@/layouts/sections/HomeProblemSolutionIntro.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
-import HomeTrustPanel from "@/layouts/sections/HomeTrustPanel.astro";
-import BottomContentSection from "@/layouts/sections/BottomContentSection.astro";
+import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
 
 const heroHeading = {
@@ -98,36 +97,39 @@ const heroDescription =
        <!-- <DoubleCard /> -->
        <HomeSolutionBridge />
 
-    <!-- Bottom Content Section - Testimonials, Portfolio, FAQ -->
-    <BottomContentSection
-      testimonials={{
-        customQuery: query("testimonials").where((entry: any) => entry.data.rating >= 4)
-      }}
-      portfolio={false}
-      technologies={{
-        customQuery: byTag("technologies", "featured").orderBy(sortByOrder()).limit(8),
-        title: "Featured Technologies",
-        description: "Frameworks, platforms, and infrastructure we rely on to keep sites fast, secure, and easy to evolve."
-      }}
-      faq={{
-        customQuery: byTag("faq", "featured").orderBy(sortByOrder()),
-        title: "FAQs"
-      }}
-    >
+    <div class="bottom-content-section">
       <ContentRenderer
-        slot="after-testimonials"
+        query={query("testimonials").where((entry: any) => entry.data.rating >= 4)}
+        variant="TestimonialCarouselVariant"
+      />
+
+      <ContentRenderer
         query={query("projects")
           .where((entry: any) => !!entry.data.featuredVideo)
           .orderBy(sortByOrder())}
         variant="PortfolioVideoShowcaseVariant"
-        title="What We Have Built"
         heading="Websites Built to Get Attention"
         description="Fast, sharp websites that look credible and perform."
         ctaHref="/projects"
         ctaText="See Portfolio"
       />
-      <HomeTrustPanel slot="after-testimonials" />
-    </BottomContentSection>
+      <TrustPanel />
+
+      <ContentRenderer
+        query={byTag("technologies", "featured").orderBy(sortByOrder()).limit(8)}
+        variant="TechnologiesVariant"
+        title="Featured Technologies"
+        description="Frameworks, platforms, and infrastructure we rely on to keep sites fast, secure, and easy to evolve."
+      />
+
+      <ContentRenderer
+        query={byTag("faq", "featured").orderBy(sortByOrder())}
+        variant="AccordionVariant"
+        allowMultiple={false}
+        title="FAQs"
+        heading="Common Questions About Griffin's Web Services"
+      />
+    </div>
 
     <!-- BLOG -->
     <ContentRenderer

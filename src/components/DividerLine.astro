@@ -1,0 +1,21 @@
+---
+interface Props {
+  orientation?: "horizontal" | "vertical";
+  className?: string;
+}
+
+const {
+  orientation = "horizontal",
+  className = "",
+} = Astro.props;
+
+const orientationClass =
+  orientation === "vertical"
+    ? "h-full min-h-full w-px self-stretch"
+    : "h-px w-full";
+---
+
+<div
+  aria-hidden="true"
+  class={`${orientationClass} bg-text/10 ${className}`.trim()}
+></div>
