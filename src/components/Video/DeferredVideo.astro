@@ -31,6 +31,7 @@ interface Props extends Record<string, any> {
   lazy?: boolean;
   muted?: boolean;
   autoplay?: boolean;
+  hoverPlay?: boolean;
   controls?: boolean;
   loop?: boolean;
   playsinline?: boolean;
@@ -52,6 +53,7 @@ const {
   lazy = true,
   muted = true,
   autoplay = false,
+  hoverPlay = false,
   controls = false,
   loop = false,
   playsinline = true,
@@ -177,6 +179,7 @@ const posterDecoding = priority ? "sync" : "async";
   class={`deferred-video relative w-full ${wrapperClass}`.trim()}
   data-video-shell="true"
   data-lazy-video-root="true"
+  data-video-hover-play={hoverPlay ? "true" : "false"}
 >
   <div class="relative h-full w-full overflow-hidden">
     {(posterPicture || manualPosterUrl) && (
@@ -250,6 +253,7 @@ const posterDecoding = priority ? "sync" : "async";
 
     const video = root.querySelector("video");
     if (!(video instanceof HTMLVideoElement)) return;
+    const hoverPlay = root.dataset.videoHoverPlay === "true";
 
     const markLoaded = () => {
       if (root.dataset.videoLoaded === "true") return;
@@ -296,6 +300,25 @@ const posterDecoding = priority ? "sync" : "async";
       }
     };
 
+    const playOnIntent = () => {
+      ensureVideoSource();
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => undefined);
+      }
+    };
+
+    const resetHoverPreview = () => {
+      if (!hoverPlay) return;
+      video.pause();
+      try {
+        video.currentTime = 0;
+      } catch {
+        // Ignore browsers that prevent synchronous seek during hover reset.
+      }
+      delete root.dataset.videoLoaded;
+    };
+
     if (video.readyState >= 2) {
       markLoaded();
     }
@@ -307,16 +330,21 @@ const posterDecoding = priority ? "sync" : "async";
     const trigger = root.querySelector("[data-video-trigger]");
     if (trigger instanceof HTMLButtonElement) {
       trigger.addEventListener("click", () => {
-        ensureVideoSource();
-        const playPromise = video.play();
-        if (playPromise && typeof playPromise.catch === "function") {
-          playPromise.catch(() => undefined);
-        }
+        playOnIntent();
       });
     }
 
+    if (hoverPlay) {
+      root.addEventListener("pointerenter", playOnIntent);
+      root.addEventListener("pointerleave", resetHoverPreview);
+      root.addEventListener("focusin", playOnIntent);
+      root.addEventListener("focusout", resetHoverPreview);
+    }
+
     if (!video.dataset.videoSrc) {
-      tryPlay();
+      if (!hoverPlay) {
+        tryPlay();
+      }
       return;
     }
 
@@ -325,7 +353,9 @@ const posterDecoding = priority ? "sync" : "async";
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           ensureVideoSource();
-          tryPlay();
+          if (!hoverPlay) {
+            tryPlay();
+          }
           observer.disconnect();
         });
       },

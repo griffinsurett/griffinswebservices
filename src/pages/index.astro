@@ -10,6 +10,7 @@ import FrontPageHero from "@/layouts/heroes/FrontPageHero.astro";
 // import DoubleCard from "@/layouts/sections/DoubleCard.astro";
 import HomeProblemSolutionIntro from "@/layouts/sections/HomeProblemSolutionIntro.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
+import HomeTrustPanel from "@/layouts/sections/HomeTrustPanel.astro";
 import BottomContentSection from "@/layouts/sections/BottomContentSection.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
 
@@ -57,6 +58,18 @@ const heroDescription =
       description="Whether you need a business website or a custom application, the structure stays clear: core solutions first, pricing in one place, and enhancements layered in when they create real value."
     /> -->
 
+    <!-- CAPABILITIES -->
+    <ContentRenderer
+      query={related("capabilities", "solutions", "websites").orderBy(sortByOrder())}
+      variant="CardVariant"
+      id="capabilities"
+      title="What We Do"
+      heading="Everything Your Website Needs to Win Attention and Hold Up Over Time"
+      description="Everything above depends on having the right technical foundation and ongoing oversight. Our capabilities work together to ensure your website stays fast, stable, and dependable over time."
+      gap="lg"
+      showButtonSection={false}
+    />
+
     <HomeProblemSolutionIntro />
 
     <!-- <HomeSolutionBridge /> -->
@@ -82,18 +95,6 @@ const heroDescription =
       description="Most websites don't fail all at once. They quietly slow down, become harder to manage, or stop supporting the business they were built for. We take a different approach. Every website we build is guided by clear principles that prioritize performance, stability, and maintainability — so your site doesn't just launch strong, it continues working as your business grows. We intentionally build websites in a way that minimizes ongoing maintenance without sacrificing reliability, security, or long-term performance."
     /> -->
 
-        <!-- CAPABILITIES -->
-    <!-- <ContentRenderer
-      query={related("capabilities", "solutions", "websites").orderBy(sortByOrder())}
-      variant="CardVariant"
-      id="capabilities"
-      title="Our Capabilities"
-      heading="The Capabilities That Make the Work Possible"
-      description="Everything above depends on having the right technical foundation and ongoing oversight. Our capabilities work together to ensure your website stays fast, stable, and dependable over time."
-      gap="lg"
-      showButtonSection={false}
-    /> -->
-
        <!-- <DoubleCard /> -->
        <HomeSolutionBridge />
 
@@ -102,15 +103,7 @@ const heroDescription =
       testimonials={{
         customQuery: query("testimonials").where((entry: any) => entry.data.rating >= 4)
       }}
-      portfolio={{
-        filterQuery: query('industries').orderBy(sortByOrder()),
-        title: "Portfolio",
-        heading: "Websites that deliver real results",
-        description: "From contractors to e-commerce brands, we build sites that look great, load fast, and convert visitors into customers.",
-        showCount: false,
-        showFilters: true,
-        showArrows: true
-      }}
+      portfolio={false}
       technologies={{
         customQuery: byTag("technologies", "featured").orderBy(sortByOrder()).limit(8),
         title: "Featured Technologies",
@@ -120,7 +113,21 @@ const heroDescription =
         customQuery: byTag("faq", "featured").orderBy(sortByOrder()),
         title: "FAQs"
       }}
-    />
+    >
+      <ContentRenderer
+        slot="after-testimonials"
+        query={query("projects")
+          .where((entry: any) => !!entry.data.featuredVideo)
+          .orderBy(sortByOrder())}
+        variant="PortfolioVideoShowcaseVariant"
+        title="What We Have Built"
+        heading="Websites Built to Get Attention"
+        description="Fast, sharp websites that look credible and perform."
+        ctaHref="/projects"
+        ctaText="See Portfolio"
+      />
+      <HomeTrustPanel slot="after-testimonials" />
+    </BottomContentSection>
 
     <!-- BLOG -->
     <ContentRenderer

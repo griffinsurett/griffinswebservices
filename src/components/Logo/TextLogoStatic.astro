@@ -17,8 +17,8 @@ interface Props {
 const {
   title = "",
   className = "",
-  firstClass = "text-3xl text-heading -ml-[0.1rem] leading-wide font-bold no-translate",
-  restClass = "font-light emphasized-text uppercase text-xs lg:text-sm p-0 m-0 tracking-[0.2em]",
+  firstClass = "text-3xl -ml-[0.1rem]",
+  restClass = "text-xs lg:text-sm p-0 m-0",
   fadeDuration = 1200,
   animateOutText = false,
   asHeading = true,
@@ -42,11 +42,11 @@ const headingAttrs = asHeading
   data-scroll-fade-css={animateOutText ? "true" : undefined}
   {...headingAttrs}
 >
-  <span class={firstClass} style="line-height: normal;">
+  <span class={`${firstClass} text-heading leading-wide font-bold no-translate`} style="line-height: normal;">
     {firstWord}
   </span>
   {restOfTitle && (
-    <span class={restClass} style="line-height: normal;">
+    <span class={`${restClass} font-light emphasized-text uppercase tracking-[0.2em]`} style="line-height: normal;">
       {" "}{restOfTitle}
     </span>
   )}

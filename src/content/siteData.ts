@@ -15,7 +15,7 @@ export const siteData = {
   ceoName: "Griffin Surett",
   ceoTitle: "Founder & CEO",
   ceoQuote:
-    "A website should do two things extremely well: be easy for your customers to use and be structured in a way that search engines are confident recommending.",
+    "My goal is to build websites that business owners can rely on and marketing agencies can confidently hand off, with fast loading, clear structure, and the kind of performance that holds up when real traffic shows up.",
   logo: {
     src: Logo.src,
     alt: "Griffin's Web Services Logo",

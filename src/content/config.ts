@@ -115,6 +115,7 @@ export const collections = {
         projectUrl: z.string().url().optional(),
         technologies: z.array(z.string()).default([]),
         industry: refSchema("industries"),
+        featuredVideo: z.string().optional(),
       }),
   }),
 

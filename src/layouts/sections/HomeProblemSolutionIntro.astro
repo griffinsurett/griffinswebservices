@@ -62,7 +62,7 @@ const getCardSpanClass = (index: number) => {
           <article
             class:list={[
               "group relative overflow-hidden rounded-[2rem] p-6 md:p-7",
-              "flex items-center gap-4 outer-card-transition outer-card-color",
+              "flex items-center gap-4 card-bg outer-card-transition",
               getCardSpanClass(index),
             ]}
             {...animationProps("fade-in-up", {

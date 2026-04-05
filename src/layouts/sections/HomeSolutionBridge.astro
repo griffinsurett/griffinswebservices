@@ -1,11 +1,12 @@
 ---
 import { Image } from "astro:assets";
 import Section from "@/components/Section.astro";
-import BackgroundMedia from "@/components/BackgroundMedia.astro";
+import BackgroundMediaFrame from "@/components/BackgroundMediaFrame.astro";
 import Button from "@/components/Button/Button";
 import FacebookStars from "@/components/FacebookStars";
 import Icon from "@/components/Icon";
 import Counter from "@/components/Counter.astro";
+import FloatingLogoBadge from "@/components/FloatingLogoBadge.astro";
 import { contactCtaData, pricingCtaData } from "@/content/siteData";
 import { animationProps } from "@/integrations/scroll-animations/props";
 import performanceImg from "@/assets/100performance.png";
@@ -34,7 +35,7 @@ const features = [
 <Section class="outer-section">
   <div class="inner-section">
     <div
-      class="relative flex flex-col gap-5"
+      class="bridge-roll-shell relative flex flex-col gap-5"
       {...animationProps("fade-in-up", { once: true, threshold: 0.1 })}
     >
       <div
@@ -49,19 +50,19 @@ const features = [
         />
       </div>
 
-      <div
-        class="relative min-h-[41rem] overflow-hidden rounded-[2.4rem] border border-text/10 bg-bg3 shadow-2xl max-lg:min-h-[49rem]"
+      <FloatingLogoBadge
+        class="bridge-roll-logo-track pointer-events-none absolute inset-x-0 top-[-2.25rem] z-30 h-[4.75rem] overflow-visible max-lg:top-[-1.75rem] max-lg:h-14"
+        badgeClassName="bridge-roll-logo"
+        imageClassName="block h-14 w-14 object-contain drop-shadow-[0_14px_30px_rgba(0,0,0,0.35)] lg:h-[4.5rem] lg:w-[4.5rem]"
+      />
+
+      <BackgroundMediaFrame
+        imageSrc={meoncompImg}
+        imageClass="w-full h-full min-h-[41rem] object-cover max-lg:min-h-[49rem]"
+        imageMaxWidth={1600}
+        mediaOverlayClass="bg-bg/70"
+        className="min-h-[41rem] max-lg:min-h-[49rem]"
       >
-        <BackgroundMedia
-          backgroundMedia={{
-            image: {
-              src: meoncompImg,
-              imageClass: "w-full h-full min-h-[41rem] object-cover max-lg:min-h-[49rem]",
-              maxWidth: 1600,
-            },
-            overlayClass: "bg-bg/70",
-          }}
-        />
 
         <div
           aria-hidden="true"
@@ -78,7 +79,7 @@ const features = [
           </p>
 
           <h2 class="mb-2 text-white text-[clamp(2.6rem,4vw,5rem)] leading-[1.02] font-bold tracking-[-0.04em]">
-            <Counter prefix="$" end={2.5} suffix="M+" class="!gap-[0.02em]" />
+            <Counter prefix="$" end={3.5} suffix="M+" class="!gap-[0.01em]" />
           </h2>
 
           <p class="text-[clamp(1.15rem,1.4vw,1.8rem)] leading-[1.2] text-white/82">
@@ -120,7 +121,7 @@ const features = [
             </li>
           ))}
         </ul>
-      </div>
+      </BackgroundMediaFrame>
 
       <div class="flex items-center justify-center gap-8 px-4 max-lg:flex-col max-lg:gap-4">
         <Button
@@ -135,12 +136,11 @@ const features = [
         </Button>
 
         <Button
+          client:visible
           href={pricingCtaData.link}
-          variant="link"
+          variant="secondary"
           size="lg"
-          rightIcon="lu:arrow-up-right"
-          className="!w-auto whitespace-nowrap p-0 text-[1.1rem] font-semibold normal-case tracking-normal text-white/92 no-underline hover:text-white/92 hover:no-underline [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-[0.16rem] hover:[&_svg]:-translate-y-[0.16rem]"
-          buttonWrapperClasses="!w-auto"
+          rightIcon="lu:arrow-right"
         >
           See Pricing
         </Button>
@@ -148,3 +148,51 @@ const features = [
     </div>
   </div>
 </Section>
+
+<style>
+  :global(.bridge-roll-logo) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateX(-50%) rotate(0deg);
+    will-change: left, transform;
+  }
+
+  @supports (animation-timeline: view()) {
+    .bridge-roll-shell {
+      view-timeline-name: --bridge-roll-progress;
+      view-timeline-axis: block;
+    }
+
+    :global(.bridge-roll-logo) {
+      animation: bridge-logo-scroll linear both;
+      animation-timeline: --bridge-roll-progress;
+      animation-range: entry 0% cover 70%;
+    }
+  }
+
+  @keyframes bridge-logo-scroll {
+    from {
+      left: 0%;
+      transform: translateX(-50%) rotate(0deg);
+    }
+
+    to {
+      left: 100%;
+      transform: translateX(-50%) rotate(1440deg);
+    }
+  }
+
+  @media (max-width: 1023px) {
+    :global(.bridge-roll-logo) {
+      transform: translateX(-50%) rotate(0deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.bridge-roll-logo) {
+      left: 50%;
+      transform: rotate(0deg);
+    }
+  }
+</style>

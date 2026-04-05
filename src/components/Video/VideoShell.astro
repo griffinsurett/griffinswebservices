@@ -45,6 +45,7 @@ interface Props {
   posterWidth?: number;
   ariaHidden?: boolean;
   priority?: boolean;
+  hydrateOnHover?: boolean;
   [key: string]: any;
 }
 
@@ -71,6 +72,7 @@ const {
   posterWidth = 1600,
   ariaHidden = false,
   priority = false,
+  hydrateOnHover = false,
   ...rest
 } = Astro.props as Props;
 
@@ -210,32 +212,61 @@ const posterDecoding = priority ? "sync" : "async";
   )}
 
   <div class={clientContainerClass}>
-    <VideoClient
-      client:visible
-      className={mediaClass}
-      wrapperClass={clientWrapperClass}
-      src={primarySrc}
-      poster={resolvedPosterSrc}
-      autoPlay={resolvedAutoPlay}
-      muted={resolvedMuted}
-      loop={resolvedLoop}
-      controls={resolvedControls}
-      playsInline={resolvedPlaysInline}
-      lazy={resolvedLazy}
-      preload={preload}
-      sourceType={primaryType}
-      aria-hidden={ariaHidden}
-      {...rest}
-    >
-      {clientSources.map((source) => (
-        <source
-          src={!resolvedLazy ? source.src : undefined}
-          data-video-src={resolvedLazy ? source.src : undefined}
-          type={source.type}
-          media={source.media}
-        />
-      ))}
-    </VideoClient>
+    {hydrateOnHover ? (
+      <VideoClient
+        client:hover
+        className={mediaClass}
+        wrapperClass={clientWrapperClass}
+        src={primarySrc}
+        poster={resolvedPosterSrc}
+        autoPlay={resolvedAutoPlay}
+        muted={resolvedMuted}
+        loop={resolvedLoop}
+        controls={resolvedControls}
+        playsInline={resolvedPlaysInline}
+        lazy={resolvedLazy}
+        preload={preload}
+        sourceType={primaryType}
+        aria-hidden={ariaHidden}
+        {...rest}
+      >
+        {clientSources.map((source) => (
+          <source
+            src={!resolvedLazy ? source.src : undefined}
+            data-video-src={resolvedLazy ? source.src : undefined}
+            type={source.type}
+            media={source.media}
+          />
+        ))}
+      </VideoClient>
+    ) : (
+      <VideoClient
+        client:visible
+        className={mediaClass}
+        wrapperClass={clientWrapperClass}
+        src={primarySrc}
+        poster={resolvedPosterSrc}
+        autoPlay={resolvedAutoPlay}
+        muted={resolvedMuted}
+        loop={resolvedLoop}
+        controls={resolvedControls}
+        playsInline={resolvedPlaysInline}
+        lazy={resolvedLazy}
+        preload={preload}
+        sourceType={primaryType}
+        aria-hidden={ariaHidden}
+        {...rest}
+      >
+        {clientSources.map((source) => (
+          <source
+            src={!resolvedLazy ? source.src : undefined}
+            data-video-src={resolvedLazy ? source.src : undefined}
+            type={source.type}
+            media={source.media}
+          />
+        ))}
+      </VideoClient>
+    )}
   </div>
 </figure>
 

@@ -16,7 +16,7 @@ export default function SecondaryButton({
 }: ButtonProps) {
   const innerButtonClasses = [
     getButtonBaseClasses(props.size),
-    "bg-transparent text-heading shadow-none",
+    "bg-transparent text-heading shadow-none [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-[0.16rem] hover:[&_svg]:-translate-y-[0.16rem]",
     BORDER_RADIUS_CLASS,
     className,
   ]
