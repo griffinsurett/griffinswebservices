@@ -4,7 +4,7 @@ import SiteLayout from "@/layouts/SiteLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortByOrder, sortByDate, byTag } from "@/utils/query";
 import { contactCtaData, siteData } from "@/content/siteData";
-import { roots, related, byItemKeys } from "@/utils/query/snippets";
+import { roots, related } from "@/utils/query/snippets";
 import FrontPageHero from "@/layouts/heroes/FrontPageHero.astro";
 // import DoubleCard from "@/layouts/sections/DoubleCard.astro";
 import HomeProblemSolutionIntro from "@/layouts/sections/HomeProblemSolutionIntro.astro";
@@ -47,14 +47,20 @@ const heroDescription =
       />
     </div>
 
-    <!-- SOLUTIONS -->
-    <!-- <ContentRenderer
-      query={byItemKeys("solutions", ["websites", "web-apps"])}
-      id="solutions"
-      title="Solutions"
-      heading="Web Solutions Built Around the System You Need"
-      description="Whether you need a business website or a custom application, the structure stays clear: core solutions first, pricing in one place, and enhancements layered in when they create real value."
-    /> -->
+    <ContentRenderer
+      query={byTag("capabilities", "featured").orderBy(sortByOrder())}
+      variant="CardVariant"
+      id="capabilities"
+      title="What We Do"
+      heading={{
+        before: "What we build to help your site look credible, rank better, and",
+        text: "convert more.",
+      }}
+      description="From design and development to SEO/AEO, performance optimization, and AI workflows, these are the capabilities we use to keep your website fast, loading quickly, and ready to turn more visitors into leads."
+      columns={3}
+      gap="md"
+      showButtonSection={false}
+    />
 
     <!-- PROCESS -->
     <ContentRenderer
@@ -109,6 +115,8 @@ const heroDescription =
         variant="PortfolioVideoShowcaseVariant"
         heading="Websites Built to Get Attention"
         description="Fast, sharp websites that look credible and perform."
+        primaryCtaHref={contactCtaData.link}
+        primaryCtaText={contactCtaData.text}
         ctaHref="/projects"
         ctaText="See Portfolio"
       />

@@ -23,6 +23,7 @@ export interface NumberCardProps {
   title?: ReactNode;
   description?: ReactNode;
   stepNumber?: number | string;
+  hideDisplayNumber?: boolean;
   linkProps?: AnchorHTMLAttributes<HTMLAnchorElement>;
   className?: string;
   innerClassName?: string;
@@ -173,6 +174,7 @@ export default function NumberCard({
   title,
   description,
   stepNumber,
+  hideDisplayNumber = false,
   linkProps,
   className = "",
   innerClassName = "",
@@ -338,7 +340,7 @@ export default function NumberCard({
         }
       >
         <div className="inner-card-style inner-card-transition inner-card-color" />
-        {displayNumber && (
+        {!hideDisplayNumber && displayNumber && (
           <span
             aria-hidden="true"
             className="pointer-events-none absolute left-6 top-4 z-0 select-none text-[4.75rem] font-black leading-none tracking-[-0.08em] text-primary/10 sm:left-8 sm:top-6 sm:text-[5.5rem]"

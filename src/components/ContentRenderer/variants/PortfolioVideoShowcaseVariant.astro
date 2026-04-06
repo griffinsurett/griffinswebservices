@@ -18,6 +18,8 @@ interface ProjectItem extends Record<string, any> {
 interface Props extends BaseVariantProps {
   ctaHref?: string;
   ctaText?: string;
+  primaryCtaHref?: string;
+  primaryCtaText?: string;
   maxItems?: number;
 }
 
@@ -30,6 +32,8 @@ const {
   id,
   ctaHref = "/projects",
   ctaText = "See Portfolio",
+  primaryCtaHref,
+  primaryCtaText,
   maxItems = 4,
 } = Astro.props as Props;
 
@@ -81,7 +85,18 @@ const desktopCardPositionClasses = [
               descriptionClassName="large-text max-w-2xl mx-auto"
             />
 
-            <div class="buttons-section-center mt-8">
+            <div class="portfolio-video-showcase__cta-row mt-8">
+              {primaryCtaHref && primaryCtaText && (
+                <Button
+                  client:visible
+                  href={primaryCtaHref}
+                  variant="primary"
+                  rightIcon="lu:arrow-up-right"
+                >
+                  {primaryCtaText}
+                </Button>
+              )}
+
               <Button
                 client:visible
                 href={ctaHref}
@@ -170,6 +185,14 @@ const desktopCardPositionClasses = [
     pointer-events: none;
   }
 
+  .portfolio-video-showcase__cta-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
   .portfolio-video-showcase__card {
     position: relative;
     overflow: hidden;
@@ -207,6 +230,10 @@ const desktopCardPositionClasses = [
       margin-top: 0;
       padding-top: 2rem;
       padding-bottom: 0;
+    }
+
+    .portfolio-video-showcase__cta-row {
+      gap: 0.875rem;
     }
   }
 

@@ -16,6 +16,7 @@ export default function SecondaryButton({
 }: ButtonProps) {
   const innerButtonClasses = [
     getButtonBaseClasses(props.size),
+    fullWidth ? "!w-full" : "",
     "bg-transparent text-heading shadow-none [&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-[0.16rem] hover:[&_svg]:-translate-y-[0.16rem]",
     BORDER_RADIUS_CLASS,
     className,
@@ -41,7 +42,7 @@ export default function SecondaryButton({
         borderRadius={BORDER_RADIUS_CLASS}
         duration={800}
         className="justify-center items-center w-full transition-all duration-700 ease-out hover:-translate-y-1"
-        innerClassName="p-0 shadow-none border-transparent justify-center items-center bg-transparent w-full"
+        innerClassName="flex p-0 shadow-none border-transparent justify-center items-center bg-transparent w-full"
       >
         <ButtonBase
           {...props}
