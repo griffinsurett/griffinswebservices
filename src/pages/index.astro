@@ -3,9 +3,8 @@
 import SiteLayout from "@/layouts/SiteLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortByOrder, sortByDate, byTag } from "@/utils/query";
-import { contactCtaData, pricingCtaData, siteData } from "@/content/siteData";
+import { contactCtaData, siteData } from "@/content/siteData";
 import { roots, related, byItemKeys } from "@/utils/query/snippets";
-import CTASection from "@/layouts/heroes/CTASection.astro";
 import FrontPageHero from "@/layouts/heroes/FrontPageHero.astro";
 // import DoubleCard from "@/layouts/sections/DoubleCard.astro";
 import HomeProblemSolutionIntro from "@/layouts/sections/HomeProblemSolutionIntro.astro";
@@ -57,14 +56,14 @@ const heroDescription =
       description="Whether you need a business website or a custom application, the structure stays clear: core solutions first, pricing in one place, and enhancements layered in when they create real value."
     /> -->
 
-    <!-- CAPABILITIES -->
+    <!-- PROCESS -->
     <ContentRenderer
-      query={related("capabilities", "solutions", "websites").orderBy(sortByOrder())}
-      variant="CardVariant"
-      id="capabilities"
-      title="What We Do"
-      heading="Everything Your Website Needs to Win Attention and Hold Up Over Time"
-      description="Everything above depends on having the right technical foundation and ongoing oversight. Our capabilities work together to ensure your website stays fast, stable, and dependable over time."
+      query={query("process").orderBy(sortByOrder())}
+      variant="NumberCardVariant"
+      id="process"
+      title="How We Work"
+      heading="A Clear Process From Strategy To Launch And Support"
+      description="Good websites do not come from guessing. They come from clear structure, strong execution, and continued support after launch."
       gap="lg"
       showButtonSection={false}
     />
@@ -143,18 +142,5 @@ const heroDescription =
       }}
     />
 
-    <!-- CTA -->
-    <CTASection
-      title="Get Started"
-      heading="Ready to Build a Website That Works?"
-      primaryCTA={{
-        text: contactCtaData.text,
-        link: contactCtaData.link,
-      }}
-      secondaryCTA={{
-        text: pricingCtaData.text,
-        link: pricingCtaData.link,
-      }}
-    />
   </div>
 </SiteLayout>

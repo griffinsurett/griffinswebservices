@@ -39,7 +39,7 @@ export interface PortfolioItemData {
   description?: string;
   client?: string;
   category?: string;
-  featuredImage?: any;
+  fullSiteImage?: any;
   bannerImage?: any;
   image?: string;
   imageSources?: PortfolioImageSources;
@@ -53,11 +53,11 @@ export interface PortfolioItemData {
 
 /**
  * Get the primary image source from a portfolio item
- * Checks featuredImage, bannerImage, then image in order
+ * Checks fullSiteImage, bannerImage, then image in order
  */
 export function getPortfolioImageSrc(item: PortfolioItemData): string {
   return (
-    getImageSrc(item.featuredImage) ||
+    getImageSrc(item.fullSiteImage) ||
     getImageSrc(item.bannerImage) ||
     getImageSrc(item.image) ||
     ""

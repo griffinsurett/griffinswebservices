@@ -67,7 +67,23 @@ export const collections = {
 
   "about-us": defineCollection({
     schema: ({ image }) =>
-      baseSchema({ image })
+      baseSchema({ image }).extend({
+        statLabel: z.string().optional(),
+        statValue: z.number().optional(),
+        statPrefix: z.string().optional(),
+        statSuffix: z.string().optional(),
+        statDescription: z.string().optional(),
+        reviewLabel: z.string().optional(),
+        reviewLink: z.string().url().optional(),
+        featureItems: z
+          .array(
+            z.object({
+              icon: z.string(),
+              text: z.string(),
+            }),
+          )
+          .default([]),
+      })
   }),
 
   "blog": defineCollection({
@@ -110,12 +126,18 @@ export const collections = {
 
   "projects": defineCollection({
     schema: ({ image }) =>
-      baseSchema({ image }).extend({
+      baseSchema({ image }).omit({ featuredImage: true }).extend({
         client: z.string().optional(),
         projectUrl: z.string().url().optional(),
         technologies: z.array(z.string()).default([]),
         industry: refSchema("industries"),
         featuredVideo: z.string().optional(),
+        fullSiteImage: z
+          .object({
+            src: image(),
+            alt: z.string(),
+          })
+          .optional(),
       }),
   }),
 
@@ -213,6 +235,12 @@ export const collections = {
         highlight: z.boolean().optional(),
         solutions: refSchema(["solutions", "features"]),
       }),
+  }),
+
+  // ── process ──────────────────────────────────────────
+  "process": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }),
   }),
 
   // ── philosophy ──────────────────────────────────────────

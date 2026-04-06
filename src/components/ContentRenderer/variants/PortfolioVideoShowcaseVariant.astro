@@ -110,14 +110,16 @@ const desktopCardPositionClasses = [
               <VideoShell
                 src={item.featuredVideo}
                 alt={item.title ? `${item.title} website preview` : "Website preview"}
-                hydrateOnHover={true}
+                hydrateOnHover={false}
                 autoPlay={true}
                 muted={true}
                 loop={true}
                 controls={false}
                 lazy={true}
+                hoverPlay={true}
                 playsInline={true}
                 posterWidth={1280}
+                generateThumbAt={0.75}
                 wrapperClass="portfolio-video-showcase__media"
                 mediaClass="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.025]"
                 clientWrapperClass="h-full w-full overflow-hidden"

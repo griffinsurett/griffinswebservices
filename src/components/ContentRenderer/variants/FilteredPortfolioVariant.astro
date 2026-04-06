@@ -114,7 +114,7 @@ function matchesFilter(relatedItem: Record<string, any>, filterKey: string): boo
 async function optimizeItemImage(item: Record<string, any>) {
   const primaryImage =
     (typeof item.image === "object" ? item.image : undefined) ??
-    item.featuredImage ??
+    item.fullSiteImage ??
     item.bannerImage;
 
   const metadata = resolveImageMetadata(primaryImage);

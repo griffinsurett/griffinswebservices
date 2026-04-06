@@ -20,6 +20,7 @@ interface VideoProps extends VideoHTMLAttributes<HTMLVideoElement> {
   clientPosterSrc?: string;
   clientPlaceholderSrc?: string;
   wrapperClass?: string;
+  hoverPlay?: boolean;
 }
 
 export const Video = forwardRef<HTMLVideoElement, VideoProps>(
@@ -41,6 +42,7 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
       clientPosterSrc,
       clientPlaceholderSrc,
       wrapperClass = "",
+      hoverPlay = false,
       preload,
       ...rest
     },
@@ -67,17 +69,36 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
       const video = internalRef.current;
       if (!video || !lazy) return;
 
+      const ensureVideoSources = () => {
+        let attached = false;
+
+        const dataSrc = video.dataset.videoSrc;
+        if (dataSrc && video.src !== dataSrc) {
+          video.src = dataSrc;
+          attached = true;
+        }
+
+        const sourceNodes = video.querySelectorAll("source[data-video-src]");
+        sourceNodes.forEach((node) => {
+          const nodeSrc = node.getAttribute("data-video-src");
+          if (nodeSrc && node.getAttribute("src") !== nodeSrc) {
+            node.setAttribute("src", nodeSrc);
+            attached = true;
+          }
+        });
+
+        if (attached) {
+          video.load();
+        }
+      };
+
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              const dataSrc = video.dataset.videoSrc;
-              if (dataSrc && video.src !== dataSrc) {
-                video.src = dataSrc;
-                video.load();
-                if (autoPlay) {
-                  video.play().catch(() => {});
-                }
+              ensureVideoSources();
+              if (autoPlay && !hoverPlay) {
+                video.play().catch(() => {});
               }
               observer.disconnect();
             }
@@ -88,14 +109,14 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
 
       observer.observe(video);
       return () => observer.disconnect();
-    }, [lazy, autoPlay]);
+    }, [lazy, autoPlay, hoverPlay]);
 
     useEffect(() => {
       const video = internalRef.current;
       if (!video) return;
+      const shell = video.closest<HTMLElement>("[data-video-shell]");
 
       const markShellLoaded = () => {
-        const shell = video.closest<HTMLElement>("[data-video-shell]");
         if (!shell || shell.dataset.videoLoaded === "true") return;
 
         requestAnimationFrame(() => {
@@ -105,20 +126,81 @@ export const Video = forwardRef<HTMLVideoElement, VideoProps>(
         });
       };
 
-      if (video.readyState >= 2) {
+      if (!hoverPlay && video.readyState >= 2) {
         markShellLoaded();
       }
 
-      video.addEventListener("loadeddata", markShellLoaded);
-      video.addEventListener("canplay", markShellLoaded);
       video.addEventListener("playing", markShellLoaded);
+      if (!hoverPlay) {
+        video.addEventListener("loadeddata", markShellLoaded);
+        video.addEventListener("canplay", markShellLoaded);
+      }
+
+      if (hoverPlay && shell) {
+        const ensureVideoSources = () => {
+          let attached = false;
+
+          const dataSrc = video.dataset.videoSrc;
+          if (dataSrc && video.src !== dataSrc) {
+            video.src = dataSrc;
+            attached = true;
+          }
+
+          const sourceNodes = video.querySelectorAll("source[data-video-src]");
+          sourceNodes.forEach((node) => {
+            const nodeSrc = node.getAttribute("data-video-src");
+            if (nodeSrc && node.getAttribute("src") !== nodeSrc) {
+              node.setAttribute("src", nodeSrc);
+              attached = true;
+            }
+          });
+
+          if (attached) {
+            video.load();
+          }
+        };
+
+        const playOnHover = () => {
+          ensureVideoSources();
+          video.play().catch(() => {});
+        };
+
+        const resetPreview = () => {
+          video.pause();
+          try {
+            video.currentTime = 0;
+          } catch {
+            // Ignore synchronous seek failures.
+          }
+          delete shell.dataset.videoLoaded;
+        };
+
+        shell.addEventListener("pointerenter", playOnHover);
+        shell.addEventListener("pointerleave", resetPreview);
+        shell.addEventListener("focusin", playOnHover);
+        shell.addEventListener("focusout", resetPreview);
+
+        return () => {
+          video.removeEventListener("playing", markShellLoaded);
+          if (!hoverPlay) {
+            video.removeEventListener("loadeddata", markShellLoaded);
+            video.removeEventListener("canplay", markShellLoaded);
+          }
+          shell.removeEventListener("pointerenter", playOnHover);
+          shell.removeEventListener("pointerleave", resetPreview);
+          shell.removeEventListener("focusin", playOnHover);
+          shell.removeEventListener("focusout", resetPreview);
+        };
+      }
 
       return () => {
-        video.removeEventListener("loadeddata", markShellLoaded);
-        video.removeEventListener("canplay", markShellLoaded);
+        if (!hoverPlay) {
+          video.removeEventListener("loadeddata", markShellLoaded);
+          video.removeEventListener("canplay", markShellLoaded);
+        }
         video.removeEventListener("playing", markShellLoaded);
       };
-    }, []);
+    }, [hoverPlay]);
 
     useEffect(() => {
       if (clientLoadPlaceholder && clientPosterSrc) {

@@ -83,7 +83,7 @@ const IMAGE_FORMATS: { format: OptimizedFormat; quality: number }[] = [
 // Process items and generate optimized images
 const processedItems = await Promise.all(
   safeItems.map(async (item, index) => {
-    const primaryImage = item.featuredImage ?? item.bannerImage;
+    const primaryImage = item.fullSiteImage ?? item.bannerImage;
     const metadata = resolveImageMetadata(primaryImage);
     const altText = primaryImage
       ? getImageAlt(primaryImage, item.title ?? "Project preview")

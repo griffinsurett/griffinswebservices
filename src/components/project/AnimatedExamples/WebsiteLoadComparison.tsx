@@ -190,7 +190,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                 <div className="animate-in fade-in duration-200 h-full flex flex-col">
                   {/* Nav bar */}
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[7px] font-bold text-primary">Fast Co</span>e 
+                    <span className="text-[7px] font-bold text-primary">Fast Co</span>
                     <div className="flex gap-2">
                       <span className="text-[5px] text-text/60">About</span>
                       <span className="text-[5px] text-text/60">Services</span>
@@ -302,7 +302,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                   <div className="flex items-center justify-between mb-2">
                     <span
                       className="text-[7px] font-bold transition-opacity duration-300"
-                      style={{ opacity: loadProgress >= 1 ? 0.5 : 0.2, color: "var(--text)" }}
+                      style={{ opacity: loadProgress >= 1 ? 0.5 : 0.2, color: "var(--color-text)" }}
                     >
                       {loadProgress >= 2 ? "Beta Inc" : "Bet..."}
                     </span>
@@ -334,13 +334,13 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                     <div className="flex-1 flex flex-col justify-center">
                       <p
                         className="text-[9px] font-bold leading-tight mb-1 transition-opacity duration-300"
-                        style={{ opacity: loadProgress >= 3 ? 0.6 : 0.15, color: "var(--text)" }}
+                        style={{ opacity: loadProgress >= 3 ? 0.6 : 0.15, color: "var(--color-text)" }}
                       >
                         {loadProgress >= 4 ? "Welcome to Beta" : loadProgress >= 2 ? "Welcome to..." : "..."}
                       </p>
                       <p
                         className="text-[5px] leading-relaxed mb-2 transition-opacity duration-300"
-                        style={{ opacity: loadProgress >= 5 ? 0.4 : 0.1, color: "var(--text)" }}
+                        style={{ opacity: loadProgress >= 5 ? 0.4 : 0.1, color: "var(--color-text)" }}
                       >
                         {loadProgress >= 6
                           ? "Quality products and service."

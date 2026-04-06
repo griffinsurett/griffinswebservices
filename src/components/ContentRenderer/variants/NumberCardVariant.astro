@@ -1,0 +1,296 @@
+---
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import type { NumberCardData, NumberCardProps } from "@/components/LoopComponents/NumberCard";
+import NumberCardRenderer from "@/components/LoopTemplates/NumberCardRenderer";
+import ContentBridge from "../ContentBridge/ContentBridge.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Section from "@/components/Section.astro";
+import Button from "@/components/Button/Button";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import { toArray } from "@/utils/array";
+import processDefaultImage from "@/assets/computer-guy.png";
+
+interface Props extends BaseVariantProps {
+  columns?: 1 | 2 | 3 | 4 | "auto";
+  sectionLayout?: "default" | "split" | "auto";
+  ctaHref?: string;
+  ctaText?: string;
+  card?: Partial<Omit<NumberCardProps, "data">>;
+  ctaInlineOnDesktop?: boolean;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "outer-section",
+  columns = "auto",
+  sectionLayout = "auto",
+  collectionUrl,
+  collectionTitle,
+  id,
+  showButtonSection = true,
+  ctaHref,
+  ctaText,
+  card,
+  ctaInlineOnDesktop = false,
+} = Astro.props as Props;
+
+const safeItems = toArray(items) as NumberCardData[];
+const showHeader = Boolean(title || heading || description);
+const shouldAutoSplit =
+  showHeader &&
+  sectionLayout === "auto" &&
+  [2, 4, 8].includes(safeItems.length);
+const resolvedSectionLayout =
+  sectionLayout === "auto"
+    ? shouldAutoSplit
+      ? "split"
+      : "default"
+    : sectionLayout;
+const isSplitLayout = resolvedSectionLayout === "split";
+const maxColumns =
+  columns === "auto"
+    ? isSplitLayout
+      ? 2
+      : 3
+    : columns;
+const effectiveColumns = Math.min(maxColumns, safeItems.length || 1) as 1 | 2 | 3 | 4;
+const baseNumberCardProps: Partial<NumberCardProps> = {
+  image: {
+    src: processDefaultImage.src,
+    alt: "Website planning and development workspace",
+  },
+  listItemProps: {
+    showIcon: false,
+    showImage: true,
+    className: "lg:items-start lg:text-left",
+    imageClassName:
+      "relative z-10 mb-6 aspect-[4/3] w-full max-w-[16rem] overflow-hidden rounded-2xl border border-primary/20 shadow-xl mx-auto lg:mx-0",
+    titleClassName: "h3 mb-3 relative z-10 lg:text-left",
+    descriptionClassName: "text-text leading-relaxed relative z-10 lg:text-left",
+  },
+};
+
+const mergeListItemProps = (
+  baseListItemProps?: NumberCardProps["listItemProps"],
+  overrideListItemProps?: NumberCardProps["listItemProps"],
+) => ({
+  ...(baseListItemProps ?? {}),
+  ...(overrideListItemProps ?? {}),
+});
+
+const numberCardPropOverrides: Partial<NumberCardProps> | undefined = {
+  ...baseNumberCardProps,
+  ...card,
+  listItemProps: mergeListItemProps(baseNumberCardProps.listItemProps, card?.listItemProps),
+};
+const splitNumberCardPropOverrides: Partial<NumberCardProps> | undefined = isSplitLayout
+  ? {
+      ...numberCardPropOverrides,
+      className: [numberCardPropOverrides?.className, "h-full"].filter(Boolean).join(" "),
+      innerClassName: [
+        numberCardPropOverrides?.innerClassName,
+        "h-full min-h-[25rem] lg:min-h-[27rem]",
+      ]
+        .filter(Boolean)
+        .join(" "),
+      stretchToFill: true,
+      bodyClassName: [
+        numberCardPropOverrides?.bodyClassName,
+        "max-w-[17rem] lg:max-w-none",
+      ]
+        .filter(Boolean)
+        .join(" "),
+    }
+  : numberCardPropOverrides;
+
+const resolveCardClassName = (item: NumberCardData): string => {
+  if (!item || typeof item !== "object") return "";
+  const record = item as Record<string, any>;
+  const classes = [record.class, record.className].filter(
+    (value): value is string =>
+      typeof value === "string" && value.trim().length > 0,
+  );
+  return classes.join(" ");
+};
+
+const resolveRingDuration = (item: NumberCardData): number => {
+  if (!item || typeof item !== "object") return 800;
+  const record = item as Record<string, any>;
+  return typeof record?.ringDuration === "number" ? record.ringDuration : 800;
+};
+
+const hasAnimationBody = (item: NumberCardData): boolean => {
+  if (!item || typeof item !== "object") return false;
+  const record = item as Record<string, any>;
+  return typeof record?.content === "string" && record.content.trim().length > 0;
+};
+
+const gridMarginClass = showHeader ? "mt-12" : "";
+const showCTA =
+  showButtonSection &&
+  shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+  (ctaText || title || collectionTitle) &&
+  (ctaHref || collectionUrl);
+const showSidebar = showHeader || showCTA;
+const sectionOverflowClass = isSplitLayout ? "" : "overflow-hidden";
+---
+
+<Section id={id} class={`relative ${sectionOverflowClass} ${className}`.trim()}>
+  <div class="inner-section">
+    {isSplitLayout ? (
+      showSidebar ? (
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-12 xl:gap-16">
+          <div class="flex flex-col gap-6 sticky-section lg:self-start">
+            {showHeader && (
+              <SectionHeader
+                title={title}
+                heading={heading}
+                description={description}
+                className="text-section text-left"
+                descriptionClassName="large-text text-left"
+              />
+            )}
+
+            {showCTA && (
+              <div class="flex items-start">
+                <Button
+                  href={ctaHref ?? collectionUrl}
+                  rightIcon="lu:arrow-right"
+                  variant="primary"
+                >
+                  {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <ContentBridge items={safeItems} bridgeId={id}>
+              <Fragment slot="default">
+                <NumberCardRenderer
+                  client:visible
+                  items={safeItems.map((item, index) => ({
+                    ...item,
+                    contentSlotId: `${id}-slot-${index}`,
+                    showBody: hasAnimationBody(item),
+                  }))}
+                  columns={effectiveColumns}
+                  showBody={false}
+                  getCardClassName={resolveCardClassName}
+                  getRingDuration={resolveRingDuration}
+                  numberCardProps={splitNumberCardPropOverrides}
+                  animation={{
+                    once: false,
+                    threshold: 0.15,
+                    rootMargin: "-10% 0px -10% 0px",
+                  }}
+                />
+              </Fragment>
+            </ContentBridge>
+          </div>
+        </div>
+      ) : (
+        <ContentBridge items={safeItems} bridgeId={id}>
+          <Fragment slot="default">
+            <NumberCardRenderer
+              client:visible
+              items={safeItems.map((item, index) => ({
+                ...item,
+                contentSlotId: `${id}-slot-${index}`,
+                showBody: hasAnimationBody(item),
+              }))}
+              columns={effectiveColumns}
+              showBody={false}
+              getCardClassName={resolveCardClassName}
+              getRingDuration={resolveRingDuration}
+              numberCardProps={numberCardPropOverrides}
+              animation={{
+                once: false,
+                threshold: 0.15,
+                rootMargin: "-10% 0px -10% 0px",
+              }}
+            />
+          </Fragment>
+        </ContentBridge>
+      )
+    ) : (
+      <>
+        {showHeader && (
+          <div
+            class={
+              ctaInlineOnDesktop && showCTA
+                ? "flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between"
+                : ""
+            }
+          >
+            <div class={ctaInlineOnDesktop && showCTA ? "lg:flex-1" : "heading-padding"}>
+              <SectionHeader
+                title={title}
+                heading={heading}
+                description={description}
+                className={
+                  ctaInlineOnDesktop && showCTA ? "text-section lg:text-left" : undefined
+                }
+                descriptionClassName={
+                  ctaInlineOnDesktop && showCTA ? "large-text lg:text-left" : undefined
+                }
+              />
+            </div>
+
+            {ctaInlineOnDesktop && showCTA && (
+              <div class="hidden lg:flex items-center">
+                <Button
+                  href={ctaHref ?? collectionUrl}
+                  rightIcon="lu:arrow-right"
+                  variant="secondary"
+                >
+                  {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        <ContentBridge items={safeItems} bridgeId={id}>
+          <Fragment slot="default">
+            <NumberCardRenderer
+              client:visible
+              items={safeItems.map((item, index) => ({
+                ...item,
+                contentSlotId: `${id}-slot-${index}`,
+                showBody: hasAnimationBody(item),
+              }))}
+              columns={effectiveColumns}
+              showBody={false}
+              className={gridMarginClass}
+              getCardClassName={resolveCardClassName}
+              getRingDuration={resolveRingDuration}
+              numberCardProps={splitNumberCardPropOverrides}
+              animation={{
+                once: false,
+                threshold: 0.15,
+                rootMargin: "-10% 0px -10% 0px",
+              }}
+            />
+          </Fragment>
+        </ContentBridge>
+
+        {showCTA && (
+          <div class={`buttons-section-center ${ctaInlineOnDesktop ? "lg:hidden" : ""}`.trim()}>
+            <Button
+              href={ctaHref ?? collectionUrl}
+              rightIcon="lu:arrow-right"
+              variant="secondary"
+              client:idle
+            >
+              {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+            </Button>
+          </div>
+        )}
+      </>
+    )}
+  </div>
+</Section>
