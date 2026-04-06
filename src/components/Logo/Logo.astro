@@ -8,10 +8,12 @@ import { siteData } from "@/content/siteData";
 export interface Props {
   loading?: "lazy" | "eager";
   trigger?: "auto" | "scroll" | "visible" | "load";
+  hydrate?: "load" | "idle" | "visible" | "scroll";
   textFadeMs?: number;
   animateOutText?: boolean;
   class?: string;
   useLottie?: boolean;
+  showText?: boolean;
   logoMediaClass?: string;
   logoWidths?: number[];
   logoSizes?: string;
@@ -25,10 +27,12 @@ export interface Props {
 const {
   loading = "eager",
   trigger = "auto",
+  hydrate,
   textFadeMs = 1200,
   animateOutText = false,
   class: className = "",
   useLottie = true,
+  showText = true,
   logoMediaClass,
   logoWidths,
   logoSizes,
@@ -58,6 +62,8 @@ const DEFAULT_LOGO_CLASSES =
 const LOGO_WIDTHS = logoWidths ?? DEFAULT_LOGO_WIDTHS;
 const LOGO_SIZES = logoSizes ?? DEFAULT_LOGO_SIZES;
 const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
+const hydrationMode =
+  hydrate ?? (trigger === "scroll" ? "scroll" : trigger === "visible" ? "visible" : "load");
 ---
 
 <a
@@ -66,7 +72,7 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
   class={`notranslate flex justify-center items-center gap-1.5 ${className}`}
 >
   {shouldUseLottie ? (
-    trigger === "scroll" ? (
+    hydrationMode === "scroll" ? (
       <LottieLogo
         alt={alt}
         loading={loading}
@@ -89,7 +95,7 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
           aria-hidden="true"
         />
       </LottieLogo>
-    ) : trigger === "visible" ? (
+    ) : hydrationMode === "visible" ? (
       <LottieLogo
         alt={alt}
         loading={loading}
@@ -99,6 +105,29 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
         loop={loop}
         autoplay={autoplay}
         client:visible
+      >
+        <Image
+          src={POSTER_SRC}
+          alt=""
+          loading={loading}
+          decoding="async"
+          class={logoClasses}
+          widths={LOGO_WIDTHS}
+          sizes={LOGO_SIZES}
+          fetchpriority={loading === "eager" ? "high" : "low"}
+          aria-hidden="true"
+        />
+      </LottieLogo>
+    ) : hydrationMode === "idle" ? (
+      <LottieLogo
+        alt={alt}
+        loading={loading}
+        trigger={trigger}
+        className="logo-class"
+        mediaClasses={logoClasses}
+        loop={loop}
+        autoplay={autoplay}
+        client:idle
       >
         <Image
           src={POSTER_SRC}
@@ -149,14 +178,16 @@ const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
     />
   )}
 
-  <div>
-    <TextLogoStatic
-      title={siteData.title}
-      className="flex flex-col p-0 m-0"
-      fadeDuration={textFadeMs}
-      animateOutText={animateOutText}
-      firstClass={titleFirstClass}
-      restClass={titleRestClass}
-    />
-  </div>
+  {showText && (
+    <div>
+      <TextLogoStatic
+        title={siteData.title}
+        className="flex flex-col p-0 m-0"
+        fadeDuration={textFadeMs}
+        animateOutText={animateOutText}
+        firstClass={titleFirstClass}
+        restClass={titleRestClass}
+      />
+    </div>
+  )}
 </a>

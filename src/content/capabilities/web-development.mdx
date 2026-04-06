@@ -20,6 +20,7 @@ solutions:
 ---
 
 import { contactCtaData } from "@/content/siteData";
+import Logo from "@/components/Logo/Logo.astro";
 import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
@@ -43,7 +44,27 @@ import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
     link: contactCtaData.link,
   }}
   id="capabilities-quote-hero"
-/>
+>
+  <div
+    slot="right"
+    class="flex w-full items-center justify-center py-8 lg:py-0"
+  >
+    <Logo
+      showText={false}
+      useLottie={true}
+      loading="eager"
+      trigger="load"
+      hydrate="idle"
+      autoplay={true}
+      loop={true}
+      altContext="Web Development Hero"
+      class="pointer-events-none"
+      logoMediaClass="block h-[min(72vw,20rem)] w-[min(72vw,20rem)] object-contain lg:h-[22rem] lg:w-[22rem]"
+      logoWidths={[320, 480, 700]}
+      logoSizes="(min-width: 1280px) 22rem, (min-width: 1024px) 18rem, min(72vw, 20rem)"
+    />
+  </div>
+</BreadcrumbHeroStart>
 
 <TrustStatement text="We don't treat development as a one-time task. We treat it as the technical foundation your website depends on every day." />
 
