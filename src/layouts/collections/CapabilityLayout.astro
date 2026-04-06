@@ -1,0 +1,52 @@
+---
+import { contactCtaData } from "@/content/siteData";
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import FrontPageHeroBasic from "@/layouts/heroes/FrontPageHeroBasic.astro";
+import type { CollectionLayoutProps } from "./types";
+import { getItemKey } from "@/utils/collections";
+import { getBreadcrumbs } from "@/utils/query";
+
+const {
+  entry,
+  collection,
+  collectionMeta,
+  Content,
+  seoProps = {},
+} = Astro.props as CollectionLayoutProps;
+
+const data = entry?.data || {};
+const entryKey = entry ? getItemKey(entry) : "";
+const breadcrumbRelations = entryKey
+  ? await getBreadcrumbs("capabilities", entryKey, true)
+  : [];
+
+const capabilityBreadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: collectionMeta?.data?.title || "Capabilities", href: `/${collection}` },
+  ...breadcrumbRelations.map((relation) => ({
+    label:
+      relation.entry?.data?.title ||
+      relation.id
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char: string) => char.toUpperCase()),
+    href:
+      relation.id === entryKey ? undefined : `/${relation.collection}/${relation.id}`,
+  })),
+];
+---
+
+<SiteLayout {...seoProps}>
+  <FrontPageHeroBasic
+    title={data.title}
+    heading={data.heading}
+    description={data.description}
+    breadcrumbs={capabilityBreadcrumbs}
+    primaryCTA={{
+      text: contactCtaData.text,
+      link: contactCtaData.link,
+    }}
+    id="capabilities-quote-hero"
+  />
+
+  {Content && <Content />}
+</SiteLayout>

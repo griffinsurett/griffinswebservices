@@ -1,0 +1,282 @@
+---
+import koiDesktop from "@/assets/projects/koiroofingandsolar.com.jpg";
+import koiMobile from "@/assets/projects/koiroofingandsolar.com-mobile-old.jpg";
+import prontoDesktop from "@/assets/projects/pronto-junk-removal.jpg";
+import prontoDesktopAlt from "@/assets/projects/pronto-junk-removal2.jpg";
+import roonysDesktop from "@/assets/projects/roonys-marketing.jpg";
+import beyondDesktop from "@/assets/projects/beyond-strength.jpg";
+import tsfDesktop from "@/assets/projects/tsf.jpg";
+import cbcDesktopAlt from "@/assets/projects/CBC copy.jpg";
+
+interface Props {
+  className?: string;
+  id?: string;
+}
+
+const { className = "", id = "web-design-showcase" } = Astro.props as Props;
+
+const cards = [
+  {
+    title: "Faria's Demolition alternate desktop website preview",
+    src: "/project-images-and-videos/fariasdemolition.com/images/fariasdemolition.com-desktop copy.jpg",
+    cardClass: "web-design-showcase__card web-design-showcase__card--far-left",
+    imageClass: "object-top",
+  },
+  {
+    title: "Tok Secret Formula desktop website preview",
+    src: tsfDesktop,
+    cardClass: "web-design-showcase__card web-design-showcase__card--edge-left",
+    imageClass: "object-top",
+  },
+  {
+    title: "Koi Roofing and Solar desktop website preview",
+    src: koiDesktop,
+    cardClass: "web-design-showcase__card web-design-showcase__card--feature-left",
+    imageClass: "object-top",
+  },
+  {
+    title: "Roony's Marketing desktop website preview",
+    src: roonysDesktop,
+    cardClass: "web-design-showcase__card web-design-showcase__card--support-left",
+    imageClass: "object-top",
+  },
+  {
+    title: "Koi Roofing and Solar mobile website preview",
+    src: koiMobile,
+    cardClass: "web-design-showcase__card web-design-showcase__card--phone-top",
+    imageClass: "object-[78%_top]",
+  },
+  {
+    title: "Pronto Junk Removal desktop website preview",
+    src: prontoDesktop,
+    cardClass: "web-design-showcase__card web-design-showcase__card--feature-right",
+    imageClass: "object-top",
+  },
+  {
+    title: "Beyond Strength Fitness desktop website preview",
+    src: beyondDesktop,
+    cardClass: "web-design-showcase__card web-design-showcase__card--support-right",
+    imageClass: "object-top",
+  },
+  {
+    title: "Pronto Junk Removal alternate desktop website preview",
+    src: prontoDesktopAlt,
+    cardClass: "web-design-showcase__card web-design-showcase__card--edge-right",
+    imageClass: "object-top",
+  },
+  {
+    title: "Certified Bag Chasers alternate desktop website preview",
+    src: cbcDesktopAlt,
+    cardClass: "web-design-showcase__card web-design-showcase__card--far-right",
+    imageClass: "object-top",
+  },
+] as const;
+
+const mobileCards = [
+  {
+    title: "Koi Roofing and Solar mobile website preview",
+    src: "/project-images-and-videos/koiroofingandsolar.com/images/koiroofingandsolar.com-2026-03-15T06-25-07-528Z-mobile.jpg",
+  },
+  {
+    title: "Tok Secret Formula alternate mobile website preview",
+    src: "/project-images-and-videos/ttsf/tsf-demo.vercel.app-2026-03-15T22-00-01-884Z-mobile.jpg",
+  },
+  {
+    title: "Faria's Demolition mobile website preview",
+    src: "/project-images-and-videos/fariasdemolition.com/images/fariasdemolition.com-mobile.jpg",
+  },
+  {
+    title: "Tok Secret Formula mobile website preview",
+    src: "/project-images-and-videos/toksecretformula.com/images/tsf-mobile.jpg",
+  },
+] as const;
+---
+
+<section
+  id={id}
+  class={`web-design-showcase relative overflow-visible ${className}`.trim()}
+  aria-label="Selected web design portfolio showcase"
+>
+  <div class="web-design-showcase__frame web-design-showcase__frame--desktop bottom-image-fade">
+    {cards.map((card, index) => (
+      <article class={card.cardClass}>
+        <img
+          src={typeof card.src === "string" ? card.src : card.src.src}
+          alt={card.title}
+          width={typeof card.src === "string" ? undefined : card.src.width}
+          height={typeof card.src === "string" ? undefined : card.src.height}
+          loading={index < 2 ? "eager" : "lazy"}
+          class={`web-design-showcase__image ${card.imageClass}`.trim()}
+        />
+      </article>
+    ))}
+  </div>
+
+  <div class="web-design-showcase__frame web-design-showcase__frame--mobile bottom-image-fade">
+    {mobileCards.map((card, index) => (
+      <article class="web-design-showcase__mobile-card">
+        <img
+          src={card.src}
+          alt={card.title}
+          loading={index < 2 ? "eager" : "lazy"}
+          class="web-design-showcase__image object-top"
+        />
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .web-design-showcase {
+    --desktop-card-width: clamp(17rem, 20vw, 23rem);
+    --mobile-card-width: clamp(11rem, 13vw, 14rem);
+    --showcase-gap: clamp(0.35rem, 0.6vw, 0.5rem);
+    --desktop-strip-height: 100svh;
+    --mobile-row-height: 100svh;
+    --desktop-overhang: clamp(7rem, 10vw, 12rem);
+    --mobile-overhang: clamp(3rem, 8vw, 6rem);
+    padding: clamp(1rem, 2vw, 1.5rem);
+    isolation: isolate;
+  }
+
+  .web-design-showcase__frame {
+    position: relative;
+    z-index: 1;
+    width: max-content;
+    max-width: none;
+    margin-inline: auto;
+    gap: var(--showcase-gap);
+  }
+
+  .web-design-showcase__frame--desktop {
+    display: none;
+    grid-template-columns: var(--desktop-card-width) var(--mobile-card-width);
+    grid-template-rows: repeat(2, minmax(0, 1fr)) auto;
+    grid-template-areas:
+      "feature-left phone-top"
+      "feature-right phone-top"
+      "support-left support-right";
+  }
+
+  .web-design-showcase__frame--mobile {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--mobile-card-width);
+    grid-template-rows: var(--mobile-row-height);
+    transform: translateX(calc(var(--mobile-overhang) * -1));
+  }
+
+  .web-design-showcase__card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-heading) 24%, transparent);
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .web-design-showcase__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.01);
+  }
+
+  .web-design-showcase__mobile-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-heading) 24%, transparent);
+    box-shadow:
+      0 18px 40px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .web-design-showcase__card--far-left,
+  .web-design-showcase__card--edge-left,
+  .web-design-showcase__card--edge-right,
+  .web-design-showcase__card--far-right {
+    display: none;
+  }
+
+  .web-design-showcase__card--far-left {
+    grid-area: far-left;
+  }
+
+  .web-design-showcase__card--feature-left {
+    grid-area: feature-left;
+  }
+
+  .web-design-showcase__card--phone-top {
+    grid-area: phone-top;
+  }
+
+  .web-design-showcase__card--feature-right {
+    grid-area: feature-right;
+  }
+
+  .web-design-showcase__card--support-left {
+    grid-area: support-left;
+  }
+
+  .web-design-showcase__card--support-right {
+    grid-area: support-right;
+  }
+
+  .web-design-showcase__card--far-right {
+    grid-area: far-right;
+  }
+
+  @media (min-width: 1024px) {
+    .web-design-showcase__frame--desktop {
+      display: grid;
+      grid-template-columns:
+        var(--desktop-card-width)
+        var(--desktop-card-width)
+        var(--desktop-card-width)
+        var(--mobile-card-width)
+        var(--desktop-card-width)
+        var(--desktop-card-width)
+        var(--desktop-card-width);
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        "far-left edge-left feature-left phone-top feature-right edge-right far-right"
+        "far-left edge-left support-left phone-top support-right edge-right far-right";
+      height: var(--desktop-strip-height);
+      transform: translateX(calc(var(--desktop-overhang) * -1));
+    }
+
+    .web-design-showcase__frame--mobile {
+      display: none;
+    }
+
+    .web-design-showcase__card--far-left,
+    .web-design-showcase__card--edge-left,
+    .web-design-showcase__card--edge-right,
+    .web-design-showcase__card--far-right {
+      display: block;
+    }
+
+    .web-design-showcase__card--edge-left {
+      grid-area: edge-left;
+    }
+
+    .web-design-showcase__card--edge-right {
+      grid-area: edge-right;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .web-design-showcase {
+      --mobile-card-width: clamp(10.5rem, 42vw, 13rem);
+      --mobile-row-height: 100svh;
+      --mobile-overhang: clamp(2.5rem, 7vw, 4rem);
+      padding-inline: 0.65rem;
+      padding-block: 0.75rem;
+    }
+
+    .web-design-showcase__mobile-card {
+      border-radius: 1rem;
+    }
+  }
+</style>
