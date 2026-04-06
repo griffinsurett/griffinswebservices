@@ -1,0 +1,108 @@
+---
+import Logo from "@/components/Logo/Logo.astro";
+import { contactCtaData } from "@/content/siteData";
+import type { HeadingContent } from "@/content/schema";
+import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
+import { getBreadcrumbs } from "@/utils/query";
+
+interface Props {
+  title?: string;
+  heading?: HeadingContent;
+  description?: string;
+  primaryCTA?: {
+    text: string;
+    link: string;
+    rightIcon?: string;
+  };
+  className?: string;
+  heroClassName?: string;
+  heroRightColumnClassName?: string;
+  id?: string;
+}
+
+const {
+  title,
+  heading,
+  description,
+  primaryCTA = {
+    text: contactCtaData.text,
+    link: contactCtaData.link,
+  },
+  className = "",
+  heroClassName = "",
+  heroRightColumnClassName = "",
+  id = "capabilities-quote-hero",
+} = Astro.props as Props;
+
+const pathname = Astro.url.pathname.replace(/\/+$/, "");
+const slug = pathname.split("/").filter(Boolean).at(-1) ?? "";
+const breadcrumbRelations = slug
+  ? await getBreadcrumbs("capabilities", slug, true)
+  : [];
+
+const capabilityBreadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Capabilities", href: "/capabilities" },
+  ...breadcrumbRelations.map((relation) => ({
+    label:
+      relation.entry?.data?.title ||
+      relation.id
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char: string) => char.toUpperCase()),
+    href:
+      relation.id === slug ? undefined : `/${relation.collection}/${relation.id}`,
+  })),
+];
+
+const hasCustomHero = Astro.slots.has("hero");
+const hasCustomHeroRight = Astro.slots.has("hero-right");
+---
+
+<div class={className || undefined}>
+  {
+    hasCustomHero ? (
+      <slot name="hero" />
+    ) : (
+      <BreadcrumbHeroStart
+        title={title}
+        heading={heading}
+        description={description}
+        breadcrumbs={capabilityBreadcrumbs}
+        primaryCTA={primaryCTA}
+        className={heroClassName}
+        rightColumnClassName={heroRightColumnClassName}
+        id={id}
+      >
+        {
+          hasCustomHeroRight ? (
+            <Fragment slot="right">
+              <slot name="hero-right" />
+            </Fragment>
+          ) : (
+            <div
+              slot="right"
+              class="flex w-full items-center justify-center py-8 lg:py-0"
+            >
+              <Logo
+                showText={false}
+                useLottie={true}
+                loading="eager"
+                trigger="load"
+                hydrate="idle"
+                autoplay={true}
+                loop={true}
+                altContext={`${title ?? "Capability"} Hero`}
+                class="pointer-events-none"
+                logoMediaClass="block h-[min(72vw,20rem)] w-[min(72vw,20rem)] object-contain lg:h-[24rem] lg:w-[24rem]"
+                logoWidths={[320, 560, 768]}
+                logoSizes="(min-width: 1024px) 24rem, min(72vw, 20rem)"
+              />
+            </div>
+          )
+        }
+      </BreadcrumbHeroStart>
+    )
+  }
+
+  <slot />
+</div>

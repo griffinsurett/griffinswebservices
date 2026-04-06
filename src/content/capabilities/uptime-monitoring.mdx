@@ -16,7 +16,13 @@ solutions:
 
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
 <TrustStatement text="We catch issues before they become outages—and fix them before you notice." />
 
 <CapabilitiesSection
@@ -38,3 +44,4 @@ import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
   }}
   ctaDescription="Get 24/7 monitoring from the team that built your site and knows exactly how to fix it."
 />
+</CapabilityBodyLayout>

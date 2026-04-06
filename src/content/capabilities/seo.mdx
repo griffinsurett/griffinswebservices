@@ -16,7 +16,13 @@ solutions:
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
 import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
 <TrustStatement text="We treat SEO as both a technical foundation and an ongoing growth service, combining clean site structure with campaign work that keeps improving visibility over time." />
 
 <CapabilitiesSection
@@ -228,3 +234,4 @@ import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
     </section>
   </WrittenLayout>
 </CapabilitiesSection>
+</CapabilityBodyLayout>

@@ -209,8 +209,21 @@ const stickyStyle = stickyScroll
 
     const controller = {
       ticking: false,
+      started: false,
       register() {
         this.update();
+      },
+      start() {
+        if (this.started) {
+          this.schedule();
+          return;
+        }
+
+        this.started = true;
+        window.addEventListener("scroll", () => controller.schedule(), { passive: true });
+        window.addEventListener("resize", () => controller.schedule());
+        document.addEventListener("astro:page-load", () => controller.schedule());
+        this.schedule();
       },
       schedule() {
         if (this.ticking) return;
@@ -263,10 +276,24 @@ const stickyStyle = stickyScroll
 
     win[key] = controller;
 
-    window.addEventListener("scroll", () => controller.schedule(), { passive: true });
-    window.addEventListener("resize", () => controller.schedule());
-    document.addEventListener("astro:page-load", () => controller.schedule());
+    const sections = document.querySelectorAll("[data-trust-sticky='true']");
+    if (!sections.length) return;
 
-    controller.register();
+    if (!("IntersectionObserver" in window)) {
+      controller.start();
+      return;
+    }
+
+    const visibilityObserver = new IntersectionObserver((entries, observer) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        controller.start();
+        observer.disconnect();
+      }
+    }, {
+      rootMargin: "300px 0px",
+      threshold: 0,
+    });
+
+    sections.forEach((section) => visibilityObserver.observe(section));
   })();
 </script>

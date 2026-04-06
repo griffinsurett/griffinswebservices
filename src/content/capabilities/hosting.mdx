@@ -26,7 +26,13 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
 import { related, sortByOrder } from "@/utils/query";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
 <ContentRenderer
   query={related("pricing", "capabilities", "hosting").orderBy(sortByOrder())}
   variant="PricingVariant"
@@ -59,3 +65,4 @@ import { related, sortByOrder } from "@/utils/query";
   }}
   ctaDescription="Get reliable, fully-managed hosting from the team that knows your site inside and out."
 />
+</CapabilityBodyLayout>

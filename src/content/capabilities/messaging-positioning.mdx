@@ -20,7 +20,13 @@ solutions:
 
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
 <TrustStatement text="A site can look great and still underperform if the message is unclear. We tighten the story so people understand why they should choose you." />
 
 <CapabilitiesSection
@@ -42,3 +48,4 @@ import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
   }}
   ctaDescription="Get sharper positioning, clearer service messaging, and page structure that helps more visitors trust what they see and reach out."
 />
+</CapabilityBodyLayout>

@@ -22,7 +22,13 @@ solutions:
 
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
 <TrustStatement text="We use AI as leverage, not a shortcut. Strategy, QA, and final decisions still stay under human control." />
 
 <CapabilitiesSection
@@ -44,3 +50,4 @@ import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
   }}
   ctaDescription="Get a site and process that uses AI in practical ways: faster content operations, cleaner optimization loops, better search readiness, and smarter ongoing improvements."
 />
+</CapabilityBodyLayout>

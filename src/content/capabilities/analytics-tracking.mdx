@@ -18,7 +18,13 @@ solutions:
 
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
 <TrustStatement text="We set up tracking that actually works—clean data, no guesswork." />
 
 <CapabilitiesSection
@@ -40,3 +46,4 @@ import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
   }}
   ctaDescription="Get clean tracking, actionable dashboards, and the visibility you need to grow with confidence."
 />
+</CapabilityBodyLayout>

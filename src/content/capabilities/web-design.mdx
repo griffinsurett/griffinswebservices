@@ -20,61 +20,68 @@ solutions:
 ---
 
 import { contactCtaData } from "@/content/siteData";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
 import WebDesignShowcaseSection from "@/layouts/sections/WebDesignShowcaseSection.astro";
 import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
 
-<BreadcrumbHeroCenter
-  title="Web Design"
-  heading={{
-    before: "Modern",
-    text: "Web design",
-    after: "driven by clear UI systems and intentional user experience."
-  }}
-  description="Custom marketing websites designed to look elite, stay consistent, tell your story, and convert reliably. We pair research-backed layouts with modular components so future launches stay on-brand."
-  breadcrumbs={[
-    { label: "Home", href: "/" },
-    { label: "Capabilities", href: "/capabilities" },
-    { label: "Web Design" },
-  ]}
-  primaryCTA={{
-    text: contactCtaData.text,
-    link: contactCtaData.link,
-  }}
-  id="capabilities-quote-hero"
-/>
-
-<WebDesignShowcaseSection />
-
-<TrustStatement text="Every design is custom—built around your brand, your goals, and your customers." />
-
-<CapabilitiesSection
-  capabilitiesHeading="Design disciplines that shape every project."
-  highlights={[
-    { title: "Modular Design Systems", description: "Reusable sections and design tokens keep every new page on-brand while letting campaigns launch quickly." },
-    { title: "Future-Ready Scalability", description: "Composable architectures make it simple to add products, pages, or integrations without replatforming." },
-    { title: "Flexible User Experiences", description: "Copy, hierarchy, and motion are tuned for each buyer journey so prospects always know the next step." },
-    { title: "Integrated Collaboration", description: "Design, content, and engineering teams work from the same system so approvals stay fast and handoffs clean." },
-  ]}
-  highlightsTitle="Web Design System"
-  highlightsHeading="Modular web design built for modern business."
-  highlightsDescription="We design modern, conversion-focused websites that pair editorial polish with research-backed UX flows, motion systems, and content choreography so prospects know exactly what you do, why it matters, and how to take the next step."
-  ctaTitle="Ready for a website that looks the part?"
-  ctaHeading={{
-    before: "Your brand deserves",
-    text: "design that converts.",
-    after: ""
-  }}
-  ctaDescription="Stop blending in with template-based competitors. Get a custom design system that makes your business look as good online as you are in person."
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
 >
-  <WrittenLayout
-  title="Strategy-First Web Design"
-  heading="The process behind polished, performant web experiences that scale with your roadmap."
-  description="Our written playbooks capture the research, testing, and collaboration rituals we use on every engagement so you always know how we arrive at design decisions."
-  tocTitle="Table of Contents"
->
+  <BreadcrumbHeroCenter
+    slot="hero"
+    title="Web Design"
+    heading={{
+      before: "Modern",
+      text: "Web design",
+      after: "driven by clear UI systems and intentional user experience."
+    }}
+    description="Custom marketing websites designed to look elite, stay consistent, tell your story, and convert reliably. We pair research-backed layouts with modular components so future launches stay on-brand."
+    breadcrumbs={[
+      { label: "Home", href: "/" },
+      { label: "Capabilities", href: "/capabilities" },
+      { label: "Web Design" },
+    ]}
+    primaryCTA={{
+      text: contactCtaData.text,
+      link: contactCtaData.link,
+    }}
+    id="capabilities-quote-hero"
+  />
+
+  <WebDesignShowcaseSection />
+
+  <TrustStatement text="Every design is custom—built around your brand, your goals, and your customers." />
+
+  <CapabilitiesSection
+    capabilitiesHeading="Design disciplines that shape every project."
+    highlights={[
+      { title: "Modular Design Systems", description: "Reusable sections and design tokens keep every new page on-brand while letting campaigns launch quickly." },
+      { title: "Future-Ready Scalability", description: "Composable architectures make it simple to add products, pages, or integrations without replatforming." },
+      { title: "Flexible User Experiences", description: "Copy, hierarchy, and motion are tuned for each buyer journey so prospects always know the next step." },
+      { title: "Integrated Collaboration", description: "Design, content, and engineering teams work from the same system so approvals stay fast and handoffs clean." },
+    ]}
+    highlightsTitle="Web Design System"
+    highlightsHeading="Modular web design built for modern business."
+    highlightsDescription="We design modern, conversion-focused websites that pair editorial polish with research-backed UX flows, motion systems, and content choreography so prospects know exactly what you do, why it matters, and how to take the next step."
+    ctaTitle="Ready for a website that looks the part?"
+    ctaHeading={{
+      before: "Your brand deserves",
+      text: "design that converts.",
+      after: ""
+    }}
+    ctaDescription="Stop blending in with template-based competitors. Get a custom design system that makes your business look as good online as you are in person."
+  >
+    <WrittenLayout
+    title="Strategy-First Web Design"
+    heading="The process behind polished, performant web experiences that scale with your roadmap."
+    description="Our written playbooks capture the research, testing, and collaboration rituals we use on every engagement so you always know how we arrive at design decisions."
+    tocTitle="Table of Contents"
+  >
   <section>
     <h2>What design questions do we answer before we open Figma?</h2>
     <p>
@@ -138,5 +145,6 @@ import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
       <li><strong>Launch playbook:</strong> QA checklist covering accessibility, performance budgets, analytics tagging, and stakeholder sign-offs.</li>
     </ul>
   </section>
-</WrittenLayout>
-</CapabilitiesSection>
+  </WrittenLayout>
+  </CapabilitiesSection>
+</CapabilityBodyLayout>

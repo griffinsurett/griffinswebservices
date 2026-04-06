@@ -20,7 +20,7 @@
 @theme {
     /* Base palette */
   --color-primary-dark: #0f0f0f;
-  --color-secondary-dark: var(--color-zinc-950);
+  --color-secondary-dark: #000000;
   --color-tertiary-dark: var(--color-zinc-900);
   --color-primary-light: var(--color-zinc-50);
   --color-secondary-light: var(--color-zinc-100);
