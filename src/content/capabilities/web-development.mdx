@@ -1,11 +1,11 @@
 ---
 title: "Web Development"
 description: "Web development is what turns ideas and designs into a working system — the part of a website that determines how stable it is, how fast it loads, how easy it is to maintain, and how well it holds up over time."
+itemLayout: "../../layouts/collections/CapabilityCustomLayout.astro"
 heading:
   before: "Built for"
   text: "reliability,"
   after: "not just launch day."
-heroVariant: "start"
 order: 2
 icon: "fa6-solid:code"
 tags:
@@ -19,9 +19,31 @@ solutions:
   - web-apps
 ---
 
+import { contactCtaData } from "@/content/siteData";
+import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
 import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
+
+<BreadcrumbHeroStart
+  title="Web Development"
+  heading={{
+    before: "Built for",
+    text: "reliability,",
+    after: "not just launch day."
+  }}
+  description="Web development is what turns ideas and designs into a working system — the part of a website that determines how stable it is, how fast it loads, how easy it is to maintain, and how well it holds up over time."
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Capabilities", href: "/capabilities" },
+    { label: "Web Development" },
+  ]}
+  primaryCTA={{
+    text: contactCtaData.text,
+    link: contactCtaData.link,
+  }}
+  id="capabilities-quote-hero"
+/>
 
 <TrustStatement text="We don't treat development as a one-time task. We treat it as the technical foundation your website depends on every day." />
 

@@ -1,6 +1,7 @@
 ---
 title: "Web Design"
 description: "Custom marketing websites designed to look elite, stay consistent, tell your story, and convert reliably. We pair research-backed layouts with modular components so future launches stay on-brand."
+itemLayout: "../../layouts/collections/CapabilityCustomLayout.astro"
 heading:
   before: "Modern"
   text: "Web design"
@@ -18,10 +19,32 @@ solutions:
   - business-websites
 ---
 
+import { contactCtaData } from "@/content/siteData";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
 import WebDesignShowcaseSection from "@/layouts/sections/WebDesignShowcaseSection.astro";
 import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
+
+<BreadcrumbHeroCenter
+  title="Web Design"
+  heading={{
+    before: "Modern",
+    text: "Web design",
+    after: "driven by clear UI systems and intentional user experience."
+  }}
+  description="Custom marketing websites designed to look elite, stay consistent, tell your story, and convert reliably. We pair research-backed layouts with modular components so future launches stay on-brand."
+  breadcrumbs={[
+    { label: "Home", href: "/" },
+    { label: "Capabilities", href: "/capabilities" },
+    { label: "Web Design" },
+  ]}
+  primaryCTA={{
+    text: contactCtaData.text,
+    link: contactCtaData.link,
+  }}
+  id="capabilities-quote-hero"
+/>
 
 <WebDesignShowcaseSection />
 

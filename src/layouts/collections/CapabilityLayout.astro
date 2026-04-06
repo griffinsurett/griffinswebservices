@@ -2,7 +2,6 @@
 import { contactCtaData } from "@/content/siteData";
 import SiteLayout from "@/layouts/SiteLayout.astro";
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
-import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
 import type { CollectionLayoutProps } from "./types";
 import { getItemKey } from "@/utils/collections";
 import { getBreadcrumbs } from "@/utils/query";
@@ -35,12 +34,10 @@ const capabilityBreadcrumbs = [
   })),
 ];
 
-const HeroComponent =
-  data.heroVariant === "start" ? BreadcrumbHeroStart : BreadcrumbHeroCenter;
 ---
 
 <SiteLayout {...seoProps}>
-  <HeroComponent
+  <BreadcrumbHeroCenter
     title={data.title}
     heading={data.heading}
     description={data.description}

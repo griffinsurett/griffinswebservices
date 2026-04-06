@@ -61,8 +61,8 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
   contentAlign="center"
   contentVerticalAlign="center"
 >
-  <div class="relative z-10 min-h-screen inner-section flex">
-    <div class="min-h-screen xl:h-auto inner-section mx-auto flex flex-col justify-center w-full">
+  <div class="relative z-10 inner-section flex flex-wrap items-center h-full">
+    <div class="mx-auto px-2 lg:px-0 max-w-6xl lg:max-w-7xl w-full h-full flex flex-col justify-center">
       {
         breadcrumbs.length > 0 && (
           <nav aria-label="Breadcrumb" class="hero-breadcrumbs w-full">
@@ -93,10 +93,8 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
         )
       }
 
-      <div
-        class={`grid items-center gap-10 lg:gap-16 w-full ${hasRightContent ? "lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]" : ""}`}
-      >
-        <div class="flex flex-col gap-5 lg:gap-8 items-start text-left w-full">
+      <div class="w-full lg:flex lg:flex-row lg:items-stretch lg:gap-16">
+        <div class="flex flex-col gap-5 lg:gap-8 items-start text-left w-full lg:w-1/2 lg:flex-[0_0_50%]">
           <SectionHeader
             className="text-left w-full"
             title={title}
@@ -132,15 +130,14 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
           </div>
         </div>
 
-        {
-          hasRightContent && (
-            <div class={`w-full justify-self-stretch ${rightColumnClassName}`}>
-              <slot name="right">
-                <slot />
-              </slot>
-            </div>
-          )
-        }
+        <div
+          class={`w-full lg:w-1/2 lg:flex-[0_0_50%] ${rightColumnClassName} ${hasRightContent ? "" : "hidden lg:block"}`}
+          aria-hidden={hasRightContent ? undefined : "true"}
+        >
+          <slot name="right">
+            <slot />
+          </slot>
+        </div>
       </div>
     </div>
   </div>
