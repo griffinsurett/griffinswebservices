@@ -1,7 +1,7 @@
 // src/components/section/utils/queryIntrospection.ts
 /**
  * Query Introspection for Section Component
- * 
+ *
  * Extracts metadata from Query objects to auto-populate
  * Section titles and descriptions from collection meta.
  */

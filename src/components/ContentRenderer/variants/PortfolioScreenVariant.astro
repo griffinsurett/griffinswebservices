@@ -1,11 +1,14 @@
 ---
 // PortfolioScreenVariant.astro
 // Below-the-fold portfolio showcase - hydrates only when visible
-import { getImage } from "astro:assets";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import PortfolioScreenShowcase from "@/components/LoopTemplates/Portfolio/PortfolioScreenShowcase";
 import ComputerScreen from "@/components/LoopTemplates/ComputerScreen.astro";
-import { getImageAlt, resolveImageMetadata } from "@/utils/images";
+import {
+  generateResponsiveCroppedImage,
+  getImageAlt,
+  resolveImageMetadata,
+} from "@/utils/images";
 import { toArray } from "@/utils/array";
 
 type Breakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
@@ -69,8 +72,7 @@ if (!safeItems.length) {
 const IMAGE_WIDTHS = [480, 640, 850, 1024];
 const SIZES =
   "(max-width: 640px) calc(100vw - 48px), (max-width: 1024px) min(calc(100vw - 48px), 850px), 850px";
-// Clamp extremely tall screenshots
-const MAX_RENDER_HEIGHT = 2500;
+const SCREEN_PREVIEW_ASPECT_RATIO = 600 / 850;
 
 type OptimizedFormat = "avif" | "webp";
 const FALLBACK_FORMAT: OptimizedFormat = "webp";
@@ -93,72 +95,18 @@ const processedItems = await Promise.all(
       return { data: item, mediaEntry: undefined };
     }
 
-    // Generate optimized images for each format + width combo
-    const optimizedByFormat = await Promise.all(
-      IMAGE_FORMATS.map(async ({ format, quality }) => {
-        const images = await Promise.all(
-          IMAGE_WIDTHS.map((width) => {
-            const aspectRatio = metadata.height / metadata.width;
-            const naturalHeight = Math.round(aspectRatio * width);
-            const constrainedHeight = Math.min(
-              naturalHeight,
-              MAX_RENDER_HEIGHT,
-            );
-            const shouldConstrain = constrainedHeight < naturalHeight;
-            const resizeOptions = shouldConstrain
-              ? {
-                  height: constrainedHeight,
-                  fit: "cover" as const,
-                  position: "top" as const,
-                }
-              : {};
+    const croppedImage = await generateResponsiveCroppedImage(metadata, {
+      widths: IMAGE_WIDTHS,
+      sizes: SIZES,
+      aspectRatio: SCREEN_PREVIEW_ASPECT_RATIO,
+      formats: IMAGE_FORMATS,
+      fallbackFormat: FALLBACK_FORMAT,
+      position: "top",
+    });
 
-            return getImage({
-              src: metadata,
-              width,
-              format,
-              quality,
-              ...resizeOptions,
-            });
-          }),
-        );
-        return { format, images };
-      }),
-    );
-
-    const fallbackFormatEntry =
-      optimizedByFormat.find((entry) => entry.format === FALLBACK_FORMAT) ??
-      optimizedByFormat[optimizedByFormat.length - 1];
-
-    if (!fallbackFormatEntry) {
+    if (!croppedImage) {
       return { data: item, mediaEntry: undefined };
     }
-
-    const fallbackImages = fallbackFormatEntry.images;
-    if (!fallbackImages.length) {
-      return { data: item, mediaEntry: undefined };
-    }
-
-    const fallbackSrcSet = fallbackImages
-      .map((img, i) => `${img.src} ${IMAGE_WIDTHS[i]}w`)
-      .join(", ");
-    const defaultImage = fallbackImages[fallbackImages.length - 1];
-
-    // Calculate actual output dimensions (Astro's attributes may return source dimensions)
-    const defaultWidth = IMAGE_WIDTHS[IMAGE_WIDTHS.length - 1];
-    const aspectRatio = metadata.height / metadata.width;
-    const naturalHeight = Math.round(aspectRatio * defaultWidth);
-    const defaultHeight = Math.min(naturalHeight, MAX_RENDER_HEIGHT);
-
-    const pictureSources = optimizedByFormat
-      .filter((entry) => entry.format !== FALLBACK_FORMAT)
-      .map((entry) => ({
-        type: `image/${entry.format}`,
-        srcSet: entry.images
-          .map((img, i) => `${img.src} ${IMAGE_WIDTHS[i]}w`)
-          .join(", "),
-        sizes: SIZES,
-      }));
 
     // First item gets LCP optimization if enabled
     const isFirstItem = index === 0;
@@ -167,16 +115,16 @@ const processedItems = await Promise.all(
     return {
       data: item,
       mediaEntry: {
-        src: defaultImage.src,
-        srcSet: fallbackSrcSet,
-        sizes: SIZES,
-        width: defaultWidth,
-        height: defaultHeight,
+        src: croppedImage.src,
+        srcSet: croppedImage.srcSet,
+        sizes: croppedImage.sizes,
+        width: croppedImage.width,
+        height: croppedImage.height,
         alt: altText,
         loading: (shouldOptimizeForLCP ? "eager" : "lazy") as const,
         decoding: (shouldOptimizeForLCP ? "sync" : "async") as const,
         fetchPriority: (shouldOptimizeForLCP ? "high" : "auto") as const,
-        sources: pictureSources,
+        sources: croppedImage.sources,
       },
     };
   }),

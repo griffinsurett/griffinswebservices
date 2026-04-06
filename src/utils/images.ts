@@ -146,6 +146,29 @@ export interface CroppedPreviewResult {
   config: CroppedPreviewConfig;
 }
 
+export interface ResponsiveCroppedImageFormatConfig {
+  format: "avif" | "webp";
+  quality: number;
+}
+
+export interface ResponsiveCroppedImageConfig {
+  widths: number[];
+  sizes: string;
+  aspectRatio: number;
+  formats: ResponsiveCroppedImageFormatConfig[];
+  fallbackFormat?: ResponsiveCroppedImageFormatConfig["format"];
+  position?: "top" | "center" | "bottom";
+}
+
+export interface ResponsiveCroppedImageResult {
+  src: string;
+  srcSet: string;
+  sizes: string;
+  width: number;
+  height: number;
+  sources: { type?: string; srcSet: string; sizes?: string }[];
+}
+
 /**
  * Default configs for cropped preview generation.
  * Generates multiple formats for browser compatibility.
@@ -195,4 +218,68 @@ export async function generateCroppedPreview(
   );
 
   return results;
+}
+
+export async function generateResponsiveCroppedImage(
+  metadata: ImageMetadata,
+  {
+    widths,
+    sizes,
+    aspectRatio,
+    formats,
+    fallbackFormat = "webp",
+    position = "top",
+  }: ResponsiveCroppedImageConfig
+): Promise<ResponsiveCroppedImageResult | undefined> {
+  const { getImage } = await import("astro:assets");
+
+  const optimizedByFormat = await Promise.all(
+    formats.map(async ({ format, quality }) => {
+      const images = await Promise.all(
+        widths.map((width) =>
+          getImage({
+            src: metadata,
+            width,
+            height: Math.round(width * aspectRatio),
+            format,
+            quality,
+            fit: "cover",
+            position,
+          })
+        )
+      );
+
+      return { format, images };
+    })
+  );
+
+  const fallbackFormatEntry =
+    optimizedByFormat.find((entry) => entry.format === fallbackFormat) ??
+    optimizedByFormat[optimizedByFormat.length - 1];
+
+  if (!fallbackFormatEntry?.images.length) {
+    return undefined;
+  }
+
+  const fallbackImages = fallbackFormatEntry.images;
+  const defaultImage = fallbackImages[fallbackImages.length - 1];
+
+  return {
+    src: defaultImage.src,
+    srcSet: fallbackImages
+      .map((image, index) => `${image.src} ${widths[index]}w`)
+      .join(", "),
+    sizes,
+    width: widths[widths.length - 1],
+    height: Math.round(widths[widths.length - 1] * aspectRatio),
+    sources: optimizedByFormat
+      .filter((entry) => entry.format !== fallbackFormat)
+      .map((entry) => ({
+        type: `image/${entry.format}`,
+        srcSet: entry.images
+          .map((image, index) => `${image.src} ${widths[index]}w`)
+          .join(", "),
+        sizes,
+      })),
+  };
 }

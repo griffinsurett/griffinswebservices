@@ -7,14 +7,17 @@
  * from adding them to initial HTML - they render client-side only.
  */
 
-import { getImage } from "astro:assets";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import SectionHeader from "@/components/project/SectionHeader.astro";
 import Section from "@/components/project/Section.astro";
 import Button from "@/components/starter/Button/Button";
 import PortfolioCarousel from "@/components/LoopTemplates/Portfolio/PortfolioCarousel";
 import { shouldShowCollectionCTA } from "../utils/helpers";
-import { getImageAlt, resolveImageMetadata } from "@/utils/images";
+import {
+  generateResponsiveCroppedImage,
+  getImageAlt,
+  resolveImageMetadata,
+} from "@/utils/images";
 import { toArray } from "@/utils/array";
 
 interface Props extends BaseVariantProps {
@@ -45,6 +48,7 @@ const safeItems = toArray(items) as Record<string, any>[];
 // Image optimization settings
 const IMAGE_WIDTHS = [480, 640, 860, 1024, 1280, 1600];
 const SIZES = "(max-width: 640px) 90vw, (max-width: 1024px) 70vw, 860px";
+const PORTFOLIO_PREVIEW_ASPECT_RATIO = 540 / 860;
 const IMAGE_FORMATS: { format: "avif" | "webp"; quality: number }[] = [
   { format: "avif", quality: 45 },
   { format: "webp", quality: 65 },
@@ -71,55 +75,32 @@ const processedItems = await Promise.all(
       };
     }
 
-    // Generate optimized images for each format + width combo
-    const optimizedByFormat = await Promise.all(
-      IMAGE_FORMATS.map(async ({ format, quality }) => {
-        const images = await Promise.all(
-          IMAGE_WIDTHS.map((width) =>
-            getImage({ src: metadata, width, format, quality })
-          )
-        );
-        return { format, images };
-      })
-    );
+    const croppedImage = await generateResponsiveCroppedImage(metadata, {
+      widths: IMAGE_WIDTHS,
+      sizes: SIZES,
+      aspectRatio: PORTFOLIO_PREVIEW_ASPECT_RATIO,
+      formats: IMAGE_FORMATS,
+      fallbackFormat: FALLBACK_FORMAT,
+      position: "top",
+    });
 
-    const fallbackFormatEntry =
-      optimizedByFormat.find((e) => e.format === FALLBACK_FORMAT) ??
-      optimizedByFormat[optimizedByFormat.length - 1];
-
-    if (!fallbackFormatEntry?.images.length) {
+    if (!croppedImage) {
       return {
         data: { ...item, ...(altText ? { alt: altText } : {}) },
         mediaEntry: undefined,
       };
     }
 
-    const fallbackImages = fallbackFormatEntry.images;
-    const fallbackSrcSet = fallbackImages
-      .map((img, i) => `${img.src} ${IMAGE_WIDTHS[i]}w`)
-      .join(", ");
-    const defaultImage = fallbackImages[fallbackImages.length - 1];
-
-    const pictureSources = optimizedByFormat
-      .filter((e) => e.format !== FALLBACK_FORMAT)
-      .map((entry) => ({
-        type: `image/${entry.format}`,
-        srcSet: entry.images
-          .map((img, i) => `${img.src} ${IMAGE_WIDTHS[i]}w`)
-          .join(", "),
-        sizes: SIZES,
-      }));
-
     return {
       data: { ...item, ...(altText ? { alt: altText } : {}) },
       mediaEntry: {
-        src: defaultImage.src,
-        srcSet: fallbackSrcSet,
-        sizes: SIZES,
-        width: defaultImage.attributes.width as number,
-        height: defaultImage.attributes.height as number,
+        src: croppedImage.src,
+        srcSet: croppedImage.srcSet,
+        sizes: croppedImage.sizes,
+        width: croppedImage.width,
+        height: croppedImage.height,
         alt: altText,
-        sources: pictureSources,
+        sources: croppedImage.sources,
       },
     };
   })
