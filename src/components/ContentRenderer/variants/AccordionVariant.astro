@@ -2,13 +2,13 @@
 // src/components/ContentRenderer/variants/AccordionVariant.astro
 /**
  * AccordionVariant
- * Legacy-inspired accordion section with BorderTitle header + CTA block.
- * Still relies on ContentBridge so React accordions can consume Astro content.
+ * Full-width editorial accordion with centered heading and minimal row styling.
+ * Uses ContentBridge so React accordions can consume Astro content.
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import ContentBridge from "../ContentBridge/ContentBridge.astro";
-import Accordion from "@/components/LoopTemplates/Accordion";
+import FaqAccordion from "@/components/LoopTemplates/FaqAccordion";
 import Button from "@/components/Button/Button";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Section from "@/components/Section.astro";
@@ -38,8 +38,6 @@ const {
 
 const safeItems = toArray(items);
 const sectionTitle = title ?? collectionTitle;
-
-// SectionHeader handles heading normalization automatically
 const showHeader = Boolean(sectionTitle || heading || description);
 ---
 
@@ -47,74 +45,49 @@ const showHeader = Boolean(sectionTitle || heading || description);
   id={id}
   class={`outer-section relative ${className}`.trim()}
 >
-  <div class="inner-section">
-    <div class="flex flex-col lg:flex-row lg:gap-12">
-      {/* Left side - Sticky header on desktop */}
-      {
-        showHeader && (
-          <div class="lg:w-1/2 sticky-section lg:self-start">
-            <SectionHeader
-              title={sectionTitle}
-              heading={heading}
-              description={description}
-              className="text-center lg:text-left max-w-3xl lg:max-w-none"
-              titleClassName="tracking-[0.25em]"
-              headingClassName="h2 mb-4"
-              descriptionClassName="large-text text-text/80"
+  <div class="inner-section mx-auto max-w-7xl">
+    {
+      showHeader && (
+        <div class="mx-auto mb-14 max-w-3xl text-center md:mb-16">
+          <SectionHeader
+            title={sectionTitle}
+            heading={heading}
+            description={description}
+            className="text-center max-w-3xl"
+            titleClassName="tracking-[0.25em]"
+            headingClassName="h2 mb-4"
+            descriptionClassName="large-text text-text/80"
+          />
+        </div>
+      )
+    }
+
+    {
+      safeItems.length > 0 && (
+        <ContentBridge items={safeItems} bridgeId={id}>
+          <Fragment slot="default">
+            <FaqAccordion
+              items={safeItems.map((item, index) => ({
+                slug: item.slug,
+                title: item.title || "Untitled",
+                description: item.description,
+                contentSlotId: `${id}-slot-${index}`,
+              }))}
+              allowMultiple={allowMultiple}
+              className="mx-auto max-w-6xl"
+              client:visible
             />
-            {
-              showButtonSection &&
-                shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
-                (ctaText || title || collectionTitle) &&
-                (ctaHref || collectionUrl) && (
-                  <div class="hidden lg:block mt-8">
-                    <Button
-                      client:visible
-                      href={ctaHref ?? collectionUrl}
-                      rightIcon="lu:arrow-right"
-                      variant="secondary"
-                      size="lg"
-                    >
-                      {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
-                    </Button>
-                  </div>
-                )
-            }
-          </div>
-        )
-      }
+          </Fragment>
+        </ContentBridge>
+      )
+    }
 
-      {/* Right side - Accordion questions */}
-      {
-        safeItems.length > 0 && (
-          <div class={`${showHeader ? "lg:w-1/2" : "w-full"} mt-12 lg:mt-0`}>
-            <ContentBridge items={safeItems} bridgeId={id}>
-              <Fragment slot="default">
-                <Accordion
-                  items={safeItems.map((item, index) => ({
-                    slug: item.slug,
-                    title: item.title || "Untitled",
-                    description: item.description,
-                    contentSlotId: `${id}-slot-${index}`,
-                  }))}
-                  allowMultiple={allowMultiple}
-                  className="space-y-4"
-                  client:visible
-                />
-              </Fragment>
-            </ContentBridge>
-          </div>
-        )
-      }
-    </div>
-
-    {/* Mobile CTA button */}
     {
       showButtonSection &&
         shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
         (ctaText || title || collectionTitle) &&
         (ctaHref || collectionUrl) && (
-          <div class="buttons-section-center lg:hidden">
+          <div class="buttons-section-center mt-10">
             <Button
               client:visible
               href={ctaHref ?? collectionUrl}

@@ -5,3 +5,14 @@ heading: "Common Questions Before We Build"
 hasPage: true
 itemsHasPage: false
 ---
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query, sortByOrder } from "@/utils/query";
+
+<ContentRenderer
+  query={query("faq").orderBy(sortByOrder())}
+  variant="AccordionVariant"
+  allowMultiple={false}
+  title="Frequently Asked Questions"
+  heading="Questions about Griffin's Web Services"
+  showButtonSection={false}
+/>
