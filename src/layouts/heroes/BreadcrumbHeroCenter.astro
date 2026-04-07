@@ -60,13 +60,13 @@ const primaryCTA: CTA = {
   contentAlign="center"
   contentVerticalAlign="center"
 >
-  <div class="relative z-10 min-h-screen hero-spacing">
+  <div class="relative z-10 min-h-screen">
     <div
       class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-2 pb-12 lg:max-w-7xl lg:px-0 lg:pb-0"
     >
       {
         breadcrumbs.length > 0 && (
-          <div class="flex min-h-[7rem] items-end pt-20 lg:min-h-[8.5rem] lg:pt-16">
+          <div class="flex min-h-[8.5rem] items-end pt-24 lg:min-h-[8.5rem] lg:pt-16">
             <nav
               aria-label="Breadcrumb"
               class={`hero-breadcrumbs w-full ${breadcrumbsClassName}`.trim()}
@@ -74,18 +74,44 @@ const primaryCTA: CTA = {
               <ol class="flex flex-wrap items-center gap-x-4 gap-y-2 list-none p-0 m-0">
                 {breadcrumbs.map((item, index) => {
                   const isLast = index === breadcrumbs.length - 1;
+                  const isHome = item.label.trim().toLowerCase() === "home";
+                  const labelContent = isHome ? (
+                    <>
+                      <span class="hidden lg:inline">{item.label}</span>
+                      <span
+                        class="inline-flex items-center justify-center lg:hidden"
+                        aria-hidden="true"
+                      >
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="h-[0.9rem] w-[0.9rem]"
+                        >
+                          <path d="M3 10.5 12 3l9 7.5" />
+                          <path d="M5.25 9.75V21h13.5V9.75" />
+                        </svg>
+                      </span>
+                    </>
+                  ) : (
+                    item.label
+                  );
+
                   return (
                     <li class="flex items-center gap-4">
                       {item.href && !isLast ? (
                         <a href={item.href} class="hero-breadcrumb-link">
-                          {item.label}
+                          {labelContent}
                         </a>
                       ) : (
                         <span
                           class="hero-breadcrumb-link"
                           aria-current={isLast ? "page" : undefined}
                         >
-                          {item.label}
+                          {labelContent}
                         </span>
                       )}
 
@@ -103,16 +129,16 @@ const primaryCTA: CTA = {
         class="flex flex-1 items-center"
       >
         <div
-          class="mx-auto flex w-full max-w-5xl flex-col items-start gap-5 lg:items-center lg:gap-8 lg:text-center"
+          class="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 px-2 text-center sm:px-4 lg:px-0 lg:gap-8"
         >
           <SectionHeader
-            className="text-left lg:text-center w-full"
+            className="text-center w-full"
             title={title}
             heading={heading}
             headingTag="h1"
             headingClassName="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold"
             description={description ?? defaultDescription}
-            descriptionClassName="hero-text max-w-3xl leading-relaxed mx-0 lg:mx-auto"
+            descriptionClassName="hero-text max-w-3xl leading-relaxed mx-auto"
           />
 
           <div class="flex flex-col lg:flex-row items-center gap-3 lg:gap-6">
@@ -148,8 +174,8 @@ const primaryCTA: CTA = {
 <style>
   @media (max-width: 1023px) {
     .hero-breadcrumb-link {
-      font-size: 0.74rem;
-      letter-spacing: 0.12em;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
     }
   }
 
