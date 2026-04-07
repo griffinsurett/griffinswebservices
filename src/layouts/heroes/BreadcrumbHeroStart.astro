@@ -74,7 +74,7 @@ const mobileLeftColumnHeightClass = hasStaticBreadcrumbs
       absoluteBreadcrumbs && breadcrumbs.length > 0 && (
         <nav
           aria-label="Breadcrumb"
-          class={`hero-breadcrumbs absolute inset-x-0 top-24 z-20 w-full text-left lg:top-28 ${breadcrumbsClassName}`.trim()}
+          class={`hero-breadcrumbs absolute inset-x-0 top-24 z-20 mx-auto w-[95%] text-left lg:top-28 lg:mx-0 lg:w-full ${breadcrumbsClassName}`.trim()}
         >
           <ol class="flex flex-wrap items-center justify-start gap-x-2 gap-y-2 list-none p-0 m-0">
             {breadcrumbs.map((item, index) => {
@@ -109,7 +109,7 @@ const mobileLeftColumnHeightClass = hasStaticBreadcrumbs
           <div class="flex min-h-[8.5rem] items-end pt-24 lg:min-h-[8.5rem] lg:pt-16">
             <nav
               aria-label="Breadcrumb"
-              class={`hero-breadcrumbs w-full text-left ${breadcrumbsClassName}`.trim()}
+              class={`hero-breadcrumbs mx-auto w-[95%] text-left lg:mx-0 lg:w-full ${breadcrumbsClassName}`.trim()}
             >
               <ol class="flex flex-wrap items-center justify-start gap-x-2 gap-y-2 list-none p-0 m-0">
                 {breadcrumbs.map((item, index) => {
