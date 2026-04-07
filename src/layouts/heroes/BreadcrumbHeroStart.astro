@@ -65,86 +65,123 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
   contentAlign="center"
   contentVerticalAlign="center"
 >
-  <div class="relative z-10 inner-section flex flex-wrap items-center h-full">
-    <div class="mx-auto px-2 lg:px-0 max-w-6xl lg:max-w-7xl w-full h-full flex flex-col justify-center">
-      {
-        breadcrumbs.length > 0 && (
-          <nav
-            aria-label="Breadcrumb"
-            class={`hero-breadcrumbs w-full ${absoluteBreadcrumbs ? "absolute inset-x-0 top-24 z-20 lg:top-28" : ""} ${breadcrumbsClassName}`.trim()}
-          >
-            <ol class="flex flex-wrap items-center gap-x-4 gap-y-2 list-none p-0 m-0">
-              {breadcrumbs.map((item, index) => {
-                const isLast = index === breadcrumbs.length - 1;
-                return (
-                  <li class="flex items-center gap-4">
-                    {item.href && !isLast ? (
-                      <a href={item.href} class="hero-breadcrumb-link">
-                        {item.label}
-                      </a>
-                    ) : (
-                      <span
-                        class="hero-breadcrumb-link"
-                        aria-current={isLast ? "page" : undefined}
-                      >
-                        {item.label}
-                      </span>
-                    )}
+  <div class="relative z-10 min-h-screen inner-section">
+    {
+      absoluteBreadcrumbs && breadcrumbs.length > 0 && (
+        <nav
+          aria-label="Breadcrumb"
+          class={`hero-breadcrumbs absolute inset-x-0 top-24 z-20 w-full text-left lg:top-28 ${breadcrumbsClassName}`.trim()}
+        >
+          <ol class="flex flex-wrap items-center justify-start gap-x-2 gap-y-2 list-none p-0 m-0">
+            {breadcrumbs.map((item, index) => {
+              const isLast = index === breadcrumbs.length - 1;
+              return (
+                <li class="flex items-center gap-2">
+                  {item.href && !isLast ? (
+                    <a href={item.href} class="hero-breadcrumb-link">
+                      {item.label}
+                    </a>
+                  ) : (
+                    <span
+                      class="hero-breadcrumb-link"
+                      aria-current={isLast ? "page" : undefined}
+                    >
+                      {item.label}
+                    </span>
+                  )}
 
-                    {!isLast && <span aria-hidden="true" class="text-text/40">/</span>}
-                  </li>
-                );
-              })}
-            </ol>
-          </nav>
+                  {!isLast && <span aria-hidden="true" class="text-text/40">/</span>}
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      )
+    }
+
+    <div class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-2 pb-12 lg:max-w-7xl lg:px-0 lg:pb-0">
+      {
+        !absoluteBreadcrumbs && breadcrumbs.length > 0 && (
+          <div class="flex min-h-[8.5rem] items-end pt-24 lg:min-h-[8.5rem] lg:pt-16">
+            <nav
+              aria-label="Breadcrumb"
+              class={`hero-breadcrumbs w-full text-left ${breadcrumbsClassName}`.trim()}
+            >
+              <ol class="flex flex-wrap items-center justify-start gap-x-2 gap-y-2 list-none p-0 m-0">
+                {breadcrumbs.map((item, index) => {
+                  const isLast = index === breadcrumbs.length - 1;
+                  return (
+                    <li class="flex items-center gap-2">
+                      {item.href && !isLast ? (
+                        <a href={item.href} class="hero-breadcrumb-link">
+                          {item.label}
+                        </a>
+                      ) : (
+                        <span
+                          class="hero-breadcrumb-link"
+                          aria-current={isLast ? "page" : undefined}
+                        >
+                          {item.label}
+                        </span>
+                      )}
+
+                      {!isLast && <span aria-hidden="true" class="text-text/40">/</span>}
+                    </li>
+                  );
+                })}
+              </ol>
+            </nav>
+          </div>
         )
       }
 
-      <div class="w-full lg:flex lg:flex-row lg:items-stretch lg:gap-16">
-        <div class="min-h-screen lg:min-h-auto flex flex-col gap-5 lg:gap-8 justify-center sm:justify-auto items-start text-left w-full lg:w-1/2 lg:flex-[0_0_50%]">
-          <SectionHeader
-            className="text-left w-full"
-            title={title}
-            heading={heading}
-            headingTag="h1"
-          headingClassName="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold"
-            description={description ?? defaultDescription}
-            descriptionClassName="hero-text max-w-3xl leading-relaxed"
-          />
-
-          <div class="flex flex-row flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-5 xl:gap-6">
-            <Button
-              client:idle
-              href={primaryCTA.link}
-              variant="primary"
-              size="lg"
-              rightIcon={primaryCTA.rightIcon}
-            >
-              {primaryCTA.text}
-            </Button>
-
-            <ContentRenderer
-              query={query("testimonials")
-                .where((entry) => entry.data.featured === true)
-                .limit(3)}
-              variant="TestimonialCirclesVariant"
-              className="shrink-0"
-              counterStart={10}
-              counterEnd={100}
-              counterDuration={1800}
-              counterSuffix="+"
-              counterLabel="Happy Clients"
+      <div class="flex flex-1 items-center">
+        <div class="w-full lg:flex lg:flex-row lg:items-stretch lg:gap-16">
+          <div class="flex w-full flex-col items-start justify-center gap-5 text-left lg:w-1/2 lg:flex-[0_0_50%] lg:gap-8">
+            <SectionHeader
+              className="text-left w-full"
+              title={title}
+              heading={heading}
+              headingTag="h1"
+              headingClassName="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold"
+              description={description ?? defaultDescription}
+              descriptionClassName="hero-text max-w-3xl leading-relaxed"
             />
-          </div>
-        </div>
 
-        <div
-          class={`w-full lg:w-1/2 lg:flex-[0_0_50%] ${rightColumnClassName} ${hasRightContent ? "" : "hidden lg:block"}`}
-          aria-hidden={hasRightContent ? undefined : "true"}
-        >
-          <slot name="right">
-            <slot />
-          </slot>
+            <div class="flex flex-row flex-wrap items-center gap-4 sm:flex-nowrap sm:gap-5 xl:gap-6">
+              <Button
+                client:idle
+                href={primaryCTA.link}
+                variant="primary"
+                size="lg"
+                rightIcon={primaryCTA.rightIcon}
+              >
+                {primaryCTA.text}
+              </Button>
+
+              <ContentRenderer
+                query={query("testimonials")
+                  .where((entry) => entry.data.featured === true)
+                  .limit(3)}
+                variant="TestimonialCirclesVariant"
+                className="shrink-0"
+                counterStart={10}
+                counterEnd={100}
+                counterDuration={1800}
+                counterSuffix="+"
+                counterLabel="Happy Clients"
+              />
+            </div>
+          </div>
+
+          <div
+            class={`w-full lg:w-1/2 lg:flex-[0_0_50%] ${rightColumnClassName} ${hasRightContent ? "" : "hidden lg:block"}`}
+            aria-hidden={hasRightContent ? undefined : "true"}
+          >
+            <slot name="right">
+              <slot />
+            </slot>
+          </div>
         </div>
       </div>
     </div>
@@ -152,14 +189,6 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
 </Hero>
 
 <style>
-  .hero-breadcrumbs {
-    margin-bottom: 2.75rem;
-  }
-
-  .hero-breadcrumbs.absolute {
-    margin-bottom: 0;
-  }
-
   .hero-breadcrumb-link {
     font-size: 0.85rem;
     line-height: 1;
@@ -175,16 +204,6 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
   }
 
   @media (max-width: 1023px) {
-    .hero-breadcrumbs {
-      margin-bottom: 2rem;
-      padding-top: 5.5rem;
-    }
-
-    .hero-breadcrumbs.absolute {
-      margin-bottom: 0;
-      padding-top: 0;
-    }
-
     .hero-breadcrumb-link {
       font-size: 0.74rem;
       letter-spacing: 0.12em;

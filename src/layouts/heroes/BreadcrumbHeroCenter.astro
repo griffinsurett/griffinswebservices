@@ -69,9 +69,9 @@ const primaryCTA: CTA = {
           <div class="flex min-h-[8.5rem] items-end pt-24 lg:min-h-[8.5rem] lg:pt-16">
             <nav
               aria-label="Breadcrumb"
-              class={`hero-breadcrumbs w-full ${breadcrumbsClassName}`.trim()}
+              class={`hero-breadcrumbs w-full text-left ${breadcrumbsClassName}`.trim()}
             >
-              <ol class="flex flex-wrap items-center gap-x-4 gap-y-2 list-none p-0 m-0">
+              <ol class="flex flex-wrap items-center justify-start gap-x-2 gap-y-2 list-none p-0 m-0">
                 {breadcrumbs.map((item, index) => {
                   const isLast = index === breadcrumbs.length - 1;
                   const isHome = item.label.trim().toLowerCase() === "home";
@@ -101,7 +101,7 @@ const primaryCTA: CTA = {
                   );
 
                   return (
-                    <li class="flex items-center gap-4">
+                    <li class="flex items-center gap-2">
                       {item.href && !isLast ? (
                         <a href={item.href} class="hero-breadcrumb-link">
                           {labelContent}
