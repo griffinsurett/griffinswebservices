@@ -1,9 +1,26 @@
 ---
 import Logo from "@/components/Logo/Logo.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
 import { contactCtaData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
 import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
-import { getBreadcrumbs } from "@/utils/query";
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
+import TrustPanel from "@/layouts/sections/TrustPanel.astro";
+import { getBreadcrumbs, query, sortByOrder } from "@/utils/query";
+import { children, related } from "@/utils/query/snippets";
+
+interface GrandparentContent {
+  introText?: string;
+  introTextClassName?: string;
+  testimonialsTitle?: string;
+  testimonialsHeading?: string;
+  testimonialsDescription?: string;
+  projectsHeading?: string;
+  projectsDescription?: string;
+  faqTitle?: string;
+  faqHeading?: string;
+}
 
 interface Props {
   title?: string;
@@ -18,6 +35,7 @@ interface Props {
   heroClassName?: string;
   heroRightColumnClassName?: string;
   id?: string;
+  grandparentContent?: GrandparentContent;
 }
 
 const {
@@ -32,6 +50,7 @@ const {
   heroClassName = "",
   heroRightColumnClassName = "",
   id = "capabilities-quote-hero",
+  grandparentContent,
 } = Astro.props as Props;
 
 const pathname = Astro.url.pathname.replace(/\/+$/, "");
@@ -56,6 +75,27 @@ const capabilityBreadcrumbs = [
 
 const hasCustomHero = Astro.slots.has("hero");
 const hasCustomHeroRight = Astro.slots.has("hero-right");
+const directChildren = slug ? await children("capabilities", slug).all() : [];
+const grandchildCounts = await Promise.all(
+  directChildren.map((child) => children("capabilities", child.id).count())
+);
+const isGrandparentCapability =
+  directChildren.length > 0 && grandchildCounts.some((count) => count > 0);
+
+const resolvedGrandparentContent: GrandparentContent = {
+  introTextClassName:
+    "text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading",
+  testimonialsTitle: "Testimonials",
+  testimonialsHeading: "What business owners say about working with us.",
+  testimonialsDescription:
+    "Real feedback from businesses that wanted a stronger website and a better online presence.",
+  projectsHeading: "Recent website work built to look credible and perform.",
+  projectsDescription:
+    "A closer look at websites and landing pages built to feel clear, trustworthy, and ready to convert.",
+  faqTitle: "FAQs",
+  faqHeading: `Common Questions About ${title || "This Capability"}`,
+  ...grandparentContent,
+};
 ---
 
 <div class={className || undefined}>
@@ -105,4 +145,56 @@ const hasCustomHeroRight = Astro.slots.has("hero-right");
   }
 
   <slot />
+
+  {isGrandparentCapability && (
+    <>
+      {resolvedGrandparentContent.introText && (
+        <TrustStatement
+          text={resolvedGrandparentContent.introText}
+          textClassName={resolvedGrandparentContent.introTextClassName}
+        />
+      )}
+
+      <ContentRenderer
+        variant="CapabilityTopicSectionsVariant"
+        query={children("capabilities", slug)}
+        cardColumns={4}
+      />
+
+      <HomeSolutionBridge />
+
+      <div class="bottom-content-section">
+        <ContentRenderer
+          query={query("testimonials").where((entry) => entry.data.rating >= 4)}
+          variant="TestimonialCarouselVariant"
+          title={resolvedGrandparentContent.testimonialsTitle}
+          heading={resolvedGrandparentContent.testimonialsHeading}
+          description={resolvedGrandparentContent.testimonialsDescription}
+        />
+
+        <ContentRenderer
+          query={query("projects")
+            .where((entry) => !!entry.data.featuredVideo)
+            .orderBy(sortByOrder())}
+          variant="PortfolioVideoShowcaseVariant"
+          heading={resolvedGrandparentContent.projectsHeading}
+          description={resolvedGrandparentContent.projectsDescription}
+          primaryCtaHref={primaryCTA.link}
+          primaryCtaText={primaryCTA.text}
+          ctaHref="/projects"
+          ctaText="See Portfolio"
+        />
+
+        <TrustPanel />
+
+        <ContentRenderer
+          query={related("faq", "capabilities", slug).orderBy(sortByOrder())}
+          variant="AccordionVariant"
+          allowMultiple={false}
+          title={resolvedGrandparentContent.faqTitle}
+          heading={resolvedGrandparentContent.faqHeading}
+        />
+      </div>
+    </>
+  )}
 </div>

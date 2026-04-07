@@ -28,6 +28,8 @@ export interface Props {
   className?: string;
   id?: string;
   rightColumnClassName?: string;
+  absoluteBreadcrumbs?: boolean;
+  breadcrumbsClassName?: string;
 }
 
 const defaultDescription =
@@ -42,6 +44,8 @@ const {
   className = "",
   id = "hero",
   rightColumnClassName = "",
+  absoluteBreadcrumbs = false,
+  breadcrumbsClassName = "",
 } = Astro.props as Props;
 
 const primaryCTA: CTA = {
@@ -65,7 +69,10 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
     <div class="mx-auto px-2 lg:px-0 max-w-6xl lg:max-w-7xl w-full h-full flex flex-col justify-center">
       {
         breadcrumbs.length > 0 && (
-          <nav aria-label="Breadcrumb" class="hero-breadcrumbs w-full">
+          <nav
+            aria-label="Breadcrumb"
+            class={`hero-breadcrumbs w-full ${absoluteBreadcrumbs ? "absolute inset-x-0 top-24 z-20 lg:top-28" : ""} ${breadcrumbsClassName}`.trim()}
+          >
             <ol class="flex flex-wrap items-center gap-x-4 gap-y-2 list-none p-0 m-0">
               {breadcrumbs.map((item, index) => {
                 const isLast = index === breadcrumbs.length - 1;
@@ -100,7 +107,7 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
             title={title}
             heading={heading}
             headingTag="h1"
-            headingClassName="text-4xl md:text-5xl font-bold"
+          headingClassName="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold"
             description={description ?? defaultDescription}
             descriptionClassName="hero-text text-lg max-w-3xl leading-relaxed"
           />
@@ -149,6 +156,10 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
     margin-bottom: 2.75rem;
   }
 
+  .hero-breadcrumbs.absolute {
+    margin-bottom: 0;
+  }
+
   .hero-breadcrumb-link {
     font-size: 0.85rem;
     line-height: 1;
@@ -167,6 +178,11 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
     .hero-breadcrumbs {
       margin-bottom: 2rem;
       padding-top: 5.5rem;
+    }
+
+    .hero-breadcrumbs.absolute {
+      margin-bottom: 0;
+      padding-top: 0;
     }
 
     .hero-breadcrumb-link {

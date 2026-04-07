@@ -278,7 +278,7 @@ export default function FeatureCard({
     .join(" ");
 
   return (
-    <div className={className}>
+    <div className={[stretchToFill ? "h-full" : "", className].filter(Boolean).join(" ")}>
       <AnimatedBorder
         variant={isInteractive ? "progress-b-f" : "none"}
         triggers={isInteractive ? "hover" : []}

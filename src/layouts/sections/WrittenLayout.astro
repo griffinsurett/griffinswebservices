@@ -15,6 +15,7 @@ interface Props {
   heading?: string;
   description?: string;
   tocTitle?: string;
+  showToc?: boolean;
   headingSelector?: string;
   stickyOffset?: number;
   contentCardClassName?: string;
@@ -28,6 +29,7 @@ const {
   className = "",
   id,
   tocTitle = "Table of Contents",
+  showToc = true,
   headingSelector = "h2, h3",
   stickyOffset = 150,
   contentCardClassName = "",
@@ -53,16 +55,18 @@ const showHeader =
       />
     )}
 
-    <div class="grid gap-8 lg:gap-12 lg:grid-cols-[minmax(240px,0.38fr)_1fr] relative">
-      <div class="sticky-section lg:self-start space-y-6">
-        <TableOfContents
-          client:visible
-          contentId={contentId}
-          title={tocTitle}
-          headingSelector={headingSelector}
-          scrollOffset={stickyOffset}
-        />
-      </div>
+    <div class={`relative ${showToc ? "grid gap-8 lg:gap-12 lg:grid-cols-[minmax(240px,0.38fr)_1fr]" : ""}`.trim()}>
+      {showToc && (
+        <div class="sticky-section lg:self-start space-y-6">
+          <TableOfContents
+            client:visible
+            contentId={contentId}
+            title={tocTitle}
+            headingSelector={headingSelector}
+            scrollOffset={stickyOffset}
+          />
+        </div>
+      )}
 
       <article
         id={contentId}

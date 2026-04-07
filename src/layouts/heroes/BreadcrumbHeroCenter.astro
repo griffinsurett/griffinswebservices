@@ -26,6 +26,8 @@ export interface Props {
   primaryCTA?: CTA;
   breadcrumbs?: BreadcrumbItem[];
   className?: string;
+  absoluteBreadcrumbs?: boolean;
+  breadcrumbsClassName?: string;
   id?: string;
 }
 
@@ -39,6 +41,8 @@ const {
   primaryCTA: incomingPrimaryCTA,
   breadcrumbs = [],
   className = "",
+  absoluteBreadcrumbs = false,
+  breadcrumbsClassName = "",
   id = "hero",
 } = Astro.props as Props;
 
@@ -59,12 +63,13 @@ const primaryCTA: CTA = {
   contentVerticalAlign="center"
 >
   <div class="relative z-10 min-h-screen inner-section flex">
-    <div
-      class="min-h-screen xl:h-auto inner-section mx-auto flex flex-col justify-center items-center"
-    >
-      {
-        breadcrumbs.length > 0 && (
-          <nav aria-label="Breadcrumb" class="hero-breadcrumbs w-full">
+    {
+      breadcrumbs.length > 0 && (
+        <nav
+          aria-label="Breadcrumb"
+          class={`hero-breadcrumbs ${absoluteBreadcrumbs ? "absolute inset-x-0 top-24 z-20 lg:top-28" : ""} ${breadcrumbsClassName}`.trim()}
+        >
+          <div class="mx-auto w-full max-w-6xl px-2 lg:max-w-7xl lg:px-0">
             <ol class="flex flex-wrap items-center gap-x-4 gap-y-2 list-none p-0 m-0">
               {breadcrumbs.map((item, index) => {
                 const isLast = index === breadcrumbs.length - 1;
@@ -88,10 +93,14 @@ const primaryCTA: CTA = {
                 );
               })}
             </ol>
-          </nav>
-        )
-      }
+          </div>
+        </nav>
+      )
+    }
 
+    <div
+      class="relative min-h-screen xl:h-auto inner-section mx-auto flex flex-col justify-center items-center"
+    >
       <div
         class="flex flex-col gap-5 lg:gap-8 justify-left items-start lg:justify-center lg:items-center hero-spacing lg:text-center w-full"
       >
@@ -100,7 +109,7 @@ const primaryCTA: CTA = {
           title={title}
           heading={heading}
           headingTag="h1"
-          headingClassName="text-4xl md:text-5xl font-bold"
+          headingClassName="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold"
           description={description ?? defaultDescription}
           descriptionClassName="hero-text text-lg max-w-3xl leading-relaxed mx-0 lg:mx-auto"
         />
@@ -139,6 +148,10 @@ const primaryCTA: CTA = {
     margin-bottom: 2.75rem;
   }
 
+  .hero-breadcrumbs.absolute {
+    margin-bottom: 0;
+  }
+
   .hero-breadcrumb-link {
     font-size: 0.85rem;
     line-height: 1;
@@ -156,6 +169,10 @@ const primaryCTA: CTA = {
   @media (max-width: 1023px) {
     .hero-breadcrumbs {
       margin-bottom: 2rem;
+    }
+
+    .hero-breadcrumbs.absolute {
+      margin-bottom: 0;
     }
 
     .hero-breadcrumb-link {

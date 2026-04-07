@@ -23,6 +23,8 @@ interface Props extends BaseVariantProps {
   columns?: 1 | 2 | 3 | 4 | "auto";
   ctaHref?: string;
   ctaText?: string;
+  contentClassName?: string;
+  gridClassName?: string;
   card?: CardPropOverrides;
   ctaInlineOnDesktop?: boolean;
   /** Show MDX body content in cards instead of just description */
@@ -46,6 +48,8 @@ const {
   showButtonSection = true,
   ctaHref,
   ctaText,
+  contentClassName = "inner-section",
+  gridClassName = "",
   card,
   ctaInlineOnDesktop = false,
   showBody = false,
@@ -101,7 +105,9 @@ const resolveRingDuration = (item: FeatureCardData): number => {
 
 // SectionHeader handles heading normalization automatically
 const showHeader = Boolean(title || heading || description);
-const gridMarginClass = showHeader ? "mt-12" : "";
+const gridMarginClass = [showHeader ? "mt-12" : "", gridClassName]
+  .filter(Boolean)
+  .join(" ");
 const showCTA =
   showButtonSection &&
   shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
@@ -110,7 +116,7 @@ const showCTA =
 ---
 
 <Section id={id} class={`relative overflow-hidden ${className}`.trim()}>
-  <div class="inner-section">
+  <div class={contentClassName}>
     {
       showHeader && (
         <div
@@ -165,22 +171,22 @@ const showCTA =
       showBody ? (
         <ContentBridge items={safeItems} bridgeId={id}>
           <Fragment slot="default">
-            <CardRenderer
-              client:visible
-              items={safeItems.map((item, index) => ({
-                ...item,
-                contentSlotId: `${id}-slot-${index}`,
-              }))}
-              columns={effectiveColumns}
-              showBody={showBody}
-              className={gridMarginClass}
-              getCardClassName={resolveCardClassName}
-              getRingDuration={resolveRingDuration}
-              featureCardProps={featureCardPropOverrides}
-              animation={{
-                once: false,
-                threshold: 0.15,
-                rootMargin: "-10% 0px -10% 0px",
+        <CardRenderer
+          client:visible
+          items={safeItems.map((item, index) => ({
+            ...item,
+            contentSlotId: `${id}-slot-${index}`,
+          }))}
+          columns={effectiveColumns}
+          showBody={showBody}
+          className={gridMarginClass}
+          getCardClassName={resolveCardClassName}
+          getRingDuration={resolveRingDuration}
+          featureCardProps={featureCardPropOverrides}
+          animation={{
+            once: false,
+            threshold: 0.15,
+            rootMargin: "-10% 0px -10% 0px",
               }}
             />
           </Fragment>

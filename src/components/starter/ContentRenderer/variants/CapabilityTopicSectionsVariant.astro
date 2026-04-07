@@ -1,0 +1,157 @@
+---
+// src/components/starter/ContentRenderer/variants/CapabilityTopicSectionsVariant.astro
+/**
+ * CapabilityTopicSectionsVariant
+ *
+ * Renders a sequence of editorial capability topics where each topic has:
+ * 1. A full-height split section with heading/description and an image
+ * 2. A supporting CardVariant grid below it using that topic's children
+ *
+ * Intended for parent capabilities like "web-design" where child capabilities
+ * act as the large feature topics and grandchildren act as the supporting cards.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import type { CollectionKey, CollectionEntry } from "astro:content";
+import Section from "@/components/project/Section.astro";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import CardVariant from "./CardVariant.astro";
+import { toArray } from "@/utils/array";
+import { children } from "@/utils/query";
+import { getCollectionMeta, prepareCollectionEntries, type PreparedItem } from "@/utils/collections";
+import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
+
+interface Props extends BaseVariantProps {
+  childCollection?: CollectionKey;
+  cardCollection?: CollectionKey;
+  cardColumns?: 1 | 2 | 3 | 4 | "auto";
+  cardClassName?: string;
+  sectionMinHeightClass?: string;
+  imageAspectClass?: string;
+}
+
+type TopicSectionData = {
+  item: PreparedItem;
+  cards: PreparedItem[];
+  imageSrc?: string;
+  reverse: boolean;
+  key: string;
+};
+
+const {
+  items = [],
+  className = "",
+  id,
+  childCollection = "capabilities",
+  cardCollection = childCollection,
+  cardColumns = 4,
+  cardClassName = "",
+  sectionMinHeightClass = "lg:min-h-[100svh]",
+  imageAspectClass = "aspect-[4/3] lg:aspect-[5/4]",
+} = Astro.props as Props;
+
+const safeItems = toArray(items) as PreparedItem[];
+const cardMeta = getCollectionMeta(cardCollection);
+
+const topicSections: TopicSectionData[] = await Promise.all(
+  safeItems.map(async (item, index) => {
+    const slug = item.slug || (item as any).id || `topic-${index}`;
+    const imageSrc = getImageSrc(
+      (item as any).featuredImage ?? (item as any).bannerImage ?? (item as any).image
+    );
+
+    let cards: PreparedItem[] = [];
+
+    if (slug) {
+      const result = await children(cardCollection, slug).get();
+      const cardEntries = (result.entries ?? []) as CollectionEntry<any>[];
+      cards = await prepareCollectionEntries(cardEntries, cardCollection, cardMeta);
+    }
+
+    return {
+      item,
+      cards,
+      imageSrc: imageSrc || undefined,
+      reverse: index % 2 === 1,
+      key: slug,
+    };
+  })
+);
+
+const resolveTopicTitle = (item: PreparedItem) =>
+  item.heading ? item.title : undefined;
+
+const resolveTopicHeading = (item: PreparedItem) =>
+  item.heading ?? item.title;
+
+const compactTopicCardProps =
+  cardColumns === 4
+    ? {
+        stretchToFill: true,
+        innerClassName: "px-4 md:px-6 py-6 md:py-7",
+        listItem: {
+          titleClassName:
+            "text-xl sm:text-2xl lg:text-[1.75rem] xl:text-[1.9rem] leading-[1.08] font-semibold tracking-wide text-heading mb-2 relative z-10",
+          descriptionClassName:
+            "text-sm md:text-base leading-[1.65] relative z-10",
+        },
+      }
+    : undefined;
+---
+
+<Section id={id} class={`outer-section relative ${className}`.trim()}>
+  <div class="inner-section space-y-24 lg:space-y-32">
+    {topicSections.map((topic, index) => {
+      const textOrderClass = topic.reverse ? "lg:order-2" : "";
+      const mediaOrderClass = topic.reverse ? "lg:order-1" : "lg:order-2";
+
+      return (
+        <section class="space-y-10 lg:space-y-14" data-topic={topic.key}>
+          <div
+            class={`grid items-center gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1fr)] ${sectionMinHeightClass}`.trim()}
+          >
+            <div class={textOrderClass}>
+              <SectionHeader
+                title={resolveTopicTitle(topic.item)}
+                heading={resolveTopicHeading(topic.item)}
+                description={topic.item.description}
+                className="space-y-5 text-left max-w-3xl"
+              />
+            </div>
+
+            <div class={mediaOrderClass}>
+              {topic.imageSrc ? (
+                <div
+                  class={`overflow-hidden rounded-[2rem] border border-white/10 bg-black/40 shadow-[0_32px_80px_rgba(0,0,0,0.38)] ${imageAspectClass}`.trim()}
+                >
+                  <img
+                    src={topic.imageSrc}
+                    alt={`${topic.item.title ?? topic.key} capability topic image`}
+                    class="block size-full object-cover"
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                </div>
+              ) : (
+                <div
+                  class={`overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02)_35%,rgba(0,0,0,0.2)_100%)] shadow-[0_32px_80px_rgba(0,0,0,0.38)] ${imageAspectClass}`.trim()}
+                />
+              )}
+            </div>
+          </div>
+
+          {topic.cards.length > 0 && (
+            <CardVariant
+              items={topic.cards}
+              columns={cardColumns}
+              showButtonSection={false}
+              className={`px-0 ${cardClassName}`.trim()}
+              contentClassName=""
+              gridClassName={cardColumns === 4 ? "items-stretch !gap-4 lg:!grid-cols-2 xl:!grid-cols-4" : ""}
+              card={compactTopicCardProps}
+            />
+          )}
+        </section>
+      );
+    })}
+  </div>
+</Section>

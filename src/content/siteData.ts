@@ -12,10 +12,6 @@ export const siteData = {
   location: "Freehold, New Jersey, United States",
   address: null,
   tagline: "Get a website your business can be proud of — fast, secure, and built to last.",
-  ceoName: "Griffin Surett",
-  ceoTitle: "Founder & CEO",
-  ceoQuote:
-    "My goal is to build websites that work for business owners, not against them, with fast loading, clear structure, and the kind of performance that makes it easy for people to trust what they see and take action without waiting.",
   logo: {
     src: Logo.src,
     alt: "Griffin's Web Services Logo",
