@@ -87,10 +87,10 @@ const bridgeBackgroundImage = meoncompImg;
 
       <BackgroundMediaFrame
         imageSrc={bridgeBackgroundImage}
-        imageClass="w-full h-full min-h-[41rem] object-cover max-lg:min-h-[49rem]"
+        imageClass="w-full h-full min-h-[41rem] object-cover max-lg:min-h-[54rem]"
         imageMaxWidth={1600}
         mediaOverlayClass="bg-bg/70"
-        className="min-h-[41rem] max-lg:min-h-[49rem]"
+        className="min-h-[41rem] max-lg:min-h-[54rem]"
       >
 
         <div
@@ -99,9 +99,11 @@ const bridgeBackgroundImage = meoncompImg;
         ></div>
 
         <div
-          class="absolute bottom-[8.6rem] left-[3.25rem] z-10 max-w-[31rem] p-0 max-lg:bottom-[10.8rem] max-lg:left-6 max-lg:right-6 max-lg:max-w-[18rem]"
+          class="absolute bottom-[8.6rem] left-[3.25rem] z-10 max-w-[31rem] p-0 max-lg:hidden"
         >
-          <FacebookStars href={facebookReviewsLink} className="mb-3" />
+          <div class="mb-3">
+            <FacebookStars href={facebookReviewsLink} />
+          </div>
 
           <p class="mb-2 text-[clamp(1.15rem,1.4vw,1.8rem)] leading-[1.2] text-white/82">
             {reviewLabel}
@@ -117,23 +119,67 @@ const bridgeBackgroundImage = meoncompImg;
         </div>
 
         <div
-          class="absolute right-[3.25rem] top-[5.4rem] z-10 w-[min(38rem,45%)] max-lg:left-6 max-lg:right-6 max-lg:top-[6.4rem] max-lg:w-auto"
+          class="absolute right-[3.25rem] top-[5.4rem] z-10 w-[min(38rem,45%)] max-lg:hidden"
         >
           <h2
-            class="m-0 font-inherit text-white text-[clamp(2.15rem,3.2vw,3.9rem)] leading-[0.98] tracking-[-0.06em] text-balance max-lg:max-w-[25rem] max-lg:text-[clamp(2rem,8vw,3.6rem)]"
+            class="m-0 font-inherit text-white text-[clamp(2.15rem,3.2vw,3.9rem)] leading-[0.98] tracking-[-0.06em] text-balance"
           >
             {bridgeHeading}
           </h2>
 
           <p
-            class="mt-6 max-w-[31rem] font-inherit text-[1.05rem] leading-[1.55] text-white/84 max-lg:max-w-[24rem] max-lg:text-[0.98rem]"
+            class="mt-6 max-w-[31rem] font-inherit text-[1.05rem] leading-[1.55] text-white/84"
           >
             {bridgeDescription}
           </p>
         </div>
 
+        <div class="relative z-10 flex min-h-[54rem] flex-col px-6 pb-6 pt-[10.5rem] lg:hidden">
+          <div class="max-w-[20rem]">
+            <h2 class="m-0 font-inherit text-[clamp(2.1rem,8.6vw,3.4rem)] leading-[0.98] tracking-[-0.06em] text-white">
+              {bridgeHeading}
+            </h2>
+
+            <p class="mt-6 max-w-[20rem] font-inherit text-[1rem] leading-[1.52] text-white/84">
+              {bridgeDescription}
+            </p>
+          </div>
+
+          <div class="mt-5 w-fit">
+            <FacebookStars href={facebookReviewsLink} />
+          </div>
+
+          <div class="mt-5 max-w-[22rem]">
+            <p class="mb-2 text-[1.1rem] leading-[1.2] text-white/82">
+              {reviewLabel}
+            </p>
+
+            <h2 class="mb-2 text-[clamp(2.9rem,11vw,4rem)] leading-[1.02] font-bold tracking-[-0.04em] text-white">
+              <Counter prefix={statPrefix} end={statValue} suffix={statSuffix} class="!gap-[0.01em]" />
+            </h2>
+
+            <p class="text-[1.1rem] leading-[1.2] text-white/82">
+              {statDescription}
+            </p>
+          </div>
+
+          <ul class="mt-5 grid list-none grid-cols-1 gap-2" aria-label="Website outcomes">
+            {features.map((feature) => (
+              <li class="flex min-h-0 items-center justify-start gap-3 text-left text-[0.84rem] font-semibold uppercase tracking-[0.14em] text-white/94">
+                <span
+                  class="inline-flex h-[2.2rem] w-[2.2rem] shrink-0 items-center justify-center rounded-full border border-white/32 bg-bg/40 text-white backdrop-blur-xl"
+                  aria-hidden="true"
+                >
+                  <Icon icon={feature.icon} size="md" className="text-current" />
+                </span>
+                <span>{feature.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <ul
-          class="absolute inset-x-0 bottom-0 z-10 grid list-none grid-cols-3 gap-3 px-6 pb-7 pt-5 max-lg:grid-cols-1 max-lg:gap-2 max-lg:px-5 max-lg:pb-5 max-lg:pt-4"
+          class="absolute inset-x-0 bottom-0 z-10 grid list-none grid-cols-3 gap-3 px-6 pb-7 pt-5 max-lg:hidden"
           aria-label="Website outcomes"
         >
           {features.map((feature) => (
