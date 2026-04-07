@@ -147,7 +147,7 @@ export default function ChildCard({
 
         {/* Child items as hero checklist */}
         {hasChildren && (
-          <ul className="mt-6 pt-5 border-t border-[var(--color-border-soft)] space-y-2.5 relative z-10 list-none w-full text-left">
+          <ul className="mt-6 pt-5 border-t border-soft space-y-2.5 relative z-10 list-none w-full text-left">
             {resolvedChildItems.map((child, index) => (
               <li key={index} className="list-none flex items-center gap-2">
                 <span className="faded-bg p-1.5 rounded-full flex items-center justify-center text-accent flex-shrink-0">

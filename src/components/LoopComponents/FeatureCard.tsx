@@ -314,7 +314,7 @@ export default function FeatureCard({
       {hasBody && (
         <div
           className={`feature-card-body mt-4 pt-4 relative z-10 w-full ${
-            appearance === "card" ? "border-t border-[var(--color-border-soft)]" : ""
+            appearance === "card" ? "border-t border-soft" : ""
           } ${resolvedLayout.includes("horizontal") ? "text-left" : "text-center"}`}
         >
           <div

@@ -106,7 +106,7 @@ export default function WebsitePlanningDemo({ className = "" }: WebsitePlanningD
 
   return (
     <DecorativeWrapper
-      className={`w-full rounded-2xl overflow-hidden border border-[var(--color-border-soft)] bg-text/10 select-none pointer-events-none ${className}`}
+      className={`w-full rounded-2xl overflow-hidden faded-border bg-text/10 select-none pointer-events-none ${className}`}
     >
       <div className="bg-gradient-to-br from-[#F8F5EE] via-[#F3EFE6] to-[#ECE7DD] p-3">
         <div className="mb-2 flex items-center justify-between">

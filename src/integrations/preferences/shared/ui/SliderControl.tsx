@@ -62,7 +62,7 @@ export default function SliderControl({
         className="block"
         innerClassName="!bg-transparent !border-transparent rounded-xl"
       >
-        <div className="rounded-xl border border-[var(--color-border-soft-strong)] px-4 py-3 bg-transparent">
+        <div className="rounded-xl border border-soft-strong px-4 py-3 bg-transparent">
           <input
             id={controlId}
             type="range"

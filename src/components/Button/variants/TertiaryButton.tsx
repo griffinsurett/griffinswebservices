@@ -2,15 +2,15 @@
 /**
  * Tertiary Button Variant
  *
- * Solid accent button - the default and most prominent button style.
- * Used for tertiary actions like form submissions, main CTAs.
+ * Underlined text action.
+ * Used when the CTA should read like a plain text link instead of a filled button.
  */
 
 import { ButtonBase, type ButtonProps } from "../Button";
 import { renderButtonIcon } from "../utils";
 
 /**
- * Primary button with blue background and white text
+ * Underlined heading-colored text link
  */
 export default function PrimaryButton({
   leftIcon,
@@ -18,16 +18,22 @@ export default function PrimaryButton({
   className = "",
   ...props
 }: ButtonProps) {
-  // Primary button styling
   const variantClasses =
-    "bg-accent text-bg hover:bg-accent-700 focus:ring-accent";
+    "group inline-flex items-center gap-2 bg-transparent p-0 text-heading no-underline hover:underline focus:underline decoration-current underline-offset-4";
 
   return (
     <ButtonBase
       {...props}
+      unstyled
       className={`${variantClasses} ${className}`}
       leftIcon={renderButtonIcon(leftIcon, props.size)}
-      rightIcon={renderButtonIcon(rightIcon, props.size)}
+      rightIcon={
+        rightIcon ? (
+          <span className="transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-0.5">
+            {renderButtonIcon(rightIcon, props.size)}
+          </span>
+        ) : null
+      }
     />
   );
 }

@@ -4,7 +4,7 @@
 import type { IconType } from 'react-icons';
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBadgeCheck, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMessagesSquare, LuMinus, LuPlus, LuRocket, LuScanSearch, LuSend, LuSettings, LuShare2, LuShieldCheck, LuSparkles } from 'react-icons/lu';
 import { FaAddressCard, FaArrowPointer, FaArrowRight, FaArrowTrendUp, FaArrowUpRightDots, FaArrowsRotate, FaArrowsToCircle, FaArrowsUpDownLeftRight, FaAws, FaBinoculars, FaBolt, FaBoxOpen, FaBoxesStacked, FaBriefcase, FaBroom, FaBullhorn, FaBullseye, FaCalendarCheck, FaCalendarDays, FaCartArrowDown, FaCartShopping, FaChartLine, FaChartSimple, FaCircleCheck, FaCircleDot, FaClipboardCheck, FaClipboardList, FaClock, FaClockRotateLeft, FaCloud, FaCloudflare, FaCode, FaCommentDots, FaCompass, FaCookieBite, FaCreditCard, FaCss3Alt, FaCubes, FaDiagramProject, FaDisplay, FaDumbbell, FaEnvelope, FaEnvelopeOpenText, FaEye, FaFeather, FaFigma, FaFileLines, FaFilePen, FaFlag, FaFlagCheckered, FaGaugeHigh, FaGears, FaGithub, FaGlobe, FaHandPointer, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHouse, FaHtml5, FaIdCard, FaImage, FaImages, FaInbox, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMinimize, FaMobileScreenButton, FaNetworkWired, FaNodeJs, FaPalette, FaPaperPlane, FaPenNib, FaPenRuler, FaPenToSquare, FaPeopleGroup, FaPersonRunning, FaPhone, FaPhp, FaPlug, FaPlugCircleBolt, FaPuzzlePiece, FaPython, FaReact, FaRoad, FaRobot, FaRocket, FaRotate, FaRotateLeft, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShopify, FaSitemap, FaStamp, FaStore, FaTableCellsLarge, FaTableList, FaTag, FaTags, FaUniversalAccess, FaUser, FaUsers, FaUtensils, FaWandMagicSparkles, FaWindowMaximize, FaWordpress, FaXmark } from 'react-icons/fa6';
-import { SiAstro, SiElementor, SiExpress, SiFacebook, SiFramer, SiGatsby, SiNextdotjs, SiSvelte, SiTailwindcss, SiTypescript, SiVercel, SiWebflow } from 'react-icons/si';
+import { SiAnthropic, SiAstro, SiElementor, SiExpress, SiFacebook, SiFramer, SiGatsby, SiGooglegemini, SiNextdotjs, SiOpenai, SiSvelte, SiTailwindcss, SiTypescript, SiVercel, SiWebflow } from 'react-icons/si';
 
 export const iconMap = {
   'fa6:address-card': FaAddressCard,
@@ -151,13 +151,16 @@ export const iconMap = {
   'lu:share-2': LuShare2,
   'lu:shield-check': LuShieldCheck,
   'lu:sparkles': LuSparkles,
+  'si:anthropic': SiAnthropic,
   'si:astro': SiAstro,
   'si:elementor': SiElementor,
   'si:express': SiExpress,
   'si:facebook': SiFacebook,
   'si:framer': SiFramer,
   'si:gatsby': SiGatsby,
+  'si:googlegemini': SiGooglegemini,
   'si:nextdotjs': SiNextdotjs,
+  'si:openai': SiOpenai,
   'si:svelte': SiSvelte,
   'si:tailwindcss': SiTailwindcss,
   'si:typescript': SiTypescript,

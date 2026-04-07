@@ -31,7 +31,7 @@ export default function SocialIcon({
   icon = "lu:globe",
   size = "md",
 }: SocialIconProps) {
-  const wrapperClass = `${PADDING_MAP[size]} rounded-full inline-flex items-center justify-center bg-accent/10 border border-[var(--color-border-soft-strong)] text-accent`;
+  const wrapperClass = `${PADDING_MAP[size]} rounded-full inline-flex items-center justify-center faded-bg border border-soft-strong text-accent`;
   const iconSize = ICON_SIZE_MAP[size];
 
   return (

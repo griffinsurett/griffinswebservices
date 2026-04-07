@@ -76,9 +76,11 @@
   --color-accent-950:  oklch(from var(--color-accent) calc(l - 0.45) c h);
 
     /* Extras */
-  --color-border-soft: color-mix(in srgb, var(--color-heading) 10%, transparent);
-  --color-border-soft-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
-  --color-border-dim: var(--color-border-soft-strong);
+  --color-border: color-mix(in srgb, var(--color-heading) 10%, transparent);
+  --color-border-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
+  --color-border-soft: var(--color-border);
+  --color-border-soft-strong: var(--color-border-strong);
+  --color-border-dim: var(--color-border-strong);
   --font-header: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
   --font-body: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
 }
@@ -264,9 +266,11 @@ body {
     --color-bg: var(--color-primary-light);
     --color-bg2: var(--color-secondary-light);
     --color-bg3: var(--color-tertiary-light);
-    --color-border-soft: color-mix(in srgb, var(--color-heading) 10%, transparent);
-    --color-border-soft-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
-    --color-border-dim: var(--color-border-soft-strong);
+    --color-border: color-mix(in srgb, var(--color-heading) 10%, transparent);
+    --color-border-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
+    --color-border-soft: var(--color-border);
+    --color-border-soft-strong: var(--color-border-strong);
+    --color-border-dim: var(--color-border-strong);
   }
 
   [data-theme="dark"] {
@@ -358,8 +362,8 @@ body {
 
 /* Background & border helpers */
 @utility faded-bg {
-  @apply dark:bg-primary-light/10 dark:hover:bg-primary-light/12;
-  @apply light:bg-primary-dark/10 light:hover:bg-primary-dark/12;
+  @apply dark:bg-white/5 dark:hover:bg-white/8;
+  @apply light:bg-black/5 light:hover:bg-black/8;
   @apply transition-all hover:transform main-duration;
 }
 
@@ -370,7 +374,15 @@ body {
 @utility faded-accent-border {
   border-width: 1px;
   border-style: solid;
-  border-color: var(--color-border-soft);
+  border-color: var(--color-border);
+}
+
+@utility border-soft {
+  border-color: var(--color-border);
+}
+
+@utility border-soft-strong {
+  border-color: var(--color-border-strong);
 }
 
 @utility input-bg {
@@ -397,13 +409,13 @@ body {
   @apply inline-block text-primary rounded-full font-medium;
   border-width: 1px;
   border-style: solid;
-  border-color: var(--color-border-soft);
+  border-color: var(--color-border);
 }
 
 @utility faded-border {
   border-width: 1px;
   border-style: solid;
-  border-color: var(--color-border-soft);
+  border-color: var(--color-border);
 }
 
 /* Layout & spacing */
@@ -428,7 +440,7 @@ body {
   @apply w-full input-bg rounded-xl px-4 py-3 focus:outline-none main-duration transition-all;
   border-width: 1px;
   border-style: solid;
-  border-color: var(--color-border-soft);
+  border-color: var(--color-border);
   @apply text-muted;
 
   &::placeholder {
@@ -470,7 +482,7 @@ body {
 }
 
 @utility inner-card-transition {
-    @apply opacity-0 group-hover:opacity-100 transition-opacity main-duration;
+    @apply opacity-0 group-hover:opacity-0 transition-opacity main-duration;
   }
 
   @utility inner-card-style {
@@ -478,7 +490,7 @@ body {
   }
 
   @utility inner-card-color {
-    @apply inset-0 bg-gradient-to-br from-accent/10 to-transparent;
+    @apply inset-0 bg-transparent;
   }
 
   @utility consent-banner {
@@ -642,7 +654,7 @@ body {
 
   .written-rich-text blockquote {
     @apply border-l-2 pl-5 italic text-heading text-xl leading-tight;
-    border-color: var(--color-border-soft-strong);
+    border-color: var(--color-border-strong);
   }
 
   .written-rich-text strong {
@@ -671,7 +683,7 @@ body {
   }
 
   .outer-card-color {
-    @apply card-bg hover:border-primary hover:shadow-primary/20;
+    @apply card-bg;
   }
 
   .outer-card-style {
@@ -679,7 +691,7 @@ body {
   }
 
   .inner-card-transition {
-    @apply opacity-0 group-hover:opacity-100 transition-opacity main-duration;
+    @apply opacity-0 group-hover:opacity-0 transition-opacity main-duration;
   }
 
   .inner-card-style {
@@ -687,7 +699,7 @@ body {
   }
 
   .inner-card-color {
-    @apply inset-0 bg-gradient-to-br from-accent/10 to-transparent;
+    @apply inset-0 bg-transparent;
   }
 
   .card-icon-color {

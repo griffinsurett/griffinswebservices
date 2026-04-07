@@ -44,7 +44,7 @@ export default function EnhancedAccordionItem({
       >
         <button
           type="button"
-          className="w-full text-left flex items-center justify-between p-5 hover:bg-card/50 transition-colors duration-300 cursor-pointer relative z-20"
+          className="w-full text-left flex items-center justify-between p-5 hover:bg-transparent transition-colors duration-300 cursor-pointer relative z-20"
           onClick={onToggle}
           onMouseDown={(event) => event.preventDefault()}
           aria-expanded={isActive}
@@ -71,7 +71,7 @@ export default function EnhancedAccordionItem({
               ${
                 isActive
                   ? "bg-primary text-bg"
-                  : "bg-primary/15 text-accent group-hover:bg-primary/25"
+                  : "faded-bg border border-soft-strong text-accent"
               }
             `}
             aria-hidden="true"

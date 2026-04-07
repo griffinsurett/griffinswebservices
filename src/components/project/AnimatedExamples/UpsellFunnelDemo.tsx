@@ -100,7 +100,7 @@ export default function UpsellFunnelDemo({ className = "" }: UpsellFunnelDemoPro
         <div className={`border rounded-lg p-1.5 mb-2 transition-colors duration-300 ${
           upsellAdded
             ? "border-green-500/30 bg-green-500/5"
-            : "border-[var(--color-border-soft-strong)] bg-primary/5"
+            : "border-soft-strong bg-primary/5"
         }`}>
           <div className="flex items-center gap-1 mb-1">
             <span className={`text-[7px] font-semibold transition-colors duration-300 ${

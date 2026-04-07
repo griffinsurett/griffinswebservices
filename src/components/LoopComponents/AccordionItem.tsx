@@ -59,7 +59,7 @@ export default function AccordionItem({
           id={`${id}-trigger`}
           aria-expanded={isExpanded}
           aria-controls={`${id}-content`}
-          className={`w-full text-left flex items-center justify-between px-6 py-5 hover:bg-card/60 transition-colors duration-300 cursor-pointer relative z-20 ${headerClassName}`.trim()}
+          className={`w-full text-left flex items-center justify-between px-6 py-5 hover:bg-transparent transition-colors duration-300 cursor-pointer relative z-20 ${headerClassName}`.trim()}
           onClick={onToggle}
         >
           {headerSlot ? (
@@ -78,7 +78,9 @@ export default function AccordionItem({
           {showIndicator && (
             <div
               className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 text-lg font-semibold ${
-                isExpanded ? "bg-primary text-bg" : "bg-primary/20 text-accent"
+                isExpanded
+                  ? "bg-primary text-bg"
+                  : "faded-bg border border-soft-strong text-accent"
               }`}
               aria-hidden="true"
             >

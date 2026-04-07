@@ -53,7 +53,7 @@ export default function DevelopmentBuildDemo({
 
   return (
     <DecorativeWrapper
-      className={`pointer-events-none w-full select-none overflow-hidden rounded-2xl border border-[var(--color-border-soft)] bg-text/10 ${className}`}
+      className={`pointer-events-none w-full select-none overflow-hidden rounded-2xl faded-border bg-text/10 ${className}`}
     >
       <div className="bg-[linear-gradient(180deg,#12141A,#0E1015)] p-3">
         <div className="h-5" aria-hidden="true" />

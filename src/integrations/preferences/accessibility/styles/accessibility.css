@@ -471,7 +471,7 @@ html[data-a11y-font="readable"] body * {
   }
 
   .a11y-slider {
-  @apply mt-3 w-full h-2 rounded-full bg-bg border border-[var(--color-border-soft)] appearance-none cursor-pointer transition;
+  @apply mt-3 w-full h-2 rounded-full bg-bg faded-border appearance-none cursor-pointer transition;
   }
 
   .a11y-slider:focus-visible {

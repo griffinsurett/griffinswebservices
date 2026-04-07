@@ -347,7 +347,7 @@ export default function NumberCard({
           <div className={`relative z-10 mb-5 flex w-full ${displayNumberWrapClassName}`.trim()}>
             <span
               aria-hidden="true"
-              className="inline-flex items-center rounded-full border border-[var(--color-border-soft-strong)] bg-primary/12 px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary shadow-[0_12px_30px_rgba(32,60,170,0.18)] backdrop-blur-sm"
+              className="inline-flex items-center rounded-full border border-soft-strong bg-primary/12 px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary shadow-[0_12px_30px_rgba(32,60,170,0.18)] backdrop-blur-sm"
             >
               Step {displayNumber}
             </span>

@@ -5,7 +5,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import Button from "@/components/Button/Button";
 import IconListItem from "@/components/LoopComponents/IconListItem";
 import SmallChecklistItem from "@/components/LoopComponents/SmallChecklistItem.astro";
-import { ctaData } from "@/content/siteData";
+import { ctaData, contactCtaData } from "@/content/siteData";
 import { toArray } from "@/utils/array";
 
 interface PricingItemRecord extends Record<string, any> {
@@ -89,6 +89,9 @@ const isExternalHref = (href?: string) =>
         const buttonHref = item.link ?? item.url ?? ctaData.link;
         const buttonTarget = isExternalHref(buttonHref) ? "_blank" : undefined;
         const buttonRel = isExternalHref(buttonHref) ? "noopener noreferrer" : undefined;
+        const primaryCtaHref = contactCtaData.link;
+        const primaryCtaTarget = isExternalHref(primaryCtaHref) ? "_blank" : undefined;
+        const primaryCtaRel = isExternalHref(primaryCtaHref) ? "noopener noreferrer" : undefined;
         const features = Array.isArray(item.features)
           ? item.features.filter((feature) => typeof feature === "string" && feature.trim().length > 0)
           : [];
@@ -100,9 +103,8 @@ const isExternalHref = (href?: string) =>
             <div class="relative h-full">
               <article
               class:list={[
-                "group relative flex h-full flex-col transition-all duration-500",
+                "relative flex h-full flex-col",
                 isFeatured && "lg:-translate-y-4 lg:scale-[1.03]",
-                !isFeatured && "hover:-translate-y-2",
               ]}
             >
               {isFeatured && (
@@ -117,19 +119,9 @@ const isExternalHref = (href?: string) =>
               <div
                 class:list={[
                   "relative flex h-full flex-col overflow-hidden rounded-3xl card-bg shadow-xl",
-                  isFeatured && "border-[var(--color-border-soft-strong)] shadow-accent/20",
-                  !isFeatured && "group-hover:border-accent/40",
+                  isFeatured && "border-soft-strong",
                 ]}
               >
-              <div class="inner-card-style inner-card-transition inner-card-color" aria-hidden="true"></div>
-
-              {isFeatured && (
-                <>
-                  <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(94,118,246,0.22),transparent_42%),radial-gradient(circle_at_bottom_left,rgba(94,118,246,0.16),transparent_34%)]" aria-hidden="true"></div>
-                  <div class="pointer-events-none absolute -right-10 top-10 h-28 w-28 rounded-full bg-accent/18 blur-3xl" aria-hidden="true"></div>
-                </>
-              )}
-
               <div class:list={["relative z-10 flex h-full flex-col items-center p-6 text-center lg:p-8", isFeatured && "pt-12 lg:pt-14"]}>
                 <div class="w-full">
                   <IconListItem
@@ -183,8 +175,8 @@ const isExternalHref = (href?: string) =>
                 )}
 
                 <div class="mt-auto w-full pt-8 text-center">
-                  {isFeatured ? (
-                    <div class="mx-auto w-fit">
+                  <div class="mx-auto flex w-fit flex-col items-center gap-3">
+                    {isFeatured ? (
                       <Button
                         href={buttonHref}
                         variant="primary"
@@ -196,9 +188,7 @@ const isExternalHref = (href?: string) =>
                       >
                         Get Started
                       </Button>
-                    </div>
-                  ) : (
-                    <div class="mx-auto w-fit">
+                    ) : (
                       <Button
                         href={buttonHref}
                         variant="secondary"
@@ -211,10 +201,21 @@ const isExternalHref = (href?: string) =>
                       >
                         View Details
                       </Button>
-                    </div>
-                  )}
+                    )}
+
+                    <Button
+                      href={primaryCtaHref}
+                      variant="tertiary"
+                      rightIcon="lu:arrow-up-right"
+                      buttonWrapperClasses="justify-center"
+                      className="justify-center text-center"
+                      target={primaryCtaTarget}
+                      rel={primaryCtaRel}
+                    >
+                      {contactCtaData.text}
+                    </Button>
+                  </div>
                 </div>
-              </div>
               </div>
               </article>
             </div>

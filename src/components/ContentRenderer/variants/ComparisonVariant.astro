@@ -63,9 +63,9 @@ const safeRightItems = toArray(rightItems);
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
       {/* Left Column - For You */}
-      <div class="rounded-3xl border border-[var(--color-border-soft-strong)] bg-accent/5 p-6 lg:p-8">
+      <div class="rounded-3xl border border-soft-strong bg-accent/5 p-6 lg:p-8">
         <div class="flex items-center gap-3 mb-6">
-          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20 text-accent text-xl font-bold">
+          <span class="faded-bg border border-soft-strong flex h-10 w-10 items-center justify-center rounded-full text-accent text-xl font-bold">
             ✓
           </span>
           <h3 class="text-xl font-semibold text-heading">{leftTitle}</h3>
@@ -75,7 +75,7 @@ const safeRightItems = toArray(rightItems);
           <ul class="space-y-4">
             {safeLeftItems.map((item) => (
               <li class="flex items-start gap-3">
-                <span class="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-accent/15 text-accent text-xs font-bold mt-0.5">
+                <span class="faded-bg border border-soft shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-accent text-xs font-bold mt-0.5">
                   ✓
                 </span>
                 <div>

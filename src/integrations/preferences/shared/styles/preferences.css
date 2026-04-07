@@ -264,13 +264,11 @@ body {
    CONSENT CARD UTILITIES
    ============================================================================ */
 @utility card-bg {
-  @apply dark:bg-primary-light/5 light:bg-primary-dark/5 transition-all duration-[450ms];
-  border: 1px solid var(--color-border-soft);
+  @apply dark:bg-primary-light/5 light:bg-primary-dark/5 faded-border transition-all duration-[450ms];
 }
 
 @utility card-bg-2 {
-  @apply bg-bg2 transition-all duration-[450ms];
-  border: 1px solid var(--color-border-soft);
+  @apply bg-bg2 faded-border transition-all duration-[450ms];
 }
 
 @utility inner-card-style {
@@ -282,7 +280,7 @@ body {
 }
 
 @utility inner-card-color-subtle {
-  @apply inset-0 bg-gradient-to-br from-accent/10 to-transparent;
+  @apply inset-0 bg-transparent;
 }
 
 @utility outer-card-transition {
@@ -294,7 +292,7 @@ body {
 }
 
 @utility outer-card-color {
-  @apply card-bg hover:border-primary hover:shadow-primary/20;
+  @apply card-bg;
 }
 
 @utility outer-card-style {

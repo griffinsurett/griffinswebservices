@@ -20,12 +20,14 @@ solutions:
 ---
 
 import { contactCtaData } from "@/content/siteData";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import Section from "@/components/Section.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import CardVariant from "@/components/starter/ContentRenderer/variants/CardVariant.astro";
+import { related, sortByOrder } from "@/utils/query";
 
 export const aiApproachCards = [
   {
@@ -106,6 +108,13 @@ export const aiApproachCards = [
       />
     </div>
   </Section>
+
+  <ContentRenderer
+    query={related("technologies", "capabilities", "ai").orderBy(sortByOrder())}
+    variant="TechnologiesVariant"
+    title="AI Technologies"
+    description="These are some of the AI tools we use to help businesses save time, save money, and get more done."
+  />
 
   <TrustStatement
     text="AI should help your business save money, save time, and get more done without needing more people for every task."

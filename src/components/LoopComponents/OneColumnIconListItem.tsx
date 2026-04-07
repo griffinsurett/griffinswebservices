@@ -55,8 +55,8 @@ const ACCENT_PRESETS = {
       "text-[#8ef0bf] border-[#8ef0bf]/40 bg-[#0c241c]/70 shadow-[0_8px_25px_-15px_rgba(142,240,191,0.8)]",
   },
   primary: {
-    iconWrap: "bg-primary/15 text-primary ring-1 ring-primary/35",
-    arrow: "text-primary border-[var(--color-border-soft-strong)] bg-transparent",
+    iconWrap: "faded-bg border border-soft-strong text-primary",
+    arrow: "text-primary border-soft-strong bg-transparent",
   },
   neutral: {
     iconWrap: "bg-white/10 text-white ring-1 ring-white/25",
@@ -65,7 +65,7 @@ const ACCENT_PRESETS = {
 } as const;
 
 const BASE_SURFACE =
-  "group flex items-start gap-5 rounded-3xl border border-white/10 bg-white/[0.03] px-5 py-5 lg:px-7 lg:py-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.06]";
+  "group flex items-start gap-5 rounded-3xl border border-white/10 bg-white/[0.03] px-5 py-5 lg:px-7 lg:py-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-transparent";
 
 const BASE_ICON =
   "flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-semibold transition-transform duration-300 group-hover:scale-105";
