@@ -1,0 +1,42 @@
+---
+// src/components/starter/ContentRenderer/variants/HiddenCardVariant.astro
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import type { FeatureCardProps } from "@/components/LoopComponents/FeatureCard";
+import CardVariant from "./CardVariant.astro";
+
+interface Props extends BaseVariantProps {
+  columns?: 1 | 2 | 3 | 4 | "auto";
+  ctaHref?: string;
+  ctaText?: string;
+  contentClassName?: string;
+  gridClassName?: string;
+  ctaInlineOnDesktop?: boolean;
+  showBody?: boolean;
+  card?: CardPropOverrides;
+}
+
+type CardPropOverrides = Partial<Omit<FeatureCardProps, "data">> & {
+  listItem?: FeatureCardProps["listItemProps"];
+};
+
+const props = Astro.props as Props;
+const {
+  card,
+  className = "outer-section",
+  contentClassName = "inner-section",
+  gridClassName = "",
+} = props;
+
+const mergedCard: CardPropOverrides = {
+  ...card,
+  appearance: "hidden",
+};
+---
+
+<CardVariant
+  {...props}
+  className={className}
+  contentClassName={contentClassName}
+  gridClassName={gridClassName}
+  card={mergedCard}
+/>

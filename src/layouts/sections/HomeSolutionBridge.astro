@@ -18,11 +18,11 @@ const proofEntry = await byItemKeys("about-us", "our-proof").first();
 const bridgeHeading =
   typeof proofEntry?.data.heading === "string"
     ? proofEntry.data.heading
-    : "We build websites that look established, work hard, and give customers a reason to call.";
+    : "We build websites that help people trust you and take the next step.";
 
 const bridgeDescription =
   proofEntry?.data.description ??
-  "We build your website on a strong base so it stays fast, clear, and easy to use over time. It is set up so search engines can read it well, and it is also ready for the way AI search is starting to find and show businesses. The goal is simple: help more people find you, trust what they see, and take the next step.";
+  "We build your site on a strong base so it stays fast, clear, and easy to use. We also set it up so Google and AI tools can understand it better. The goal is simple: help more people find you, trust you, and contact you.";
 
 const facebookReviewsLink =
   proofEntry?.data.reviewLink ??
@@ -43,7 +43,7 @@ const features =
     : [
         {
           icon: "lu:badge-check",
-          text: "Built To Perform And Convert",
+          text: "Built To Win Trust",
         },
         {
           icon: "lu:rocket",

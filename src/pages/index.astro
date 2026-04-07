@@ -14,12 +14,12 @@ import { animationProps } from "@/integrations/scroll-animations/props";
 
 const heroHeading = {
   before: "Launch a Website That Actually Works.",
-  text: "Fast. Secure. Built to Grow.",
+  text: "Fast. Clear. Built to Grow.",
   after: "",
 };
 
 const heroDescription =
-  "We're a New Jersey–based web agency focused on building high-quality websites for businesses that want something done right the first time. Every site we deliver is built with intention — prioritizing performance, reliability, and long-term value over shortcuts or throwaway builds.";
+  "We build websites for businesses that want it done right the first time. Our sites load fast, look trustworthy, and make it easy for people to understand what you do and reach out.";
 ---
 
 <SiteLayout title="Fast, Secure Websites Built to Grow Your Business" description={siteData.description}>
@@ -53,10 +53,10 @@ const heroDescription =
       id="capabilities"
       title="What We Do"
       heading={{
-        before: "What we build to help your site look credible, rank better, and",
-        text: "convert more.",
+        before: "What we build to help your business look trustworthy, get found, and",
+        text: "win more leads.",
       }}
-      description="From design and development to SEO/AEO, performance optimization, and AI workflows, these are the capabilities we use to keep your website fast, loading quickly, and ready to turn more visitors into leads."
+      description="We design, build, improve, and support websites so they stay fast, easy to use, and ready to bring in more calls, forms, and sales."
       columns={3}
       gap="md"
       showButtonSection={false}
@@ -68,8 +68,8 @@ const heroDescription =
       variant="NumberCardVariant"
       id="process"
       title="How We Work"
-      heading="A Clear Process From Strategy To Launch And Support"
-      description="Good websites do not come from guessing. They come from clear structure, strong execution, and continued support after launch."
+      heading="A Clear Plan From Start To Launch And Support"
+      description="Good websites do not come from guessing. They come from a clear plan, careful work, and support after launch."
       gap="lg"
       showButtonSection={false}
     />
@@ -83,8 +83,8 @@ const heroDescription =
       query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
       variant="BenefitsVariant"
       id="benefits"
-      heading="Then your business deserves some of these solutions."
-      description="These are the kinds of benefits the right website should start delivering for your business."
+      heading="Your website should help with things like this."
+      description="A good website should make your business easier to trust, easier to find, and easier to contact."
       columns={2}
       gap="lg"
     />
@@ -114,7 +114,7 @@ const heroDescription =
           .orderBy(sortByOrder())}
         variant="PortfolioVideoShowcaseVariant"
         heading="Websites Built to Get Attention"
-        description="Fast, sharp websites that look credible and perform."
+        description="Fast, sharp websites that help people trust what they see."
         primaryCtaHref={contactCtaData.link}
         primaryCtaText={contactCtaData.text}
         ctaHref="/projects"
@@ -126,7 +126,7 @@ const heroDescription =
         query={byTag("technologies", "featured").orderBy(sortByOrder()).limit(8)}
         variant="TechnologiesVariant"
         title="Featured Technologies"
-        description="Frameworks, platforms, and infrastructure we rely on to keep sites fast, secure, and easy to evolve."
+        description="These are some of the tools and platforms we use to build and support websites."
       />
 
       <ContentRenderer

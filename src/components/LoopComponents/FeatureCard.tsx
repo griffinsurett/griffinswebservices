@@ -21,6 +21,7 @@ export interface FeatureCardProps {
   icon?: IconValue;
   title?: ReactNode;
   description?: ReactNode;
+  appearance?: "card" | "hidden";
   linkProps?: AnchorHTMLAttributes<HTMLAnchorElement>;
   className?: string;
   innerClassName?: string;
@@ -146,6 +147,7 @@ export default function FeatureCard({
   icon,
   title,
   description,
+  appearance = "card",
   linkProps,
   className = "",
   innerClassName = "",
@@ -277,6 +279,67 @@ export default function FeatureCard({
     .filter(Boolean)
     .join(" ");
 
+  const hiddenWrapperClassName = [
+    isInteractive ? "group" : "",
+    stretchToFill ? "h-full" : "",
+    resolvedLayout.includes("horizontal") ? "text-left" : "text-center",
+    "w-full",
+    !resolvedLayout.includes("horizontal") && isInteractive
+      ? "transition-transform duration-700 ease-out hover:-translate-y-1"
+      : "",
+    innerClassName,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const cardContent = (
+    <>
+      {appearance === "card" && (
+        <div className="inner-card-style inner-card-transition inner-card-color" />
+      )}
+      <IconListItem
+        data={resolvedData}
+        {...listItemConfig}
+      />
+      {hasBody && (
+        <div
+          className={`feature-card-body mt-4 pt-4 relative z-10 w-full ${
+            appearance === "card" ? "border-t border-primary/15" : ""
+          } ${resolvedLayout.includes("horizontal") ? "text-left" : "text-center"}`}
+        >
+          <div
+            ref={bodyRef}
+            className="prose prose-sm dark:prose-invert max-w-none text-text/85 leading-relaxed"
+          />
+          {children}
+        </div>
+      )}
+    </>
+  );
+
+  if (appearance === "hidden") {
+    const commonLinkProps = isInteractive
+      ? {
+          ...linkProps,
+          href: cardUrl,
+          target: finalTarget,
+          rel: finalRel,
+        }
+      : undefined;
+
+    return (
+      <div className={[stretchToFill ? "h-full" : "", className].filter(Boolean).join(" ")}>
+        {isInteractive ? (
+          <a {...commonLinkProps} className={hiddenWrapperClassName}>
+            {cardContent}
+          </a>
+        ) : (
+          <div className={hiddenWrapperClassName}>{cardContent}</div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className={[stretchToFill ? "h-full" : "", className].filter(Boolean).join(" ")}>
       <AnimatedBorder
@@ -298,27 +361,7 @@ export default function FeatureCard({
             : undefined
         }
       >
-        <div className="inner-card-style inner-card-transition inner-card-color" />
-        <IconListItem
-          data={resolvedData}
-          {...listItemConfig}
-        />
-        {/* Body content from MDX or children */}
-        {hasBody && (
-          <div
-            className={`feature-card-body mt-4 pt-4 border-t border-primary/15 relative z-10 w-full ${
-              resolvedLayout.includes("horizontal") ? "text-left" : "text-center"
-            }`}
-          >
-            {/* ContentBridge slot content loads here */}
-            <div
-              ref={bodyRef}
-              className="prose prose-sm dark:prose-invert max-w-none text-text/85 leading-relaxed"
-            />
-            {/* Direct children */}
-            {children}
-          </div>
-        )}
+        {cardContent}
       </AnimatedBorder>
     </div>
   );

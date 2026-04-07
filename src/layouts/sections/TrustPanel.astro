@@ -19,7 +19,7 @@ const visionEntry = await byItemKeys("about-us", "our-vision").first();
 const missionStatement = missionEntry?.data.description ?? siteData.ceoQuote;
 const visionStatement =
   visionEntry?.data.description ??
-  "My vision is for business owners to have websites that work for them instead of against them, with modern design, fast loading, and a clear structure that helps people trust what they see and take action without delay.";
+  "My vision is for business owners to have websites that are easy to trust, easy to use, and built to help them grow.";
 const facebookReviewsLink =
   proofEntry?.data.reviewLink ??
   "https://www.facebook.com/profile.php?id=61588357260507&sk=reviews";
@@ -80,7 +80,7 @@ const trustStats = [
   }),
   createTrustStat(trustStatEntries[1], {
     value: 2,
-    description: "marketing agencies refer us for their clients website needs.",
+    description: "marketing agencies send clients to us for website work.",
   }),
 ];
 ---
@@ -90,7 +90,7 @@ const trustStats = [
     <div class="px-4 sm:px-6 lg:px-10">
       <SectionHeader
         heading="Recommended by 30+ business owners and 2 marketing agencies."
-        description="You focus on running the business. We focus on building a website that loads fast, performs well, and gives people a reason to trust what they see."
+        description="You run the business. We build the website so it loads fast, feels clear, and gives people a reason to trust you."
         className="text-section text-center"
         headingClassName="h2 mb-6 text-heading"
         emphasisClassName="text-heading"

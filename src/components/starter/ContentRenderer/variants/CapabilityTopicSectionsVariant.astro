@@ -5,7 +5,7 @@
  *
  * Renders a sequence of editorial capability topics where each topic has:
  * 1. A full-height split section with heading/description and an image
- * 2. A supporting CardVariant grid below it using that topic's children
+ * 2. A supporting HiddenCardVariant grid below it using that topic's children
  *
  * Intended for parent capabilities like "web-design" where child capabilities
  * act as the large feature topics and grandchildren act as the supporting cards.
@@ -14,9 +14,9 @@
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import type { CollectionKey, CollectionEntry } from "astro:content";
 import SectionHeader from "@/components/SectionHeader.astro";
-import CardVariant from "./CardVariant.astro";
+import HiddenCardVariant from "./HiddenCardVariant.astro";
 import { toArray } from "@/utils/array";
-import { children } from "@/utils/query";
+import { byItemKeys, children } from "@/utils/query";
 import { getCollectionMeta, prepareCollectionEntries, type PreparedItem } from "@/utils/collections";
 import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
 
@@ -51,6 +51,25 @@ const {
 
 const safeItems = toArray(items) as PreparedItem[];
 const cardMeta = getCollectionMeta(cardCollection);
+const technologyMeta = getCollectionMeta("technologies");
+
+const getReferenceIds = (value: unknown): string[] => {
+  const refs = Array.isArray(value) ? value : value ? [value] : [];
+  return refs
+    .map((ref) => {
+      if (typeof ref === "string") return ref;
+      if (ref && typeof ref === "object") {
+        const record = ref as Record<string, unknown>;
+        return typeof record.id === "string"
+          ? record.id
+          : typeof record.slug === "string"
+            ? record.slug
+            : "";
+      }
+      return "";
+    })
+    .filter(Boolean);
+};
 
 const topicSections: TopicSectionData[] = await Promise.all(
   safeItems.map(async (item, index) => {
@@ -65,6 +84,24 @@ const topicSections: TopicSectionData[] = await Promise.all(
       const result = await children(cardCollection, slug).get();
       const cardEntries = (result.entries ?? []) as CollectionEntry<any>[];
       cards = await prepareCollectionEntries(cardEntries, cardCollection, cardMeta);
+    }
+
+    const technologyCardIds = getReferenceIds((item as Record<string, unknown>).technologyCards);
+    if (technologyCardIds.length > 0) {
+      const technologyResult = await byItemKeys("technologies", technologyCardIds).get();
+      const technologyEntries = (technologyResult.entries ?? []) as CollectionEntry<"technologies">[];
+      const technologyCards = await prepareCollectionEntries(
+        technologyEntries,
+        "technologies",
+        technologyMeta
+      );
+      cards = [
+        ...technologyCards.map((technologyCard) => ({
+          ...technologyCard,
+          url: undefined,
+        })),
+        ...cards,
+      ];
     }
 
     return {
@@ -83,12 +120,28 @@ const resolveTopicTitle = (item: PreparedItem) =>
 const resolveTopicHeading = (item: PreparedItem) =>
   item.heading ?? item.title;
 
+const resolveTopicCardColumns = (cardCount: number) => {
+  if (cardColumns !== 4) return cardColumns;
+  if (cardCount <= 3) return cardCount as 1 | 2 | 3;
+  if (cardCount % 3 === 0) return 3;
+  return 4;
+};
+
+const resolveTopicGridClassName = (cardCount: number) => {
+  const resolvedColumns = resolveTopicCardColumns(cardCount);
+  if (resolvedColumns === 3) return "items-stretch !gap-4 lg:!grid-cols-3";
+  if (resolvedColumns === 4) return "items-stretch !gap-4 lg:!grid-cols-2 xl:!grid-cols-4";
+  return "";
+};
+
 const compactTopicCardProps =
   cardColumns === 4
     ? {
         stretchToFill: true,
         innerClassName: "px-4 md:px-6 py-6 md:py-7",
         listItem: {
+          iconClassName:
+            "faded-bg flex h-16 w-16 items-center justify-center rounded-full p-3 text-accent mx-auto mb-5 shrink-0",
           titleClassName:
             "text-xl sm:text-2xl lg:text-[1.75rem] xl:text-[1.9rem] leading-[1.08] font-semibold tracking-wide text-heading mb-2 relative z-10",
           descriptionClassName:
@@ -139,13 +192,13 @@ const compactTopicCardProps =
           </div>
 
           {topic.cards.length > 0 && (
-            <CardVariant
+            <HiddenCardVariant
               items={topic.cards}
-              columns={cardColumns}
+              columns={resolveTopicCardColumns(topic.cards.length)}
               showButtonSection={false}
               className={`px-0 ${cardClassName}`.trim()}
               contentClassName=""
-              gridClassName={cardColumns === 4 ? "items-stretch !gap-4 lg:!grid-cols-2 xl:!grid-cols-4" : ""}
+              gridClassName={resolveTopicGridClassName(topic.cards.length)}
               card={compactTopicCardProps}
             />
           )}

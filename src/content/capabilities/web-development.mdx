@@ -1,52 +1,66 @@
 ---
 title: "Development"
-description: "Development is what turns ideas and designs into a working system — the part of a website that determines how stable it is, how fast it loads, how easy it is to maintain, and how well it holds up over time."
+description: "We build the parts of your website that need to keep working: the code, setup, and connections that affect speed, stability, and future changes."
 itemLayout: "../../layouts/collections/CapabilityCustomLayout.astro"
 heading:
-  before: "Built for"
-  text: "reliability,"
-  after: "not just launch day."
+  before: "Built to"
+  text: "hold up,"
+  after: "stay fast, and be easier to grow."
 order: 2
 icon: "fa6-solid:code"
 tags:
   - featured
 solutions:
   - websites
-  - blogss
+  - blogs
   - business-websites
+  - landing-pages
   - e-commerce-websites
-  - business-websites
   - web-apps
 ---
 
+import { contactCtaData } from "@/content/siteData";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
-import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
->
-<TrustStatement text="We don't treat development as a one-time task. We treat it as the technical foundation your website depends on every day." />
-
-<CapabilitiesSection
-  capabilitiesHeading="What's included in every build."
-  highlights={[
-    { title: "Clean, Intentional Code", description: "Organized structure with consistent patterns that's easy to update, extend, and maintain over time." },
-    { title: "Performance Built In", description: "Speed decisions made during development, not patched on later — so the site stays fast as it grows." },
-    { title: "Built to Change", description: "Architecture that allows new pages and features without disrupting what already works." },
-    { title: "Security Considered", description: "Best practices followed from the start to reduce vulnerabilities and keep systems predictable." },
-  ]}
-  highlightsTitle="Development Foundations"
-  highlightsHeading="Technical best practices built into every site."
-  highlightsDescription="These structural decisions determine whether your website holds up over time. A site can look great and still fail if it's built without structure or long-term thinking."
-  ctaTitle="Need a development team that delivers?"
-  ctaHeading={{
-    before: "Code that",
-    text: "actually works",
-    after: "— and keeps working."
+  grandparentContent={{
+    testimonialsTitle: "Testimonials",
+    testimonialsHeading:
+      "What business owners say after we fix the foundation.",
+    testimonialsDescription:
+      "Real feedback from businesses that needed a faster, more reliable site and a team that could keep it working.",
+    faqTitle: "FAQs",
+    faqHeading: "Common Questions About Web Development",
   }}
-  ctaDescription="No spaghetti code, no mystery bugs, no excuses. Get a clean, maintainable codebase built by developers who take ownership from first commit to final deploy."
-/>
+>
+  <BreadcrumbHeroCenter
+    slot="hero"
+    title="Web Development Agency"
+    heading={{
+      before: "Built to",
+      text: "hold up,",
+      after: "stay fast, and be easier to grow."
+    }}
+    description="We build websites that stay fast, stable, and easier to update, whether that means a custom build, work on an older site, or help on a platform site."
+    breadcrumbs={[
+      { label: "Home", href: "/" },
+      { label: "Capabilities", href: "/capabilities" },
+      { label: "Development" },
+    ]}
+    primaryCTA={{
+      text: contactCtaData.text,
+      link: contactCtaData.link,
+    }}
+    id="capabilities-quote-hero"
+  />
+
+  <TrustStatement
+    text="Good development keeps your website fast, stable, and easy to change as your business grows."
+    textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
+  />
 </CapabilityBodyLayout>

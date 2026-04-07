@@ -195,6 +195,7 @@ export const collections = {
       baseSchema({ image }).extend({
         features: z.array(z.string()).default([]),
         solutions: refSchema(["solutions", "features"]),
+        technologyCards: refSchema("technologies"),
       }),
   }),
 

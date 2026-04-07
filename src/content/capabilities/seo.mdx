@@ -1,46 +1,113 @@
 ---
-title: "SEO/AEO"
-description: "Technical SEO, on-page optimization, content planning, and ongoing SEO campaigns that help your website earn qualified visibility over time."
+title: "SEO & AEO"
+description: "We build websites with search-ready structure from the start, then offer deeper SEO work when a business wants to grow further."
+itemLayout: "../../layouts/collections/CapabilityCustomLayout.astro"
 heading:
-  before: "Strategic"
-  text: "SEO"
-  after: "from the build stage through ongoing campaigns."
+  before: "Search-ready"
+  text: "SEO & AEO"
+  after: "that starts in the build, then grows with ongoing work."
 order: 4
 icon: "fa6-solid:magnifying-glass-chart"
 tags:
   - featured
 solutions:
   - websites
+  - business-websites
+  - landing-pages
+  - e-commerce-websites
+  - website-improvements-upgrades
 ---
 
-import TrustStatement from "@/components/TrustStatement.astro";
-import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
+import { contactCtaData } from "@/content/siteData";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import CardVariant from "@/components/starter/ContentRenderer/variants/CardVariant.astro";
+
+export const seoApproachCards = [
+  {
+    icon: "fa6-solid:sitemap",
+    title: "SEO Ready First",
+    description:
+      "We start with clear page structure, clean code, strong metadata, internal linking, and a setup that search engines can read.",
+  },
+  {
+    icon: "fa6-solid:comment-dots",
+    title: "Better Answers Too",
+    description:
+      "We also shape pages so the meaning is easier to understand. That helps people, Google, and newer AI answer tools find the right points faster.",
+  },
+  {
+    icon: "fa6-solid:chart-line",
+    title: "Specialist Help After",
+    description:
+      "If you want to push further after launch, that is when we move into deeper SEO and AEO work like research, local improvements, content planning, and ongoing testing.",
+  },
+];
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
->
-<TrustStatement text="We treat SEO as both a technical foundation and an ongoing growth service, combining clean site structure with campaign work that keeps improving visibility over time." />
-
-<CapabilitiesSection
-  capabilitiesHeading="What's included in every build."
-  highlights={[
-    { title: "Technical SEO Foundations", description: "Logical architecture, crawlability, metadata, schema, and performance work that gives the site a strong base." },
-    { title: "On-Page Optimization", description: "Page titles, headings, internal linking, service page structure, and content alignment built around search intent." },
-    { title: "Content Planning", description: "Topic planning, page expansion, and content structure that support rankings without turning the site into keyword clutter." },
-    { title: "Ongoing Campaign Iteration", description: "Research, optimization, publishing priorities, reporting, and month-over-month refinement as visibility grows." },
-  ]}
-  highlightsTitle="SEO Services"
-  highlightsHeading="Foundational SEO and ongoing campaign work under one roof."
-  highlightsDescription="SEO works best when technical structure, content direction, and ongoing iteration support each other. We handle both the build-stage essentials and the campaign work that follows."
-  ctaTitle="Need SEO that keeps moving after launch?"
-  ctaHeading={{
-    before: "We offer",
-    text: "ongoing SEO campaigns",
-    after: "for businesses ready to grow visibility."
+  grandparentContent={{
+    testimonialsTitle: "Testimonials",
+    testimonialsHeading:
+      "What business owners say after we make the site easier to find.",
+    testimonialsDescription:
+      "Real feedback from businesses that needed a clearer website, stronger search foundations, and better long-term visibility.",
+    faqTitle: "FAQs",
+    faqHeading: "Common Questions About SEO & AEO",
   }}
-  ctaDescription="Campaign work can include keyword research, page optimization, local SEO improvements, content planning, internal linking, reporting, and continuous refinement based on how the site performs."
-/>
+>
+  <BreadcrumbHeroCenter
+    slot="hero"
+    title="SEO & AEO Services"
+    heading={{
+      before: "Search-ready",
+      text: "SEO & AEO",
+      after: "that starts in the build, then grows with ongoing work."
+    }}
+    description="Good websites should already be easier for Google and AI tools to read. We build that foundation into our sites first, then offer deeper SEO work when you want to push visibility further."
+    breadcrumbs={[
+      { label: "Home", href: "/" },
+      { label: "Capabilities", href: "/capabilities" },
+      { label: "SEO & AEO" },
+    ]}
+    primaryCTA={{
+      text: contactCtaData.text,
+      link: contactCtaData.link,
+    }}
+    id="capabilities-quote-hero"
+  />
+
+  <Section class="outer-section">
+    <div class="inner-section">
+      <SectionHeader
+        title="How We Handle SEO"
+        heading="First, your website should already be built the right way."
+        description="We do not like the model where a business buys a website first, then has to pay extra just to make it readable by Google. Our sites start with a strong search-ready base. After that, if you want to grow harder, we can step in as the ongoing SEO and AEO team."
+        className="mx-auto max-w-5xl text-center"
+        headingClassName="text-4xl md:text-5xl lg:text-6xl leading-[0.98] font-bold text-heading"
+        descriptionClassName="large-text mx-auto max-w-4xl"
+      />
+
+      <CardVariant
+        items={seoApproachCards}
+        columns={3}
+        showButtonSection={false}
+        className="mt-10 px-0"
+        contentClassName=""
+        card={{
+          stretchToFill: true,
+        }}
+      />
+    </div>
+  </Section>
+
+  <TrustStatement
+    text="Every site we build starts SEO-ready. If you want to grow past that, we can step in as your SEO and AEO specialists and keep improving the site over time."
+    textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
+  />
 </CapabilityBodyLayout>
