@@ -1,0 +1,197 @@
+---
+import Section from "@/components/Section.astro";
+import CapabilityQuoteForm from "@/components/Form/forms/CapabilityQuoteForm.astro";
+import Icon from "@/components/Icon";
+
+interface Props {
+  title?: string;
+  capabilityTitle?: string;
+  heading?: string;
+  description?: string;
+  className?: string;
+}
+
+const {
+  title,
+  capabilityTitle,
+  heading = "Thinking about your next website move?",
+  description = "Tell us what you need this website to do, what is not working right now, and what kind of budget range you are planning around. We will review the scope and reach out with the clearest next step.",
+  className = "",
+} = Astro.props as Props;
+
+const resolvedCapabilityTitle = capabilityTitle ?? title ?? "Capability";
+
+const highlights = [
+  {
+    icon: "lucide:scan-search",
+    title: "Clear scope",
+    description: "Share what needs to change so we can size the work around the real business goal.",
+  },
+  {
+    icon: "lucide:rocket",
+    title: "Budget context",
+    description: "A rough range helps us point you toward the right build path faster.",
+  },
+  {
+    icon: "lucide:messages-square",
+    title: "Practical next steps",
+    description: "You will know what we recommend, what it likely involves, and where to start.",
+  },
+];
+---
+
+<Section class={`outer-section ${className}`.trim()}>
+  <div class="inner-section">
+    <div class="capability-quote-shell">
+      <div class="capability-quote-copy">
+        <div class="space-y-5">
+          <p class="capability-quote-kicker">
+            Request a Quote
+          </p>
+          <h2 class="capability-quote-heading">{heading}</h2>
+          <p class="capability-quote-description">
+            {description}
+          </p>
+        </div>
+
+        <ul class="capability-quote-highlights">
+          {highlights.map((item) => (
+            <li class="capability-quote-highlight">
+              <span class="capability-quote-icon" aria-hidden="true">
+                <Icon icon={item.icon} size="sm" />
+              </span>
+              <div class="space-y-1">
+                <p class="capability-quote-highlight-title">{item.title}</p>
+                <p class="capability-quote-highlight-text">{item.description}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <p class="capability-quote-note">
+          Built around {resolvedCapabilityTitle.toLowerCase()} work, practical scope, and a faster first conversation.
+        </p>
+      </div>
+
+      <div class="capability-quote-form">
+        <CapabilityQuoteForm capabilityTitle={resolvedCapabilityTitle} />
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .capability-quote-shell {
+    display: grid;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    border-radius: 2rem;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg2) 90%, transparent), color-mix(in srgb, var(--color-bg) 94%, transparent));
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
+  }
+
+  .capability-quote-copy,
+  .capability-quote-form {
+    padding: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .capability-quote-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  }
+
+  .capability-quote-kicker {
+    margin: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-text) 70%, transparent);
+  }
+
+  .capability-quote-heading {
+    margin: 0;
+    max-width: 12ch;
+    font-size: clamp(2.2rem, 5vw, 4.8rem);
+    line-height: 0.98;
+    letter-spacing: -0.06em;
+    color: var(--color-heading);
+  }
+
+  .capability-quote-description {
+    margin: 0;
+    max-width: 34rem;
+    font-size: clamp(1rem, 1.8vw, 1.35rem);
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-text) 80%, transparent);
+  }
+
+  .capability-quote-highlights {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .capability-quote-highlight {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .capability-quote-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 999px;
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+    flex-shrink: 0;
+  }
+
+  .capability-quote-highlight-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .capability-quote-highlight-text {
+    margin: 0;
+    max-width: 30rem;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--color-text) 74%, transparent);
+  }
+
+  .capability-quote-note {
+    margin: 0;
+    font-size: 0.88rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  }
+
+  .capability-quote-form {
+    background: color-mix(in srgb, var(--color-bg) 96%, transparent);
+  }
+
+  @media (min-width: 1024px) {
+    .capability-quote-shell {
+      grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.95fr);
+    }
+
+    .capability-quote-copy {
+      border-bottom: 0;
+      border-right: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+      min-height: 100%;
+    }
+  }
+</style>

@@ -5,8 +5,8 @@ import TrustStatement from "@/components/TrustStatement.astro";
 import { contactCtaData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
 import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
+import CapabilityQuoteSection from "@/layouts/sections/CapabilityQuoteSection.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
-import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 import { getBreadcrumbs, query, sortByOrder } from "@/utils/query";
 import { children, related } from "@/utils/query/snippets";
 
@@ -89,9 +89,6 @@ const resolvedGrandparentContent: GrandparentContent = {
   testimonialsHeading: "What business owners say about working with us.",
   testimonialsDescription:
     "Real feedback from businesses that wanted a stronger website and a better online presence.",
-  projectsHeading: "Recent website work built to look credible and perform.",
-  projectsDescription:
-    "A closer look at websites and landing pages built to feel clear, trustworthy, and ready to convert.",
   faqTitle: "FAQs",
   faqHeading: `Common Questions About ${title || "This Capability"}`,
   ...grandparentContent,
@@ -172,20 +169,7 @@ const resolvedGrandparentContent: GrandparentContent = {
           description={resolvedGrandparentContent.testimonialsDescription}
         />
 
-        <ContentRenderer
-          query={query("projects")
-            .where((entry) => !!entry.data.featuredVideo)
-            .orderBy(sortByOrder())}
-          variant="PortfolioVideoShowcaseVariant"
-          heading={resolvedGrandparentContent.projectsHeading}
-          description={resolvedGrandparentContent.projectsDescription}
-          primaryCtaHref={primaryCTA.link}
-          primaryCtaText={primaryCTA.text}
-          ctaHref="/projects"
-          ctaText="See Portfolio"
-        />
-
-        <TrustPanel />
+        <CapabilityQuoteSection title={title} capabilityTitle={title} />
 
         <ContentRenderer
           query={related("faq", "capabilities", slug).orderBy(sortByOrder())}
