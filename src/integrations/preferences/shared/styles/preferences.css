@@ -264,11 +264,13 @@ body {
    CONSENT CARD UTILITIES
    ============================================================================ */
 @utility card-bg {
-  @apply dark:bg-primary-light/5 light:bg-primary-dark/5 border border-accent/20 transition-all duration-[450ms];
+  @apply dark:bg-primary-light/5 light:bg-primary-dark/5 transition-all duration-[450ms];
+  border: 1px solid var(--color-border-soft);
 }
 
 @utility card-bg-2 {
-  @apply bg-bg2 border border-accent/20 transition-all duration-[450ms];
+  @apply bg-bg2 transition-all duration-[450ms];
+  border: 1px solid var(--color-border-soft);
 }
 
 @utility inner-card-style {

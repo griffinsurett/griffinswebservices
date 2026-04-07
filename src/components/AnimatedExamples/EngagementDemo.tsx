@@ -118,7 +118,7 @@ export default function EngagementDemo({ className = "" }: EngagementDemoProps) 
 
           {/* Value message - appears mid-scroll */}
           <div
-            className={`bg-primary/15 border border-primary/30 rounded-lg p-2 mb-3 transition-all duration-300 ${
+            className={`bg-primary/15 border border-[var(--color-border-soft-strong)] rounded-lg p-2 mb-3 transition-all duration-300 ${
               showValueMessage
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-2"

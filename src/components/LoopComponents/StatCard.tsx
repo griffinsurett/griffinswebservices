@@ -77,7 +77,7 @@ export default function StatCard({ data, className = "" }: StatCardProps): React
     "card-bg",
     "rounded-2xl",
     "border",
-    "border-accent/15",
+    "faded-border",
     "p-6",
     "text-center",
     "relative",

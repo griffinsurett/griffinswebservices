@@ -25,6 +25,7 @@ export interface FeatureCardProps {
   linkProps?: AnchorHTMLAttributes<HTMLAnchorElement>;
   className?: string;
   innerClassName?: string;
+  hoverOverlayClassName?: string;
   ringDuration?: number;
   listItemProps?: Partial<Omit<IconListItemProps, "data">>;
   stretchToFill?: boolean;
@@ -151,6 +152,7 @@ export default function FeatureCard({
   linkProps,
   className = "",
   innerClassName = "",
+  hoverOverlayClassName = "inner-card-color",
   ringDuration = 800,
   listItemProps,
   stretchToFill = false,
@@ -295,7 +297,15 @@ export default function FeatureCard({
   const cardContent = (
     <>
       {appearance === "card" && (
-        <div className="inner-card-style inner-card-transition inner-card-color" />
+        <div
+          className={[
+            "inner-card-style",
+            "inner-card-transition",
+            hoverOverlayClassName,
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        />
       )}
       <IconListItem
         data={resolvedData}
@@ -304,7 +314,7 @@ export default function FeatureCard({
       {hasBody && (
         <div
           className={`feature-card-body mt-4 pt-4 relative z-10 w-full ${
-            appearance === "card" ? "border-t border-primary/15" : ""
+            appearance === "card" ? "border-t border-[var(--color-border-soft)]" : ""
           } ${resolvedLayout.includes("horizontal") ? "text-left" : "text-center"}`}
         >
           <div

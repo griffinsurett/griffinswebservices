@@ -223,7 +223,7 @@ const handleSubmit = async (values: Record<string, unknown>) => {
               client:idle
               name={goal.name}
               containerClassName="m-0"
-              labelClassName="flex items-start gap-3 rounded-2xl border border-accent/15 bg-white/3 p-4 transition-colors hover:border-accent/30 hover:bg-white/5"
+              labelClassName="flex items-start gap-3 rounded-2xl border border-[var(--color-border-soft)] bg-white/3 p-4 transition-colors hover:border-[var(--color-border-soft-strong)] hover:bg-white/5"
               checkboxClassName="mt-1 h-4 w-4 rounded accent-accent"
             >
               <span class="text-sm leading-relaxed text-text/85">{goal.label}</span>
@@ -244,7 +244,7 @@ const handleSubmit = async (values: Record<string, unknown>) => {
               client:idle
               name={`enhancement_${option.slug.replace(/-/g, "_")}`}
               containerClassName="m-0"
-              labelClassName="flex items-start gap-3 rounded-2xl border border-accent/15 bg-white/3 p-4 transition-colors hover:border-accent/30 hover:bg-white/5"
+              labelClassName="flex items-start gap-3 rounded-2xl border border-[var(--color-border-soft)] bg-white/3 p-4 transition-colors hover:border-[var(--color-border-soft-strong)] hover:bg-white/5"
               checkboxClassName="mt-1 h-4 w-4 rounded accent-accent"
             >
               <span class="flex flex-col gap-1">

@@ -66,7 +66,7 @@ export default function DesignMessagingDemo({
 
   return (
     <DecorativeWrapper
-      className={`pointer-events-none w-full select-none overflow-hidden rounded-2xl border border-primary/20 bg-text/10 ${className}`}
+      className={`pointer-events-none w-full select-none overflow-hidden rounded-2xl border border-[var(--color-border-soft)] bg-text/10 ${className}`}
     >
       <div className="bg-[linear-gradient(180deg,#12141A,#0E1015)] p-3">
         <div className="h-5" aria-hidden="true" />
@@ -80,9 +80,9 @@ export default function DesignMessagingDemo({
 
             {showDropTargets && (
               <>
-                <div className="absolute left-1/2 top-[3.95rem] h-6 w-[7.25rem] -translate-x-1/2 rounded-full border border-dashed border-primary/35" />
-                <div className="absolute left-1/2 top-[7.35rem] h-7 w-[5.5rem] -translate-x-1/2 rounded-full border border-dashed border-primary/35" />
-                <div className="absolute left-1/2 top-[8.95rem] h-4 w-[7.5rem] -translate-x-1/2 rounded-full border border-dashed border-primary/25" />
+                <div className="absolute left-1/2 top-[3.95rem] h-6 w-[7.25rem] -translate-x-1/2 rounded-full border border-dashed border-[var(--color-border-soft-strong)]" />
+                <div className="absolute left-1/2 top-[7.35rem] h-7 w-[5.5rem] -translate-x-1/2 rounded-full border border-dashed border-[var(--color-border-soft-strong)]" />
+                <div className="absolute left-1/2 top-[8.95rem] h-4 w-[7.5rem] -translate-x-1/2 rounded-full border border-dashed border-[var(--color-border-soft)]" />
               </>
             )}
 
@@ -90,7 +90,7 @@ export default function DesignMessagingDemo({
               <div
                 key={piece.id}
                 className={[
-                  "absolute rounded-full border border-primary/25 bg-[#1A2240] px-3 py-1 text-[7px] font-semibold uppercase tracking-[0.12em] text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition-all duration-700",
+                  "absolute rounded-full border border-[var(--color-border-soft-strong)] bg-[#1A2240] px-3 py-1 text-[7px] font-semibold uppercase tracking-[0.12em] text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition-all duration-700",
                   showPieces ? "opacity-100" : "opacity-0",
                   showDropTargets ? piece.targetClassName : piece.draftClassName,
                 ].join(" ")}

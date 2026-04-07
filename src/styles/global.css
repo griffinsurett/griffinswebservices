@@ -76,7 +76,9 @@
   --color-accent-950:  oklch(from var(--color-accent) calc(l - 0.45) c h);
 
     /* Extras */
-  --color-border-dim: rgba(255, 255, 255, 0.2);
+  --color-border-soft: color-mix(in srgb, var(--color-heading) 10%, transparent);
+  --color-border-soft-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
+  --color-border-dim: var(--color-border-soft-strong);
   --font-header: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
   --font-body: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
 }
@@ -262,7 +264,9 @@ body {
     --color-bg: var(--color-primary-light);
     --color-bg2: var(--color-secondary-light);
     --color-bg3: var(--color-tertiary-light);
-    --color-border-dim: rgba(0, 0, 0, 0.15);
+    --color-border-soft: color-mix(in srgb, var(--color-heading) 10%, transparent);
+    --color-border-soft-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
+    --color-border-dim: var(--color-border-soft-strong);
   }
 
   [data-theme="dark"] {
@@ -364,7 +368,9 @@ body {
 }
 
 @utility faded-accent-border {
-  @apply border border-accent/20;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border-soft);
 }
 
 @utility input-bg {
@@ -388,11 +394,16 @@ body {
 }
 
 @utility rounded-border {
-  @apply inline-block border border-primary text-primary rounded-full font-medium;
+  @apply inline-block text-primary rounded-full font-medium;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border-soft);
 }
 
 @utility faded-border {
-  @apply border-1 dark:border-text/10 light:border-text/20;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border-soft);
 }
 
 /* Layout & spacing */
@@ -414,7 +425,10 @@ body {
 
 /* Form controls */
 @utility form-field {
-  @apply w-full input-bg border border-accent/20 rounded-xl px-4 py-3 focus:outline-none main-duration transition-all;
+  @apply w-full input-bg rounded-xl px-4 py-3 focus:outline-none main-duration transition-all;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border-soft);
   @apply text-muted;
 
   &::placeholder {
@@ -627,7 +641,8 @@ body {
   }
 
   .written-rich-text blockquote {
-    @apply border-l-2 border-primary/40 pl-5 italic text-heading text-xl leading-tight;
+    @apply border-l-2 pl-5 italic text-heading text-xl leading-tight;
+    border-color: var(--color-border-soft-strong);
   }
 
   .written-rich-text strong {

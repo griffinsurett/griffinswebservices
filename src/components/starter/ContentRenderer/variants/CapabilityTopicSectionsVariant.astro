@@ -50,6 +50,7 @@ const {
 } = Astro.props as Props;
 
 const safeItems = toArray(items) as PreparedItem[];
+const iconGradientId = `${id ?? "capability-topic-sections"}-icon-gradient`;
 const cardMeta = getCollectionMeta(cardCollection);
 const technologyMeta = getCollectionMeta("technologies");
 
@@ -141,7 +142,11 @@ const compactTopicCardProps =
         innerClassName: "px-4 md:px-6 py-6 md:py-7",
         listItem: {
           iconClassName:
-            "faded-bg flex h-16 w-16 items-center justify-center rounded-full p-3 text-accent mx-auto mb-5 shrink-0",
+            "faded-bg border border-[var(--color-border-soft)] flex h-16 w-16 items-center justify-center rounded-full p-3 mx-auto mb-5 shrink-0",
+          iconStyle: {
+            stroke: `url(#${iconGradientId})`,
+            fill: `url(#${iconGradientId})`,
+          },
           titleClassName:
             "text-xl sm:text-2xl lg:text-[1.75rem] xl:text-[1.9rem] leading-[1.08] font-semibold tracking-wide text-heading mb-2 relative z-10",
           descriptionClassName:
@@ -152,6 +157,14 @@ const compactTopicCardProps =
 ---
 
 <section id={id} class={`outer-section relative ${className}`.trim()}>
+  <svg class="absolute h-0 w-0 overflow-hidden" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id={iconGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="var(--color-primary)" />
+        <stop offset="100%" stop-color="var(--color-accent)" />
+      </linearGradient>
+    </defs>
+  </svg>
   <div class="inner-section space-y-24 lg:space-y-32">
     {topicSections.map((topic, index) => {
       const textOrderClass = topic.reverse ? "lg:order-2" : "";
@@ -185,7 +198,7 @@ const compactTopicCardProps =
                 </div>
               ) : (
                 <div
-                  class={`overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02)_35%,rgba(0,0,0,0.2)_100%)] shadow-[0_32px_80px_rgba(0,0,0,0.38)] ${imageAspectClass}`.trim()}
+                  class={`overflow-hidden border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02)_35%,rgba(0,0,0,0.2)_100%)] shadow-[0_32px_80px_rgba(0,0,0,0.38)] ${imageAspectClass}`.trim()}
                 />
               )}
             </div>

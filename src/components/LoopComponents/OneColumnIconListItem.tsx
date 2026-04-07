@@ -56,7 +56,7 @@ const ACCENT_PRESETS = {
   },
   primary: {
     iconWrap: "bg-primary/15 text-primary ring-1 ring-primary/35",
-    arrow: "text-primary border-primary/30 bg-transparent",
+    arrow: "text-primary border-[var(--color-border-soft-strong)] bg-transparent",
   },
   neutral: {
     iconWrap: "bg-white/10 text-white ring-1 ring-white/25",

@@ -167,7 +167,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
 
                     {/* Right: Instantly loaded image */}
                     <div className="w-[45%] flex items-center justify-center">
-                      <div className="w-full h-16 rounded bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center overflow-hidden border border-primary/10">
+                      <div className="w-full h-16 rounded bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center overflow-hidden border border-[var(--color-border-soft)]">
                         <svg className="w-8 h-8 text-primary/40" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
                         </svg>

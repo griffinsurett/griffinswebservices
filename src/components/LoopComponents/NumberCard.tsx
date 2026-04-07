@@ -317,6 +317,9 @@ export default function NumberCard({
 
   const shouldRenderBodyContainer = showBody || Boolean(children);
   const shouldRenderBody = hasRenderedBody || Boolean(children);
+  const displayNumberWrapClassName = resolvedLayout.includes("horizontal")
+    ? "justify-start"
+    : "justify-center lg:justify-start";
 
   return (
     <div className={className}>
@@ -341,12 +344,14 @@ export default function NumberCard({
       >
         <div className="inner-card-style inner-card-transition inner-card-color" />
         {!hideDisplayNumber && displayNumber && (
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute left-6 top-4 z-0 select-none text-[4.75rem] font-black leading-none tracking-[-0.08em] text-primary/10 sm:left-8 sm:top-6 sm:text-[5.5rem]"
-        >
-            {displayNumber}
-          </span>
+          <div className={`relative z-10 mb-5 flex w-full ${displayNumberWrapClassName}`.trim()}>
+            <span
+              aria-hidden="true"
+              className="inline-flex items-center rounded-full border border-[var(--color-border-soft-strong)] bg-primary/12 px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary shadow-[0_12px_30px_rgba(32,60,170,0.18)] backdrop-blur-sm"
+            >
+              Step {displayNumber}
+            </span>
+          </div>
         )}
         {shouldRenderBodyContainer && (
           <div

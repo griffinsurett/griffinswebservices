@@ -45,7 +45,7 @@ export default function KeepGrowingDemo({
 
   return (
     <DecorativeWrapper
-      className={`pointer-events-none w-full select-none overflow-hidden rounded-2xl border border-primary/20 bg-text/10 ${className}`}
+      className={`pointer-events-none w-full select-none overflow-hidden rounded-2xl border border-[var(--color-border-soft)] bg-text/10 ${className}`}
     >
       <div className="bg-[linear-gradient(180deg,#12141A,#0E1015)] p-3">
         <div className="h-5" aria-hidden="true" />
@@ -59,7 +59,7 @@ export default function KeepGrowingDemo({
             <ProcessWebsitePreview mode="final" />
 
             <div
-              className={`absolute right-3 top-[2.8rem] w-[4.9rem] rounded-[0.85rem] border border-primary/25 bg-[#1A2240]/95 p-2 shadow-[0_16px_30px_rgba(0,0,0,0.3)] transition-all duration-700 ${
+              className={`absolute right-3 top-[2.8rem] w-[4.9rem] rounded-[0.85rem] border border-[var(--color-border-soft-strong)] bg-[#1A2240]/95 p-2 shadow-[0_16px_30px_rgba(0,0,0,0.3)] transition-all duration-700 ${
                 showContentCard
                   ? "translate-y-0 opacity-100"
                   : "translate-y-4 opacity-0"

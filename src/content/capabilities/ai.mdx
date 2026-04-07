@@ -1,11 +1,12 @@
 ---
 title: "AI"
-description: "We use AI to speed up planning, content operations, development workflows, QA, and search readiness so your website improves faster without turning into a mess."
+description: "We help businesses use AI to save money, save time, and get more done without needing as many people for every task."
+itemLayout: "../../layouts/collections/CapabilityCustomLayout.astro"
 heading:
-  before: "Practical"
-  text: "AI workflows"
-  after: "that make websites smarter, faster, and easier to evolve."
-order: 5
+  before: "Use"
+  text: "AI"
+  after: "to save money, move faster, and get more done."
+order: 6
 icon: "fa6-solid:robot"
 tags:
   - featured
@@ -15,39 +16,99 @@ solutions:
   - websites
   - business-websites
   - landing-pages
-  - e-commerce-websites
-  - blogs
   - web-apps
 ---
 
-import TrustStatement from "@/components/TrustStatement.astro";
-import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
+import { contactCtaData } from "@/content/siteData";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import CardVariant from "@/components/starter/ContentRenderer/variants/CardVariant.astro";
+
+export const aiApproachCards = [
+  {
+    icon: "fa6-solid:globe",
+    title: "AI On Your Website",
+    description:
+      "We can add AI to the website in ways that help people get answers, move faster, and turn into better leads.",
+  },
+  {
+    icon: "fa6-solid:bullhorn",
+    title: "AI In Marketing",
+    description:
+      "We can use AI to help with content, research, planning, and other marketing work so your business can do more with less time.",
+  },
+  {
+    icon: "fa6-solid:clock",
+    title: "AI On Everyday Tasks",
+    description:
+      "We can use AI on repeat work, office tasks, and team workflows so you can save money and avoid needing as many hires right away.",
+  },
+];
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
->
-<TrustStatement text="We use AI as leverage, not a shortcut. Strategy, QA, and final decisions still stay under human control." />
-
-<CapabilitiesSection
-  capabilitiesHeading="Where AI actually helps on modern websites."
-  highlights={[
-    { title: "Faster Development Workflows", description: "AI assists with coding, testing, debugging, and repetitive implementation tasks so builds move faster without lowering standards." },
-    { title: "Smarter Content Operations", description: "Bulk edits, content drafting, optimization passes, and publishing workflows become faster and easier to manage across larger sites." },
-    { title: "Search & SEO Readiness", description: "AI helps identify content opportunities, improve page structure, and adapt sites for both traditional search engines and newer AI-driven discovery." },
-    { title: "AI-Ready Website Systems", description: "We build modular, composable sites that can support personalization, automation, analytics, and future AI integrations without a rebuild." },
-  ]}
-  highlightsTitle="AI for Web"
-  highlightsHeading="Use AI where it creates leverage, not chaos."
-  highlightsDescription="The goal is not to stuff AI into a website for the sake of it. The goal is to use it where it meaningfully improves speed, insight, personalization, content operations, and ongoing optimization while keeping the system maintainable."
-  ctaTitle="Want AI to make your site more effective?"
-  ctaHeading={{
-    before: "Use AI to",
-    text: "improve the workflow,",
-    after: "not create more noise."
+  grandparentContent={{
+    testimonialsTitle: "Testimonials",
+    testimonialsHeading:
+      "What business owners say after we help them use AI in practical ways.",
+    testimonialsDescription:
+      "Real feedback from businesses that wanted to save time, improve workflows, and use AI without adding more mess.",
+    faqTitle: "FAQs",
+    faqHeading: "Common Questions About AI Help For Businesses",
   }}
-  ctaDescription="Get a site and process that uses AI in practical ways: faster content operations, cleaner optimization loops, better search readiness, and smarter ongoing improvements."
-/>
+>
+  <BreadcrumbHeroCenter
+    slot="hero"
+    title="AI Help For Businesses"
+    heading={{
+      before: "Use",
+      text: "AI",
+      after: "to save money, move faster, and get more done."
+    }}
+    description="We help businesses use AI on their website, in marketing, and across everyday work so they can save money, save time, and do more without needing a big team for every task."
+    breadcrumbs={[
+      { label: "Home", href: "/" },
+      { label: "Capabilities", href: "/capabilities" },
+      { label: "AI" },
+    ]}
+    primaryCTA={{
+      text: contactCtaData.text,
+      link: contactCtaData.link,
+    }}
+    id="capabilities-quote-hero"
+  />
+
+  <Section class="outer-section">
+    <div class="inner-section">
+      <SectionHeader
+        title="How We Handle AI"
+        heading="Find the places where AI can save money and do real work."
+        description="Some businesses want AI because they want to move faster, spend less, and get more done without hiring so many people right away. We help find the best places to use it and put it to work."
+        className="mx-auto max-w-5xl text-center"
+        headingClassName="text-4xl md:text-5xl lg:text-6xl leading-[0.98] font-bold text-heading"
+        descriptionClassName="large-text mx-auto max-w-4xl"
+      />
+
+      <CardVariant
+        items={aiApproachCards}
+        columns={3}
+        showButtonSection={false}
+        className="mt-10 px-0"
+        contentClassName=""
+        card={{
+          stretchToFill: true,
+        }}
+      />
+    </div>
+  </Section>
+
+  <TrustStatement
+    text="AI should help your business save money, save time, and get more done without needing more people for every task."
+    textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
+  />
 </CapabilityBodyLayout>

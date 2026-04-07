@@ -1,5 +1,10 @@
 // src/components/LoopComponents/IconListItem.tsx
-import { isValidElement, type ElementType, type ReactNode } from "react";
+import {
+  isValidElement,
+  type CSSProperties,
+  type ElementType,
+  type ReactNode,
+} from "react";
 import Icon from "@/components/Icon";
 import type { IconType } from "@/content/schema";
 import type { IconSize } from "@/integrations/icons";
@@ -42,6 +47,8 @@ export interface IconListItemProps {
   className?: string;
   containerClassName?: string;
   iconClassName?: string;
+  iconInnerClassName?: string;
+  iconStyle?: CSSProperties;
   iconSize?: IconSize;
   imageClassName?: string;
   imageLoading?: "lazy" | "eager";
@@ -62,6 +69,8 @@ export default function IconListItem({
   className = "",
   containerClassName = "",
   iconClassName = "card-icon-color",
+  iconInnerClassName = "",
+  iconStyle,
   iconSize = "lg",
   imageClassName = "w-12 h-12 rounded-full object-cover flex-shrink-0",
   imageLoading = "lazy",
@@ -176,8 +185,9 @@ export default function IconListItem({
           <Icon
             icon={iconName}
             size={size ?? iconSize}
-            className={customClass}
+            className={[customClass, iconInnerClassName].filter(Boolean).join(" ")}
             color={color}
+            style={iconStyle}
             aria-label={ariaLabel}
           />
         </div>
@@ -187,7 +197,12 @@ export default function IconListItem({
     if (isRenderableIcon) {
       return (
         <div className={`shrink-0 ${resolvedIconClassName}`} aria-hidden="true">
-          <Icon icon={icon as IconType} size={iconSize} />
+          <Icon
+            icon={icon as IconType}
+            size={iconSize}
+            className={iconInnerClassName}
+            style={iconStyle}
+          />
         </div>
       );
     }
