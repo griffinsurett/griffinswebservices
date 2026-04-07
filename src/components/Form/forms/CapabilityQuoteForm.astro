@@ -50,7 +50,7 @@ const handleSubmit = async (values: Record<string, unknown>) => {
     successMessage="Thanks. We’ll review your project details and reach out with next steps."
     submitButton={{
       text: buttonText,
-      className: "!w-auto whitespace-nowrap",
+      className: "whitespace-nowrap",
       disabled: !quoteFormAction,
       loadingText: "Sending your request..."
     }}
@@ -58,16 +58,6 @@ const handleSubmit = async (values: Record<string, unknown>) => {
     <input type="hidden" name="pageUrl" value={currentPageUrl} />
     <input type="hidden" name="serviceCategory" value="capabilities" />
     <input type="hidden" name="capabilityTitle" value={capabilityTitle} />
-
-    <Input
-      client:idle
-      name="email"
-      label="Business Email"
-      type="email"
-      required={true}
-      placeholder="yourname@company.com"
-      inputClassName="min-h-14"
-    />
 
     <div class="grid gap-4 md:grid-cols-2">
       <Input
@@ -92,6 +82,16 @@ const handleSubmit = async (values: Record<string, unknown>) => {
         inputClassName="min-h-14"
       />
     </div>
+
+    <Input
+      client:idle
+      name="email"
+      label="Email"
+      type="email"
+      required={true}
+      placeholder="Email address"
+      inputClassName="min-h-14"
+    />
 
     <Textarea
       client:idle

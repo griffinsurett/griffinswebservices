@@ -56,6 +56,10 @@ const primaryCTA: CTA = {
 };
 
 const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
+const hasStaticBreadcrumbs = !absoluteBreadcrumbs && breadcrumbs.length > 0;
+const mobileLeftColumnHeightClass = hasStaticBreadcrumbs
+  ? "min-h-[calc(100svh-8.5rem)]"
+  : "min-h-screen";
 ---
 
 <Hero
@@ -137,7 +141,7 @@ const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
 
       <div class="flex flex-1 items-center">
         <div class="w-full lg:flex lg:flex-row lg:items-stretch lg:gap-16">
-          <div class="flex min-h-screen w-full flex-col items-start justify-center gap-5 text-left lg:min-h-auto lg:w-1/2 lg:flex-[0_0_50%] lg:gap-8">
+          <div class={`flex ${mobileLeftColumnHeightClass} w-full flex-col items-start justify-center gap-5 text-left lg:min-h-auto lg:w-1/2 lg:flex-[0_0_50%] lg:gap-8`}>
             <SectionHeader
               className="text-left max-w-[42rem]"
               title={title}

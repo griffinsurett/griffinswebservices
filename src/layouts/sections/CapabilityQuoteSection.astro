@@ -2,6 +2,7 @@
 import Section from "@/components/Section.astro";
 import CapabilityQuoteForm from "@/components/Form/forms/CapabilityQuoteForm.astro";
 import Icon from "@/components/Icon";
+import SectionHeader from "@/components/SectionHeader.astro";
 
 interface Props {
   title?: string;
@@ -15,7 +16,7 @@ const {
   title,
   capabilityTitle,
   heading = "Thinking about your next website move?",
-  description = "Tell us what you need this website to do, what is not working right now, and what kind of budget range you are planning around. We will review the scope and reach out with the clearest next step.",
+  description = "Share the basics here and we will review the scope, the budget range, and the clearest next step for your website.",
   className = "",
 } = Astro.props as Props;
 
@@ -24,35 +25,35 @@ const resolvedCapabilityTitle = capabilityTitle ?? title ?? "Capability";
 const highlights = [
   {
     icon: "lucide:scan-search",
-    title: "Clear scope",
-    description: "Share what needs to change so we can size the work around the real business goal.",
+    title: "Clear next step",
+    description: "We look at the real scope first, then tell you whether this is a refresh, a rebuild, or something more custom.",
   },
   {
     icon: "lucide:rocket",
-    title: "Budget context",
-    description: "A rough range helps us point you toward the right build path faster.",
+    title: "Budget alignment",
+    description: "A rough budget range helps us recommend the right path without wasting time on the wrong solution.",
   },
   {
     icon: "lucide:messages-square",
-    title: "Practical next steps",
-    description: "You will know what we recommend, what it likely involves, and where to start.",
+    title: "Built around your business",
+    description: "The conversation starts with your goals, your pages, and what the website actually needs to handle.",
   },
 ];
 ---
 
 <Section class={`outer-section ${className}`.trim()}>
   <div class="inner-section">
-    <div class="capability-quote-shell">
+    <div class="capability-quote-layout">
       <div class="capability-quote-copy">
-        <div class="space-y-5">
-          <p class="capability-quote-kicker">
-            Request a Quote
-          </p>
-          <h2 class="capability-quote-heading">{heading}</h2>
-          <p class="capability-quote-description">
-            {description}
-          </p>
-        </div>
+        <SectionHeader
+          title="Request a Quote"
+          heading={heading}
+          description={`If you are planning ${resolvedCapabilityTitle.toLowerCase()} work, ${description.toLowerCase()}`}
+          className="text-left"
+          headingClassName="h2 mb-6 text-heading"
+          emphasisClassName="text-heading"
+          descriptionClassName="large-text max-w-2xl"
+        />
 
         <ul class="capability-quote-highlights">
           {highlights.map((item) => (
@@ -67,13 +68,15 @@ const highlights = [
             </li>
           ))}
         </ul>
-
-        <p class="capability-quote-note">
-          Built around {resolvedCapabilityTitle.toLowerCase()} work, practical scope, and a faster first conversation.
-        </p>
       </div>
 
-      <div class="capability-quote-form">
+      <div class="capability-quote-card section-box card-bg">
+        <div class="capability-quote-card__header">
+          <h3 class="capability-quote-card__title">Start your quote</h3>
+          <p class="capability-quote-card__description">
+            Send the basics and we will follow up with the right recommendation for your website.
+          </p>
+        </div>
         <CapabilityQuoteForm capabilityTitle={resolvedCapabilityTitle} />
       </div>
     </div>
@@ -81,53 +84,16 @@ const highlights = [
 </Section>
 
 <style>
-  .capability-quote-shell {
+  .capability-quote-layout {
     display: grid;
-    gap: 0;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
-    border-radius: 2rem;
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--color-bg2) 90%, transparent), color-mix(in srgb, var(--color-bg) 94%, transparent));
-    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
-  }
-
-  .capability-quote-copy,
-  .capability-quote-form {
-    padding: clamp(1.5rem, 3vw, 3rem);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: start;
   }
 
   .capability-quote-copy {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     gap: 2rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
-  }
-
-  .capability-quote-kicker {
-    margin: 0;
-    font-size: 0.78rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-text) 70%, transparent);
-  }
-
-  .capability-quote-heading {
-    margin: 0;
-    max-width: 12ch;
-    font-size: clamp(2.2rem, 5vw, 4.8rem);
-    line-height: 0.98;
-    letter-spacing: -0.06em;
-    color: var(--color-heading);
-  }
-
-  .capability-quote-description {
-    margin: 0;
-    max-width: 34rem;
-    font-size: clamp(1rem, 1.8vw, 1.35rem);
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--color-text) 80%, transparent);
   }
 
   .capability-quote-highlights {
@@ -171,27 +137,47 @@ const highlights = [
     color: color-mix(in srgb, var(--color-text) 74%, transparent);
   }
 
-  .capability-quote-note {
-    margin: 0;
-    font-size: 0.88rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-text) 60%, transparent);
+  .capability-quote-card {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 35px 90px -48px rgba(0, 0, 0, 0.55);
   }
 
-  .capability-quote-form {
-    background: color-mix(in srgb, var(--color-bg) 96%, transparent);
+  .capability-quote-card__header {
+    margin-bottom: 1.5rem;
+  }
+
+  .capability-quote-card__title {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .capability-quote-card__description {
+    margin: 0.65rem 0 0;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-text) 74%, transparent);
+  }
+
+  .capability-quote-card :global(form > .mt-6) {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .capability-quote-card :global(form > .mt-6 > span) {
+    width: auto !important;
+    justify-content: flex-start;
+  }
+
+  .capability-quote-card :global(form > .mt-6 > span > a),
+  .capability-quote-card :global(form > .mt-6 > span > button) {
+    width: auto !important;
   }
 
   @media (min-width: 1024px) {
-    .capability-quote-shell {
+    .capability-quote-layout {
       grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.95fr);
-    }
-
-    .capability-quote-copy {
-      border-bottom: 0;
-      border-right: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
-      min-height: 100%;
     }
   }
 </style>
