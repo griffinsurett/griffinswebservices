@@ -26,7 +26,6 @@ export interface Props {
   primaryCTA?: CTA;
   breadcrumbs?: BreadcrumbItem[];
   className?: string;
-  absoluteBreadcrumbs?: boolean;
   breadcrumbsClassName?: string;
   id?: string;
 }
@@ -41,7 +40,6 @@ const {
   primaryCTA: incomingPrimaryCTA,
   breadcrumbs = [],
   className = "",
-  absoluteBreadcrumbs = false,
   breadcrumbsClassName = "",
   id = "hero",
 } = Astro.props as Props;
@@ -62,81 +60,85 @@ const primaryCTA: CTA = {
   contentAlign="center"
   contentVerticalAlign="center"
 >
-  <div class="relative z-10 min-h-screen inner-section flex">
-    {
-      breadcrumbs.length > 0 && (
-        <nav
-          aria-label="Breadcrumb"
-          class={`hero-breadcrumbs ${absoluteBreadcrumbs ? "absolute inset-x-0 top-24 z-20 lg:top-28" : ""} ${breadcrumbsClassName}`.trim()}
-        >
-          <div class="mx-auto w-full max-w-6xl px-2 lg:max-w-7xl lg:px-0">
-            <ol class="flex flex-wrap items-center gap-x-4 gap-y-2 list-none p-0 m-0">
-              {breadcrumbs.map((item, index) => {
-                const isLast = index === breadcrumbs.length - 1;
-                return (
-                  <li class="flex items-center gap-4">
-                    {item.href && !isLast ? (
-                      <a href={item.href} class="hero-breadcrumb-link">
-                        {item.label}
-                      </a>
-                    ) : (
-                      <span
-                        class="hero-breadcrumb-link"
-                        aria-current={isLast ? "page" : undefined}
-                      >
-                        {item.label}
-                      </span>
-                    )}
-
-                    {!isLast && <span aria-hidden="true" class="text-text/40">/</span>}
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-        </nav>
-      )
-    }
-
+  <div class="relative z-10 min-h-screen">
     <div
-      class="relative min-h-screen xl:h-auto inner-section mx-auto flex flex-col justify-center items-center"
+      class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-2 pb-12 lg:max-w-7xl lg:px-0 lg:pb-0"
     >
+      {
+        breadcrumbs.length > 0 && (
+          <div class="flex min-h-[7rem] items-end pt-20 lg:min-h-[8.5rem] lg:pt-16">
+            <nav
+              aria-label="Breadcrumb"
+              class={`hero-breadcrumbs w-full ${breadcrumbsClassName}`.trim()}
+            >
+              <ol class="flex flex-wrap items-center gap-x-4 gap-y-2 list-none p-0 m-0">
+                {breadcrumbs.map((item, index) => {
+                  const isLast = index === breadcrumbs.length - 1;
+                  return (
+                    <li class="flex items-center gap-4">
+                      {item.href && !isLast ? (
+                        <a href={item.href} class="hero-breadcrumb-link">
+                          {item.label}
+                        </a>
+                      ) : (
+                        <span
+                          class="hero-breadcrumb-link"
+                          aria-current={isLast ? "page" : undefined}
+                        >
+                          {item.label}
+                        </span>
+                      )}
+
+                      {!isLast && <span aria-hidden="true" class="text-text/40">/</span>}
+                    </li>
+                  );
+                })}
+              </ol>
+            </nav>
+          </div>
+        )
+      }
+
       <div
-        class="flex flex-col gap-5 lg:gap-8 justify-left items-start lg:justify-center lg:items-center hero-spacing lg:text-center w-full"
+        class="flex flex-1 items-center"
       >
-        <SectionHeader
-          className="text-left lg:text-center w-full hero-spacing"
-          title={title}
-          heading={heading}
-          headingTag="h1"
-          headingClassName="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold"
-          description={description ?? defaultDescription}
-          descriptionClassName="hero-text text-lg max-w-3xl leading-relaxed mx-0 lg:mx-auto"
-        />
-
-        <div class="flex flex-col lg:flex-row items-center gap-3 lg:gap-6">
-          <Button
-            client:idle
-            href={primaryCTA.link}
-            variant="primary"
-            size="lg"
-            rightIcon={primaryCTA.rightIcon}
-          >
-            {primaryCTA.text}
-          </Button>
-
-          <ContentRenderer
-            query={query("testimonials")
-              .where((entry) => entry.data.featured === true)
-              .limit(3)}
-            variant="TestimonialCirclesVariant"
-            className="px-2 md:px-0"
-            counterStart={10}
-            counterEnd={100}
-            counterDuration={1800}
-            counterSuffix="+"
-            counterLabel="Happy Clients"
+        <div
+          class="mx-auto flex w-full max-w-5xl flex-col items-start gap-5 lg:items-center lg:gap-8 lg:text-center"
+        >
+          <SectionHeader
+            className="text-left lg:text-center w-full"
+            title={title}
+            heading={heading}
+            headingTag="h1"
+            headingClassName="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold"
+            description={description ?? defaultDescription}
+            descriptionClassName="hero-text max-w-3xl leading-relaxed mx-0 lg:mx-auto"
           />
+
+          <div class="flex flex-col lg:flex-row items-center gap-3 lg:gap-6">
+            <Button
+              client:idle
+              href={primaryCTA.link}
+              variant="primary"
+              size="lg"
+              rightIcon={primaryCTA.rightIcon}
+            >
+              {primaryCTA.text}
+            </Button>
+
+            <ContentRenderer
+              query={query("testimonials")
+                .where((entry) => entry.data.featured === true)
+                .limit(3)}
+              variant="TestimonialCirclesVariant"
+              className="px-2 md:px-0"
+              counterStart={10}
+              counterEnd={100}
+              counterDuration={1800}
+              counterSuffix="+"
+              counterLabel="Happy Clients"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -144,12 +146,11 @@ const primaryCTA: CTA = {
 </Hero>
 
 <style>
-  .hero-breadcrumbs {
-    margin-bottom: 2.75rem;
-  }
-
-  .hero-breadcrumbs.absolute {
-    margin-bottom: 0;
+  @media (max-width: 1023px) {
+    .hero-breadcrumb-link {
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+    }
   }
 
   .hero-breadcrumb-link {
@@ -164,20 +165,5 @@ const primaryCTA: CTA = {
 
   a.hero-breadcrumb-link:hover {
     color: var(--color-heading);
-  }
-
-  @media (max-width: 1023px) {
-    .hero-breadcrumbs {
-      margin-bottom: 2rem;
-    }
-
-    .hero-breadcrumbs.absolute {
-      margin-bottom: 0;
-    }
-
-    .hero-breadcrumb-link {
-      font-size: 0.74rem;
-      letter-spacing: 0.12em;
-    }
   }
 </style>
