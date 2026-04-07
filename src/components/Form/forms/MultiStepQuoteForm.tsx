@@ -126,8 +126,8 @@ export default function MultiStepQuoteForm() {
           placeholder="Select service type"
           containerClassName="mb-4"
           options={[
-            { value: "web-design", label: "Web Design" },
-            { value: "web-development", label: "Web Development" },
+            { value: "web-design", label: "Design" },
+            { value: "web-development", label: "Development" },
             { value: "hosting-maintenance", label: "Hosting & Maintenance" },
             { value: "consulting", label: "Consulting" },
           ]}
