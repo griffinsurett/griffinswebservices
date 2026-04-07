@@ -13,8 +13,7 @@
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import type { CollectionKey, CollectionEntry } from "astro:content";
-import Section from "@/components/project/Section.astro";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
 import CardVariant from "./CardVariant.astro";
 import { toArray } from "@/utils/array";
 import { children } from "@/utils/query";
@@ -99,7 +98,7 @@ const compactTopicCardProps =
     : undefined;
 ---
 
-<Section id={id} class={`outer-section relative ${className}`.trim()}>
+<section id={id} class={`outer-section relative ${className}`.trim()}>
   <div class="inner-section space-y-24 lg:space-y-32">
     {topicSections.map((topic, index) => {
       const textOrderClass = topic.reverse ? "lg:order-2" : "";
@@ -154,4 +153,4 @@ const compactTopicCardProps =
       );
     })}
   </div>
-</Section>
+</section>
