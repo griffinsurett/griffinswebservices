@@ -30,7 +30,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import CardVariant from "@/components/starter/ContentRenderer/variants/CardVariant.astro";
 import WebsiteLoadComparison from "@/components/AnimatedExamples/WebsiteLoadComparison";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
-import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import CapabilityQuoteSection from "@/layouts/sections/CapabilityQuoteSection.astro";
 import { children } from "@/utils/query/snippets";
 
@@ -108,7 +108,7 @@ export const loadingStrategyCards = [
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-  <BreadcrumbHeroStart
+  <BreadcrumbHeroCenter
     slot="hero"
     title="Website Performance Optimization"
     heading={{
@@ -128,14 +128,7 @@ export const loadingStrategyCards = [
       link: contactCtaData.link,
     }}
     id="capabilities-quote-hero"
-    rightColumnClassName="flex items-center"
-  >
-    <div slot="right" class="flex h-full w-full items-center justify-center py-8 lg:py-0">
-      <div class="card-bg w-full min-h-[22rem] overflow-hidden rounded-3xl p-4 shadow-[0_32px_120px_-52px_rgba(0,0,0,0.7)] sm:min-h-[24rem] sm:p-5 lg:min-h-[28rem] lg:p-6">
-        <WebsiteLoadComparison client:load className="w-full" />
-      </div>
-    </div>
-  </BreadcrumbHeroStart>
+  />
 
   <Section class="outer-section">
     <div class="inner-section">
@@ -148,11 +141,15 @@ export const loadingStrategyCards = [
         descriptionClassName="large-text mx-auto max-w-4xl"
       />
 
+      <div class="card-bg mt-10 overflow-hidden rounded-3xl p-4 shadow-[0_32px_120px_-52px_rgba(0,0,0,0.7)] sm:p-5 lg:p-6">
+        <WebsiteLoadComparison client:load className="w-full" />
+      </div>
+
       <CardVariant
         items={performanceApproachCards}
         columns={4}
         showButtonSection={false}
-        className="mt-10 px-0"
+        className="mt-12 px-0"
         contentClassName=""
         card={{
           stretchToFill: true,
