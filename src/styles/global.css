@@ -666,11 +666,11 @@ body {
   }
 
   .emphasized-text {
-    @apply font-bold text-transparent secondary-gradient bg-clip-text;
+    @apply text-transparent secondary-gradient bg-clip-text;
   }
 
   .hover-emphasis-text {
-    @apply font-bold text-heading hover:text-transparent hover:secondary-gradient hover:bg-clip-text
+    @apply text-heading hover:text-transparent hover:secondary-gradient hover:bg-clip-text
   }
   
   .text-primary-gradient {
@@ -777,7 +777,7 @@ body {
   }
 
   .footer-nav {
-    @apply text-2xl font-bold;
+    @apply text-2xl font-semibold;
   }
 
   button {
@@ -786,11 +786,11 @@ body {
 
   /* Typography helpers */
   .h1 {
-    @apply text-4xl md:text-5xl leading-tight font-bold text-heading;
+    @apply text-4xl md:text-5xl leading-tight font-semibold text-heading;
   }
 
   .h2 {
-    @apply text-4xl md:text-5xl lg:text-6xl font-bold text-heading;
+    @apply text-4xl md:text-5xl lg:text-6xl font-semibold text-heading;
   }
 
   .h3 {

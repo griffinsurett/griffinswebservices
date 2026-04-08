@@ -30,6 +30,13 @@ const {
 const mergedCard: CardPropOverrides = {
   ...card,
   appearance: "hidden",
+  listItem: {
+    alignment: "left",
+    className: "w-full",
+    iconClassName: "icon-large z-10 mb-5 card-icon-color",
+    ...(card?.listItemProps ?? {}),
+    ...(card?.listItem ?? {}),
+  },
 };
 ---
 

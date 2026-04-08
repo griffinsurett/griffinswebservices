@@ -19,7 +19,7 @@ export default function PrimaryButton({
   ...props
 }: ButtonProps) {
   const variantClasses =
-    "group inline-flex items-center gap-2 bg-transparent p-0 text-heading no-underline hover:underline focus:underline decoration-current underline-offset-4";
+    "group inline-flex items-center gap-2 bg-transparent p-0 text-text no-underline hover:underline focus:underline decoration-current underline-offset-4";
 
   return (
     <ButtonBase

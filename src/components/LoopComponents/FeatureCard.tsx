@@ -235,6 +235,19 @@ export default function FeatureCard({
 
   const resolvedLayout = layout ?? "vertical";
   const resolvedAlignment = alignment ?? (resolvedLayout.includes("horizontal") ? "left" : "center");
+  const isHorizontalLayout = resolvedLayout.includes("horizontal");
+  const verticalAlignmentClass =
+    resolvedAlignment === "left"
+      ? "items-start"
+      : resolvedAlignment === "right"
+        ? "items-end"
+        : "items-center";
+  const textAlignmentClass =
+    resolvedAlignment === "left"
+      ? "text-left"
+      : resolvedAlignment === "right"
+        ? "text-right"
+        : "text-center";
   const defaultIconClassName = resolvedLayout.includes("horizontal")
     ? "icon-large z-10 card-icon-color mx-auto"
     : "icon-large z-10 mb-5 card-icon-color mx-auto";
@@ -254,11 +267,11 @@ export default function FeatureCard({
 
   // Use auto height when there's body content, fixed height otherwise
   const innerCardClass =
-    resolvedLayout.includes("horizontal")
+    isHorizontalLayout
       ? "lg:h-55 w-full px-4 md:px-8 py-6 relative flex flex-col justify-center items-center card-bg"
       : hasBody
-        ? "mx-auto px-6 md:px-10 py-8 flex flex-col justify-center items-center relative card-bg"
-        : "min-h-90 mx-auto px-6 md:px-10 py-8 flex flex-col justify-center items-center relative card-bg";
+        ? `mx-auto px-6 md:px-10 py-8 flex flex-col justify-center ${verticalAlignmentClass} relative card-bg`
+        : `min-h-90 mx-auto px-6 md:px-10 py-8 flex flex-col justify-center ${verticalAlignmentClass} relative card-bg`;
   const resolvedInnerCardClass = [
     stretchToFill ? "h-full" : "",
     innerCardClass,
@@ -267,8 +280,8 @@ export default function FeatureCard({
     .filter(Boolean)
     .join(" ");
 
-  const wrapperTextClass = resolvedLayout.includes("horizontal") ? "text-left" : "text-center";
-  const hoverLift = !resolvedLayout.includes("horizontal") && isInteractive ? "hover:-translate-y-3" : "";
+  const wrapperTextClass = isHorizontalLayout ? "text-left" : textAlignmentClass;
+  const hoverLift = !isHorizontalLayout && isInteractive ? "hover:-translate-y-3" : "";
   const wrapperClassName = [
     isInteractive ? "group" : "",
     stretchToFill ? "h-full" : "",
@@ -284,9 +297,9 @@ export default function FeatureCard({
   const hiddenWrapperClassName = [
     isInteractive ? "group" : "",
     stretchToFill ? "h-full" : "",
-    resolvedLayout.includes("horizontal") ? "text-left" : "text-center",
+    isHorizontalLayout ? "text-left" : textAlignmentClass,
     "w-full",
-    !resolvedLayout.includes("horizontal") && isInteractive
+    !isHorizontalLayout && isInteractive
       ? "transition-transform duration-700 ease-out hover:-translate-y-1"
       : "",
     innerClassName,
@@ -315,7 +328,7 @@ export default function FeatureCard({
         <div
           className={`feature-card-body mt-4 pt-4 relative z-10 w-full ${
             appearance === "card" ? "border-t border-soft" : ""
-          } ${resolvedLayout.includes("horizontal") ? "text-left" : "text-center"}`}
+          } ${isHorizontalLayout ? "text-left" : textAlignmentClass}`}
         >
           <div
             ref={bodyRef}

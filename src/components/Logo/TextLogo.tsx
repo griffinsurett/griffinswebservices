@@ -13,7 +13,7 @@ interface TextLogoProps {
 export default function TextLogo({
   title,
   className = "",
-  firstClass = "text-3xl -ml-[0.1rem] leading-wide font-bold",
+  firstClass = "text-3xl -ml-[0.1rem] leading-wide font-semibold",
   restClass = "font-light emphasized-text uppercase text-xs lg:text-sm p-0 m-0 tracking-[0.2em]",
   fadeDuration = 1200,
   animateOutText = false,
