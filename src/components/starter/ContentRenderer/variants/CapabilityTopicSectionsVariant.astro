@@ -22,6 +22,10 @@ import BarGraph from "@/components/AnimatedExamples/BarGraph";
 import WebsiteLoadComparison from "@/components/AnimatedExamples/WebsiteLoadComparison";
 import KeepGrowingDemo from "@/components/AnimatedExamples/KeepGrowingDemo";
 import SupportChat from "@/components/AnimatedExamples/SupportChat";
+import WebsitePlanningDemo from "@/components/AnimatedExamples/WebsitePlanningDemo";
+import DesignMessagingDemo from "@/components/AnimatedExamples/DesignMessagingDemo";
+import GoogleListing from "@/components/AnimatedExamples/GoogleListing";
+import GrowthGraph from "@/components/AnimatedExamples/GrowthGraph";
 import { toArray } from "@/utils/array";
 import { byItemKeys, children } from "@/utils/query";
 import { getCollectionMeta, prepareCollectionEntries, type PreparedItem } from "@/utils/collections";
@@ -48,7 +52,11 @@ type TopicDemoName =
   | "PlatformCmsDevelopmentDemo"
   | "WebsiteLoadComparison"
   | "KeepGrowingDemo"
-  | "SupportChat";
+  | "SupportChat"
+  | "WebsitePlanningDemo"
+  | "DesignMessagingDemo"
+  | "GoogleListing"
+  | "GrowthGraph";
 
 const {
   items = [],
@@ -154,6 +162,10 @@ const resolveTopicDemoName = (item: PreparedItem): TopicDemoName | undefined => 
   if (body.includes("<WebsiteLoadComparison")) return "WebsiteLoadComparison";
   if (body.includes("<KeepGrowingDemo")) return "KeepGrowingDemo";
   if (body.includes("<SupportChat")) return "SupportChat";
+  if (body.includes("<WebsitePlanningDemo")) return "WebsitePlanningDemo";
+  if (body.includes("<DesignMessagingDemo")) return "DesignMessagingDemo";
+  if (body.includes("<GoogleListing")) return "GoogleListing";
+  if (body.includes("<GrowthGraph")) return "GrowthGraph";
 
   return undefined;
 };
@@ -254,6 +266,22 @@ const compactTopicCardProps =
                 ) : topicDemoName === "SupportChat" ? (
                   <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
                     <SupportChat client:visible className="w-full max-w-[36rem]" />
+                  </div>
+                ) : topicDemoName === "WebsitePlanningDemo" ? (
+                  <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
+                    <WebsitePlanningDemo client:visible className="w-full max-w-[34rem]" />
+                  </div>
+                ) : topicDemoName === "DesignMessagingDemo" ? (
+                  <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
+                    <DesignMessagingDemo client:visible className="w-full max-w-[34rem]" />
+                  </div>
+                ) : topicDemoName === "GoogleListing" ? (
+                  <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
+                    <GoogleListing client:visible className="w-full max-w-[36rem]" />
+                  </div>
+                ) : topicDemoName === "GrowthGraph" ? (
+                  <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
+                    <GrowthGraph client:visible className="w-full max-w-[34rem]" />
                   </div>
                 ) : null}
               </div>

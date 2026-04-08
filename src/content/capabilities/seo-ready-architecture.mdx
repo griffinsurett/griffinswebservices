@@ -15,11 +15,14 @@ solutions:
   - e-commerce-websites
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import GoogleListing from "@/components/AnimatedExamples/GoogleListing";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <GoogleListing />
+  </div>
 </CapabilityBodyLayout>

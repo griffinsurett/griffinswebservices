@@ -10,11 +10,14 @@ parent: web-design
 order: 1
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import WebsitePlanningDemo from "@/components/AnimatedExamples/WebsitePlanningDemo";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <WebsitePlanningDemo />
+  </div>
 </CapabilityBodyLayout>

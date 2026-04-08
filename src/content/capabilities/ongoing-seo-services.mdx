@@ -15,11 +15,14 @@ solutions:
   - website-improvements-upgrades
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import GrowthGraph from "@/components/AnimatedExamples/GrowthGraph";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <GrowthGraph />
+  </div>
 </CapabilityBodyLayout>
