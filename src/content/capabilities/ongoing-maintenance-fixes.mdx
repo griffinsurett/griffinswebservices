@@ -14,7 +14,7 @@ solutions:
   - website-improvements-upgrades
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
-import KeepGrowingDemo from "@/components/AnimatedExamples/KeepGrowingDemo";
+import SupportChat from "@/components/AnimatedExamples/SupportChat";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
@@ -22,6 +22,6 @@ import KeepGrowingDemo from "@/components/AnimatedExamples/KeepGrowingDemo";
   description={frontmatter.description}
 >
   <div slot="topic-demo" class="hidden">
-    <KeepGrowingDemo />
+    <SupportChat />
   </div>
 </CapabilityBodyLayout>

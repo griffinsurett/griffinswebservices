@@ -21,6 +21,7 @@ import PlatformCmsDevelopmentDemo from "@/components/AnimatedExamples/PlatformCm
 import BarGraph from "@/components/AnimatedExamples/BarGraph";
 import WebsiteLoadComparison from "@/components/AnimatedExamples/WebsiteLoadComparison";
 import KeepGrowingDemo from "@/components/AnimatedExamples/KeepGrowingDemo";
+import SupportChat from "@/components/AnimatedExamples/SupportChat";
 import { toArray } from "@/utils/array";
 import { byItemKeys, children } from "@/utils/query";
 import { getCollectionMeta, prepareCollectionEntries, type PreparedItem } from "@/utils/collections";
@@ -46,7 +47,8 @@ type TopicDemoName =
   | "DevelopmentBuildDemo"
   | "PlatformCmsDevelopmentDemo"
   | "WebsiteLoadComparison"
-  | "KeepGrowingDemo";
+  | "KeepGrowingDemo"
+  | "SupportChat";
 
 const {
   items = [],
@@ -151,6 +153,7 @@ const resolveTopicDemoName = (item: PreparedItem): TopicDemoName | undefined => 
   if (body.includes("<PlatformCmsDevelopmentDemo")) return "PlatformCmsDevelopmentDemo";
   if (body.includes("<WebsiteLoadComparison")) return "WebsiteLoadComparison";
   if (body.includes("<KeepGrowingDemo")) return "KeepGrowingDemo";
+  if (body.includes("<SupportChat")) return "SupportChat";
 
   return undefined;
 };
@@ -247,6 +250,10 @@ const compactTopicCardProps =
                 ) : topicDemoName === "KeepGrowingDemo" ? (
                   <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
                     <KeepGrowingDemo client:visible className="w-full max-w-[32rem]" />
+                  </div>
+                ) : topicDemoName === "SupportChat" ? (
+                  <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
+                    <SupportChat client:visible className="w-full max-w-[36rem]" />
                   </div>
                 ) : null}
               </div>
