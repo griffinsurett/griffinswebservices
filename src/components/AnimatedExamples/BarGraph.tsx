@@ -134,7 +134,7 @@ export default function BarGraph({
 
   const valueClass =
     variant === "primary" || variant === "primary-reverse"
-      ? "text-accent font-bold"
+      ? "text-accent font-semibold"
       : "text-text/60";
 
   // Use instant duration when reduced motion is preferred

@@ -79,7 +79,7 @@ export default function EcommerceIntegrationDemo({ className = "" }: EcommerceIn
         {/* Checkout View */}
         {!showIntegrations && (
           <>
-            <h3 className="text-[11px] font-semibold text-text mb-2">Checkout</h3>
+            <h3 className="text-[11px] text-text mb-2">Checkout</h3>
 
             {/* Order summary */}
             <div className="bg-bg3 rounded-lg p-2 mb-2">
@@ -119,7 +119,7 @@ export default function EcommerceIntegrationDemo({ className = "" }: EcommerceIn
             <div className="border-t border-text/10 pt-2 mb-3">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] font-semibold text-text">Total</span>
-                <span className="text-sm font-bold text-text">
+                <span className="text-sm font-semibold text-text">
                   {shippingCalculated ? "$94.99" : "..."}
                 </span>
               </div>
@@ -190,7 +190,7 @@ export default function EcommerceIntegrationDemo({ className = "" }: EcommerceIn
                   <span className="text-[7px] text-text block truncate">Running Shoes</span>
                   <div className="flex items-center gap-1 mt-0.5">
                     <span className="text-[7px] text-text/40 line-through">24</span>
-                    <span className="text-[8px] text-green-500 font-bold">→ 23</span>
+                    <span className="text-[8px] text-green-500 font-semibold">→ 23</span>
                   </div>
                 </div>
 
@@ -218,10 +218,10 @@ export default function EcommerceIntegrationDemo({ className = "" }: EcommerceIn
                   </div>
                   <div className="grid grid-cols-2 gap-px bg-green-500/30">
                     <div className="bg-green-500/10 px-1 py-0.5">
-                      <span className="text-[6px] text-text font-bold">#1847</span>
+                      <span className="text-[6px] text-text font-semibold">#1847</span>
                     </div>
                     <div className="bg-green-500/10 px-1 py-0.5">
-                      <span className="text-[6px] text-green-600 font-bold">$94.99</span>
+                      <span className="text-[6px] text-green-600 font-semibold">$94.99</span>
                     </div>
                   </div>
                 </div>

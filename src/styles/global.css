@@ -748,7 +748,7 @@ body {
   }
 
   .icon-medium {
-    @apply w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold shrink-0;
+    @apply w-14 h-14 rounded-full flex items-center justify-center text-lg font-semibold shrink-0;
   }
 
   .icon-small {
@@ -786,23 +786,23 @@ body {
 
   /* Typography helpers */
   .h1 {
-    @apply text-4xl md:text-5xl leading-tight font-semibold text-heading;
+    @apply text-4xl md:text-5xl leading-tight text-heading;
   }
 
   .h2 {
-    @apply text-4xl md:text-5xl lg:text-6xl font-semibold text-heading;
+    @apply text-4xl md:text-5xl lg:text-6xl text-heading;
   }
 
   .h3 {
-    @apply text-2xl md:text-3xl font-semibold text-heading;
+    @apply text-2xl md:text-3xl text-heading;
   }
 
   .h4 {
-    @apply font-semibold text-xl text-heading;
+    @apply text-xl text-heading;
   }
 
   .h5 {
-    @apply font-semibold text-lg text-heading;
+    @apply text-lg text-heading;
   }
 
   .h1,
@@ -810,11 +810,22 @@ body {
   .h3,
   .h4,
   .h5 {
-    @apply font-header tracking-wide;
+    @apply font-header tracking-wide font-semibold;
   }
 
   p {
     @apply text-text;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong,
+  b {
+    @apply font-semibold;
   }
 
   /* .hero-heading {

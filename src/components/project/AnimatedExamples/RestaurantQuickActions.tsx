@@ -75,7 +75,7 @@ export default function RestaurantQuickActions({ className = "" }: RestaurantQui
       <div className="bg-bg2 p-4 relative min-h-[180px] overflow-hidden">
         {/* Hero section */}
         <div className="text-center mb-4">
-          <h2 className="text-base font-bold text-text mb-1">Hungry?</h2>
+          <h2 className="text-base text-text mb-1">Hungry?</h2>
           <p className="text-[10px] text-text/60">Authentic tacos & fresh margaritas</p>
         </div>
 

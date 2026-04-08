@@ -119,7 +119,7 @@ export default function LinkPageShareButton({
       >
         <div className="flex flex-col items-center gap-6">
           <ShareSheetLogo />
-          <h2 className="text-lg font-semibold uppercase tracking-[0.22em] text-heading">
+          <h2 className="text-lg uppercase tracking-[0.22em] text-heading">
             Share
           </h2>
 

@@ -77,7 +77,7 @@ export default function PortfolioAddDemo({ className = "" }: PortfolioAddDemoPro
         {/* Page header */}
         <div className="mb-3 flex items-center justify-between">
           <div>
-            <h3 className="text-[11px] font-semibold text-white">Photography Portfolio</h3>
+            <h3 className="text-[11px] text-white">Photography Portfolio</h3>
             <p className="text-[8px] text-white/50">Recent work</p>
           </div>
           <div className={`flex items-center gap-1 px-2 py-1 rounded-full transition-all duration-300 ${

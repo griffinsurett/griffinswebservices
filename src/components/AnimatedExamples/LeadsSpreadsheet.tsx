@@ -94,7 +94,7 @@ export default function LeadsSpreadsheet({ className = "" }: LeadsSpreadsheetPro
       <div className="bg-bg2/50 px-3 py-1.5 flex items-center gap-4 border-b border-text/10">
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] text-text/50">Total:</span>
-          <span className="text-xs font-bold text-primary tabular-nums">{totalLeads}</span>
+          <span className="text-xs font-semibold text-primary tabular-nums">{totalLeads}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] text-text/50">This week:</span>

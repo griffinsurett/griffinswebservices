@@ -79,7 +79,7 @@ export default function MobileOrderDemo({ className = "" }: MobileOrderDemoProps
             <div className="w-10 h-10 mx-auto mb-1 rounded-full bg-orange-500/20 flex items-center justify-center">
               <span className="text-lg">🌮</span>
             </div>
-            <h2 className="text-sm font-bold text-text">Taco Fiesta</h2>
+            <h2 className="text-sm text-text">Taco Fiesta</h2>
             <p className="text-[9px] text-text/50">Open Now · Closes 10 PM</p>
           </div>
 

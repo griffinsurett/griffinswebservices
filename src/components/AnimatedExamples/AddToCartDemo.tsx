@@ -81,7 +81,7 @@ export default function AddToCartDemo({ className = "" }: AddToCartDemoProps) {
             <div className={`absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full flex items-center justify-center ${
               !prefersReducedMotion && step === 5 ? "animate-bounce" : ""
             }`}>
-              <span className="text-[7px] text-white font-bold">1</span>
+              <span className="text-[7px] text-white font-semibold">1</span>
             </div>
           )}
         </div>
@@ -102,7 +102,7 @@ export default function AddToCartDemo({ className = "" }: AddToCartDemoProps) {
 
           {/* Product info */}
           <div className="flex-1">
-            <h2 className="text-sm font-bold text-text mb-0.5">Premium Wireless Headphones</h2>
+            <h2 className="text-sm text-text mb-0.5">Premium Wireless Headphones</h2>
             <div className="flex items-center gap-1 mb-1">
               <span className="text-[9px] text-yellow-500">★★★★★</span>
               <span className="text-[8px] text-text/50">(128 reviews)</span>
@@ -111,7 +111,7 @@ export default function AddToCartDemo({ className = "" }: AddToCartDemoProps) {
               Crystal-clear audio with 30-hour battery life. Active noise cancellation.
             </p>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-lg font-bold text-text">$199</span>
+              <span className="text-lg font-semibold text-text">$199</span>
               <span className="text-[10px] text-text/40 line-through">$249</span>
               <span className="text-[8px] text-green-500 font-medium">20% OFF</span>
             </div>

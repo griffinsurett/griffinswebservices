@@ -253,7 +253,7 @@ function AccessibilityModal({ isOpen, onClose }: AccessibilityModalProps) {
                   <Icon icon="fa6:universal-access" size="lg" className="text-bg" />
                 </span>
                 <div>
-                  <h2 className="text-xl font-bold leading-snug">Accessibility</h2>
+                  <h2 className="text-xl leading-snug">Accessibility</h2>
                 </div>
               </div>
               <div className="flex items-center gap-2">

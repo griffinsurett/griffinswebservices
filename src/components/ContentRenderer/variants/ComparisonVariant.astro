@@ -65,17 +65,17 @@ const safeRightItems = toArray(rightItems);
       {/* Left Column - For You */}
       <div class="rounded-3xl border border-soft-strong bg-accent/5 p-6 lg:p-8">
         <div class="flex items-center gap-3 mb-6">
-          <span class="faded-bg border border-soft-strong flex h-10 w-10 items-center justify-center rounded-full text-accent text-xl font-bold">
+          <span class="faded-bg border border-soft-strong flex h-10 w-10 items-center justify-center rounded-full text-accent text-xl font-semibold">
             ✓
           </span>
-          <h3 class="text-xl font-semibold text-heading">{leftTitle}</h3>
+          <h3 class="text-xl text-heading">{leftTitle}</h3>
         </div>
 
         {safeLeftItems.length > 0 && (
           <ul class="space-y-4">
             {safeLeftItems.map((item) => (
               <li class="flex items-start gap-3">
-                <span class="faded-bg border border-soft shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-accent text-xs font-bold mt-0.5">
+                <span class="faded-bg border border-soft shrink-0 flex h-6 w-6 items-center justify-center rounded-full text-accent text-xs font-semibold mt-0.5">
                   ✓
                 </span>
                 <div>
@@ -95,17 +95,17 @@ const safeRightItems = toArray(rightItems);
       {/* Right Column - Not For You */}
       <div class="rounded-3xl border border-red-500/20 bg-red-500/5 p-6 lg:p-8">
         <div class="flex items-center gap-3 mb-6">
-          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/15 text-red-400 text-xl font-bold">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/15 text-red-400 text-xl font-semibold">
             ✕
           </span>
-          <h3 class="text-xl font-semibold text-heading">{rightTitle}</h3>
+          <h3 class="text-xl text-heading">{rightTitle}</h3>
         </div>
 
         {safeRightItems.length > 0 && (
           <ul class="space-y-4">
             {safeRightItems.map((item) => (
               <li class="flex items-start gap-3">
-                <span class="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 text-red-400 text-xs font-bold mt-0.5">
+                <span class="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 text-red-400 text-xs font-semibold mt-0.5">
                   ✕
                 </span>
                 <div>

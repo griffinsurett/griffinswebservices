@@ -87,7 +87,7 @@ export default function BlogScrollDemo({ className = "" }: BlogScrollDemoProps) 
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[8px] text-text/50">Published 8 months ago</span>
             </div>
-            <h2 className="text-[11px] font-bold text-text mb-1.5 leading-tight">Why Your Blog Posts Keep Working Long After You Write Them</h2>
+            <h2 className="text-[11px] text-text mb-1.5 leading-tight">Why Your Blog Posts Keep Working Long After You Write Them</h2>
           </div>
 
           {/* Article content - real text */}

@@ -175,7 +175,7 @@ function CookiePreferencesModal({
       ssr={false}
     >
       <div className="mb-6 shrink-0">
-        <h2 className="text-3xl font-bold text-heading mb-4">
+        <h2 className="text-3xl text-heading mb-4">
           Manage Consent Preferences
         </h2>
         <p className="text-text text-xs lg:text-sm leading-relaxed mb-3">

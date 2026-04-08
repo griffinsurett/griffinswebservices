@@ -136,7 +136,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                 <div className="animate-in fade-in duration-200 h-full flex flex-col">
                   {/* Nav bar */}
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[7px] font-bold text-primary">Fast Co</span>
+                    <span className="text-[7px] font-semibold text-primary">Fast Co</span>
                     <div className="flex gap-2">
                       <span className="text-[5px] text-text/60">About</span>
                       <span className="text-[5px] text-text/60">Services</span>
@@ -148,7 +148,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                   <div className="flex-1 flex gap-2">
                     {/* Left: Text content */}
                     <div className="flex-1 flex flex-col justify-center">
-                      <p className="text-[9px] font-bold text-text leading-tight mb-1">
+                      <p className="text-[9px] font-semibold text-text leading-tight mb-1">
                         Welcome to Acme
                       </p>
                       <p className="text-[5px] text-text/60 leading-relaxed mb-2">
@@ -161,7 +161,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                             : "bg-primary/80"
                         }`}
                       >
-                        <span className="text-[5px] text-white font-bold">Contact Us</span>
+                        <span className="text-[5px] text-white font-semibold">Contact Us</span>
                       </div>
                     </div>
 
@@ -180,7 +180,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                     <svg className="w-1.5 h-1.5 text-green-500" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
-                    <span className="text-[5px] text-green-500 font-bold">0.3s</span>
+                    <span className="text-[5px] text-green-500 font-semibold">0.3s</span>
                   </div>
                 </div>
               )}
@@ -190,7 +190,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                 <div className="animate-in fade-in duration-200 h-full flex flex-col">
                   {/* Nav bar */}
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[7px] font-bold text-primary">Fast Co</span>
+                    <span className="text-[7px] font-semibold text-primary">Fast Co</span>
                     <div className="flex gap-2">
                       <span className="text-[5px] text-text/60">About</span>
                       <span className="text-[5px] text-text/60">Services</span>
@@ -198,7 +198,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                     </div>
                   </div>
 
-                  <div className="text-[7px] font-bold text-text mb-1">Get in Touch</div>
+                  <div className="text-[7px] font-semibold text-text mb-1">Get in Touch</div>
 
                   <div className="space-y-1 flex-1">
                     <div className={`h-3.5 rounded px-1.5 flex items-center transition-all text-[6px] ${
@@ -234,7 +234,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                       isSubmitHovered ? "bg-primary scale-105" : "bg-primary/80"
                     }`}
                   >
-                    <span className="text-[6px] text-white font-bold">Send</span>
+                    <span className="text-[6px] text-white font-semibold">Send</span>
                   </div>
                 </div>
               )}
@@ -247,7 +247,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                   </div>
-                  <span className="text-[7px] font-bold text-green-500">Message Sent!</span>
+                  <span className="text-[7px] font-semibold text-green-500">Message Sent!</span>
                 </div>
               )}
 
@@ -301,7 +301,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                   {/* Nav bar - loads first */}
                   <div className="flex items-center justify-between mb-2">
                     <span
-                      className="text-[7px] font-bold transition-opacity duration-300"
+                      className="text-[7px] font-semibold transition-opacity duration-300"
                       style={{ opacity: loadProgress >= 1 ? 0.5 : 0.2, color: "var(--color-text)" }}
                     >
                       {loadProgress >= 2 ? "Beta Inc" : "Bet..."}
@@ -333,7 +333,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                     {/* Left: Text content - loads slowly */}
                     <div className="flex-1 flex flex-col justify-center">
                       <p
-                        className="text-[9px] font-bold leading-tight mb-1 transition-opacity duration-300"
+                        className="text-[9px] font-semibold leading-tight mb-1 transition-opacity duration-300"
                         style={{ opacity: loadProgress >= 3 ? 0.6 : 0.15, color: "var(--color-text)" }}
                       >
                         {loadProgress >= 4 ? "Welcome to Beta" : loadProgress >= 2 ? "Welcome to..." : "..."}
@@ -352,7 +352,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                       {/* Button - appears last */}
                       {loadProgress >= 7 ? (
                         <div className="h-3.5 w-12 rounded flex items-center justify-center bg-text/20">
-                          <span className="text-[5px] text-text/40 font-bold">Contact Us</span>
+                          <span className="text-[5px] text-text/40 font-semibold">Contact Us</span>
                         </div>
                       ) : (
                         <div className="h-3.5 w-12 rounded bg-text/10 flex items-center justify-center">
@@ -414,7 +414,7 @@ export default function WebsiteLoadComparison({ className = "" }: WebsiteLoadCom
                     <svg className="w-1.5 h-1.5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
                     </svg>
-                    <span className="text-[5px] text-red-500 font-bold">
+                    <span className="text-[5px] text-red-500 font-semibold">
                       {loadProgress >= 7 ? "12s" : "..."}
                     </span>
                   </div>

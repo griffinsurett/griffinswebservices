@@ -59,7 +59,7 @@ export default function PortfolioCard({
               {category}
             </p>
           )}
-          <h3 className="text-2xl font-semibold leading-tight">{title}</h3>
+          <h3 className="text-2xl leading-tight">{title}</h3>
           {client && (
             <p className="text-sm text-white/70 mt-1">Client: {client}</p>
           )}

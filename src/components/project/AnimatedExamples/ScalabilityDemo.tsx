@@ -105,7 +105,7 @@ export default function ScalabilityDemo({ className = "" }: ScalabilityDemoProps
             >
               {/* Hero section */}
               <div className="p-2 bg-gradient-to-br from-primary/20 to-primary/5">
-                <div className="text-[8px] font-bold text-text mb-1">Winter Sale</div>
+                <div className="text-[8px] font-semibold text-text mb-1">Winter Sale</div>
                 <div className="text-[6px] text-text/60">Up to 50% off</div>
                 <div className="mt-1 bg-primary rounded px-2 py-0.5 inline-block">
                   <span className="text-[6px] text-white font-medium">Shop Now</span>
@@ -168,7 +168,7 @@ export default function ScalabilityDemo({ className = "" }: ScalabilityDemoProps
           {/* Total revenue banner */}
           <div className="bg-green-500/10 px-2 py-1.5 border-b border-green-500/20">
             <div className="text-[6px] text-text/60">Today's Revenue</div>
-            <div className="text-[12px] font-bold text-green-500 tabular-nums">
+            <div className="text-[12px] font-semibold text-green-500 tabular-nums">
               ${totalRevenue.toLocaleString()}
             </div>
           </div>
@@ -212,7 +212,7 @@ export default function ScalabilityDemo({ className = "" }: ScalabilityDemoProps
           {/* Order count */}
           <div className="px-2 py-1 bg-text/5 border-t border-text/10 flex items-center justify-between">
             <span className="text-[6px] text-text/60">Orders today</span>
-            <span className="text-[7px] font-bold text-text">{visibleSales}</span>
+            <span className="text-[7px] font-semibold text-text">{visibleSales}</span>
           </div>
         </div>
       </div>

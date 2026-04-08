@@ -77,7 +77,7 @@ export default function UpsellFunnelDemo({ className = "" }: UpsellFunnelDemoPro
           <div className={`absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full flex items-center justify-center ${
             step === 5 && !prefersReducedMotion ? "animate-bounce" : ""
           }`}>
-            <span className="text-[7px] text-white font-bold">{upsellAdded ? "2" : "1"}</span>
+            <span className="text-[7px] text-white font-semibold">{upsellAdded ? "2" : "1"}</span>
           </div>
         </div>
       </div>
@@ -141,7 +141,7 @@ export default function UpsellFunnelDemo({ className = "" }: UpsellFunnelDemoPro
         <div className="border-t border-text/10 pt-2 mb-2">
           <div className="flex justify-between items-center">
             <span className="text-[9px] text-text/60">Subtotal</span>
-            <span className={`text-sm font-bold tabular-nums transition-all duration-300 ${
+            <span className={`text-sm font-semibold tabular-nums transition-all duration-300 ${
               upsellAdded ? "text-green-500 scale-110" : "text-text"
             }`}>
               {upsellAdded ? "$648" : "$599"}

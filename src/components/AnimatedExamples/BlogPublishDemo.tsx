@@ -106,7 +106,7 @@ export default function BlogPublishDemo({ className = "" }: BlogPublishDemoProps
       <div className="bg-bg2 p-3 relative h-[150px] overflow-hidden">
         {/* Blog header */}
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-xs font-semibold text-text">Blog Posts</h3>
+          <h3 className="text-xs text-text">Blog Posts</h3>
           <div className="flex items-center gap-1">
             <div className={`w-1.5 h-1.5 rounded-full ${step >= 1 ? "bg-green-500 animate-pulse" : "bg-text/30"}`} />
             <span className="text-[9px] text-text/60">{step >= 1 ? "Publishing..." : "Ready"}</span>

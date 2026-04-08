@@ -96,7 +96,7 @@ export default function StatCard({ data, className = "" }: StatCardProps): React
       borderWidth={2}
       duration={800}
     >
-      <p className="text-heading text-4xl font-bold">
+      <p className="text-heading text-4xl font-semibold">
         {shouldAnimate && typeof value === "number" ? (
           <span className="inline-flex items-baseline justify-center gap-1">
             {prefix && <span>{prefix}</span>}

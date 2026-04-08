@@ -129,7 +129,7 @@ export default function RestaurantMapOrder({ className = "" }: RestaurantMapOrde
                 <span className="text-lg">🌮</span>
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-[11px] font-semibold text-gray-900 truncate">Taco Fiesta</h3>
+                <h3 className="text-[11px] text-gray-900 truncate">Taco Fiesta</h3>
                 <div className="flex items-center gap-1">
                   <span className="text-[9px] text-yellow-500">★★★★★</span>
                   <span className="text-[8px] text-gray-500">(324)</span>
@@ -169,7 +169,7 @@ export default function RestaurantMapOrder({ className = "" }: RestaurantMapOrde
           <div className="absolute inset-0 bg-white animate-[fadeIn_0.3s_ease-out]">
             {/* Order platform header */}
             <div className="bg-orange-500 px-3 py-2 flex items-center gap-2">
-              <span className="text-white text-[10px] font-bold">🍽️ OrderNow</span>
+              <span className="text-white text-[10px] font-semibold">🍽️ OrderNow</span>
               <span className="text-white/80 text-[8px]">· Taco Fiesta</span>
             </div>
 
@@ -213,7 +213,7 @@ export default function RestaurantMapOrder({ className = "" }: RestaurantMapOrde
             <div className="absolute bottom-2 left-2 right-2">
               <div className="bg-orange-500 rounded-lg px-3 py-2 flex items-center justify-between">
                 <span className="text-white text-[9px] font-medium">View Cart</span>
-                <span className="text-white text-[9px] font-bold">$26.48</span>
+                <span className="text-white text-[9px] font-semibold">$26.48</span>
               </div>
             </div>
           </div>

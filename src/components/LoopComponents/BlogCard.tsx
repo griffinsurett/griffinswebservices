@@ -79,7 +79,7 @@ export default function BlogCard({
         {/* Content */}
         <div className="p-6 relative z-30 flex flex-col flex-1">
           {/* Title */}
-          <h3 className="text-heading text-xl font-semibold mb-2 line-clamp-2">
+          <h3 className="text-heading text-xl mb-2 line-clamp-2">
             {title}
           </h3>
 
