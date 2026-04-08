@@ -26,6 +26,9 @@ import WebsitePlanningDemo from "@/components/AnimatedExamples/WebsitePlanningDe
 import DesignMessagingDemo from "@/components/AnimatedExamples/DesignMessagingDemo";
 import GoogleListing from "@/components/AnimatedExamples/GoogleListing";
 import GrowthGraph from "@/components/AnimatedExamples/GrowthGraph";
+import AIChatSimulation from "@/components/AnimatedExamples/AIChatSimulation";
+import LeadsSpreadsheet from "@/components/AnimatedExamples/LeadsSpreadsheet";
+import AIWorkspaceDemo from "@/components/AnimatedExamples/AIWorkspaceDemo";
 import { toArray } from "@/utils/array";
 import { byItemKeys, children } from "@/utils/query";
 import { getCollectionMeta, prepareCollectionEntries, type PreparedItem } from "@/utils/collections";
@@ -56,7 +59,10 @@ type TopicDemoName =
   | "WebsitePlanningDemo"
   | "DesignMessagingDemo"
   | "GoogleListing"
-  | "GrowthGraph";
+  | "GrowthGraph"
+  | "AIChatSimulation"
+  | "LeadsSpreadsheet"
+  | "AIWorkspaceDemo";
 
 const {
   items = [],
@@ -166,8 +172,26 @@ const resolveTopicDemoName = (item: PreparedItem): TopicDemoName | undefined => 
   if (body.includes("<DesignMessagingDemo")) return "DesignMessagingDemo";
   if (body.includes("<GoogleListing")) return "GoogleListing";
   if (body.includes("<GrowthGraph")) return "GrowthGraph";
+  if (body.includes("<AIChatSimulation")) return "AIChatSimulation";
+  if (body.includes("<LeadsSpreadsheet")) return "LeadsSpreadsheet";
+  if (body.includes("<AIWorkspaceDemo")) return "AIWorkspaceDemo";
 
   return undefined;
+};
+
+const extractTopicSlotMarkup = (
+  item: PreparedItem,
+  slotName: string
+): string | undefined => {
+  const body = item.content ?? "";
+  if (!body.includes(`slot="${slotName}"`)) return undefined;
+
+  const slotMatch = body.match(
+    new RegExp(`<div[^>]*slot="${slotName}"[^>]*>([\\s\\S]*?)<\\/div>`, "i")
+  );
+
+  const markup = slotMatch?.[1]?.trim();
+  return markup ? markup : undefined;
 };
 
 const compactTopicCardProps =
@@ -205,6 +229,7 @@ const compactTopicCardProps =
       const textOrderClass = topic.reverse ? "lg:order-2" : "";
       const mediaOrderClass = topic.reverse ? "lg:order-1" : "lg:order-2";
       const topicDemoName = resolveTopicDemoName(topic.item);
+      const topicContentMarkup = extractTopicSlotMarkup(topic.item, "topic-content");
 
       return (
         <section class="space-y-10 lg:space-y-14" data-topic={topic.key}>
@@ -218,6 +243,13 @@ const compactTopicCardProps =
                 description={topic.item.description}
                 className="space-y-5 text-left max-w-3xl"
               />
+
+              {topicContentMarkup && (
+                <div
+                  class="topic-content-blurb mt-6 max-w-2xl text-base leading-[1.75] text-text/78 md:text-lg"
+                  set:html={topicContentMarkup}
+                />
+              )}
             </div>
 
             <div class={mediaOrderClass}>
@@ -280,8 +312,20 @@ const compactTopicCardProps =
                     <GoogleListing client:visible className="w-full max-w-[36rem]" />
                   </div>
                 ) : topicDemoName === "GrowthGraph" ? (
+                  <div class="flex h-full w-full">
+                    <GrowthGraph client:visible variant="panel" className="h-full w-full" />
+                  </div>
+                ) : topicDemoName === "AIChatSimulation" ? (
                   <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
-                    <GrowthGraph client:visible className="w-full max-w-[34rem]" />
+                    <AIChatSimulation client:visible className="w-full max-w-[34rem]" />
+                  </div>
+                ) : topicDemoName === "LeadsSpreadsheet" ? (
+                  <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
+                    <LeadsSpreadsheet client:visible className="w-full max-w-[34rem]" />
+                  </div>
+                ) : topicDemoName === "AIWorkspaceDemo" ? (
+                  <div class="flex h-full w-full p-4 sm:p-5 lg:p-6">
+                    <AIWorkspaceDemo client:visible className="h-full w-full" />
                   </div>
                 ) : null}
               </div>
@@ -304,3 +348,9 @@ const compactTopicCardProps =
     })}
   </div>
 </section>
+
+<style>
+  .topic-content-blurb :global(p + p) {
+    margin-top: 1rem;
+  }
+</style>

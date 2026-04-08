@@ -1,10 +1,10 @@
 ---
-title: "AI On Everyday Tasks"
-description: "We help use AI on repeat work and everyday tasks so the business can save time, save money, and get more done with less staff time."
+title: "AI In Internal Workflows"
+description: "We help use AI inside the business on repeat work, summaries, handoffs, and team tasks so less time gets burned on manual work."
 heading:
-  before: "Use"
-  text: "AI every day"
-  after: "to save time, save money, and do more."
+  before: "Use AI in"
+  text: "internal workflows"
+  after: "so repeat work, summaries, and handoffs move faster."
 featuredImage:
   src: "../../assets/projects/CBC.jpg"
   alt: "A website design shown on a desktop screen."
@@ -16,11 +16,14 @@ solutions:
   - web-apps
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import AIWorkspaceDemo from "@/components/AnimatedExamples/AIWorkspaceDemo";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <AIWorkspaceDemo />
+  </div>
 </CapabilityBodyLayout>

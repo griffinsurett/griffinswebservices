@@ -18,11 +18,14 @@ solutions:
   - web-apps
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import AIChatSimulation from "@/components/AnimatedExamples/AIChatSimulation";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <AIChatSimulation />
+  </div>
 </CapabilityBodyLayout>

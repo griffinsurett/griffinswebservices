@@ -1,11 +1,11 @@
 ---
 title: "Ai"
-description: "We help businesses use AI to save money, save time, and get more done without needing as many people for every task."
+description: "We help businesses use AI across the website, marketing, internal workflows, and team rollout so it saves time, cuts costs, and does real work."
 itemLayout: "../../layouts/collections/CapabilityCustomLayout.astro"
 heading:
   before: "Use"
   text: "Ai"
-  after: "to save money, move faster, and get more done."
+  after: "across the business to save money, move faster, and do real work."
 order: 6
 icon: "fa6-solid:robot"
 tags:
@@ -34,19 +34,25 @@ export const aiApproachCards = [
     icon: "fa6-solid:globe",
     title: "AI On Your Website",
     description:
-      "We can add AI to the website in ways that help people get answers, move faster, and turn into better leads.",
+      "Add AI where it helps visitors get answers faster, move quicker, and turn into better leads.",
   },
   {
     icon: "fa6-solid:bullhorn",
     title: "AI In Marketing",
     description:
-      "We can use AI to help with content, research, planning, and other marketing work so your business can do more with less time.",
+      "Use AI for research, outlines, drafts, and planning so marketing work starts faster and keeps moving.",
   },
   {
-    icon: "fa6-solid:clock",
-    title: "AI On Everyday Tasks",
+    icon: "fa6-solid:gears",
+    title: "AI In Internal Workflows",
     description:
-      "We can use AI on repeat work, office tasks, and team workflows so you can save money and avoid needing as many hires right away.",
+      "Use AI on repeat work, summaries, handoffs, and internal tasks so less time gets burned on manual work.",
+  },
+  {
+    icon: "fa6-solid:diagram-project",
+    title: "AI Strategy, Setup & Oversight",
+    description:
+      "Choose the right tools, build reusable prompt systems, roll them out to the team, and keep them useful over time.",
   },
 ];
 
@@ -70,9 +76,9 @@ export const aiApproachCards = [
     heading={{
       before: "Use",
       text: "AI",
-      after: "to save money, move faster, and get more done."
+      after: "across the business to save money, move faster, and do real work."
     }}
-    description="We help businesses use AI on their website, in marketing, and across everyday work so they can save money, save time, and do more without needing a big team for every task."
+    description="We help businesses use AI on the website, in marketing, across internal workflows, and in team systems so it actually saves time, reduces costs, and helps the business do more."
     breadcrumbs={[
       { label: "Home", href: "/" },
       { label: "Capabilities", href: "/capabilities" },
@@ -88,9 +94,9 @@ export const aiApproachCards = [
   <Section class="outer-section">
     <div class="inner-section">
       <SectionHeader
-        title="How We Handle AI"
-        heading="Find the places where AI can save money and do real work."
-        description="Some businesses want AI because they want to move faster, spend less, and get more done without hiring so many people right away. We help find the best places to use it and put it to work."
+        title="What We Help With"
+        heading="Use AI across customer experience, marketing, internal work, and team rollout."
+        description="The goal is not AI for show. The goal is AI that handles useful work, helps the team move faster, and gets set up in a way people can actually reuse and improve."
         className="mx-auto max-w-5xl text-center"
         headingClassName="text-4xl md:text-5xl lg:text-6xl leading-[0.98] font-semibold text-heading"
         descriptionClassName="large-text mx-auto max-w-4xl"
@@ -98,7 +104,7 @@ export const aiApproachCards = [
 
       <CardVariant
         items={aiApproachCards}
-        columns={3}
+        columns={4}
         showButtonSection={false}
         className="mt-10 px-0"
         contentClassName=""
@@ -113,11 +119,11 @@ export const aiApproachCards = [
     query={related("technologies", "capabilities", "ai").orderBy(sortByOrder())}
     variant="TechnologiesVariant"
     title="AI Technologies"
-    description="These are some of the AI tools we use to help businesses save time, save money, and get more done."
+    description="These are some of the AI tools we use across websites, marketing, workflows, and team systems."
   />
 
   <TrustStatement
-    text="AI should help your business save money, save time, and get more done without needing more people for every task."
+    text="AI should help your business do real work across the website, marketing, internal workflows, and team systems."
     textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
   />
 </CapabilityBodyLayout>
