@@ -19,11 +19,14 @@ technologyCards:
   - webflow
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import PlatformCmsDevelopmentDemo from "@/components/AnimatedExamples/PlatformCmsDevelopmentDemo";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <PlatformCmsDevelopmentDemo />
+  </div>
 </CapabilityBodyLayout>

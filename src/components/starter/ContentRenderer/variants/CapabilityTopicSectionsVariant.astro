@@ -15,10 +15,15 @@ import type { BaseVariantProps } from "../ContentRenderer.types";
 import type { CollectionKey, CollectionEntry } from "astro:content";
 import SectionHeader from "@/components/SectionHeader.astro";
 import HiddenCardVariant from "./HiddenCardVariant.astro";
+import CustomWebsiteBuildDemo from "@/components/AnimatedExamples/CustomWebsiteBuildDemo";
+import DevelopmentBuildDemo from "@/components/AnimatedExamples/DevelopmentBuildDemo";
+import PlatformCmsDevelopmentDemo from "@/components/AnimatedExamples/PlatformCmsDevelopmentDemo";
+import BarGraph from "@/components/AnimatedExamples/BarGraph";
+import WebsiteLoadComparison from "@/components/AnimatedExamples/WebsiteLoadComparison";
+import KeepGrowingDemo from "@/components/AnimatedExamples/KeepGrowingDemo";
 import { toArray } from "@/utils/array";
 import { byItemKeys, children } from "@/utils/query";
 import { getCollectionMeta, prepareCollectionEntries, type PreparedItem } from "@/utils/collections";
-import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
 
 interface Props extends BaseVariantProps {
   childCollection?: CollectionKey;
@@ -32,10 +37,16 @@ interface Props extends BaseVariantProps {
 type TopicSectionData = {
   item: PreparedItem;
   cards: PreparedItem[];
-  imageSrc?: string;
   reverse: boolean;
   key: string;
 };
+
+type TopicDemoName =
+  | "CustomWebsiteBuildDemo"
+  | "DevelopmentBuildDemo"
+  | "PlatformCmsDevelopmentDemo"
+  | "WebsiteLoadComparison"
+  | "KeepGrowingDemo";
 
 const {
   items = [],
@@ -75,9 +86,6 @@ const getReferenceIds = (value: unknown): string[] => {
 const topicSections: TopicSectionData[] = await Promise.all(
   safeItems.map(async (item, index) => {
     const slug = item.slug || (item as any).id || `topic-${index}`;
-    const imageSrc = getImageSrc(
-      (item as any).featuredImage ?? (item as any).bannerImage ?? (item as any).image
-    );
 
     let cards: PreparedItem[] = [];
 
@@ -108,7 +116,6 @@ const topicSections: TopicSectionData[] = await Promise.all(
     return {
       item,
       cards,
-      imageSrc: imageSrc || undefined,
       reverse: index % 2 === 1,
       key: slug,
     };
@@ -133,6 +140,19 @@ const resolveTopicGridClassName = (cardCount: number) => {
   if (resolvedColumns === 3) return "items-stretch !gap-4 lg:!grid-cols-3";
   if (resolvedColumns === 4) return "items-stretch !gap-4 lg:!grid-cols-2 xl:!grid-cols-4";
   return "";
+};
+
+const resolveTopicDemoName = (item: PreparedItem): TopicDemoName | undefined => {
+  const body = item.content ?? "";
+
+  if (!body.includes('slot="topic-demo"')) return undefined;
+  if (body.includes("<CustomWebsiteBuildDemo")) return "CustomWebsiteBuildDemo";
+  if (body.includes("<DevelopmentBuildDemo")) return "DevelopmentBuildDemo";
+  if (body.includes("<PlatformCmsDevelopmentDemo")) return "PlatformCmsDevelopmentDemo";
+  if (body.includes("<WebsiteLoadComparison")) return "WebsiteLoadComparison";
+  if (body.includes("<KeepGrowingDemo")) return "KeepGrowingDemo";
+
+  return undefined;
 };
 
 const compactTopicCardProps =
@@ -169,6 +189,7 @@ const compactTopicCardProps =
     {topicSections.map((topic, index) => {
       const textOrderClass = topic.reverse ? "lg:order-2" : "";
       const mediaOrderClass = topic.reverse ? "lg:order-1" : "lg:order-2";
+      const topicDemoName = resolveTopicDemoName(topic.item);
 
       return (
         <section class="space-y-10 lg:space-y-14" data-topic={topic.key}>
@@ -185,22 +206,50 @@ const compactTopicCardProps =
             </div>
 
             <div class={mediaOrderClass}>
-              {topic.imageSrc ? (
-                <div
-                  class={`overflow-hidden rounded-[2rem] border border-white/10 bg-black/40 shadow-[0_32px_80px_rgba(0,0,0,0.38)] ${imageAspectClass}`.trim()}
-                >
-                  <img
-                    src={topic.imageSrc}
-                    alt={`${topic.item.title ?? topic.key} capability topic image`}
-                    class="block size-full object-cover"
-                    loading={index === 0 ? "eager" : "lazy"}
-                  />
-                </div>
-              ) : (
-                <div
-                  class={`overflow-hidden border border-white/10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),rgba(255,255,255,0.02)_35%,rgba(0,0,0,0.2)_100%)] shadow-[0_32px_80px_rgba(0,0,0,0.38)] ${imageAspectClass}`.trim()}
-                />
-              )}
+              <div
+                class={`card-bg overflow-hidden rounded-3xl ${imageAspectClass}`.trim()}
+              >
+                {topicDemoName === "CustomWebsiteBuildDemo" ? (
+                  <div class="flex h-full w-full p-4 sm:p-5 lg:p-6">
+                    <CustomWebsiteBuildDemo client:visible className="h-full w-full" />
+                  </div>
+                ) : topicDemoName === "DevelopmentBuildDemo" ? (
+                  <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
+                    <DevelopmentBuildDemo client:visible className="w-full max-w-[32rem]" />
+                  </div>
+                ) : topicDemoName === "PlatformCmsDevelopmentDemo" ? (
+                  <div class="flex h-full w-full p-4 sm:p-5 lg:p-6">
+                    <PlatformCmsDevelopmentDemo client:visible className="h-full w-full" />
+                  </div>
+                ) : topicDemoName === "WebsiteLoadComparison" ? (
+                  <div class="flex h-full w-full flex-col justify-center gap-4 p-4 sm:gap-5 sm:p-5 lg:gap-6 lg:p-6">
+                    <div class="flex flex-col gap-3 sm:gap-4">
+                      <BarGraph
+                        label="GWS Average"
+                        value={97.5}
+                        statValue={2.5}
+                        statSuffix=" seconds"
+                        variant="primary-reverse"
+                        client:visible
+                      />
+                      <BarGraph
+                        label="Industry Average"
+                        value={34}
+                        statValue={7.1}
+                        statSuffix=" seconds"
+                        variant="grey"
+                        delay={200}
+                        client:visible
+                      />
+                    </div>
+                    <WebsiteLoadComparison client:visible className="w-full" />
+                  </div>
+                ) : topicDemoName === "KeepGrowingDemo" ? (
+                  <div class="flex h-full w-full items-center justify-center p-4 sm:p-5 lg:p-6">
+                    <KeepGrowingDemo client:visible className="w-full max-w-[32rem]" />
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
 

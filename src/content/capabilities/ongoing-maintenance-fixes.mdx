@@ -14,11 +14,14 @@ solutions:
   - website-improvements-upgrades
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import KeepGrowingDemo from "@/components/AnimatedExamples/KeepGrowingDemo";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <KeepGrowingDemo />
+  </div>
 </CapabilityBodyLayout>

@@ -12,11 +12,14 @@ tags:
   - featured
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import WebsiteLoadComparison from "@/components/AnimatedExamples/WebsiteLoadComparison";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <WebsiteLoadComparison />
+  </div>
 </CapabilityBodyLayout>

@@ -52,7 +52,7 @@ const stickyStyle = stickyScroll
     stickyScroll ? (
       <div class="trust-statement-pin" data-trust-sticky-inner>
         <h2
-          class:list={[resolvedTextClassName, "trust-statement-heading", "trust-statement-heading--scroll"]}
+          class:list={[resolvedTextClassName, "trust-statement-heading", "trust-statement-heading--scroll", "font-normal"]}
           aria-label={text}
         >
           {
@@ -78,7 +78,7 @@ const stickyStyle = stickyScroll
       </div>
     ) : (
       <h2
-        class:list={[resolvedTextClassName, "trust-statement-heading"]}
+        class:list={[resolvedTextClassName, "trust-statement-heading", "font-normal"]}
         aria-label={text}
         {...animationProps("letter-reveal", {
           once: true,

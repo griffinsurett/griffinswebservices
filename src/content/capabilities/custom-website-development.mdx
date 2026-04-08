@@ -15,11 +15,14 @@ solutions:
   - web-apps
 ---
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import CustomWebsiteBuildDemo from "@/components/AnimatedExamples/CustomWebsiteBuildDemo";
 
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <CustomWebsiteBuildDemo />
+  </div>
 </CapabilityBodyLayout>
