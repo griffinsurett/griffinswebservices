@@ -76,26 +76,23 @@ const primaryCTA: CTA = {
                   const isLast = index === breadcrumbs.length - 1;
                   const isHome = item.label.trim().toLowerCase() === "home";
                   const labelContent = isHome ? (
-                    <>
-                      <span class="hidden lg:inline">{item.label}</span>
-                      <span
-                        class="inline-flex items-center justify-center lg:hidden"
-                        aria-hidden="true"
+                    <span
+                      class="inline-flex items-center justify-center"
+                      aria-hidden="true"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="h-[0.9rem] w-[0.9rem]"
                       >
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="h-[0.9rem] w-[0.9rem]"
-                        >
-                          <path d="M3 10.5 12 3l9 7.5" />
-                          <path d="M5.25 9.75V21h13.5V9.75" />
-                        </svg>
-                      </span>
-                    </>
+                        <path d="M3 10.5 12 3l9 7.5" />
+                        <path d="M5.25 9.75V21h13.5V9.75" />
+                      </svg>
+                    </span>
                   ) : (
                     item.label
                   );
@@ -103,13 +100,18 @@ const primaryCTA: CTA = {
                   return (
                     <li class="flex items-center gap-2">
                       {item.href && !isLast ? (
-                        <a href={item.href} class="hero-breadcrumb-link">
+                        <a
+                          href={item.href}
+                          class="hero-breadcrumb-link"
+                          aria-label={isHome ? item.label : undefined}
+                        >
                           {labelContent}
                         </a>
                       ) : (
                         <span
                           class="hero-breadcrumb-link"
                           aria-current={isLast ? "page" : undefined}
+                          aria-label={isHome ? item.label : undefined}
                         >
                           {labelContent}
                         </span>

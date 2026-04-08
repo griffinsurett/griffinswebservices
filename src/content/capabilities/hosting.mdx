@@ -1,12 +1,12 @@
 ---
-title: "Hosting & Infrastructure"
-description: "Reliable, high-performance hosting and infrastructure management that keeps your site secure, stable, and ready for growth."
-heading:
-  before: "Managed"
-  text: "hosting"
-  after: "that keeps your site fast and secure."
+title: "Hosting"
+description: "We host and maintain websites so they stay online, stay updated, and keep working without you having to chase technical issues."
+heading: "Managed hosting that keeps the site handled."
+itemLayout: "../../layouts/collections/CapabilityLayout.astro"
 icon: "fa6-solid:server"
-order: 3
+order: 5
+tags:
+  - featured
 redirectFrom:
   - "/hosting-and-infrastructure"
   - "/capabilities/hosting-and-infrastructure"
@@ -22,47 +22,36 @@ solutions:
   - blogs
 ---
 
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
-import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
-import { related, sortByOrder } from "@/utils/query";
-import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
-<CapabilityBodyLayout
-  title={frontmatter.title}
-  heading={frontmatter.heading}
-  description={frontmatter.description}
->
-<ContentRenderer
-  query={related("pricing", "capabilities", "hosting").orderBy(sortByOrder())}
-  variant="PricingVariant"
-  id="pricing"
-  title="Pricing"
-  heading="Hosting & Maintenance Plans"
-  description="Monthly plans that keep hosting, updates, backups, and ongoing technical support covered."
-  columns={3}
-  gap="lg"
+<TrustStatement
+  text="Your website should stay online, stay current, and stay supported without you having to babysit the technical side."
+  stickyScroll={false}
+  excludeFromToc={true}
 />
 
-<TrustStatement text="Your hosting is managed by the same team that built your site—no third-party tickets, no finger-pointing." />
+## What Hosting Covers
 
-<CapabilitiesSection
-  capabilitiesHeading="Hosting infrastructure handled for you."
-  highlights={[
-    { title: "Performance-Tuned Servers", description: "CDN distribution, edge caching, and optimized configurations keep page loads fast for visitors worldwide." },
-    { title: "Automatic SSL & Renewals", description: "HTTPS certificates are provisioned and renewed automatically so your site stays secure without manual intervention." },
-    { title: "Daily Backups", description: "Automated backups with point-in-time recovery options mean you're never more than a day away from a clean restore." },
-    { title: "Scalable Infrastructure", description: "Traffic spikes from campaigns or press coverage are handled gracefully without manual server upgrades." },
-  ]}
-  highlightsTitle="Managed Hosting"
-  highlightsHeading="Infrastructure you don't have to think about."
-  highlightsDescription="We handle server configuration, SSL certificates, CDN setup, backups, and capacity planning so you can focus on running your business instead of managing infrastructure."
-  ctaTitle="Ready for hosting that just works?"
-  ctaHeading={{
-    before: "Stop worrying about",
-    text: "server management.",
-    after: ""
-  }}
-  ctaDescription="Get reliable, fully-managed hosting from the team that knows your site inside and out."
-/>
-</CapabilityBodyLayout>
+### Stable hosting
+
+We keep the site live on solid hosting so you are not stuck dealing with outages, random renewals, or server-level technical problems on your own.
+
+### Updates and maintenance
+
+Software, plugins, packages, and routine maintenance stay handled so the site does not quietly fall behind until something breaks.
+
+### Backups and recovery
+
+Backups are part of the setup, so if something goes wrong there is a clean path to restore the site instead of scrambling after the fact.
+
+### Support from the same team
+
+You are not bouncing between a host, a developer, and a generic support queue. The same team handles the technical side and can actually fix what changed.
+
+## Who This Fits Best
+
+This is a strong fit for businesses that do not want to manage the website themselves, do not want to chase multiple vendors, and want one team to keep the site online and current after launch.
+
+## Why Businesses Keep This With Us
+
+Good hosting is not just server space. It is the ongoing layer that keeps the site available, current, and easier to trust over time.

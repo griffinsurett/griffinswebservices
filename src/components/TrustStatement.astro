@@ -10,6 +10,7 @@ interface Props {
   stickyScroll?: boolean;
   stickyHeight?: string;
   stickyTopOffset?: string;
+  excludeFromToc?: boolean;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
   stickyScroll = true,
   stickyHeight = "220svh",
   stickyTopOffset = "clamp(5.5rem, 7vw, 7rem)",
+  excludeFromToc = false,
 } = Astro.props;
 
 const resolvedClassName = className ?? (
@@ -54,6 +56,7 @@ const stickyStyle = stickyScroll
         <h2
           class:list={[resolvedTextClassName, "trust-statement-heading", "trust-statement-heading--scroll", "font-normal"]}
           aria-label={text}
+          data-toc-exclude={excludeFromToc ? "true" : undefined}
         >
           {
             words.map((word) => (
@@ -80,6 +83,7 @@ const stickyStyle = stickyScroll
       <h2
         class:list={[resolvedTextClassName, "trust-statement-heading", "font-normal"]}
         aria-label={text}
+        data-toc-exclude={excludeFromToc ? "true" : undefined}
         {...animationProps("letter-reveal", {
           once: true,
           threshold: 0.1,
