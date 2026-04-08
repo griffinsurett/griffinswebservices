@@ -29,6 +29,7 @@ import GrowthGraph from "@/components/AnimatedExamples/GrowthGraph";
 import AIChatSimulation from "@/components/AnimatedExamples/AIChatSimulation";
 import LeadsSpreadsheet from "@/components/AnimatedExamples/LeadsSpreadsheet";
 import AIWorkspaceDemo from "@/components/AnimatedExamples/AIWorkspaceDemo";
+import PromptNotepadDemo from "@/components/AnimatedExamples/PromptNotepadDemo";
 import { toArray } from "@/utils/array";
 import { byItemKeys, children } from "@/utils/query";
 import { getCollectionMeta, prepareCollectionEntries, type PreparedItem } from "@/utils/collections";
@@ -62,7 +63,8 @@ type TopicDemoName =
   | "GrowthGraph"
   | "AIChatSimulation"
   | "LeadsSpreadsheet"
-  | "AIWorkspaceDemo";
+  | "AIWorkspaceDemo"
+  | "PromptNotepadDemo";
 
 const {
   items = [],
@@ -175,6 +177,7 @@ const resolveTopicDemoName = (item: PreparedItem): TopicDemoName | undefined => 
   if (body.includes("<AIChatSimulation")) return "AIChatSimulation";
   if (body.includes("<LeadsSpreadsheet")) return "LeadsSpreadsheet";
   if (body.includes("<AIWorkspaceDemo")) return "AIWorkspaceDemo";
+  if (body.includes("<PromptNotepadDemo")) return "PromptNotepadDemo";
 
   return undefined;
 };
@@ -326,6 +329,10 @@ const compactTopicCardProps =
                 ) : topicDemoName === "AIWorkspaceDemo" ? (
                   <div class="flex h-full w-full p-4 sm:p-5 lg:p-6">
                     <AIWorkspaceDemo client:visible className="h-full w-full" />
+                  </div>
+                ) : topicDemoName === "PromptNotepadDemo" ? (
+                  <div class="flex h-full w-full p-4 sm:p-5 lg:p-6">
+                    <PromptNotepadDemo client:visible className="h-full w-full" />
                   </div>
                 ) : null}
               </div>

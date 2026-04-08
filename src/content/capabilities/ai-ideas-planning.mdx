@@ -15,6 +15,7 @@ solutions:
   - business-websites
   - web-apps
 ---
+import LeadsSpreadsheet from "@/components/AnimatedExamples/LeadsSpreadsheet";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
 <CapabilityBodyLayout
@@ -22,5 +23,7 @@ import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.ast
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
-
+  <div slot="topic-demo" class="hidden">
+    <LeadsSpreadsheet />
+  </div>
 </CapabilityBodyLayout>
