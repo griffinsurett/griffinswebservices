@@ -57,6 +57,168 @@ export const ecommerceApproachCards = [
   },
 ];
 
+export const storefrontMerchandisingCards = [
+  {
+    icon: "fa6-solid:boxes-stacked",
+    title: "Catalog Structure That Makes Sense",
+    description:
+      "Products, categories, and collections should be grouped in a way that feels obvious instead of forcing customers to hunt around.",
+  },
+  {
+    icon: "fa6-solid:grip",
+    title: "Merchandising That Guides Attention",
+    description:
+      "Featured products, offer groupings, and collection logic should help people notice what matters instead of leaving every item to compete equally.",
+  },
+  {
+    icon: "fa6-solid:route",
+    title: "Browsing Flow That Feels Easier",
+    description:
+      "Navigation, filters, and storefront paths should make it easier to keep exploring instead of creating friction between interest and the next click.",
+  },
+  {
+    icon: "fa6-solid:shield-heart",
+    title: "Trust Built Into The Storefront",
+    description:
+      "Visual clarity, product context, and reassurance cues should help the storefront feel credible before someone ever reaches checkout.",
+  },
+];
+
+export const productOfferContentCards = [
+  {
+    icon: "fa6-solid:box-open",
+    title: "Product Copy That Reduces Confusion",
+    description:
+      "Descriptions should explain what the item is, why it matters, and what makes it worth buying without sounding vague or filler-heavy.",
+  },
+  {
+    icon: "fa6-solid:briefcase",
+    title: "Service & Offer Pages That Sell Clearly",
+    description:
+      "When e-commerce includes bookings, subscriptions, or paid services, the offer page still needs to explain the value fast and make the purchase path feel clear.",
+  },
+  {
+    icon: "fa6-solid:file-lines",
+    title: "Category & Comparison Content",
+    description:
+      "Category intros, comparisons, and supporting content help customers understand the differences between offers and move toward the right fit faster.",
+  },
+  {
+    icon: "fa6-solid:bullhorn",
+    title: "Launch & Promotional Content",
+    description:
+      "Featured products, limited offers, and launches need stronger supporting content so the promotion feels intentional instead of rushed.",
+  },
+];
+
+export const checkoutConversionCards = [
+  {
+    icon: "fa6-solid:cart-shopping",
+    title: "Cart Flow Without Extra Friction",
+    description:
+      "The move from product view to cart should feel smooth, obvious, and free of the small hesitations that often break momentum.",
+  },
+  {
+    icon: "fa6-solid:credit-card",
+    title: "Checkout That Feels Straightforward",
+    description:
+      "Payment, shipping, and checkout steps should feel clear enough that customers do not start second-guessing the purchase halfway through.",
+  },
+  {
+    icon: "fa6-solid:tags",
+    title: "Pricing & Offer Logic That Holds Up",
+    description:
+      "Bundles, add-ons, upsells, and discounts need to feel understandable instead of making the buying decision more confusing.",
+  },
+  {
+    icon: "fa6-solid:mobile-screen-button",
+    title: "Mobile Buying Flow That Still Converts",
+    description:
+      "A buying path that works only on desktop leaves money on the table. Mobile checkout needs the same clarity and ease.",
+  },
+];
+
+export const retentionRepeatRevenueCards = [
+  {
+    icon: "fa6-solid:envelope-open-text",
+    title: "Follow-Up That Brings People Back",
+    description:
+      "Post-purchase email and SMS flows should keep the relationship moving instead of letting the first order become the last touchpoint.",
+  },
+  {
+    icon: "fa6-solid:repeat",
+    title: "Repeat Purchase Paths",
+    description:
+      "The store should make it easier for existing customers to reorder, renew, or come back for the next relevant offer.",
+  },
+  {
+    icon: "fa6-solid:calendar-check",
+    title: "Subscription & Ongoing Revenue Support",
+    description:
+      "When the business sells on a recurring basis, the follow-up and customer path need to support that model instead of treating every sale like a one-off.",
+  },
+  {
+    icon: "fa6-solid:user-check",
+    title: "Win-Back & Retention Systems",
+    description:
+      "Retention improves when the business has clear ways to re-engage buyers who showed interest, purchased once, or drifted away.",
+  },
+];
+
+export const commerceOperationsCards = [
+  {
+    icon: "fa6-solid:shop",
+    title: "Platform Setup That Fits The Business",
+    description:
+      "Store platform decisions should support how the business sells, fulfills, and manages products instead of creating more workaround problems later.",
+  },
+  {
+    icon: "fa6-solid:money-check-dollar",
+    title: "Payments & Order Flow That Stay Reliable",
+    description:
+      "Payments, order handling, and internal handoff systems need to work cleanly so the selling side does not create back-office mess.",
+  },
+  {
+    icon: "fa6-solid:diagram-project",
+    title: "Integrations That Keep Systems Connected",
+    description:
+      "Inventory, shipping, email, CRM, and operational tools should pass the right information instead of forcing manual patchwork between systems.",
+  },
+  {
+    icon: "fa6-solid:gears",
+    title: "Operational Cleanup For Growth",
+    description:
+      "The more orders and offers the business handles, the more important it becomes for the commerce setup to be dependable and easier to scale.",
+  },
+];
+
+export const analyticsGrowthInsightsCards = [
+  {
+    icon: "fa6-solid:filter-circle-dollar",
+    title: "Funnel Visibility",
+    description:
+      "You should be able to see where customers drop off between product view, cart, checkout, and purchase instead of guessing where revenue is being lost.",
+  },
+  {
+    icon: "fa6-solid:chart-column",
+    title: "Revenue Reporting That Informs Action",
+    description:
+      "The numbers should help the business decide what to improve next, not just sit in a dashboard no one trusts or uses.",
+  },
+  {
+    icon: "fa6-solid:arrow-trend-up",
+    title: "Product & Offer Signals",
+    description:
+      "Interest patterns, conversion signals, and performance differences help show which products or offers deserve more attention.",
+  },
+  {
+    icon: "fa6-solid:compass-drafting",
+    title: "Testing Priorities That Make Sense",
+    description:
+      "Good analytics help the business focus on the changes most likely to improve revenue instead of chasing random ideas first.",
+  },
+];
+
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
@@ -126,6 +288,7 @@ export const ecommerceApproachCards = [
       title="Storefront & Merchandising"
       heading="Make the storefront easier to shop with clearer merchandising, stronger structure, and better browsing flow."
       description="We shape the storefront so products, offers, categories, and browsing paths feel easier to understand and easier to trust."
+      cards={storefrontMerchandisingCards}
     >
       <Fragment slot="content">
         <p>The storefront is what customers experience first. It includes the way collections are organized, how offers are grouped, how products are surfaced, and how trust shows up while someone is still deciding whether to keep browsing.</p>
@@ -140,6 +303,7 @@ export const ecommerceApproachCards = [
       heading="Create commerce content that helps products and offers make sense faster."
       description="We write and structure commerce content so products, services, categories, and launches are easier to understand, compare, and trust."
       reverse={true}
+      cards={productOfferContentCards}
     >
       <Fragment slot="content">
         <p>E-commerce content is not only product descriptions. It also includes category copy, service-offer pages, comparison content, launch messaging, and the content structure that helps search visibility and customer understanding at the same time.</p>
@@ -153,6 +317,7 @@ export const ecommerceApproachCards = [
       title="Checkout & Conversion"
       heading="Reduce friction in checkout and conversion so more buying intent turns into completed revenue."
       description="We improve the buying flow so the cart, checkout, pricing logic, and conversion path feel clearer and less frustrating."
+      cards={checkoutConversionCards}
     >
       <Fragment slot="content">
         <p>Interest does not automatically become a sale. The path into cart, through checkout, and around pricing choices often decides whether someone finishes or drops off.</p>
@@ -167,6 +332,7 @@ export const ecommerceApproachCards = [
       heading="Support retention and repeat revenue with better follow-up, repeat-purchase flow, and customer return paths."
       description="We support the follow-up side of e-commerce so customers come back more often and more of the first sale turns into longer-term revenue."
       reverse={true}
+      cards={retentionRepeatRevenueCards}
     >
       <Fragment slot="content">
         <p>E-commerce growth does not stop at the first order. Follow-up systems, repeat-purchase flow, and customer return paths help the business get more value from the traffic and buyers it already has.</p>
@@ -180,6 +346,7 @@ export const ecommerceApproachCards = [
       title="Commerce Operations & Integrations"
       heading="Keep the commerce system connected so the operational side of selling online is easier to run."
       description="We connect the moving parts behind e-commerce so platforms, payments, order flow, and operational systems work together more reliably."
+      cards={commerceOperationsCards}
     >
       <Fragment slot="content">
         <p>The selling side of the site depends on more than the page design. Payments, platform setup, shipping logic, order processes, and business tools all affect whether e-commerce works cleanly day to day.</p>
@@ -194,6 +361,7 @@ export const ecommerceApproachCards = [
       heading="Use analytics and growth insights to learn what is helping revenue move and what is slowing it down."
       description="We track how commerce is performing so the business can see where interest builds, where buyers drop off, and what deserves attention next."
       reverse={true}
+      cards={analyticsGrowthInsightsCards}
     >
       <Fragment slot="content">
         <p>Commerce decisions get better when the business can see what products get attention, where people drop off, and which parts of the buying path are improving or underperforming.</p>

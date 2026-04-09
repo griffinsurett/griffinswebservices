@@ -3,7 +3,7 @@
 
 import type { IconType } from 'react-icons';
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBadgeCheck, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuFileText, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMessageSquareText, LuMessagesSquare, LuMinus, LuNotebookPen, LuPlus, LuRocket, LuScanSearch, LuSend, LuSettings, LuShare2, LuShieldCheck, LuSparkles } from 'react-icons/lu';
-import { FaAddressCard, FaArrowPointer, FaArrowRight, FaArrowTrendUp, FaArrowUpRightDots, FaArrowsRotate, FaArrowsUpDownLeftRight, FaAws, FaBinoculars, FaBolt, FaBoxOpen, FaBoxesStacked, FaBriefcase, FaBroom, FaBullhorn, FaBullseye, FaCalendarCheck, FaCalendarDays, FaCartArrowDown, FaCartShopping, FaChartLine, FaChartSimple, FaCircleCheck, FaCircleDot, FaClipboardCheck, FaClipboardList, FaClock, FaClockRotateLeft, FaCloud, FaCloudflare, FaCode, FaCommentDots, FaCompass, FaCookieBite, FaCreditCard, FaCss3Alt, FaCubes, FaDiagramProject, FaDisplay, FaDumbbell, FaEnvelope, FaEnvelopeOpenText, FaEye, FaFeather, FaFigma, FaFileLines, FaFilePen, FaFlag, FaFlagCheckered, FaGaugeHigh, FaGears, FaGithub, FaGlobe, FaHandPointer, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHouse, FaHtml5, FaIdCard, FaImage, FaImages, FaInbox, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMinimize, FaMobileScreenButton, FaNetworkWired, FaNodeJs, FaPalette, FaPaperPlane, FaPenNib, FaPenRuler, FaPenToSquare, FaPeopleGroup, FaPersonRunning, FaPhone, FaPhp, FaPlug, FaPlugCircleBolt, FaPuzzlePiece, FaPython, FaReact, FaRoad, FaRobot, FaRocket, FaRotate, FaRotateLeft, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShopify, FaSitemap, FaStamp, FaStore, FaTableCellsLarge, FaTableList, FaTag, FaTags, FaUniversalAccess, FaUser, FaUsers, FaUtensils, FaWandMagicSparkles, FaWindowMaximize, FaWordpress, FaXmark } from 'react-icons/fa6';
+import { FaAddressCard, FaArrowPointer, FaArrowRight, FaArrowTrendUp, FaArrowUpRightDots, FaArrowsRotate, FaArrowsUpDownLeftRight, FaAws, FaBinoculars, FaBolt, FaBoxOpen, FaBoxesStacked, FaBriefcase, FaBroom, FaBullhorn, FaBullseye, FaCalendarCheck, FaCalendarDays, FaCartArrowDown, FaCartShopping, FaChartColumn, FaChartLine, FaChartSimple, FaCircleCheck, FaCircleDot, FaClipboardCheck, FaClipboardList, FaClock, FaClockRotateLeft, FaCloud, FaCloudflare, FaCode, FaCommentDots, FaCompass, FaCompassDrafting, FaCookieBite, FaCreditCard, FaCss3Alt, FaCubes, FaDiagramProject, FaDisplay, FaDumbbell, FaEnvelope, FaEnvelopeOpenText, FaEye, FaFeather, FaFigma, FaFileLines, FaFilePen, FaFilterCircleDollar, FaFlag, FaFlagCheckered, FaGaugeHigh, FaGears, FaGithub, FaGlobe, FaGrip, FaHandPointer, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHouse, FaHtml5, FaIdCard, FaImage, FaImages, FaInbox, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMinimize, FaMobileScreenButton, FaMoneyCheckDollar, FaNetworkWired, FaNodeJs, FaPalette, FaPaperPlane, FaPenNib, FaPenRuler, FaPenToSquare, FaPeopleGroup, FaPersonRunning, FaPhone, FaPhp, FaPlug, FaPlugCircleBolt, FaPuzzlePiece, FaPython, FaReact, FaRepeat, FaRoad, FaRobot, FaRocket, FaRotate, FaRotateLeft, FaRoute, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShop, FaShopify, FaSitemap, FaStamp, FaStore, FaTableCellsLarge, FaTableList, FaTag, FaTags, FaUniversalAccess, FaUser, FaUserCheck, FaUsers, FaUtensils, FaWandMagicSparkles, FaWindowMaximize, FaWordpress, FaXmark } from 'react-icons/fa6';
 import { SiAnthropic, SiAstro, SiElementor, SiExpress, SiFacebook, SiFramer, SiGatsby, SiGooglegemini, SiNextdotjs, SiOpenai, SiSvelte, SiTailwindcss, SiTypescript, SiVercel, SiWebflow } from 'react-icons/si';
 
 export const iconMap = {
@@ -27,6 +27,7 @@ export const iconMap = {
   'fa6:calendar-days': FaCalendarDays,
   'fa6:cart-arrow-down': FaCartArrowDown,
   'fa6:cart-shopping': FaCartShopping,
+  'fa6:chart-column': FaChartColumn,
   'fa6:chart-line': FaChartLine,
   'fa6:chart-simple': FaChartSimple,
   'fa6:circle-check': FaCircleCheck,
@@ -40,6 +41,7 @@ export const iconMap = {
   'fa6:code': FaCode,
   'fa6:comment-dots': FaCommentDots,
   'fa6:compass': FaCompass,
+  'fa6:compass-drafting': FaCompassDrafting,
   'fa6:cookie-bite': FaCookieBite,
   'fa6:credit-card': FaCreditCard,
   'fa6:css3-alt': FaCss3Alt,
@@ -54,12 +56,14 @@ export const iconMap = {
   'fa6:figma': FaFigma,
   'fa6:file-lines': FaFileLines,
   'fa6:file-pen': FaFilePen,
+  'fa6:filter-circle-dollar': FaFilterCircleDollar,
   'fa6:flag': FaFlag,
   'fa6:flag-checkered': FaFlagCheckered,
   'fa6:gauge-high': FaGaugeHigh,
   'fa6:gears': FaGears,
   'fa6:github': FaGithub,
   'fa6:globe': FaGlobe,
+  'fa6:grip': FaGrip,
   'fa6:hand-pointer': FaHandPointer,
   'fa6:handshake': FaHandshake,
   'fa6:headset': FaHeadset,
@@ -81,6 +85,7 @@ export const iconMap = {
   'fa6:magnifying-glass-chart': FaMagnifyingGlassChart,
   'fa6:minimize': FaMinimize,
   'fa6:mobile-screen-button': FaMobileScreenButton,
+  'fa6:money-check-dollar': FaMoneyCheckDollar,
   'fa6:network-wired': FaNetworkWired,
   'fa6:node-js': FaNodeJs,
   'fa6:palette': FaPalette,
@@ -97,17 +102,20 @@ export const iconMap = {
   'fa6:puzzle-piece': FaPuzzlePiece,
   'fa6:python': FaPython,
   'fa6:react': FaReact,
+  'fa6:repeat': FaRepeat,
   'fa6:road': FaRoad,
   'fa6:robot': FaRobot,
   'fa6:rocket': FaRocket,
   'fa6:rotate': FaRotate,
   'fa6:rotate-left': FaRotateLeft,
+  'fa6:route': FaRoute,
   'fa6:scale-balanced': FaScaleBalanced,
   'fa6:screwdriver-wrench': FaScrewdriverWrench,
   'fa6:server': FaServer,
   'fa6:share-nodes': FaShareNodes,
   'fa6:shield-halved': FaShieldHalved,
   'fa6:shield-heart': FaShieldHeart,
+  'fa6:shop': FaShop,
   'fa6:shopify': FaShopify,
   'fa6:sitemap': FaSitemap,
   'fa6:stamp': FaStamp,
@@ -118,6 +126,7 @@ export const iconMap = {
   'fa6:tags': FaTags,
   'fa6:universal-access': FaUniversalAccess,
   'fa6:user': FaUser,
+  'fa6:user-check': FaUserCheck,
   'fa6:users': FaUsers,
   'fa6:utensils': FaUtensils,
   'fa6:wand-magic-sparkles': FaWandMagicSparkles,
