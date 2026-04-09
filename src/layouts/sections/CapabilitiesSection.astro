@@ -84,18 +84,37 @@ const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || 
 
 {capabilitiesHeading && capabilityItems.length > 0 && (
   <ContentRenderer
-    variant="NestedCardVariant"
+    variant="CardVariant"
     items={capabilityItems}
     heading={capabilitiesHeading}
+    columns={4}
+    className="outer-section"
+    contentClassName="inner-section"
+    card={{
+      appearance: "hidden",
+      stretchToFill: true,
+      listItem: {
+        alignment: "left",
+      },
+    }}
   />
 )}
 
 {capabilitiesHeading && capabilityItems.length === 0 && slug && (
   <ContentRenderer
-    variant="NestedCardVariant"
+    variant="CardVariant"
     query={children("capabilities", slug)}
     heading={capabilitiesHeading}
-    childCollection="capabilities"
+    columns={4}
+    className="outer-section"
+    contentClassName="inner-section"
+    card={{
+      appearance: "hidden",
+      stretchToFill: true,
+      listItem: {
+        alignment: "left",
+      },
+    }}
   />
 )}
 
