@@ -1,10 +1,11 @@
 ---
 import Section from "@/components/Section.astro";
-import CapabilityQuoteForm from "@/components/Form/forms/CapabilityQuoteForm.astro";
+import WebsiteQuoteForm from "@/components/Form/forms/WebsiteQuoteForm.astro";
 import Icon from "@/components/Icon";
 import SectionHeader from "@/components/SectionHeader.astro";
 
 interface Props {
+  id?: string;
   title?: string;
   capabilityTitle?: string;
   heading?: string;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const {
+  id = "capability-quote",
   title,
   capabilityTitle,
   heading = "Thinking about your next move?",
@@ -41,7 +43,7 @@ const highlights = [
 ];
 ---
 
-<Section class={`outer-section ${className}`.trim()}>
+<Section id={id} class={`outer-section ${className}`.trim()}>
   <div class="inner-section">
     <div class="capability-quote-layout">
       <div class="capability-quote-copy sticky-section lg:self-start">
@@ -77,7 +79,7 @@ const highlights = [
             Send the basics and we will follow up with the right recommendation for your website.
           </p>
         </div>
-        <CapabilityQuoteForm capabilityTitle={resolvedCapabilityTitle} />
+        <WebsiteQuoteForm capabilityTitle={resolvedCapabilityTitle} />
       </div>
     </div>
   </div>

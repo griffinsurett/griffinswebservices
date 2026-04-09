@@ -22,7 +22,6 @@ solutions:
   - website-improvements-upgrades
 ---
 
-import { contactCtaData } from "@/content/siteData";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import Section from "@/components/Section.astro";
@@ -162,8 +161,8 @@ export const performanceWorkCards = [
       { label: "Performance Optimization" },
     ]}
     primaryCTA={{
-      text: contactCtaData.text,
-      link: contactCtaData.link,
+      text: "Give Us a Call",
+      link: "#capability-quote",
     }}
     id="capabilities-quote-hero"
   />

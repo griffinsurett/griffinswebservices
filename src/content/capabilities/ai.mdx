@@ -19,7 +19,6 @@ solutions:
   - web-apps
 ---
 
-import { contactCtaData } from "@/content/siteData";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import AIChatSimulation from "@/components/AnimatedExamples/AIChatSimulation";
 import LeadsSpreadsheet from "@/components/AnimatedExamples/LeadsSpreadsheet";
@@ -174,8 +173,8 @@ export const aiStrategySetupOversightCards = [
       { label: "AI" },
     ]}
     primaryCTA={{
-      text: contactCtaData.text,
-      link: contactCtaData.link,
+      text: "Give Us a Call",
+      link: "#capability-quote",
     }}
     id="capabilities-quote-hero"
   />

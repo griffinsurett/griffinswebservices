@@ -16,7 +16,6 @@ solutions:
   - blogs
   - web-apps
 ---
-import { contactCtaData } from "@/content/siteData";
 import DesignMessagingDemo from "@/components/AnimatedExamples/DesignMessagingDemo";
 import EngagementDemo from "@/components/AnimatedExamples/EngagementDemo";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
@@ -110,8 +109,8 @@ export const trustAndActionCards = [
       { label: "Messaging & Positioning" },
     ]}
     primaryCTA={{
-      text: contactCtaData.text,
-      link: contactCtaData.link,
+      text: "Give Us a Call",
+      link: "#capability-quote",
     }}
     id="capabilities-quote-hero"
   />

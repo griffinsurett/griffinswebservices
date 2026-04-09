@@ -13,6 +13,20 @@ import { animationProps } from "@/integrations/scroll-animations/props";
 import performanceImg from "@/assets/100performance.png";
 import meoncompImg from "@/assets/meoncomp.jpg";
 
+interface Props {
+  primaryCtaText?: string;
+  primaryCtaLink?: string;
+  secondaryCtaText?: string;
+  secondaryCtaLink?: string;
+}
+
+const {
+  primaryCtaText = contactCtaData.text,
+  primaryCtaLink = contactCtaData.link,
+  secondaryCtaText = "See Pricing",
+  secondaryCtaLink = pricingCtaData.link,
+} = Astro.props as Props;
+
 const proofEntry = await byItemKeys("about-us", "our-proof").first();
 
 const bridgeHeading =
@@ -201,7 +215,7 @@ const bridgeBackgroundImage = meoncompImg;
       <div class="mx-auto grid w-full max-w-[42rem] grid-cols-2 gap-6 px-4 lg:px-0 max-lg:grid-cols-1 max-lg:gap-4">
         <div class="flex">
           <Button
-            href={contactCtaData.link}
+            href={primaryCtaLink}
             variant="primary"
             size="lg"
             rightIcon="lu:arrow-up-right"
@@ -209,14 +223,14 @@ const bridgeBackgroundImage = meoncompImg;
             className="whitespace-nowrap justify-center"
             buttonWrapperClasses="w-full"
           >
-            {contactCtaData.text}
+            {primaryCtaText}
           </Button>
         </div>
 
         <div class="flex">
           <Button
             client:visible
-            href={pricingCtaData.link}
+            href={secondaryCtaLink}
             variant="secondary"
             size="lg"
             rightIcon="lu:arrow-right"
@@ -224,7 +238,7 @@ const bridgeBackgroundImage = meoncompImg;
             className="whitespace-nowrap justify-center"
             buttonWrapperClasses="w-full"
           >
-            See Pricing
+            {secondaryCtaText}
           </Button>
         </div>
       </div>

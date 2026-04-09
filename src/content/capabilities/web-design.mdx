@@ -19,7 +19,6 @@ solutions:
   - business-websites
 ---
 
-import { contactCtaData } from "@/content/siteData";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
@@ -161,8 +160,8 @@ export const pageMessagingCards = [
       { label: "Design" },
     ]}
     primaryCTA={{
-      text: contactCtaData.text,
-      link: contactCtaData.link,
+      text: "Give Us a Call",
+      link: "#capability-quote",
     }}
     id="capabilities-quote-hero"
   />

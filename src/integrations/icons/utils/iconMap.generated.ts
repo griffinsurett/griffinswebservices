@@ -2,7 +2,7 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/integrations/icons/utils/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBadgeCheck, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuFileText, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMessageSquareText, LuMessagesSquare, LuMinus, LuNotebookPen, LuPlus, LuRocket, LuScanSearch, LuSend, LuSettings, LuShare2, LuShieldCheck, LuSparkles } from 'react-icons/lu';
+import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBadgeCheck, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuFileText, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMessageSquareText, LuMessagesSquare, LuMinus, LuNotebookPen, LuPhone, LuPlus, LuRocket, LuScanSearch, LuSend, LuSettings, LuShare2, LuShieldCheck, LuSparkles } from 'react-icons/lu';
 import { FaAddressCard, FaArrowPointer, FaArrowRight, FaArrowTrendUp, FaArrowUpRightDots, FaArrowsRotate, FaArrowsUpDownLeftRight, FaAws, FaBinoculars, FaBolt, FaBoxOpen, FaBoxesStacked, FaBriefcase, FaBroom, FaBullhorn, FaBullseye, FaCalendarCheck, FaCalendarDays, FaCartArrowDown, FaCartShopping, FaChartColumn, FaChartLine, FaChartSimple, FaCircleCheck, FaCircleDot, FaClipboardCheck, FaClipboardList, FaClock, FaClockRotateLeft, FaCloud, FaCloudflare, FaCode, FaCommentDots, FaCompass, FaCompassDrafting, FaCreditCard, FaCss3Alt, FaCubes, FaDiagramProject, FaDisplay, FaDumbbell, FaEnvelope, FaEnvelopeOpenText, FaEye, FaFeather, FaFigma, FaFileLines, FaFilePen, FaFilterCircleDollar, FaFlag, FaFlagCheckered, FaGaugeHigh, FaGears, FaGithub, FaGlobe, FaGrip, FaHandPointer, FaHandshake, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHouse, FaHtml5, FaIdCard, FaImage, FaImages, FaInbox, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaLocationDot, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMinimize, FaMobileScreenButton, FaMoneyCheckDollar, FaNetworkWired, FaNodeJs, FaPalette, FaPaperPlane, FaPenNib, FaPenRuler, FaPenToSquare, FaPeopleGroup, FaPersonRunning, FaPhone, FaPhp, FaPlug, FaPlugCircleBolt, FaPuzzlePiece, FaPython, FaReact, FaRepeat, FaRoad, FaRobot, FaRocket, FaRotate, FaRotateLeft, FaRoute, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShop, FaShopify, FaSitemap, FaStamp, FaStore, FaTableCellsLarge, FaTableList, FaTag, FaTags, FaUniversalAccess, FaUser, FaUserCheck, FaUsers, FaUtensils, FaWandMagicSparkles, FaWindowMaximize, FaWordpress, FaXmark } from 'react-icons/fa6';
 import { SiAnthropic, SiAstro, SiElementor, SiExpress, SiFacebook, SiFramer, SiGatsby, SiGooglegemini, SiNextdotjs, SiOpenai, SiSvelte, SiTailwindcss, SiTypescript, SiVercel, SiWebflow } from 'react-icons/si';
 
@@ -153,6 +153,7 @@ export const iconMap = {
   'lu:messages-square': LuMessagesSquare,
   'lu:minus': LuMinus,
   'lu:notebook-pen': LuNotebookPen,
+  'lu:phone': LuPhone,
   'lu:plus': LuPlus,
   'lu:rocket': LuRocket,
   'lu:scan-search': LuScanSearch,
