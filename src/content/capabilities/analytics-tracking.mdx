@@ -20,6 +20,27 @@ import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
+export const analyticsCapabilityItems = [
+  {
+    icon: "fa6-solid:chart-simple",
+    title: "Analytics Setup",
+    description:
+      "GA4, Tag Manager, and consent frameworks configured correctly so every visit, event, and conversion starts from clean data.",
+  },
+  {
+    icon: "fa6-solid:bullseye",
+    title: "Event Tracking",
+    description:
+      "Custom events, parameters, and data layers that capture the interactions your marketing and product teams care about.",
+  },
+  {
+    icon: "fa6-solid:flag-checkered",
+    title: "Conversion Tracking",
+    description:
+      "Funnel instrumentation, attribution pixels, and CRM syncing so sales-ready actions are measured and reported in the right tools.",
+  },
+];
+
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
@@ -29,6 +50,7 @@ import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.ast
 
 <CapabilitiesSection
   capabilitiesHeading="Analytics disciplines we bring to every project."
+  capabilityItems={analyticsCapabilityItems}
   highlights={[
     { title: "Clean Tracking Implementation", description: "We deploy GTM, server-side tagging, and consent-aware scripts so every event fires reliably." },
     { title: "Unified Reporting Dashboards", description: "Marketing, sales, and leadership see the same KPIs with tailored dashboards tied to revenue." },

@@ -1,0 +1,124 @@
+---
+import SectionHeader from "@/components/SectionHeader.astro";
+import HiddenCardVariant from "@/components/starter/ContentRenderer/variants/HiddenCardVariant.astro";
+
+interface Props {
+  title?: string;
+  heading?: string | Record<string, unknown>;
+  description?: string;
+  reverse?: boolean;
+  className?: string;
+  sectionMinHeightClass?: string;
+  cards?: Array<Record<string, unknown>>;
+}
+
+const {
+  title,
+  heading,
+  description,
+  reverse = false,
+  className = "",
+  sectionMinHeightClass = "lg:min-h-[100svh]",
+  cards = [],
+} = Astro.props as Props;
+
+const textOrderClass = reverse ? "lg:order-2" : "";
+const mediaOrderClass = reverse ? "lg:order-1" : "lg:order-2";
+const iconGradientId = `capability-topic-${String(
+  title ?? (typeof heading === "string" ? heading : "topic")
+)
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/^-+|-+$/g, "")}-icon-gradient`;
+const safeCards = cards.filter(Boolean);
+
+const resolveTopicCardColumns = (cardCount: number) => {
+  if (cardCount <= 3) return cardCount as 1 | 2 | 3;
+  if (cardCount % 3 === 0) return 3;
+  return 4;
+};
+
+const resolveTopicGridClassName = (cardCount: number) => {
+  const resolvedColumns = resolveTopicCardColumns(cardCount);
+  if (resolvedColumns === 3) return "items-stretch !gap-4 lg:!grid-cols-3";
+  if (resolvedColumns === 4) return "items-stretch !gap-4 lg:!grid-cols-2 xl:!grid-cols-4";
+  return "";
+};
+
+const compactTopicCardProps = {
+  stretchToFill: true,
+  innerClassName: "px-4 md:px-6 py-6 md:py-7",
+  listItem: {
+    iconClassName:
+      "faded-bg border border-soft flex h-16 w-16 items-center justify-center rounded-full p-3 mb-5 shrink-0",
+    iconStyle: {
+      stroke: `url(#${iconGradientId})`,
+      fill: `url(#${iconGradientId})`,
+    },
+    titleClassName:
+      "text-xl sm:text-2xl lg:text-[1.75rem] xl:text-[1.9rem] leading-[1.08] font-semibold tracking-wide text-heading mb-2 relative z-10",
+    descriptionClassName:
+      "text-sm md:text-base leading-[1.65] relative z-10",
+  },
+};
+---
+
+<section class={`outer-section relative ${className}`.trim()}>
+  <svg class="absolute h-0 w-0 overflow-hidden" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id={iconGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="var(--color-primary)" />
+        <stop offset="100%" stop-color="var(--color-accent)" />
+      </linearGradient>
+    </defs>
+  </svg>
+  <div class="inner-section">
+    <div
+      class={`grid items-start gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1fr)] ${sectionMinHeightClass}`.trim()}
+    >
+      <div class={textOrderClass}>
+        <SectionHeader
+          title={title}
+          heading={heading}
+          description={description}
+          className="space-y-5 text-left max-w-3xl"
+          headingClassName="h3 mb-6"
+        />
+
+        {
+          Astro.slots.has("content") && (
+            <div class="topic-content-blurb mt-6 max-w-2xl text-base leading-[1.75] text-text/78 md:text-lg">
+              <slot name="content" />
+            </div>
+          )
+        }
+      </div>
+
+      <div class={`${mediaOrderClass} sticky-section lg:self-start`.trim()}>
+        <div class="flex w-full items-start justify-start">
+          <slot name="demo" />
+        </div>
+      </div>
+    </div>
+
+    {
+      safeCards.length > 0 && (
+        <HiddenCardVariant
+          items={safeCards}
+          columns={resolveTopicCardColumns(safeCards.length)}
+          showButtonSection={false}
+          className="mt-10 px-0"
+          contentClassName=""
+          gridClassName={resolveTopicGridClassName(safeCards.length)}
+          card={compactTopicCardProps}
+        />
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .topic-content-blurb :global(p + p) {
+    margin-top: 1rem;
+  }
+</style>

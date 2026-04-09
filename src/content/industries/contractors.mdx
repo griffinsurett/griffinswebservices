@@ -12,7 +12,7 @@ icon: "fa6-solid:helmet-safety"
 import TrustStatement from '@/components/TrustStatement.astro';
 import DoubleCard from '@/layouts/sections/DoubleCard.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
-import CTASection from '@/layouts/heroes/CTASection.astro';
+import HomeSolutionBridge from '@/layouts/sections/HomeSolutionBridge.astro';
 import { query, sortByOrder } from '@/utils/query';
 import { roots, related, byItemKeys } from '@/utils/query/snippets';
 
@@ -61,15 +61,4 @@ import { roots, related, byItemKeys } from '@/utils/query/snippets';
   />
 </div>
 
-<CTASection
-  title="Get Started"
-  heading={{
-    before: "Ready to get more leads for your",
-    text: "contracting business?",
-  }}
-  description="Join other contractors who trust Griffin's Web Services. We build websites that generate leads, build credibility, and help you win more bids."
-  primaryCTA={{
-    text: "Get Your Free Quote",
-    link: "#industry-quote-hero",
-  }}
-/>
+<HomeSolutionBridge />

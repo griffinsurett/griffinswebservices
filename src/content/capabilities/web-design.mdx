@@ -24,6 +24,113 @@ import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.ast
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import WebDesignShowcaseSection from "@/layouts/sections/WebDesignShowcaseSection.astro";
+import CapabilityTopicShowcaseSection from "@/layouts/sections/CapabilityTopicShowcaseSection.astro";
+import WebsitePlanningDemo from "@/components/AnimatedExamples/WebsitePlanningDemo";
+import ProcessWebsitePreview from "@/components/AnimatedExamples/ProcessWebsitePreview";
+import PortfolioAddDemo from "@/components/AnimatedExamples/PortfolioAddDemo";
+import DesignMessagingDemo from "@/components/AnimatedExamples/DesignMessagingDemo";
+
+export const websiteFlowCards = [
+  {
+    icon: "fa6-solid:flag",
+    title: "Each Page Has A Clear Job",
+    description:
+      "Every page is built around one main goal, so visitors quickly understand whether the page is there to inform, sell, book, or get them to reach out.",
+  },
+  {
+    icon: "fa6-solid:diagram-project",
+    title: "Information In The Right Order",
+    description:
+      "The most important points show up first, with the right sections following behind them, so service pages and landing pages feel clear instead of cluttered.",
+  },
+  {
+    icon: "fa6-solid:table-cells-large",
+    title: "Layouts That Feel Easy To Follow",
+    description:
+      "Each page is arranged to feel natural on desktop and mobile, so visitors can scan, understand, and keep moving whether they land on your site from search, social, or ads.",
+  },
+  {
+    icon: "fa6-solid:arrow-pointer",
+    title: "Calls To Action At The Right Time",
+    description:
+      "We place calls to action where they make sense based on what someone is reading, so the next step feels natural whether you want more calls, quote requests, bookings, or purchases.",
+  },
+];
+
+export const professionalWebsiteDesignCards = [
+  {
+    icon: "fa6-solid:palette",
+    title: "A Website That Looks Like Your Business",
+    description:
+      "We use your branding, colors, typography, and visual style to make the website feel recognizable, professional, and far from a generic template.",
+  },
+  {
+    icon: "fa6-solid:layer-group",
+    title: "A More Consistent Look Across Every Page",
+    description:
+      "Sections, layouts, and design patterns stay visually aligned from page to page so your business website feels polished across home pages, service pages, and landing pages.",
+  },
+  {
+    icon: "fa6-solid:stamp",
+    title: "Cleaner Spacing, Type, And Visual Consistency",
+    description:
+      "Spacing, text styles, and visual rules are kept consistent so the site feels more professional, more established, and easier for new visitors to trust.",
+  },
+  {
+    icon: "fa6-solid:hand-pointer",
+    title: "Buttons, Forms, And Navigation That Feel Easy To Use",
+    description:
+      "Important actions behave in a clear, familiar way so visitors can move through forms, menus, and buttons without second-guessing where to click.",
+  },
+];
+
+export const brandExtensionCards = [
+  {
+    icon: "fa6-solid:id-card",
+    title: "Business Card-Ready Systems",
+    description:
+      "The typography, spacing, and brand cues established on the website can be reused cleanly when you need business cards or similar offline materials.",
+  },
+  {
+    icon: "fa6-solid:file-lines",
+    title: "Sales Collateral Direction",
+    description:
+      "Website design decisions can be extended into one-pagers, pitch materials, and other supporting assets without restarting the design language from zero.",
+  },
+  {
+    icon: "fa6-solid:share-nodes",
+    title: "Campaign Asset Consistency",
+    description:
+      "Promo graphics, announcements, and supporting visuals stay closer to the site because the system already defines how the brand should look in use.",
+  },
+  {
+    icon: "fa6-solid:circle-check",
+    title: "Faster Approvals",
+    description:
+      "Approvals are easier when new materials build from patterns the team already recognizes from the website instead of introducing a separate visual direction.",
+  },
+];
+
+export const pageMessagingCards = [
+  {
+    icon: "fa6-solid:bolt",
+    title: "Clear First Impression",
+    description:
+      "The top of the page should quickly show what you do, who it helps, and why it matters so people do not feel lost right away.",
+  },
+  {
+    icon: "fa6-solid:file-lines",
+    title: "Clear Service Pages",
+    description:
+      "Service pages should make the offer easy to understand so people know what you do, what they get, and why they should reach out.",
+  },
+  {
+    icon: "fa6-solid:arrows-rotate",
+    title: "Keep The Message Consistent",
+    description:
+      "The message should stay clear from the home page to the service pages and contact points.",
+  },
+];
 
 <CapabilityBodyLayout
   title={frontmatter.title}
@@ -59,6 +166,71 @@ import WebDesignShowcaseSection from "@/layouts/sections/WebDesignShowcaseSectio
     }}
     id="capabilities-quote-hero"
   />
+
+  <Fragment slot="topic-sections">
+    <CapabilityTopicShowcaseSection
+      title="Website Flow"
+      heading="Plan the page flow so people can follow the site and know what to do next."
+      description="We shape the structure, sequence, and on-page flow so the website feels easier to move through and easier to understand."
+      cards={websiteFlowCards}
+    >
+      <Fragment slot="content">
+        <p>Good design is not only about how a website looks. It is also about how clearly the page unfolds, how fast people understand where they are, and whether the next step feels obvious instead of hidden.</p>
+        <p>This part of web design covers layout planning, page sequencing, information order, and the decision points that help visitors keep moving without friction.</p>
+      </Fragment>
+
+      <WebsitePlanningDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Professional Website Design"
+      heading="Turn your brand, layout, and visual system into a website that looks polished and easier to trust."
+      description="We shape the visual side of the website so it feels more established, more coherent, and more aligned with the business behind it."
+      reverse={true}
+      cards={professionalWebsiteDesignCards}
+    >
+      <Fragment slot="content">
+        <p>This is the part people usually think of as design first: the visual language, the overall feel, the consistency from section to section, and the way the site presents the business online.</p>
+        <p>We use it to make the website feel more credible, more intentional, and more like the kind of business someone would trust with a call, booking, quote request, or purchase.</p>
+      </Fragment>
+
+      <ProcessWebsitePreview
+        slot="demo"
+        mode="final"
+        client:visible
+        className="w-full min-h-[20rem] max-w-[36rem]"
+      />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Brand Extension"
+      heading="Use the website as a system the business can carry into other branded materials."
+      description="We treat the website like part of the broader brand system so its look and structure can support the collateral around it too."
+      cards={brandExtensionCards}
+    >
+      <Fragment slot="content">
+        <p>For many businesses, the website becomes the clearest modern version of the brand. That means its visual direction can help shape cards, flyers, sales materials, campaign assets, and other pieces the business uses later.</p>
+        <p>This area is about turning the website into something more reusable instead of leaving it as a standalone design that never informs anything else.</p>
+      </Fragment>
+
+      <PortfolioAddDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Page Messaging"
+      heading="Make the visual design and the page message support each other from top to bottom."
+      description="We shape the words, proof, and section rhythm so the design helps people understand the message instead of distracting from it."
+      reverse={true}
+      cards={pageMessagingCards}
+    >
+      <Fragment slot="content">
+        <p>Strong web design is tied to how the message lands on the page. Headlines, proof, calls to action, spacing, and section order all need to work together so the visitor can keep following the story.</p>
+        <p>This is where page design becomes clearer, more persuasive, and easier to act on because the message and layout are reinforcing each other.</p>
+      </Fragment>
+
+      <DesignMessagingDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+  </Fragment>
 
   <WebDesignShowcaseSection />
 

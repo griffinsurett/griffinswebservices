@@ -25,6 +25,16 @@ interface Props extends BaseVariantProps {
   childCollection?: CollectionKey;
 }
 
+type NestedItemInput = {
+  icon?: unknown;
+  title?: string;
+  description?: string;
+  url?: string;
+  slug?: string;
+  id?: string;
+  childItems?: Array<{ title?: string; icon?: unknown }>;
+};
+
 const {
   items = [],
   title,
@@ -55,13 +65,20 @@ const targetCollection = childCollection || collectionFromUrl;
 
 // Fetch children for each item and build ChildCardData
 const cardItems: ChildCardData[] = await Promise.all(
-  safeItems.map(async (item: any) => {
+  safeItems.map(async (item: NestedItemInput) => {
     // Item has slug from prepareEntry
     const itemSlug = item.slug || item.id;
 
     let childItems: { title: string; icon: any }[] = [];
 
-    if (targetCollection && itemSlug) {
+    if (Array.isArray(item.childItems)) {
+      childItems = item.childItems
+        .filter(Boolean)
+        .map((child) => ({
+          title: child?.title || "",
+          icon: child?.icon || null,
+        }));
+    } else if (targetCollection && itemSlug) {
       const queryBuilder = children(targetCollection, itemSlug);
       const result = await queryBuilder.get();
       const childEntries = result.entries || [];

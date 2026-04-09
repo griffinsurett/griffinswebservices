@@ -17,9 +17,69 @@ solutions:
   - web-apps
 ---
 import { contactCtaData } from "@/content/siteData";
+import DesignMessagingDemo from "@/components/AnimatedExamples/DesignMessagingDemo";
+import EngagementDemo from "@/components/AnimatedExamples/EngagementDemo";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import CapabilityTopicShowcaseSection from "@/layouts/sections/CapabilityTopicShowcaseSection.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
+
+export const clearPositioningCards = [
+  {
+    icon: "fa6-solid:bolt",
+    title: "Say What You Do Fast",
+    description:
+      "People should understand what the business does in a few seconds, not hunt for the point.",
+  },
+  {
+    icon: "fa6-solid:users",
+    title: "Show Who It Is For",
+    description:
+      "The page should help the right people feel like they are in the right place.",
+  },
+  {
+    icon: "fa6-solid:tag",
+    title: "Make The Offer Clear",
+    description:
+      "The offer should sound simple, useful, and worth reaching out about.",
+  },
+];
+
+export const pageMessagingCards = [
+  {
+    icon: "fa6-solid:bolt",
+    title: "Clear First Impression",
+    description:
+      "The top of the page should quickly show what you do, who it helps, and why it matters so people do not feel lost right away.",
+  },
+  {
+    icon: "fa6-solid:file-lines",
+    title: "Clear Service Pages",
+    description:
+      "Service pages should make the offer easy to understand so people know what you do, what they get, and why they should reach out.",
+  },
+  {
+    icon: "fa6-solid:arrows-rotate",
+    title: "Keep The Message Consistent",
+    description:
+      "The message should stay clear from the home page to the service pages and contact points.",
+  },
+];
+
+export const trustAndActionCards = [
+  {
+    icon: "fa6-solid:shield-heart",
+    title: "Proof That Builds Trust",
+    description:
+      "Reviews, results, and trust signals should show up where they help people feel more sure about choosing your business.",
+  },
+  {
+    icon: "fa6-solid:arrow-right",
+    title: "Next Steps That Feel Obvious",
+    description:
+      "Good messaging makes it clear when to call, book, buy, or ask for a quote so people do not stop and wonder what to do next.",
+  },
+];
 
 <CapabilityBodyLayout
   title={frontmatter.title}
@@ -60,4 +120,49 @@ import TrustStatement from "@/components/TrustStatement.astro";
     text="Good messaging helps people get the point fast, trust what they see, and know what to do next."
     textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
   />
+
+  <Fragment slot="topic-sections">
+    <CapabilityTopicShowcaseSection
+      title="Clear Positioning"
+      heading="Help people know what you do and who it is for."
+      description="We help people understand what you do, who it is for, and why it matters so they are not left guessing."
+      cards={clearPositioningCards}
+    >
+      <Fragment slot="content">
+        <p>Positioning is the part that tells people what kind of business this is, who it helps, and why the offer matters before they have to piece it together themselves.</p>
+        <p>When this is unclear, the site can look polished and still fail because people never feel sure they are in the right place.</p>
+      </Fragment>
+
+      <DesignMessagingDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Page Messaging"
+      heading="Make every page easier to understand from top to bottom."
+      description="We shape the words, proof, and page sections so people can follow the message without feeling lost."
+      reverse={true}
+      cards={pageMessagingCards}
+    >
+      <Fragment slot="content">
+        <p>Page messaging is how the site explains the offer as someone scrolls: the order of ideas, the proof, the emphasis, and the way sections support each other.</p>
+        <p>This is what helps people keep following the page instead of dropping off because the message feels scattered or too vague.</p>
+      </Fragment>
+
+      <DesignMessagingDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Trust & Action"
+      heading="Build trust and make the next step feel simple."
+      description="We place proof and next steps where they help people feel more sure and more ready to reach out."
+      cards={trustAndActionCards}
+    >
+      <Fragment slot="content">
+        <p>Trust and action work together. The site needs to answer the last doubts people feel and make the next step obvious enough that they do not keep hesitating.</p>
+        <p>This is where proof, reassurance, and calls to action are arranged so confidence turns into movement.</p>
+      </Fragment>
+
+      <EngagementDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+  </Fragment>
 </CapabilityBodyLayout>

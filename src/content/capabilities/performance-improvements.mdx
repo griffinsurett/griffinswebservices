@@ -32,7 +32,6 @@ import WebsiteLoadComparison from "@/components/AnimatedExamples/WebsiteLoadComp
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import CapabilityQuoteSection from "@/layouts/sections/CapabilityQuoteSection.astro";
-import { children } from "@/utils/query/snippets";
 
 export const performanceApproachCards = [
   {
@@ -100,6 +99,45 @@ export const loadingStrategyCards = [
     title: "That Matters Most On Real Phones",
     description:
       "People visiting on weaker connections or older phones feel bad performance first. Lighter pages protect their experience instead of assuming everyone is browsing on perfect Wi-Fi.",
+  },
+];
+
+export const performanceWorkCards = [
+  {
+    icon: "fa6-solid:bolt",
+    title: "Performance Audits",
+    description:
+      "We check what is slowing the site down and show the biggest fixes first.",
+  },
+  {
+    icon: "fa6-solid:gauge-high",
+    title: "Load Speed Improvements",
+    description:
+      "We cut slow-loading code and blocking files so pages load faster, even on mobile.",
+  },
+  {
+    icon: "fa6-solid:image",
+    title: "Image Optimization",
+    description:
+      "We resize and compress images so they stay sharp without slowing the page down.",
+  },
+  {
+    icon: "fa6-solid:minimize",
+    title: "Asset Optimization",
+    description:
+      "We trim scripts, fonts, and other files so they stop slowing the site down.",
+  },
+  {
+    icon: "fa6-solid:cloud",
+    title: "Caching Strategies",
+    description:
+      "We set up caching so repeat visits load much faster.",
+  },
+  {
+    icon: "fa6-solid:heart-pulse",
+    title: "Core Web Vitals Improvements",
+    description:
+      "We fix Google's page speed and page feel issues so the site feels smoother to use.",
   },
 ];
 
@@ -211,15 +249,19 @@ export const loadingStrategyCards = [
     </div>
   </Section>
 
-  <ContentRenderer
-    query={children("capabilities", "performance-improvements")}
-    variant="CardVariant"
-    title="Performance Work We Do"
-    heading="We improve the heavy parts one layer at a time."
-    description="From audits and load speed fixes to image work, caching, and Core Web Vitals, the point is not just a better score. The point is a better website."
-    columns={3}
-    gap="lg"
-  />
+  <Section class="outer-section">
+    <div class="inner-section">
+      <ContentRenderer
+        items={performanceWorkCards}
+        variant="CardVariant"
+        title="Performance Work We Do"
+        heading="We improve the heavy parts one layer at a time."
+        description="From audits and load speed fixes to image work, caching, and Core Web Vitals, the point is not just a better score. The point is a better website."
+        columns={3}
+        gap="lg"
+      />
+    </div>
+  </Section>
 
   <CapabilityQuoteSection
     title={frontmatter.title}

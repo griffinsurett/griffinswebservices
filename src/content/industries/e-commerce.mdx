@@ -12,7 +12,7 @@ icon: "fa6-solid:box-open"
 import TrustStatement from '@/components/TrustStatement.astro';
 import DoubleCard from '@/layouts/sections/DoubleCard.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
-import CTASection from '@/layouts/heroes/CTASection.astro';
+import HomeSolutionBridge from '@/layouts/sections/HomeSolutionBridge.astro';
 import { query, sortByOrder } from '@/utils/query';
 import { roots, related, byItemKeys } from '@/utils/query/snippets';
 
@@ -61,15 +61,4 @@ import { roots, related, byItemKeys } from '@/utils/query/snippets';
   />
 </div>
 
-<CTASection
-  title="Get Started"
-  heading={{
-    before: "Ready to launch an online store that",
-    text: "actually converts?",
-  }}
-  description="Join other e-commerce brands who trust Griffin's Web Services. We build fast, premium online stores that reduce cart abandonment and maximize revenue per visitor."
-  primaryCTA={{
-    text: "Get Your Free Quote",
-    link: "#industry-quote-hero",
-  }}
-/>
+<HomeSolutionBridge />

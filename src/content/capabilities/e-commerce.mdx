@@ -1,0 +1,206 @@
+---
+title: "E-Commerce"
+description: "We help businesses sell online through stores, paid offers, product content, conversion systems, and the ongoing work that keeps revenue moving."
+itemLayout: "../../layouts/collections/CapabilityCustomLayout.astro"
+heading:
+  before: "Build an"
+  text: "e-commerce system"
+  after: "that helps people understand the offer, trust the business, and buy with less friction."
+icon: "fa6-solid:cart-shopping"
+order: 5
+tags:
+  - featured
+redirectFrom:
+  - "/capabilities/ecommerce"
+  - "/ecommerce"
+---
+
+import { contactCtaData } from "@/content/siteData";
+import AddToCartDemo from "@/components/AnimatedExamples/AddToCartDemo";
+import ProductCatalogAddDemo from "@/components/AnimatedExamples/ProductCatalogAddDemo";
+import UpsellFunnelDemo from "@/components/AnimatedExamples/UpsellFunnelDemo";
+import KeepGrowingDemo from "@/components/AnimatedExamples/KeepGrowingDemo";
+import EcommerceIntegrationDemo from "@/components/AnimatedExamples/EcommerceIntegrationDemo";
+import GrowthGraph from "@/components/AnimatedExamples/GrowthGraph";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import CardVariant from "@/components/starter/ContentRenderer/variants/CardVariant.astro";
+import CapabilityTopicShowcaseSection from "@/layouts/sections/CapabilityTopicShowcaseSection.astro";
+
+export const ecommerceApproachCards = [
+  {
+    icon: "fa6-solid:store",
+    title: "What Customers See",
+    description:
+      "Storefront structure, merchandising, trust, and product presentation shape whether the offer feels clear enough to keep exploring.",
+  },
+  {
+    icon: "fa6-solid:file-lines",
+    title: "What Helps Offers Get Understood",
+    description:
+      "Product pages, service-offer copy, category content, and launch messaging help people understand what they are buying and why it matters.",
+  },
+  {
+    icon: "fa6-solid:credit-card",
+    title: "What Helps People Buy",
+    description:
+      "Checkout flow, pricing clarity, payments, and conversion decisions affect whether interest actually turns into revenue.",
+  },
+  {
+    icon: "fa6-solid:arrows-rotate",
+    title: "What Keeps Revenue Moving",
+    description:
+      "Retention, analytics, and commerce operations help the business learn, improve, and keep customers coming back over time.",
+  },
+];
+
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+  grandparentContent={{
+    testimonialsTitle: "Testimonials",
+    testimonialsHeading:
+      "What business owners say after we make the selling side of the website clearer.",
+    testimonialsDescription:
+      "Real feedback from businesses that needed stronger storefront structure, better buying flow, and a setup that could keep growing.",
+    faqTitle: "FAQs",
+    faqHeading: "Common Questions About E-Commerce Support",
+  }}
+>
+  <BreadcrumbHeroCenter
+    slot="hero"
+    title="E-Commerce Support"
+    heading={{
+      before: "Build an",
+      text: "e-commerce system",
+      after: "that helps people understand the offer, trust the business, and buy with less friction."
+    }}
+    description="We help businesses sell online through product stores, paid services, subscriptions, offer pages, checkout systems, content writing, and the ongoing operational work around e-commerce. For many businesses, e-commerce is only one part of the website, so the setup still has to fit the wider brand, content, and customer journey."
+    breadcrumbs={[
+      { label: "Home", href: "/" },
+      { label: "Capabilities", href: "/capabilities" },
+      { label: "E-Commerce" },
+    ]}
+    primaryCTA={{
+      text: contactCtaData.text,
+      link: contactCtaData.link,
+    }}
+    id="capabilities-quote-hero"
+  />
+
+  <Section class="outer-section">
+    <div class="inner-section">
+      <SectionHeader
+        title="What E-Commerce Covers"
+        heading="E-commerce is bigger than the store build."
+        description="The work can include what customers browse, how offers are written, how checkout works, how repeat revenue is supported, and how the business keeps the whole commerce system organized behind the scenes."
+        className="mx-auto max-w-5xl text-center"
+        headingClassName="text-4xl md:text-5xl lg:text-6xl leading-[0.98] font-semibold text-heading"
+        descriptionClassName="large-text mx-auto max-w-4xl"
+      />
+
+      <CardVariant
+        items={ecommerceApproachCards}
+        columns={4}
+        showButtonSection={false}
+        className="mt-10 px-0"
+        contentClassName=""
+        card={{
+          stretchToFill: true,
+        }}
+      />
+    </div>
+  </Section>
+
+  <TrustStatement
+    text="Good e-commerce work helps people understand what you sell, trust the offer faster, buy with less hesitation, and come back more often."
+    textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
+  />
+
+  <Fragment slot="topic-sections">
+    <CapabilityTopicShowcaseSection
+      title="Storefront & Merchandising"
+      heading="Make the storefront easier to shop with clearer merchandising, stronger structure, and better browsing flow."
+      description="We shape the storefront so products, offers, categories, and browsing paths feel easier to understand and easier to trust."
+    >
+      <Fragment slot="content">
+        <p>The storefront is what customers experience first. It includes the way collections are organized, how offers are grouped, how products are surfaced, and how trust shows up while someone is still deciding whether to keep browsing.</p>
+        <p>We use this area to improve catalog structure, merchandising clarity, product discovery, and the overall feeling that the storefront is easy to shop instead of heavy, confusing, or stitched together.</p>
+      </Fragment>
+
+      <AddToCartDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Product & Offer Content"
+      heading="Create commerce content that helps products and offers make sense faster."
+      description="We write and structure commerce content so products, services, categories, and launches are easier to understand, compare, and trust."
+      reverse={true}
+    >
+      <Fragment slot="content">
+        <p>E-commerce content is not only product descriptions. It also includes category copy, service-offer pages, comparison content, launch messaging, and the content structure that helps search visibility and customer understanding at the same time.</p>
+        <p>We use this area to make the offer clearer in writing, reduce ambiguity, and give the business a stronger content base around what it sells online.</p>
+      </Fragment>
+
+      <ProductCatalogAddDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Checkout & Conversion"
+      heading="Reduce friction in checkout and conversion so more buying intent turns into completed revenue."
+      description="We improve the buying flow so the cart, checkout, pricing logic, and conversion path feel clearer and less frustrating."
+    >
+      <Fragment slot="content">
+        <p>Interest does not automatically become a sale. The path into cart, through checkout, and around pricing choices often decides whether someone finishes or drops off.</p>
+        <p>We use this area to tighten the buying flow, reduce avoidable hesitation, and make the final steps feel more obvious, trustworthy, and easier to complete.</p>
+      </Fragment>
+
+      <UpsellFunnelDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Retention & Repeat Revenue"
+      heading="Support retention and repeat revenue with better follow-up, repeat-purchase flow, and customer return paths."
+      description="We support the follow-up side of e-commerce so customers come back more often and more of the first sale turns into longer-term revenue."
+      reverse={true}
+    >
+      <Fragment slot="content">
+        <p>E-commerce growth does not stop at the first order. Follow-up systems, repeat-purchase flow, and customer return paths help the business get more value from the traffic and buyers it already has.</p>
+        <p>We use this area to support email and SMS follow-up, subscriptions, win-back patterns, and the broader systems that keep more customers engaged after the initial sale.</p>
+      </Fragment>
+
+      <KeepGrowingDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Commerce Operations & Integrations"
+      heading="Keep the commerce system connected so the operational side of selling online is easier to run."
+      description="We connect the moving parts behind e-commerce so platforms, payments, order flow, and operational systems work together more reliably."
+    >
+      <Fragment slot="content">
+        <p>The selling side of the site depends on more than the page design. Payments, platform setup, shipping logic, order processes, and business tools all affect whether e-commerce works cleanly day to day.</p>
+        <p>We use this area to support platform decisions, operational connections, and the integrations that keep the system dependable for both customers and the team.</p>
+      </Fragment>
+
+      <EcommerceIntegrationDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Analytics & Growth Insights"
+      heading="Use analytics and growth insights to learn what is helping revenue move and what is slowing it down."
+      description="We track how commerce is performing so the business can see where interest builds, where buyers drop off, and what deserves attention next."
+      reverse={true}
+    >
+      <Fragment slot="content">
+        <p>Commerce decisions get better when the business can see what products get attention, where people drop off, and which parts of the buying path are improving or underperforming.</p>
+        <p>We use this area to support funnel tracking, commerce reporting, decision-making, and the growth signals that help prioritize what to improve next.</p>
+      </Fragment>
+
+      <GrowthGraph slot="demo" client:visible variant="panel" className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+  </Fragment>
+</CapabilityBodyLayout>

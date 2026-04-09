@@ -9,7 +9,7 @@
  */
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import ContentSection from "@/layouts/sections/ContentSection.astro";
-import CTASection from "@/layouts/heroes/CTASection.astro";
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import { query, sortByOrder, related, safeGetEntry } from "@/utils/query";
 import { capitalizeWords } from "@/utils/string";
 import { parseUrlPath } from "@/utils/paths";
@@ -195,15 +195,5 @@ const fullSidebar = sidebar ? {
 </div>
 
 {ctaHeading && (
-  <CTASection
-    id={ctaId}
-    className="min-h-[60vh]"
-    title={ctaTitle}
-    heading={ctaHeading}
-    description={ctaDescription}
-    primaryCTA={ctaPrimaryButton || {
-      text: "Get Your Free Quote",
-      link: "#solutions-quote-hero",
-    }}
-  />
+  <HomeSolutionBridge />
 )}

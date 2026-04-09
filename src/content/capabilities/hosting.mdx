@@ -5,8 +5,6 @@ heading: "Managed hosting that keeps the site handled."
 itemLayout: "../../layouts/collections/CapabilityLayout.astro"
 icon: "fa6-solid:server"
 order: 5
-tags:
-  - featured
 redirectFrom:
   - "/hosting-and-infrastructure"
   - "/capabilities/hosting-and-infrastructure"
@@ -23,12 +21,24 @@ solutions:
 ---
 
 import TrustStatement from "@/components/TrustStatement.astro";
+import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
+
+export const hostingCapabilityItems = [
+  {
+    icon: "fa6-solid:heart-pulse",
+    title: "Uptime Monitoring",
+    description:
+      "24/7 monitoring to ensure your website stays online. Alerting, diagnostics, and incident playbooks keep disruptions brief.",
+  },
+];
 
 <TrustStatement
   text="Your website should stay online, stay current, and stay supported without you having to babysit the technical side."
   stickyScroll={false}
   excludeFromToc={true}
 />
+
+<CapabilitiesSection capabilitiesHeading="Hosting support areas we cover." capabilityItems={hostingCapabilityItems} />
 
 ## What Hosting Covers
 

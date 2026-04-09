@@ -8,7 +8,7 @@
  * Automatically derives slug from URL and fetches title from content collection
  */
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import CTASection from "@/layouts/heroes/CTASection.astro";
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import { children, query, related, safeGetEntry, sortByDate, sortByOrder } from "@/utils/query";
 import { capitalizeWords } from "@/utils/string";
 import { parseUrlPath } from "@/utils/paths";
@@ -32,6 +32,8 @@ interface CTAButton {
 interface Props {
   /** Heading for child capabilities section */
   capabilitiesHeading?: string;
+  /** Explicit capability cards to render instead of querying child entries */
+  capabilityItems?: Array<Record<string, unknown>>;
   /** Highlights to display */
   highlights?: Highlight[];
   /** Title for highlights section */
@@ -58,6 +60,7 @@ interface Props {
 
 const {
   capabilitiesHeading,
+  capabilityItems = [],
   highlights = [],
   highlightsTitle,
   highlightsHeading,
@@ -79,7 +82,15 @@ const entry = slug ? await safeGetEntry("capabilities", slug) : undefined;
 const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || "");
 ---
 
-{capabilitiesHeading && slug && (
+{capabilitiesHeading && capabilityItems.length > 0 && (
+  <ContentRenderer
+    variant="NestedCardVariant"
+    items={capabilityItems}
+    heading={capabilitiesHeading}
+  />
+)}
+
+{capabilitiesHeading && capabilityItems.length === 0 && slug && (
   <ContentRenderer
     variant="NestedCardVariant"
     query={children("capabilities", slug)}
@@ -139,15 +150,5 @@ const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || 
 </div>
 
 {ctaHeading && (
-  <CTASection
-    id={ctaId}
-    className="min-h-[60vh]"
-    title={ctaTitle}
-    heading={ctaHeading}
-    description={ctaDescription}
-    primaryCTA={ctaPrimaryButton || {
-      text: "Get Your Free Quote",
-      link: "#capabilities-quote-hero",
-    }}
-  />
+  <HomeSolutionBridge />
 )}

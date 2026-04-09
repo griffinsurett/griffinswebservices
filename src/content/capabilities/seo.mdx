@@ -19,8 +19,12 @@ solutions:
 ---
 
 import { contactCtaData } from "@/content/siteData";
+import GoogleListing from "@/components/AnimatedExamples/GoogleListing";
+import DesignMessagingDemo from "@/components/AnimatedExamples/DesignMessagingDemo";
+import GrowthGraph from "@/components/AnimatedExamples/GrowthGraph";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import CapabilityTopicShowcaseSection from "@/layouts/sections/CapabilityTopicShowcaseSection.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import Section from "@/components/Section.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
@@ -44,6 +48,75 @@ export const seoApproachCards = [
     title: "Specialist Help After",
     description:
       "If you want to push further after launch, that is when we move into deeper SEO and AEO work like research, local improvements, content planning, and ongoing testing.",
+  },
+];
+
+export const builtInSeoCards = [
+  {
+    icon: "fa6-solid:gears",
+    title: "Technical SEO",
+    description:
+      "This is the behind-the-scenes setup that helps search engines crawl the site, understand the pages, and trust the structure. It covers the technical details that make the site easier to find, easier to read, and less likely to have hidden problems working against it.",
+  },
+  {
+    icon: "fa6-solid:sitemap",
+    title: "Site Structure & Indexing",
+    description:
+      "A site should make it obvious which pages matter most and how they connect. We shape navigation, sitemap signals, and page structure so search engines can reach the right pages, follow the right paths, and understand what deserves attention first.",
+  },
+  {
+    icon: "fa6-solid:tags",
+    title: "Schema & Metadata Setup",
+    description:
+      "Titles, descriptions, schema, and other search signals help search engines understand what each page is about before someone even clicks. We set those up in a cleaner, more consistent way so the site sends clearer signals from the start.",
+  },
+  {
+    icon: "fa6-solid:clipboard-check",
+    title: "SEO-Ready CMS Setup",
+    description:
+      "A messy content system makes SEO harder every time a page gets added. We set up content fields, editing rules, and publishing patterns so future pages stay cleaner, clearer, and easier to optimize without needing a specialist for every small update.",
+  },
+];
+
+export const clearerAnswersCards = [
+  {
+    icon: "fa6-solid:file-lines",
+    title: "On-Page SEO",
+    description:
+      "Each page should make its topic clear fast. We shape headings, titles, copy, and supporting page signals so the main point is easier to understand for people, search engines, and answer engines looking for the right result.",
+  },
+  {
+    icon: "fa6-solid:link",
+    title: "Internal Linking & Content Flow",
+    description:
+      "Pages should support each other instead of sitting alone. We build clearer paths between related pages so people and search engines can move through the site naturally, find the next useful page, and better understand how topics connect.",
+  },
+  {
+    icon: "fa6-solid:comment-dots",
+    title: "AEO-Friendly Content Structure",
+    description:
+      "More people now find businesses through AI summaries and answer tools, not only the old search results page. We structure content with clearer questions, answers, headings, and sections so AI tools have an easier time understanding, pulling, and citing the right points.",
+  },
+];
+
+export const growthWorkCards = [
+  {
+    icon: "fa6-solid:chart-line",
+    title: "Ongoing SEO Campaigns",
+    description:
+      "This is the steady SEO work that happens after the site is live and the foundation is in place. We handle research, page updates, content planning, reporting, and ongoing cleanup so visibility can keep growing instead of stalling out.",
+  },
+  {
+    icon: "fa6-solid:location-dot",
+    title: "Local SEO Improvements",
+    description:
+      "If local customers matter, the site needs stronger local signals. We improve location pages, local search details, and map-focused setup so nearby customers have a better chance of finding the business when they are ready to call, visit, or book.",
+  },
+  {
+    icon: "fa6-solid:handshake",
+    title: "Off-Page SEO",
+    description:
+      "Some SEO work lives beyond the website itself. When a campaign calls for it, we can support citations, backlinks, and other authority signals that strengthen trust around the site and help support the work happening on the pages themselves.",
   },
 ];
 
@@ -110,4 +183,49 @@ export const seoApproachCards = [
     text="Every site we build starts SEO-ready. If you want to grow past that, we can step in as your SEO and AEO specialists and keep improving the site over time."
     textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
   />
+
+  <Fragment slot="topic-sections">
+    <CapabilityTopicShowcaseSection
+      title="Built-In SEO"
+      heading="Get search-ready before you pay for more SEO."
+      description="This is the search-ready foundation we build into websites from day one."
+      cards={builtInSeoCards}
+    >
+      <Fragment slot="content">
+        <p>This is the structural base: code, metadata, internal linking, page hierarchy, and content setup that make the site easier for search engines and AI tools to read from the start.</p>
+        <p>Without that base, later SEO work has to fight the website instead of building on a clean foundation.</p>
+      </Fragment>
+
+      <GoogleListing slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Clearer Answers"
+      heading="Make every page easier to understand and easier to pull from."
+      description="We structure content so people, Google, and AI answer tools can understand what the page is about, why it matters, and what someone should do next."
+      reverse={true}
+      cards={clearerAnswersCards}
+    >
+      <Fragment slot="content">
+        <p>Search visibility depends on clearer language too. Pages need to explain the offer well enough that both people and machines can tell what matters quickly.</p>
+        <p>This covers content structure, page meaning, and clearer answer patterns that support both traditional search and AI-driven answer surfaces.</p>
+      </Fragment>
+
+      <DesignMessagingDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Growth Work"
+      heading="Bring in specialist SEO & AEO when you want more growth."
+      description="Once the site already has a strong base, we can step in with deeper SEO and AEO work."
+      cards={growthWorkCards}
+    >
+      <Fragment slot="content">
+        <p>After the foundation is in place, this is where deeper research, page improvements, local cleanup, and steady testing help the site reach more of the right people over time.</p>
+        <p>It is the specialist growth layer, not the substitute for a well-built site.</p>
+      </Fragment>
+
+      <GrowthGraph slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+  </Fragment>
 </CapabilityBodyLayout>

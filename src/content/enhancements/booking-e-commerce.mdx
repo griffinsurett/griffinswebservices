@@ -11,7 +11,7 @@ icon: "fa6-solid:cart-shopping"
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import TrustStatement from '@/components/TrustStatement.astro';
 import ContentSection from '@/layouts/sections/ContentSection.astro';
-import CTASection from '@/layouts/heroes/CTASection.astro';
+import HomeSolutionBridge from '@/layouts/sections/HomeSolutionBridge.astro';
 import { children } from '@/utils/query/snippets';
 import { ctaData } from '@/content/siteData';
 
@@ -77,12 +77,4 @@ import { ctaData } from '@/content/siteData';
   description="These are the focused add-ons we use to help businesses sell, schedule, and collect payments with less friction."
 />
 
-<CTASection
-  title="Get Started"
-  heading={{
-    before: "Need a site that can",
-    text: "book, sell, and get paid cleanly",
-    after: "?",
-  }}
-  description="We can scope the booking, payment, and checkout improvements that make the revenue side of the site easier to trust."
-/>
+<HomeSolutionBridge />

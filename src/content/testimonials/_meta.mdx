@@ -9,7 +9,7 @@ addToMenu:
 ---
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query } from "@/utils/query";
-import CTASection from "@/layouts/heroes/CTASection.astro"
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro"
 
 <ContentRenderer
   query={query("testimonials")}
@@ -18,11 +18,4 @@ import CTASection from "@/layouts/heroes/CTASection.astro"
   gap="lg"
 />
 
- <CTASection
-      title="Get Started"
-      heading={{
-        before: "Ready to Transform Your Online Presence into a ",
-        text: "High-Performance Growth Engine?",
-      }}
-      description="Join hundreds of successful businesses who trust Griffin's Web Services. While others juggle dozens of services, we've mastered one: building lightning-fast, secure, and scalable sites that turn visitors into customers."
-    />
+ <HomeSolutionBridge />

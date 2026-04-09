@@ -14,7 +14,7 @@ addToMenu:
 ---
 import TrustStatement from "@/components/TrustStatement.astro";
 import SolutionsSection from "@/layouts/sections/SolutionsSection.astro";
-import CTASection from "@/layouts/heroes/CTASection.astro";
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import { query, related, sortByOrder } from '@/utils/query';
 
@@ -81,8 +81,4 @@ import { query, related, sortByOrder } from '@/utils/query';
   />
 </div>
 
-<CTASection
-  title="Get Started"
-  heading="Ready to Keep Your Website Running Strong?"
-  description="Choose a hosting and maintenance plan and we'll take it from there — fast hosting, reliable upkeep, and support when you need it."
-/>
+<HomeSolutionBridge />

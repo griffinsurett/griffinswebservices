@@ -8,7 +8,7 @@
  * Automatically derives slug from URL and fetches title from content collection
  */
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import CTASection from "@/layouts/heroes/CTASection.astro";
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import { query, related, safeGetEntry, sortByOrder } from "@/utils/query";
 import { capitalizeWords } from "@/utils/string";
@@ -87,17 +87,7 @@ const defaultTrustStatement = `We've helped ${title.toLowerCase()} businesses la
   />
 </div>
 
-{/* CTA Section */}
+{/* Bridge Section */}
 {ctaHeading && (
-  <CTASection
-    id={ctaId}
-    className="min-h-[60vh]"
-    title={ctaTitle}
-    heading={ctaHeading}
-    description={ctaDescription}
-    primaryCTA={ctaPrimaryButton || {
-      text: "Get Your Free Quote",
-      link: "#industry-quote-hero",
-    }}
-  />
+  <HomeSolutionBridge />
 )}

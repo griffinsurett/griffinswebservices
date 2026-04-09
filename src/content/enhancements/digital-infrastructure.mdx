@@ -11,7 +11,7 @@ icon: "fa6-solid:network-wired"
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import TrustStatement from '@/components/TrustStatement.astro';
 import ContentSection from '@/layouts/sections/ContentSection.astro';
-import CTASection from '@/layouts/heroes/CTASection.astro';
+import HomeSolutionBridge from '@/layouts/sections/HomeSolutionBridge.astro';
 import { children } from '@/utils/query/snippets';
 import { ctaData } from '@/content/siteData';
 
@@ -77,12 +77,4 @@ import { ctaData } from '@/content/siteData';
   description="These are the setup and configuration improvements we use to keep the surrounding systems organized, connected, and dependable."
 />
 
-<CTASection
-  title="Get Started"
-  heading={{
-    before: "Need the technical foundation around your site",
-    text: "cleaned up and configured properly",
-    after: "?",
-  }}
-  description="We can scope the domain, email, CRM, and systems setup work that keeps the rest of the stack more reliable."
-/>
+<HomeSolutionBridge />

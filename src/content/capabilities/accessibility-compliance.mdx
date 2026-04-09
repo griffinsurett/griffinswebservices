@@ -17,6 +17,27 @@ import TrustStatement from "@/components/TrustStatement.astro";
 import CapabilitiesSection from "@/layouts/sections/CapabilitiesSection.astro";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
 
+export const accessibilityCapabilityItems = [
+  {
+    icon: "fa6-solid:universal-access",
+    title: "Technical Standards Reviews",
+    description:
+      "Targeted reviews of site structure, content patterns, and implementation details when you need standards-related cleanup before or after launch.",
+  },
+  {
+    icon: "fa6-solid:cookie-bite",
+    title: "Cookie Consent & Privacy",
+    description:
+      "GDPR and CCPA-compliant cookie banners, consent management, privacy policies, and data handling practices that keep you legally protected.",
+  },
+  {
+    icon: "fa6-solid:scale-balanced",
+    title: "Legal Policies",
+    description:
+      "Terms of service, privacy policies, and cookie policies drafted and maintained to protect your business.",
+  },
+];
+
 <CapabilityBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
@@ -26,6 +47,7 @@ import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.ast
 
 <CapabilitiesSection
   capabilitiesHeading="Standards support areas we cover."
+  capabilityItems={accessibilityCapabilityItems}
   highlights={[
     { title: "Technical Standards Reviews", description: "We review site structure, policies, and implementation details so standards-related issues get surfaced early." },
     { title: "Cookie Consent & Privacy", description: "Consent flows, privacy language, and tracking-related touchpoints are cleaned up to match the way your site actually works." },
