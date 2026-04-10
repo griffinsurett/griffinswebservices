@@ -21,8 +21,8 @@ solutions:
 import GoogleListing from "@/components/AnimatedExamples/GoogleListing";
 import DesignMessagingDemo from "@/components/AnimatedExamples/DesignMessagingDemo";
 import GrowthGraph from "@/components/AnimatedExamples/GrowthGraph";
+import SearchRankingDemo from "@/components/AnimatedExamples/SearchRankingDemo";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
-import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import CapabilityTopicShowcaseSection from "@/layouts/sections/CapabilityTopicShowcaseSection.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import Section from "@/components/Section.astro";
@@ -123,6 +123,7 @@ export const growthWorkCards = [
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
+  heroRightColumnClassName="flex items-center justify-center lg:justify-end"
   grandparentContent={{
     testimonialsTitle: "Testimonials",
     testimonialsHeading:
@@ -133,26 +134,11 @@ export const growthWorkCards = [
     faqHeading: "Common Questions About SEO & AEO",
   }}
 >
-  <BreadcrumbHeroCenter
-    slot="hero"
-    title="SEO & AEO Services"
-    heading={{
-      before: "Search-ready",
-      text: "SEO & AEO",
-      after: "that starts in the build, then grows with ongoing work."
-    }}
-    description="Good websites should already be easier for Google and AI tools to read. We build that foundation into our sites first, then offer deeper SEO work when you want to push visibility further."
-    breadcrumbs={[
-      { label: "Home", href: "/" },
-      { label: "Capabilities", href: "/capabilities" },
-      { label: "SEO & AEO" },
-    ]}
-    primaryCTA={{
-      text: "Give Us a Call",
-      link: "#capability-quote",
-    }}
-    id="capabilities-quote-hero"
-  />
+  <Fragment slot="hero-right">
+    <div class="flex w-full items-center justify-center py-8 lg:py-0">
+      <SearchRankingDemo client:visible className="w-full max-w-[31rem]" />
+    </div>
+  </Fragment>
 
   <Section class="outer-section">
     <div class="inner-section">

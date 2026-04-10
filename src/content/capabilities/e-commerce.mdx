@@ -20,9 +20,9 @@ import ProductCatalogAddDemo from "@/components/AnimatedExamples/ProductCatalogA
 import UpsellFunnelDemo from "@/components/AnimatedExamples/UpsellFunnelDemo";
 import KeepGrowingDemo from "@/components/AnimatedExamples/KeepGrowingDemo";
 import EcommerceIntegrationDemo from "@/components/AnimatedExamples/EcommerceIntegrationDemo";
+import EcommerceOrdersHeroDemo from "@/components/AnimatedExamples/EcommerceOrdersHeroDemo";
 import GrowthGraph from "@/components/AnimatedExamples/GrowthGraph";
 import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
-import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import Section from "@/components/Section.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
@@ -222,6 +222,7 @@ export const analyticsGrowthInsightsCards = [
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
+  heroRightColumnClassName="flex items-center justify-center lg:justify-end"
   grandparentContent={{
     testimonialsTitle: "Testimonials",
     testimonialsHeading:
@@ -232,26 +233,11 @@ export const analyticsGrowthInsightsCards = [
     faqHeading: "Common Questions About E-Commerce Support",
   }}
 >
-  <BreadcrumbHeroCenter
-    slot="hero"
-    title="E-Commerce Support"
-    heading={{
-      before: "Build an",
-      text: "e-commerce system",
-      after: "that helps people understand the offer, trust the business, and buy with less friction."
-    }}
-    description="We help businesses sell online through product stores, paid services, subscriptions, offer pages, checkout systems, and the ongoing work that keeps e-commerce fitting the wider brand and customer journey."
-    breadcrumbs={[
-      { label: "Home", href: "/" },
-      { label: "Capabilities", href: "/capabilities" },
-      { label: "E-Commerce" },
-    ]}
-    primaryCTA={{
-      text: "Give Us a Call",
-      link: "#capability-quote",
-    }}
-    id="capabilities-quote-hero"
-  />
+  <Fragment slot="hero-right">
+    <div class="flex w-full items-center justify-center py-8 lg:py-0">
+      <EcommerceOrdersHeroDemo client:visible className="w-full max-w-[34rem]" />
+    </div>
+  </Fragment>
 
   <Section class="outer-section">
     <div class="inner-section">
