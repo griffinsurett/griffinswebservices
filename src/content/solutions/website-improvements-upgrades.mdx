@@ -1,6 +1,91 @@
 ---
-title: "Website Improvements & Upgrades"
-description: "Focused updates for existing websites that need clearer structure, better stability, or a more modern foundation."
-hasPage: false
+title: "Website Improvements"
+description: "Focused updates for existing websites that need clearer structure, better stability, a refreshed design, or a more modern foundation."
+heading:
+  before: "Your existing site,"
+  text: "meaningfully improved"
+  after: "without starting from scratch."
 order: 2
+icon: "fa6-solid:wrench"
+hasPage: true
+itemLayout: "../../layouts/collections/SolutionCustomLayout.astro"
 ---
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import HomeSolutionBridge from '@/layouts/sections/HomeSolutionBridge.astro';
+import TrustStatement from '@/components/TrustStatement.astro';
+import BreadcrumbHeroCenter from '@/layouts/heroes/BreadcrumbHeroCenter.astro';
+import { query, sortByOrder } from '@/utils/query';
+import { roots, related, children } from '@/utils/query/snippets';
+
+<BreadcrumbHeroCenter
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+  breadcrumbs={[{ label: "Home", href: "/" }, { label: "Solutions" }, { label: frontmatter.title }]}
+  id="website-improvements-hero"
+/>
+
+<TrustStatement text="Most sites don't need a full rebuild — they need the right fixes. We identify what's actually holding your site back and solve it cleanly." />
+
+<ContentRenderer
+  query={children("solutions", "website-improvements-upgrades")}
+  id="improvement-types"
+  title="What We Fix & Improve"
+  heading="The right improvement for what your site actually needs"
+  description="Every improvement project starts with understanding what's broken, outdated, or underperforming — then addressing it precisely."
+/>
+
+<ContentRenderer
+  query={roots("capabilities").orderBy(sortByOrder()).limit(7)}
+  variant="CardVariant"
+  id="capabilities"
+  title="Our Capabilities"
+  heading="The expertise behind every improvement"
+  description="Whether it's a redesign, a migration, or a cleanup, every improvement draws on the same core technical capabilities."
+  columns={3}
+  gap="lg"
+  showButtonSection={false}
+/>
+
+<ContentRenderer
+  query={related("benefits", "solutions", "website-improvements-upgrades").orderBy(sortByOrder())}
+  variant="BenefitsVariant"
+  id="benefits"
+  title="What This Means for You"
+  heading="What a properly improved site delivers"
+  description="The right improvements compound — better performance, cleaner structure, and a site that's easier to maintain and grow."
+  columns={2}
+  gap="lg"
+/>
+
+<div class="bottom-content-section">
+  <ContentRenderer
+    query={query("testimonials").where((entry) => entry.data.rating >= 4)}
+    variant="TestimonialCarouselVariant"
+  />
+
+  <ContentRenderer
+    query={query('industries').orderBy(sortByOrder())}
+    variant="FilteredPortfolioVariant"
+    relatedCollection="projects"
+    relatedField="industry"
+    title="Portfolio"
+    heading="Improvements we've made to real sites"
+    description="See how focused improvements have helped businesses fix what wasn't working without throwing away what was."
+    filter={{ showCount: false }}
+    showFilters={true}
+    showArrows={true}
+    ctaHref="/projects"
+    ctaText="View Portfolio"
+  />
+
+  <ContentRenderer
+    query={related("faq", "solutions", "website-improvements-upgrades").orderBy(sortByOrder())}
+    variant="AccordionVariant"
+    allowMultiple={false}
+    title="FAQs"
+    heading="Common Questions About Website Improvements"
+  />
+</div>
+
+<HomeSolutionBridge />

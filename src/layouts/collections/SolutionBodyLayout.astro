@@ -1,0 +1,400 @@
+---
+import Logo from "@/components/Logo/Logo.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import WebsiteQuoteForm from "@/components/Form/forms/WebsiteQuoteForm.astro";
+import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
+import Icon from "@/components/Icon";
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+import { contactCtaData } from "@/content/siteData";
+import type { HeadingContent } from "@/content/schema";
+import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
+import { getBreadcrumbs, query, sortByOrder } from "@/utils/query";
+import { related } from "@/utils/query/snippets";
+
+interface GrandparentContent {
+  introText?: string;
+  introTextClassName?: string;
+  testimonialsTitle?: string;
+  testimonialsHeading?: string;
+  testimonialsDescription?: string;
+  faqTitle?: string;
+  faqHeading?: string;
+}
+
+interface Props {
+  title?: string;
+  heading?: HeadingContent;
+  description?: string;
+  heroVariant?: "center" | "start";
+  primaryCTA?: {
+    text: string;
+    link: string;
+    rightIcon?: string;
+  };
+  className?: string;
+  heroClassName?: string;
+  heroRightColumnClassName?: string;
+  id?: string;
+  grandparentContent?: GrandparentContent;
+}
+
+const {
+  title,
+  heading,
+  description,
+  heroVariant = "center",
+  primaryCTA: incomingPrimaryCTA,
+  className = "",
+  heroClassName = "",
+  heroRightColumnClassName = "",
+  id = "solution-body-hero",
+  grandparentContent,
+} = Astro.props as Props;
+
+const pathname = Astro.url.pathname.replace(/\/+$/, "");
+const slug = pathname.split("/").filter(Boolean).at(-1) ?? "";
+const breadcrumbRelations = slug ? await getBreadcrumbs("solutions", slug, true) : [];
+
+const solutionBreadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Solutions" },
+  ...breadcrumbRelations.map((relation) => ({
+    label:
+      relation.entry?.data?.title ||
+      relation.id
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char: string) => char.toUpperCase()),
+    href: relation.id === slug ? undefined : `/${relation.id}`,
+  })),
+];
+
+const hasCustomHero = Astro.slots.has("hero");
+const hasCustomHeroRight = Astro.slots.has("hero-right");
+const hasTopicSections = Astro.slots.has("topic-sections");
+
+const resolvedGrandparentContent: GrandparentContent = {
+  introTextClassName:
+    "text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading",
+  testimonialsTitle: "Testimonials",
+  testimonialsHeading: "What business owners say about working with us.",
+  testimonialsDescription:
+    "Real feedback from businesses that wanted a stronger website and a better online presence.",
+  faqTitle: "FAQs",
+  faqHeading: `Common Questions About ${title || "This Solution"}`,
+  ...grandparentContent,
+};
+
+const resolvedTitle = title ?? "Solution";
+const solutionQuoteSectionId = "solution-quote";
+const solutionQuoteHref = `#${solutionQuoteSectionId}`;
+const primaryCTA = {
+  text: contactCtaData.text,
+  link: solutionQuoteHref,
+  ...incomingPrimaryCTA,
+};
+
+const websiteFormSlugs = new Set(["new-websites", "business-websites"]);
+const usesWebsiteQuoteForm = websiteFormSlugs.has(slug);
+
+const quoteHighlights = usesWebsiteQuoteForm
+  ? [
+      {
+        icon: "lucide:scan-search",
+        title: "Clear next step",
+        description:
+          "We look at the real scope first, then tell you whether this is a refresh, a rebuild, or something more custom.",
+      },
+      {
+        icon: "lucide:rocket",
+        title: "Budget alignment",
+        description:
+          "A rough budget range helps us recommend the right path without wasting time on the wrong solution.",
+      },
+      {
+        icon: "lucide:messages-square",
+        title: "Built around your business",
+        description:
+          "The conversation starts with your goals, your pages, and what the website actually needs to handle.",
+      },
+    ]
+  : [
+      {
+        icon: "lucide:scan-search",
+        title: "Simple starting point",
+        description:
+          "Share the basics and we will review what you need before recommending the best next step.",
+      },
+      {
+        icon: "lucide:messages-square",
+        title: "Clearer conversation",
+        description:
+          "A short quote request gives us enough context to make the follow-up more useful and more specific.",
+      },
+      {
+        icon: "lucide:phone",
+        title: "Easy follow-up",
+        description:
+          "We can reach out, clarify the scope, and figure out whether this needs a small fix, a focused project, or a broader plan.",
+      },
+    ];
+
+const quoteHeading = usesWebsiteQuoteForm
+  ? "Thinking about your next move?"
+  : "Want to talk through the project?";
+const quoteDescription = usesWebsiteQuoteForm
+  ? `If you are planning a new website, share the basics here and we will review the scope, the budget range, and the clearest next step.`
+  : `If you are thinking about ${resolvedTitle.toLowerCase()}, send a few details here and we will follow up with the clearest next step.`;
+const quoteCardTitle = usesWebsiteQuoteForm ? "Start your quote" : "Start the conversation";
+const quoteCardDescription = usesWebsiteQuoteForm
+  ? "Send the basics and we will follow up with the right recommendation for your website."
+  : "Send the basics and we will follow up with the right recommendation for this project.";
+---
+
+<div class={className || undefined}>
+  {
+    hasCustomHero ? (
+      <slot name="hero" />
+    ) : heroVariant === "start" ? (
+      <BreadcrumbHeroStart
+        title={title}
+        heading={heading}
+        description={description}
+        breadcrumbs={solutionBreadcrumbs}
+        primaryCTA={primaryCTA}
+        className={heroClassName}
+        rightColumnClassName={heroRightColumnClassName}
+        id={id}
+      >
+        {hasCustomHeroRight ? (
+          <Fragment slot="right">
+            <slot name="hero-right" />
+          </Fragment>
+        ) : (
+          <div slot="right" class="flex w-full items-center justify-center py-8 lg:py-0">
+            <Logo
+              showText={false}
+              useLottie={true}
+              loading="eager"
+              trigger="load"
+              hydrate="idle"
+              autoplay={true}
+              loop={true}
+              altContext={`${resolvedTitle} Hero`}
+              class="pointer-events-none"
+              logoMediaClass="block h-[min(72vw,20rem)] w-[min(72vw,20rem)] object-contain lg:h-[24rem] lg:w-[24rem]"
+              logoWidths={[320, 560, 768]}
+              logoSizes="(min-width: 1024px) 24rem, min(72vw, 20rem)"
+            />
+          </div>
+        )}
+      </BreadcrumbHeroStart>
+    ) : (
+      <BreadcrumbHeroCenter
+        title={title}
+        heading={heading}
+        description={description}
+        breadcrumbs={solutionBreadcrumbs}
+        primaryCTA={primaryCTA}
+        className={heroClassName}
+        id={id}
+      />
+    )
+  }
+
+  <slot />
+
+  {hasTopicSections && (
+    <>
+      {resolvedGrandparentContent.introText && (
+        <TrustStatement
+          text={resolvedGrandparentContent.introText}
+          textClassName={resolvedGrandparentContent.introTextClassName}
+        />
+      )}
+
+      <slot name="topic-sections" />
+
+      <HomeSolutionBridge
+        primaryCtaLink={solutionQuoteHref}
+        secondaryCtaText="Get Quote"
+        secondaryCtaLink={solutionQuoteHref}
+      />
+
+      <div class="bottom-content-section">
+        <ContentRenderer
+          query={query("testimonials").where((entry) => entry.data.rating >= 4)}
+          variant="TestimonialCarouselVariant"
+          title={resolvedGrandparentContent.testimonialsTitle}
+          heading={resolvedGrandparentContent.testimonialsHeading}
+          description={resolvedGrandparentContent.testimonialsDescription}
+        />
+
+        <Section id={solutionQuoteSectionId} class="outer-section">
+          <div class="inner-section">
+            <div class="solution-quote-layout">
+              <div class="solution-quote-copy sticky-section lg:self-start">
+                <SectionHeader
+                  title="Request a Quote"
+                  heading={quoteHeading}
+                  description={quoteDescription}
+                  className="text-left"
+                  headingClassName="h2 mb-6 text-heading"
+                  emphasisClassName="text-heading"
+                  descriptionClassName="large-text max-w-2xl"
+                />
+
+                <ul class="solution-quote-highlights">
+                  {quoteHighlights.map((item) => (
+                    <li class="solution-quote-highlight">
+                      <span class="solution-quote-icon" aria-hidden="true">
+                        <Icon icon={item.icon} size="sm" />
+                      </span>
+                      <div class="space-y-1">
+                        <p class="solution-quote-highlight-title">{item.title}</p>
+                        <p class="solution-quote-highlight-text">{item.description}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="solution-quote-card section-box card-bg">
+                <div class="solution-quote-card__header">
+                  <h3 class="solution-quote-card__title">{quoteCardTitle}</h3>
+                  <p class="solution-quote-card__description">{quoteCardDescription}</p>
+                </div>
+                {usesWebsiteQuoteForm ? (
+                  <WebsiteQuoteForm
+                    capabilityTitle={resolvedTitle}
+                    capabilitySlug={slug}
+                    serviceCategory="solutions"
+                    formType="website"
+                  />
+                ) : (
+                  <QuoteForm
+                    capabilityTitle={resolvedTitle}
+                    capabilitySlug={slug}
+                    serviceCategory="solutions"
+                    formType="generic"
+                    buttonText="Send quote request"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        <ContentRenderer
+          query={related("faq", "solutions", slug).orderBy(sortByOrder())}
+          variant="AccordionVariant"
+          allowMultiple={false}
+          title={resolvedGrandparentContent.faqTitle}
+          heading={resolvedGrandparentContent.faqHeading}
+        />
+      </div>
+    </>
+  )}
+</div>
+
+<style>
+  .solution-quote-layout {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: start;
+  }
+
+  .solution-quote-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .solution-quote-highlights {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .solution-quote-highlight {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .solution-quote-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 999px;
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+    flex-shrink: 0;
+  }
+
+  .solution-quote-highlight-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .solution-quote-highlight-text {
+    margin: 0;
+    max-width: 30rem;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--color-text) 74%, transparent);
+  }
+
+  .solution-quote-card {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 35px 90px -48px rgba(0, 0, 0, 0.55);
+  }
+
+  .solution-quote-card__header {
+    margin-bottom: 1.5rem;
+  }
+
+  .solution-quote-card__title {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .solution-quote-card__description {
+    margin: 0.65rem 0 0;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-text) 74%, transparent);
+  }
+
+  .solution-quote-card :global(form > .mt-6) {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .solution-quote-card :global(form > .mt-6 > span) {
+    width: auto !important;
+    justify-content: flex-start;
+  }
+
+  .solution-quote-card :global(form > .mt-6 > span > a),
+  .solution-quote-card :global(form > .mt-6 > span > button) {
+    width: auto !important;
+  }
+
+  @media (min-width: 1024px) {
+    .solution-quote-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.95fr);
+    }
+  }
+</style>

@@ -5,125 +5,35 @@ heading:
   before: "Landing pages that"
   text: "convert clicks"
   after: "into customers."
-order: 1
+order: 3
 icon: "fa6-solid:file-lines"
-itemLayout: "../../layouts/collections/WebSolutionLayout.astro"
+parent: new-websites
 ---
-import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
-import HomeSolutionBridge from '@/layouts/sections/HomeSolutionBridge.astro';
-import TrustStatement from '@/components/TrustStatement.astro';
-import DoubleCard from '@/layouts/sections/DoubleCard.astro';
-import FrontPageHero from '@/layouts/heroes/FrontPageHero.astro';
-import { ctaData } from '@/content/siteData';
-import { query, sortByOrder, byTag } from '@/utils/query';
-import { roots, related, children } from '@/utils/query/snippets';
-import { animationProps } from '@/integrations/scroll-animations/props';
+import LeadsSpreadsheet from "@/components/AnimatedExamples/LeadsSpreadsheet";
 
-<FrontPageHero
-  heading={frontmatter.heading}
-  description={frontmatter.description}
-  subheading="We build high-converting landing pages designed for ads, campaigns, and promotions that drive real results."
-  checklist={[
-    "Conversion-Focused Design",
-    "A/B Testing Ready",
-    "Fast Load Times for Better Ad Scores",
-    "Analytics & Conversion Tracking"
-  ]}
-  primaryCTA={{
-    text: ctaData.text,
-    link: ctaData.link,
-    rightIcon: "lu:arrow-right",
-  }}
-  scrollToSection="#under-hero"
-  id="solutions-hero"
-/>
-
-<div id="under-hero">
-
-<ContentRenderer
-  query={children("solutions", "landing-pages")}
-  id="landing-page-types"
-  title="Landing Page Types"
-  heading="Landing Pages for Every Campaign"
-  description="Whether you're running ads, launching a product, or promoting an event, we build landing pages optimized for your specific goals."
-/>
-
-<DoubleCard />
-
-<ContentRenderer
-  query={query("philosophy").orderBy(sortByOrder())}
-  variant="IconListVariant"
-  id="philosophy"
-  title="Our Approach"
-  heading="Why Our Landing Pages Convert"
-  description="Every landing page we build follows conversion-focused principles — clear messaging, fast load times, and intentional design that guides visitors toward action."
-/>
-
-<ContentRenderer
-  query={related("benefits", "solutions", "landing-pages").orderBy(sortByOrder())}
-  variant="BenefitsVariant"
-  id="benefits"
-  title="What This Means for You"
-  heading="What You Can Expect From Your Landing Page"
-  description="These principles translate into measurable results — higher conversion rates, better ad performance, and more leads from your campaigns."
-  columns={2}
-  gap="lg"
-/>
-
-<ContentRenderer
-  query={roots("capabilities").orderBy(sortByOrder()).limit(7)}
-  variant="CardVariant"
-  id="capabilities"
-  title="Our Capabilities"
-  heading="The Capabilities Behind High-Converting Pages"
-  description="Building landing pages that convert requires more than good design. Our capabilities ensure every element works together to maximize results."
-  columns={3}
-  gap="lg"
-  showButtonSection={false}
-/>
-
-<TrustStatement
-  className="min-h-screen flex items-center justify-center inner-section"
-  text="We build landing pages engineered for conversion. Every element — from headline to button placement — is designed with one goal: turning visitors into leads or customers."
-/>
-
-<div class="bottom-content-section">
-  <ContentRenderer
-    query={query("testimonials").where((entry) => entry.data.rating >= 4)}
-    variant="TestimonialCarouselVariant"
-  />
-
-  <ContentRenderer
-    query={query('industries').orderBy(sortByOrder())}
-    variant="FilteredPortfolioVariant"
-    relatedCollection="projects"
-    relatedField="industry"
-    title="Portfolio"
-    heading="Landing pages that deliver results"
-    description="See how our landing pages have helped businesses improve ad performance and increase conversions."
-    filter={{ showCount: false }}
-    showFilters={true}
-    showArrows={true}
-    ctaHref="/projects"
-    ctaText="View Portfolio"
-  />
-
-  <ContentRenderer
-    query={byTag("technologies", "featured").orderBy(sortByOrder()).limit(8)}
-    variant="TechnologiesVariant"
-    title="Technologies"
-    description="The tools and platforms we use to build fast, conversion-optimized landing pages."
-  />
-
-  <ContentRenderer
-    query={related("faq", "solutions", "landing-pages").orderBy(sortByOrder())}
-    variant="AccordionVariant"
-    allowMultiple={false}
-    title="FAQs"
-    heading="Common Questions About Landing Pages"
-  />
-</div>
-
-<HomeSolutionBridge />
-
-</div>
+export const landingPageCards = [
+  {
+    icon: "fa6-solid:bullseye",
+    title: "One Goal Per Page",
+    description:
+      "Every landing page is built around a single conversion goal — call, form fill, purchase, or booking — with no distractions in the way.",
+  },
+  {
+    icon: "fa6-solid:bolt",
+    title: "Fast Load, Higher Conversions",
+    description:
+      "Every extra second costs leads. Our pages are engineered to load instantly and keep visitors moving toward the action.",
+  },
+  {
+    icon: "fa6-solid:chart-bar",
+    title: "Built to Measure",
+    description:
+      "Analytics, form tracking, and pixel integrations built in so you know exactly what your campaign spend is returning.",
+  },
+  {
+    icon: "fa6-solid:arrows-rotate",
+    title: "Easy to Iterate",
+    description:
+      "Swap headlines, test CTAs, and update offer details without a developer. Iteration is how landing pages get better.",
+  },
+];

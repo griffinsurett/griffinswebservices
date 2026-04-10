@@ -15,7 +15,7 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import { query } from "@/utils/query";
 import PreferencesLayout from "@/layouts/PreferencesLayout.astro";
 import Section from "@/components/Section.astro";
-import { roots, related, byItemKeys } from "@/utils/query/snippets";
+import { roots, related } from "@/utils/query/snippets";
 import Logo from "@/components/Logo/Logo.astro";
 import Button from "@/components/Button/Button";
 ---
@@ -97,23 +97,13 @@ import Button from "@/components/Button/Button";
           showHeadingDivider
         />
 
-        <div class="flex flex-col space-y-5 lg:space-y-10">
-          {/* Column 2: Legal links & preferences */}
-          <ContentRenderer
-            query={byItemKeys("solutions", ["websites", "web-apps"])}
-            variant="ListVariant"
-            title="Web Solutions"
-            showButtonSection={false}
-            showHeadingDivider
-          />
-          <ContentRenderer
-            query={roots("enhancements")}
-            variant="ListVariant"
-            title="Enhancements"
-            showButtonSection={false}
-            showHeadingDivider
-          />
-        </div>
+        <ContentRenderer
+          query={roots("solutions")}
+          variant="ListVariant"
+          title="Solutions"
+          showButtonSection={false}
+          showHeadingDivider
+        />
       </nav>
     </div>
 

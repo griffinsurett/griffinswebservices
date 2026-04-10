@@ -3,19 +3,28 @@ title: "Solutions"
 description: "Comprehensive web solutions tailored to your business needs"
 heading:
   before: "Solutions built around"
-  text: "the type of system"
-  after: "your business actually needs."
+  text: "what your business"
+  after: "actually needs."
 hasPage: false
 itemsHasPage: true
+itemsChildHasPage: false
 itemsRootPath: true
 itemsLayout: "../../layouts/collections/ServicesLayout.astro"
+addToMenu:
+  - menu: "main-menu"
+    order: 2
+    title: "Solutions"
+itemsAddToMenu:
+  - menu: "main-menu"
+    attachTo: solutions
+    respectHierarchy: true
 ---
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
-import { byItemKeys } from '@/utils/query/snippets';
+import { roots } from '@/utils/query/snippets';
 
 <ContentRenderer
-  query={byItemKeys("solutions", ["websites", "web-apps"])}
+  query={roots("solutions")}
   variant="CardVariant"
-  columns={2}
+  columns={3}
   gap="lg"
 />

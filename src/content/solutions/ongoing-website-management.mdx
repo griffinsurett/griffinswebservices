@@ -1,16 +1,15 @@
 ---
-title: "Web Hosting & Management"
+title: "Ongoing Website Management"
 description: "Managed hosting and ongoing website support built around how your site actually needs to be maintained."
 heading:
-  before: "Hosting and support built to keep your site"
+  before: "Ongoing management built to keep your site"
   text: "stable, secure, and handled"
   after: "without adding more work to your plate."
 order: 5
 icon: "fa6-solid:server"
-itemLayout: "../../layouts/collections/WebSolutionLayout.astro"
-addToMenu:
-  - menu: "main-menu"
-    order: 4
+redirectFrom:
+  - "/solutions/web-hosting-management"
+  - "/web-hosting-management"
 ---
 import TrustStatement from "@/components/TrustStatement.astro";
 import SolutionsSection from "@/layouts/sections/SolutionsSection.astro";
@@ -45,14 +44,14 @@ import { query, related, sortByOrder } from '@/utils/query';
   }}
   sidebar={{
     title: "Support that moves with your business",
-    eyebrow: "How our hosting works",
+    eyebrow: "How our ongoing management works",
     description: "Performance-focused sites are usually simpler to manage, but the right support setup still depends on the site, the update volume, and how much you want us involved after launch.",
     footIcon: "🛡️",
     footTitle: "Custom scoped support",
     footDescription: "Hosting and maintenance are quoted privately based on what your website needs.",
   }}
   textContent={[
-    "Our hosting and maintenance work is shaped around how the site was built, how often it changes, and how much ongoing technical oversight it needs.",
+    "Our ongoing website management is shaped around how the site was built, how often it changes, and how much ongoing technical oversight it needs.",
     "The website itself is an upfront cost that you own. After launch, we can continue handling hosting, monitoring, updates, and routine upkeep so you are not left managing the technical side alone.",
     "If your business needs more frequent updates or a higher level of support over time, we can scope around that privately instead of forcing every site into the same public package.",
   ]}
@@ -63,7 +62,7 @@ import { query, related, sortByOrder } from '@/utils/query';
     text: "the technical side",
     after: "of your website?"
   }}
-  ctaDescription="Reach out if you want hosting and maintenance handled for you, and we will scope the right level of ongoing support."
+  ctaDescription="Reach out if you want ongoing management handled for you, and we will scope the right level of support."
 />
 
 <div class="bottom-content-section">
@@ -73,11 +72,11 @@ import { query, related, sortByOrder } from '@/utils/query';
   />
 
   <ContentRenderer
-    query={related("faq", "solutions", "web-hosting-management").orderBy(sortByOrder())}
+    query={related("faq", "solutions", "ongoing-website-management").orderBy(sortByOrder())}
     variant="AccordionVariant"
     allowMultiple={false}
     title="FAQs"
-    heading="Common Questions About Hosting & Management"
+    heading="Common Questions About Ongoing Management"
   />
 </div>
 

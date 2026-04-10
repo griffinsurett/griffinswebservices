@@ -15,13 +15,11 @@ interface SectionCopy {
 export interface Props {
   newWebsiteOptions?: SectionCopy;
   existingWebsiteServices?: SectionCopy;
-  enhancementOptions?: SectionCopy;
 }
 
 const {
   newWebsiteOptions = {},
   existingWebsiteServices = {},
-  enhancementOptions = {},
 } = Astro.props as Props;
 ---
 
@@ -34,17 +32,6 @@ const {
   description={newWebsiteOptions.description ?? "Choose the website option that fits where your business is now, then move forward with a site built to look professional, load fast, and support real growth from the start."}
   columns={newWebsiteOptions.columns ?? 3}
   gap={newWebsiteOptions.gap ?? "lg"}
-/>
-
-<ContentRenderer
-  query={roots("enhancements")}
-  variant="CardVariant"
-  id={enhancementOptions.id ?? "enhancements"}
-  title={enhancementOptions.title ?? "Need Something More Specific?"}
-  heading={enhancementOptions.heading ?? "Enhancements That Layer Onto the Core Website Work"}
-  description={enhancementOptions.description ?? "When you need more than the core build path, these enhancement options cover SEO, automation, booking, e-commerce, systems, and brand-supporting work."}
-  columns={enhancementOptions.columns ?? "auto"}
-  gap={enhancementOptions.gap ?? "lg"}
 />
 
 <ContentRenderer

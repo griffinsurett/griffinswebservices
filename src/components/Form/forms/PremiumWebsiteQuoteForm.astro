@@ -1,5 +1,4 @@
 ---
-import { getCollection } from "astro:content";
 import FormWrapper from "@/components/Form/FormWrapper";
 import Input from "@/components/Form/inputs/Input";
 import Select from "@/components/Form/inputs/Select";
@@ -15,15 +14,6 @@ const premiumWebsiteQuoteFormId =
 const quoteFormAction = premiumWebsiteQuoteFormId
   ? `${FORMSPREE_BASE_ACTION}${premiumWebsiteQuoteFormId}`
   : undefined;
-
-const enhancementOptions = (await getCollection("enhancements"))
-  .filter((entry) => !entry.data.parent)
-  .sort((left, right) => (left.data.order ?? 0) - (right.data.order ?? 0))
-  .map((entry) => ({
-    slug: entry.slug,
-    title: entry.data.title,
-    description: entry.data.description ?? "",
-  }));
 
 const businessGoals = [
   { name: "goal_generate_leads", label: "Generate more qualified leads" },
@@ -227,30 +217,6 @@ const handleSubmit = async (values: Record<string, unknown>) => {
               checkboxClassName="mt-1 h-4 w-4 rounded accent-accent"
             >
               <span class="text-sm leading-relaxed text-text/85">{goal.label}</span>
-            </Checkbox>
-          ))}
-        </div>
-      </div>
-
-      <div class="space-y-4 border-t border-white/10 pt-6">
-        <div>
-          <h4 class="text-sm uppercase tracking-[0.22em] text-heading">Enhancements Needed</h4>
-          <p class="mt-2 text-sm text-text/70">Select any top-level enhancement categories that should be planned into the quote.</p>
-        </div>
-
-        <div class="grid gap-3">
-          {enhancementOptions.map((option) => (
-            <Checkbox
-              client:idle
-              name={`enhancement_${option.slug.replace(/-/g, "_")}`}
-              containerClassName="m-0"
-              labelClassName="flex items-start gap-3 rounded-2xl faded-border bg-white/3 p-4 transition-colors hover:bg-transparent"
-              checkboxClassName="mt-1 h-4 w-4 rounded accent-accent"
-            >
-              <span class="flex flex-col gap-1">
-                <span class="text-sm font-medium text-heading">{option.title}</span>
-                <span class="text-sm leading-relaxed text-text/70">{option.description}</span>
-              </span>
             </Checkbox>
           ))}
         </div>

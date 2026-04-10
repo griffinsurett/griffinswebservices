@@ -1,0 +1,20 @@
+---
+// src/layouts/collections/SolutionCustomLayout.astro
+/**
+ * Minimal solution item layout.
+ *
+ * Use this when a solution page should define its full structure,
+ * including the hero, directly inside the MDX file.
+ */
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import type { CollectionLayoutProps } from "./types";
+
+const {
+  Content,
+  seoProps = {},
+} = Astro.props as CollectionLayoutProps;
+---
+
+<SiteLayout {...seoProps}>
+  {Content && <Content />}
+</SiteLayout>

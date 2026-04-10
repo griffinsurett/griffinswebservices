@@ -1,56 +1,78 @@
 ---
 // src/layouts/collections/ServicesLayout.astro
 /**
- * Services Layout - Item Page Layout for Solutions
+ * Solutions layout aligned to the capability page pattern.
  *
- * A specialized layout for solution-type collection items.
  * Features:
- * - QuoteHero for solutions
- * - MDX content rendering
- *
- * Note: Parent solutions (websites, web-apps, landing-pages) use
- * WebSolutionLayout directly via their frontmatter layout property.
- * Capability pages use CapabilityLayout.
+ * - Centered breadcrumb hero
+ * - Long-form written content area with table of contents
+ * - Quote form placed deeper in the page
  */
 import SiteLayout from "@/layouts/SiteLayout.astro";
-import QuoteHero from "@/layouts/heroes/QuoteHero.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
+import CapabilityQuoteSection from "@/layouts/sections/CapabilityQuoteSection.astro";
+import { contactCtaData } from "@/content/siteData";
 import type { CollectionLayoutProps } from "./types";
+import { getItemKey } from "@/utils/collections";
+import { getBreadcrumbs } from "@/utils/query";
 
 const {
   entry,
-  collection,
-  collectionMeta,
   Content,
-  isIndexPage,
   seoProps = {},
-  ...extraProps
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
-const {
-  title,
-  description,
-  price,
-  heading,
-} = data;
+const entryKey = entry ? getItemKey(entry) : "";
+const breadcrumbRelations = entryKey
+  ? await getBreadcrumbs("solutions", entryKey, true)
+  : [];
 
-// Build the description with price if available
-const heroDescription = price ? `${description} ${price}` : description;
+const solutionBreadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Solutions" },
+  ...breadcrumbRelations.map((relation) => ({
+    label:
+      relation.entry?.data?.title ||
+      relation.id
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char: string) => char.toUpperCase()),
+    href:
+      relation.id === entryKey ? undefined : `/${relation.id}`,
+  })),
+];
+
+const solutionQuoteSectionId = "solution-quote";
 ---
 
 <SiteLayout {...seoProps}>
-  <QuoteHero
-    title={title}
-    heading={heading}
-    description={heroDescription}
+  <BreadcrumbHeroCenter
+    title={data.title}
+    heading={data.heading}
+    description={data.description}
+    breadcrumbs={solutionBreadcrumbs}
     primaryCTA={{
-      text: `View All ${collectionMeta?.data?.title || "Services"}`,
-      link: `/${collection}`,
-      rightIcon: "lu:arrow-left",
+      text: contactCtaData.text,
+      link: `#${solutionQuoteSectionId}`,
     }}
-    id="services-quote-hero"
+    id="solutions-breadcrumb-hero"
   />
 
-  {/* MDX Content */}
-  {Content && <Content />}
+  <WrittenLayout
+    id={`${entryKey || "solution"}-written-layout`}
+    showHeadingSection={false}
+    showToc={false}
+    className="pt-0"
+  >
+    {Content && <Content />}
+  </WrittenLayout>
+
+  <CapabilityQuoteSection
+    id={solutionQuoteSectionId}
+    title={data.title}
+    capabilityTitle={data.title}
+    heading="Thinking about the next step?"
+    description="share the basics here and we will review the scope, the priorities, and the clearest next step for your website."
+  />
 </SiteLayout>
