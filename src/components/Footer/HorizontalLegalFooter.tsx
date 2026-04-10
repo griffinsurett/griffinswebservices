@@ -45,7 +45,7 @@ export default function HorizontalLegalFooter({
     <div className={wrapperClasses}>
       <div
         className={[
-          "flex w-full flex-col gap-4 py-5 text-text/80",
+          "flex w-full flex-col gap-4 py-5 text-text/80 lg:gap-5",
           showBorder || hasSocialLinks ? "border-t border-soft" : "",
         ]
           .filter(Boolean)
@@ -68,36 +68,28 @@ export default function HorizontalLegalFooter({
           </div>
         )}
 
-        <div className="overflow-x-auto">
-          <div className="mx-auto flex min-w-max w-fit flex-nowrap items-center justify-center gap-2.5 px-2 sm:gap-4 sm:px-0">
-            {LEGAL_LINKS.map((link) => (
-              <Button
-                key={link.href}
-                variant="link"
-                href={link.href}
-                size="sm"
-                className={legalLinkClassName}
-                onClick={onLinkClick}
-              >
-                {link.label}
-              </Button>
-            ))}
+        <div className="flex flex-col items-center gap-4 lg:flex-row lg:flex-wrap lg:justify-center lg:gap-x-6 lg:gap-y-3">
+          <div className="overflow-x-auto max-w-full">
+            <div className="mx-auto flex min-w-max w-fit flex-nowrap items-center justify-center gap-2.5 px-2 sm:gap-4 sm:px-0">
+              {LEGAL_LINKS.map((link) => (
+                <Button
+                  key={link.href}
+                  variant="link"
+                  href={link.href}
+                  size="sm"
+                  className={legalLinkClassName}
+                  onClick={onLinkClick}
+                >
+                  {link.label}
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-          {/* <Button
-            variant="link"
-            href="/privacy-policy#ccpa-rights"
-            size="sm"
-            className={legalLinkClassName}
-            onClick={onLinkClick}
-          >
-            Do Not Sell My Personal Information
-          </Button> */}
-
-          <CookiePreferencesButton className={utilityLinkClassName} />
-          <AccessibilityButton className={utilityLinkClassName} />
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <CookiePreferencesButton className={utilityLinkClassName} />
+            <AccessibilityButton className={utilityLinkClassName} />
+          </div>
         </div>
 
         <p className="text-center text-xs leading-relaxed sm:text-sm">
