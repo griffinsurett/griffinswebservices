@@ -20,7 +20,6 @@ export default function DecorativeWrapper({
     const container = containerRef.current;
     if (!container) return;
 
-    // Find all focusable elements and remove them from tab order
     const focusableSelectors = [
       "input",
       "button",
@@ -28,13 +27,46 @@ export default function DecorativeWrapper({
       "textarea",
       "a[href]",
       "[tabindex]",
+      "summary",
+      "iframe",
+      "audio[controls]",
+      "video[controls]",
+      "[contenteditable=\"true\"]",
     ].join(", ");
 
-    const focusableElements = container.querySelectorAll(focusableSelectors);
-    focusableElements.forEach((el) => {
-      el.setAttribute("tabindex", "-1");
-      el.setAttribute("aria-hidden", "true");
+    const makeDecorative = () => {
+      container.setAttribute("aria-hidden", "true");
+      container.setAttribute("role", "presentation");
+      container.setAttribute("aria-live", "off");
+      container.setAttribute("data-decorative", "true");
+      container.setAttribute("inert", "");
+
+      const focusableElements = container.querySelectorAll<HTMLElement>(
+        focusableSelectors,
+      );
+
+      focusableElements.forEach((el) => {
+        el.setAttribute("tabindex", "-1");
+        el.setAttribute("aria-hidden", "true");
+      });
+    };
+
+    makeDecorative();
+
+    const observer = new MutationObserver(() => {
+      makeDecorative();
     });
+
+    observer.observe(container, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["href", "tabindex", "controls", "contenteditable"],
+    });
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   return (
@@ -43,6 +75,8 @@ export default function DecorativeWrapper({
       className={className}
       aria-hidden="true"
       role="presentation"
+      aria-live="off"
+      data-decorative="true"
     >
       {children}
     </div>

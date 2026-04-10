@@ -1,3 +1,5 @@
+import DecorativeWrapper from "@/integrations/preferences/accessibility/ui/DecorativeWrapper";
+
 export interface ProcessWebsitePreviewProps {
   className?: string;
   mode?: "wireframe" | "final";
@@ -10,9 +12,9 @@ export default function ProcessWebsitePreview({
   const isFinal = mode === "final";
 
   return (
-    <div
+    <DecorativeWrapper
       className={[
-        "relative h-full w-full overflow-hidden rounded-[1rem] border",
+        "relative h-full w-full overflow-hidden rounded-[1rem] border select-none pointer-events-none",
         isFinal
           ? "border-white/14 bg-[#13192B]"
           : "border-white/10 bg-[#13192B]",
@@ -84,6 +86,6 @@ export default function ProcessWebsitePreview({
           <div className="absolute left-1/2 top-[8.45rem] h-1.5 w-[6.5rem] -translate-x-1/2 rounded-full bg-white/8" />
         </>
       )}
-    </div>
+    </DecorativeWrapper>
   );
 }
