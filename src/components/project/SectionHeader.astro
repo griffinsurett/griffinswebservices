@@ -1,0 +1,170 @@
+---
+// src/components/project/SectionHeader.astro
+import BorderTitle from "@/components/project/BorderTitle";
+import Heading from "@/components/project/Heading";
+import type { ReactNode } from "react";
+import type * as ReactNamespace from "react";
+import type { VisibleRootMargin } from "@/components/project/AnimatedBorder/AnimatedBorder";
+import type { HeadingContent } from "@/content/schema";
+
+type HeadingTag = Extract<
+  keyof ReactNamespace.JSX.IntrinsicElements,
+  keyof HTMLElementTagNameMap
+>;
+
+interface Props {
+  title?: ReactNode;
+  titleClassName?: string;
+  titlePillClassName?: string;
+  titleVisibleRootMargin?: VisibleRootMargin;
+  heading?: ReactNode | HeadingContent | null;
+  headingBefore?: ReactNode;
+  headingEmphasis?: ReactNode;
+  headingAfter?: ReactNode;
+  headingTag?: HeadingTag;
+  headingClassName?: string;
+  emphasisClassName?: string;
+  description?: ReactNode;
+  descriptionClassName?: string;
+  /** Treat description as heading (adds role/aria-level). Defaults to true when large-text styles are used */
+  descriptionAsHeading?: boolean;
+  /** Heading level used when description is treated as heading */
+  descriptionHeadingLevel?: number;
+  className?: string;
+  headerProps?: Record<string, unknown>;
+  animateHeading?: boolean;
+  animateDescription?: boolean;
+  animateOnce?: boolean;
+}
+
+const {
+  title,
+  titleClassName = "",
+  titlePillClassName,
+  titleVisibleRootMargin,
+  heading,
+  headingBefore,
+  headingEmphasis,
+  headingAfter,
+  headingTag = "h2",
+  headingClassName = "h2 mb-6",
+  emphasisClassName = "emphasized-text",
+  description,
+  descriptionClassName = "large-text",
+  descriptionAsHeading,
+  descriptionHeadingLevel,
+  className = "text-section",
+  headerProps = {},
+  animateHeading = false,
+  animateDescription = false,
+  animateOnce = true,
+} = Astro.props as Props;
+
+const isHeadingContent = (value: unknown): value is HeadingContent => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const record = value as Record<string, unknown>;
+  const hasKeys = "before" in record || "text" in record || "after" in record;
+  const looksLikeReactElement = "props" in record && "type" in record;
+  return hasKeys && !looksLikeReactElement;
+};
+
+const headingValue = heading;
+const headingContent = isHeadingContent(headingValue) ? headingValue : undefined;
+
+const hasSegmentedHeading =
+  headingBefore !== undefined ||
+  headingEmphasis !== undefined ||
+  headingAfter !== undefined;
+
+const hasContentHeading = headingContent !== undefined;
+const hasPlainHeading =
+  !hasContentHeading && headingValue !== undefined && headingValue !== null;
+
+const classContains = (classValue: string | undefined, needle: string) =>
+  Boolean(classValue && classValue.split(/\s+/).some((cls) => cls === needle));
+
+const headingLevelFromTag = (() => {
+  if (typeof headingTag !== "string") return 2;
+  const match = headingTag.match(/h([1-6])/i);
+  return match ? Number(match[1]) : 2;
+})();
+
+const shouldTreatDescriptionAsHeading =
+  Boolean(
+    description &&
+      ((descriptionAsHeading ?? undefined) !== undefined
+        ? descriptionAsHeading
+        : classContains(descriptionClassName, "large-text"))
+  );
+
+const resolvedDescriptionHeadingLevel =
+  descriptionHeadingLevel ?? Math.min(headingLevelFromTag + 1, 6);
+---
+
+<div class={className}>
+  {title && (
+    <BorderTitle
+      client:visible
+      className={titleClassName}
+      pillClassName={titlePillClassName}
+      visibleRootMargin={titleVisibleRootMargin}
+    >
+      {title}
+    </BorderTitle>
+  )}
+
+  {hasContentHeading ? (
+    <div
+      data-animate={animateHeading ? "fade-in" : undefined}
+      data-animate-once={animateHeading ? String(animateOnce) : undefined}
+    >
+      <Heading
+        tagName={headingTag}
+        className={headingClassName}
+        segmented={headingContent}
+        textClass={emphasisClassName}
+        {...headerProps}
+      />
+    </div>
+  ) : hasSegmentedHeading ? (
+    <div
+      data-animate={animateHeading ? "fade-in" : undefined}
+      data-animate-once={animateHeading ? String(animateOnce) : undefined}
+    >
+      <Heading
+        tagName={headingTag}
+        className={headingClassName}
+        before={headingBefore}
+        text={headingEmphasis}
+        after={headingAfter}
+        textClass={emphasisClassName}
+        {...headerProps}
+      />
+    </div>
+  ) : (
+    hasPlainHeading && (
+      <div
+        data-animate={animateHeading ? "fade-in" : undefined}
+        data-animate-once={animateHeading ? String(animateOnce) : undefined}
+      >
+        <Heading tagName={headingTag} className={headingClassName} {...headerProps}>
+          {headingValue as ReactNode}
+        </Heading>
+      </div>
+    )
+  )}
+
+  {description && (
+    <p
+      class={descriptionClassName}
+      data-animate={animateDescription ? "fade-in" : undefined}
+      data-animate-once={animateDescription ? String(animateOnce) : undefined}
+      role={shouldTreatDescriptionAsHeading ? "heading" : undefined}
+      aria-level={
+        shouldTreatDescriptionAsHeading ? String(resolvedDescriptionHeadingLevel) : undefined
+      }
+    >
+      {description}
+    </p>
+  )}
+</div>

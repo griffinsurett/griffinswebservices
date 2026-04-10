@@ -1,0 +1,170 @@
+---
+title: "Ongoing Website Management"
+description: "Managed hosting and ongoing website support built around how your site actually needs to be maintained."
+heading:
+  before: "Ongoing management built to keep your site"
+  text: "stable, secure, and handled"
+  after: "without adding more work to your plate."
+order: 5
+icon: "fa6-solid:server"
+hasPage: true
+addToMenu:
+  - menu: "main-menu"
+    order: 4
+itemLayout: "../../layouts/collections/SolutionCustomLayout.astro"
+redirectFrom:
+  - "/solutions/web-hosting-management"
+  - "/web-hosting-management"
+---
+import SolutionBodyLayout from "@/layouts/collections/SolutionBodyLayout.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import CapabilityTopicShowcaseSection from "@/layouts/sections/CapabilityTopicShowcaseSection.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+import SupportChat from "@/components/AnimatedExamples/SupportChat";
+import KeepGrowingDemo from "@/components/AnimatedExamples/KeepGrowingDemo";
+import SecureBrowserBar from "@/components/AnimatedExamples/SecureBrowserBar";
+
+<SolutionBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+  grandparentContent={{
+    testimonialsTitle: "Testimonials",
+    testimonialsHeading: "What business owners say about working with us.",
+    testimonialsDescription: "Real feedback from businesses that handed off their hosting and maintenance and haven't had to think about it since.",
+    faqTitle: "FAQs",
+    faqHeading: "Common Questions About Ongoing Website Management",
+  }}
+>
+  <BreadcrumbHeroCenter
+    slot="hero"
+    title="Ongoing Website Management"
+    heading={frontmatter.heading}
+    description={frontmatter.description}
+    breadcrumbs={[
+      { label: "Home", href: "/" },
+      { label: "Solutions" },
+      { label: "Ongoing Website Management" },
+    ]}
+    primaryCTA={{
+      text: "Get a Quote",
+      link: "#solution-quote",
+    }}
+    id="ongoing-management-hero"
+  />
+
+  <TrustStatement
+    text="You pay for the website build once. After launch, we handle the hosting, upkeep, and support so your site stays dependable without adding more to your plate."
+    textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
+  />
+
+  <Fragment slot="topic-sections">
+    <CapabilityTopicShowcaseSection
+      title="Hosting & Infrastructure"
+      heading="Your site deployed, secured, and running on solid ground."
+      description="We handle the full hosting setup, SSL management, and platform configuration so your site loads fast and stays online without you managing any of it."
+      cards={[
+        {
+          icon: "fa6-solid:server",
+          title: "Managed Hosting Setup",
+          description: "We configure, deploy, and manage your site on a performance-optimized hosting platform from day one.",
+        },
+        {
+          icon: "fa6-solid:lock",
+          title: "SSL Certificate Management",
+          description: "Your site stays secure and trusted with an active SSL certificate managed through the hosting platform.",
+        },
+        {
+          icon: "fa6-solid:gauge-high",
+          title: "Performance-Optimized",
+          description: "Hosting is configured for fast load times — the kind that keeps visitors from leaving before the page finishes.",
+        },
+        {
+          icon: "fa6-solid:arrows-rotate",
+          title: "Routine Software Updates",
+          description: "We apply updates to build tooling and dependencies on a monthly basis to keep the site stable and current.",
+        },
+      ]}
+    >
+      <Fragment slot="content">
+        <p>Most business owners shouldn't have to think about where their website lives or how it's configured. We handle deployment, DNS, SSL, and the ongoing platform work so the technical foundation never becomes your problem.</p>
+        <p>Hosting is scoped based on your site — not a one-size-fits-all package that charges you for resources you don't use.</p>
+      </Fragment>
+      <SecureBrowserBar slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Monitoring & Uptime"
+      heading="Problems caught before your customers notice."
+      description="We keep an eye on your site so slowdowns, errors, and visible issues get addressed before they affect visitors or cost you leads."
+      reverse={true}
+      cards={[
+        {
+          icon: "fa6-solid:eye",
+          title: "Uptime Monitoring",
+          description: "Your site is monitored around the clock. If it goes down or slows significantly, we know before you do.",
+        },
+        {
+          icon: "fa6-solid:link-slash",
+          title: "Broken Link & Display Fixes",
+          description: "Minor technical issues — broken links, layout problems, missing assets — get caught and resolved quickly.",
+        },
+        {
+          icon: "fa6-solid:envelope-circle-check",
+          title: "Form Delivery Verification",
+          description: "We verify that contact forms are delivering submissions correctly so you never miss an inquiry.",
+        },
+        {
+          icon: "fa6-solid:chart-line",
+          title: "Performance Checks",
+          description: "Regular performance checks catch degradation early so your site stays fast as content and traffic grow.",
+        },
+      ]}
+    >
+      <Fragment slot="content">
+        <p>A site that goes down at the wrong moment or stops delivering form submissions quietly costs you leads. We monitor the things that matter so issues get caught before they become customer-facing problems.</p>
+        <p>When something breaks, we fix it — without waiting for you to notice and report it first.</p>
+      </Fragment>
+      <KeepGrowingDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Content Updates & Support"
+      heading="Keep your site current without touching a line of code."
+      description="Text swaps, image replacements, new service areas, updated contact details — covered in your plan so your site always reflects where your business is."
+      cards={[
+        {
+          icon: "fa6-solid:pen-to-square",
+          title: "Text & Image Updates",
+          description: "Swap copy, update photos, replace videos, and keep service descriptions current without developer back-and-forth.",
+        },
+        {
+          icon: "fa6-solid:location-dot",
+          title: "Service Area & Detail Changes",
+          description: "Add locations, update business hours, or change service listings as your business grows.",
+        },
+        {
+          icon: "fa6-solid:headset",
+          title: "Scoped to What You Need",
+          description: "Support is quoted around the actual update volume and complexity — not a flat fee for things you won't use.",
+        },
+        {
+          icon: "fa6-solid:file-invoice",
+          title: "Cancel Anytime",
+          description: "No long-term lock-in. Management plans can be cancelled with 10 days notice when your needs change.",
+        },
+      ]}
+    >
+      <Fragment slot="content">
+        <p>Your website should always reflect your actual business. Outdated pricing, old photos, or a phone number that changed six months ago all quietly erode trust with visitors who notice.</p>
+        <p>We handle the updates so your site stays accurate, and you stay focused on running the business.</p>
+      </Fragment>
+      <SupportChat slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+  </Fragment>
+
+  <TrustStatement
+    text="The website is yours. We just make sure it keeps working the way it should — long after launch day."
+    textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
+  />
+</SolutionBodyLayout>

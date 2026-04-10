@@ -1,0 +1,267 @@
+---
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import VideoShell from "@/components/Video/VideoShell.astro";
+import Button from "@/components/Button/Button";
+import { toArray } from "@/utils/array";
+import { animationProps } from "@/integrations/scroll-animations/props";
+
+interface ProjectItem extends Record<string, any> {
+  title?: string;
+  description?: string;
+  featuredVideo?: string;
+  projectUrl?: string;
+  slug?: string;
+}
+
+interface Props extends BaseVariantProps {
+  ctaHref?: string;
+  ctaText?: string;
+  primaryCtaHref?: string;
+  primaryCtaText?: string;
+  maxItems?: number;
+}
+
+const {
+  items = [],
+  title,
+  heading: headingValue,
+  description,
+  className = "",
+  id,
+  ctaHref = "/projects",
+  ctaText = "See Portfolio",
+  primaryCtaHref,
+  primaryCtaText,
+  maxItems = 4,
+} = Astro.props as Props;
+
+const videoProjects = (toArray(items) as ProjectItem[])
+  .filter((item) => typeof item.featuredVideo === "string" && item.featuredVideo.length > 0)
+  .slice(0, maxItems);
+
+if (!videoProjects.length) {
+  return;
+}
+
+const normalizedHeading =
+  typeof headingValue === "string"
+    ? { text: headingValue }
+    : (headingValue ?? {});
+
+const sectionEyebrow = title ?? "Featured Work";
+const sectionDescription =
+  description ??
+  "Recent launches that show what happens when the design, speed, messaging, and technical build all hit at once.";
+
+const desktopCardPositionClasses = [
+  "lg:col-start-1 lg:row-start-1 lg:justify-self-start lg:-translate-y-[4%]",
+  "lg:col-start-2 lg:row-start-1 lg:justify-self-end lg:translate-y-[10%]",
+  "lg:col-start-1 lg:row-start-2 lg:justify-self-start lg:-translate-y-[10%]",
+  "lg:col-start-2 lg:row-start-2 lg:justify-self-end lg:translate-y-[2%]",
+];
+---
+
+<Section
+  id={id}
+  class={`outer-section relative ${className}`.trim()}
+>
+  <div class="inner-section">
+    <div class="portfolio-video-showcase relative isolate px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
+      <div class="portfolio-video-showcase__stage">
+        <div class="portfolio-video-showcase__sticky">
+          <div
+            class="portfolio-video-showcase__copy"
+            {...animationProps("fade-in-up", { once: false, threshold: 0.15, rootMargin: "-10% 0px -20% 0px" })}
+          >
+            <SectionHeader
+              title={sectionEyebrow}
+              heading={normalizedHeading}
+              description={sectionDescription}
+              className="text-center"
+              headingClassName="h2 mb-6 heading-padding text-heading"
+              emphasisClassName="text-heading"
+              descriptionClassName="large-text max-w-2xl mx-auto"
+            />
+
+            <div class="portfolio-video-showcase__cta-row mt-8">
+              {primaryCtaHref && primaryCtaText && (
+                <Button
+                  client:visible
+                  href={primaryCtaHref}
+                  variant="primary"
+                  rightIcon="lu:arrow-up-right"
+                >
+                  {primaryCtaText}
+                </Button>
+              )}
+
+              <Button
+                client:visible
+                href={ctaHref}
+                variant="secondary"
+                rightIcon="lu:arrow-right"
+              >
+                {ctaText}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div class="portfolio-video-showcase__cards">
+          {videoProjects.map((item, index) => (
+            <article
+              class:list={[
+                "portfolio-video-showcase__card group outer-card-transition",
+                desktopCardPositionClasses[index] ?? "",
+              ]}
+              {...animationProps("fade-in-up", {
+                once: false,
+                threshold: 0.18,
+                rootMargin: "-8% 0px -15% 0px",
+              })}
+            >
+              <VideoShell
+                src={item.featuredVideo}
+                alt={item.title ? `${item.title} website preview` : "Website preview"}
+                hydrateOnHover={false}
+                autoPlay={true}
+                muted={true}
+                loop={true}
+                controls={false}
+                lazy={true}
+                hoverPlay={true}
+                playsInline={true}
+                posterWidth={1280}
+                generateThumbAt={0.75}
+                wrapperClass="portfolio-video-showcase__media"
+                mediaClass="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+                clientWrapperClass="h-full w-full overflow-hidden"
+              />
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .portfolio-video-showcase {
+    background: transparent;
+  }
+
+  .portfolio-video-showcase__stage {
+    position: relative;
+    z-index: 1;
+  }
+
+  .portfolio-video-showcase__sticky {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .portfolio-video-showcase__copy {
+    width: min(100%, 52rem);
+    margin-inline: auto;
+    text-align: center;
+    pointer-events: auto;
+  }
+
+  .portfolio-video-showcase__cards {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+    pointer-events: none;
+  }
+
+  .portfolio-video-showcase__cta-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .portfolio-video-showcase__card {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 35px 90px -48px rgba(0, 0, 0, 0.55);
+    isolation: isolate;
+    background: transparent;
+    pointer-events: auto;
+  }
+
+  .portfolio-video-showcase__card::after {
+    content: none;
+  }
+
+  .portfolio-video-showcase__media {
+    min-height: 18rem;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  @media (max-width: 1023px) {
+    .portfolio-video-showcase__stage {
+      min-height: auto;
+    }
+
+    .portfolio-video-showcase__sticky {
+      position: relative;
+      top: auto;
+      min-height: auto;
+      display: block;
+      padding-block: 1rem 0.25rem;
+      pointer-events: auto;
+    }
+
+    .portfolio-video-showcase__cards {
+      margin-top: 0;
+      padding-top: 2rem;
+      padding-bottom: 0;
+    }
+
+    .portfolio-video-showcase__cta-row {
+      gap: 0.875rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .portfolio-video-showcase__stage {
+      min-height: 220vh;
+    }
+
+    .portfolio-video-showcase__cards {
+      width: 100%;
+      margin-inline: auto;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 4vw, 4rem);
+      row-gap: clamp(1.5rem, 4vw, 4rem);
+      padding-top: 56rem;
+      padding-bottom: 34rem;
+      margin-top: -100vh;
+    }
+
+    .portfolio-video-showcase__card {
+      width: min(100%, 36rem);
+      position: relative;
+      z-index: 3;
+    }
+
+    .portfolio-video-showcase__media {
+      min-height: clamp(18rem, 30vw, 27rem);
+    }
+  }
+ </style>

@@ -1,0 +1,303 @@
+---
+import Section from "@/components/Section.astro";
+import { animationProps } from "@/integrations/scroll-animations/props";
+import { splitTextIntoAnimatedWords } from "@/utils/text";
+
+interface Props {
+  text: string;
+  className?: string;
+  textClassName?: string;
+  stickyScroll?: boolean;
+  stickyHeight?: string;
+  stickyTopOffset?: string;
+  excludeFromToc?: boolean;
+}
+
+const {
+  text,
+  className,
+  textClassName,
+  stickyScroll = true,
+  stickyHeight = "220svh",
+  stickyTopOffset = "clamp(5.5rem, 7vw, 7rem)",
+  excludeFromToc = false,
+} = Astro.props;
+
+const resolvedClassName = className ?? (
+  stickyScroll
+    ? "mx-auto inner-section"
+    : "min-h-[40vh] flex items-center mx-auto inner-section"
+);
+
+const resolvedTextClassName = textClassName ?? (
+  stickyScroll
+    ? "text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-center text-heading"
+    : "text-3xl md:text-4xl lg:text-5xl text-left lg:text-center"
+);
+
+const words = splitTextIntoAnimatedWords(text);
+const stickyStyle = stickyScroll
+  ? `--trust-section-height:${stickyHeight}; --trust-sticky-top:${stickyTopOffset};`
+  : undefined;
+---
+
+<Section
+  tag="aside"
+  class={`trust-statement ${stickyScroll ? "trust-statement--sticky" : ""} ${resolvedClassName}`.trim()}
+  aria-label="Trust statement"
+  animate={stickyScroll ? false : "fade-in"}
+  animateOnce={false}
+  style={stickyStyle}
+  data-trust-sticky={stickyScroll ? "true" : undefined}
+>
+  {
+    stickyScroll ? (
+      <div class="trust-statement-pin" data-trust-sticky-inner>
+        <h2
+          class:list={[resolvedTextClassName, "trust-statement-heading", "trust-statement-heading--scroll", "font-normal"]}
+          aria-label={text}
+          data-toc-exclude={excludeFromToc ? "true" : undefined}
+        >
+          {
+            words.map((word) => (
+              <>
+                <span
+                  class="trust-word-scroll"
+                  aria-hidden="true"
+                  data-trust-word-progress
+                >
+                  <span class="trust-word-layer trust-word-layer--base">
+                    {word.word}
+                  </span>
+                  <span class="trust-word-layer trust-word-layer--overlay">
+                    {word.word}
+                  </span>
+                </span>
+                {!word.isLast && <span class="trust-space" aria-hidden="true"> </span>}
+              </>
+            ))
+          }
+        </h2>
+      </div>
+    ) : (
+      <h2
+        class:list={[resolvedTextClassName, "trust-statement-heading", "font-normal"]}
+        aria-label={text}
+        data-toc-exclude={excludeFromToc ? "true" : undefined}
+        {...animationProps("letter-reveal", {
+          once: true,
+          threshold: 0.1,
+          rootMargin: "0px",
+          duration: 240,
+        })}
+      >
+        {
+          words.map((word) => (
+            <>
+              <span class="trust-word" aria-hidden="true">
+                {word.letters.map((letter) => (
+                  <span
+                    class="trust-letter"
+                    style={`--letter-index:${letter.index}; --letter-index-reverse:${letter.reverseIndex};`}
+                  >
+                    {letter.char}
+                  </span>
+                ))}
+              </span>
+              {!word.isLast && <span class="trust-space" aria-hidden="true"> </span>}
+            </>
+          ))
+        }
+      </h2>
+    )
+  }
+</Section>
+
+<style>
+  .trust-statement-heading:not(.trust-statement-heading--scroll) {
+    color: var(--color-text);
+  }
+
+  .trust-statement--sticky {
+    --trust-progress: 0;
+    --trust-hidden-color: var(--color-bg3);
+    min-height: var(--trust-section-height);
+    position: relative;
+  }
+
+  .trust-statement-pin {
+    position: sticky;
+    top: var(--trust-sticky-top);
+    min-height: calc(100svh - var(--trust-sticky-top));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: clamp(2rem, 6vw, 4rem);
+  }
+
+  .trust-statement-heading--scroll {
+    color: var(--color-heading);
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .trust-word-scroll {
+    --word-progress: 0;
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .trust-word-layer {
+    display: block;
+  }
+
+  .trust-word-layer--base {
+    color: var(--trust-hidden-color);
+  }
+
+  .trust-word-layer--overlay {
+    position: absolute;
+    inset: 0;
+    color: inherit;
+    pointer-events: none;
+    opacity: var(--word-progress);
+    will-change: opacity;
+  }
+
+  .trust-word {
+    display: inline-flex;
+    white-space: nowrap;
+  }
+
+  .trust-space {
+    white-space: pre;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .trust-statement--sticky {
+      min-height: auto;
+      --trust-progress: 1;
+    }
+
+    .trust-statement-pin {
+      position: static;
+      min-height: auto;
+      padding-block: 0;
+    }
+
+    .trust-word-layer--overlay {
+      opacity: 1;
+      will-change: auto;
+    }
+
+    .trust-letter {
+      transition: none !important;
+      color: currentColor !important;
+    }
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    if (typeof window === "undefined") return;
+
+    const win = window;
+
+    const key = "__trustStickyController";
+    const existing = win[key];
+    if (existing) {
+      existing.register();
+      return;
+    }
+
+    const controller = {
+      ticking: false,
+      started: false,
+      register() {
+        this.update();
+      },
+      start() {
+        if (this.started) {
+          this.schedule();
+          return;
+        }
+
+        this.started = true;
+        window.addEventListener("scroll", () => controller.schedule(), { passive: true });
+        window.addEventListener("resize", () => controller.schedule());
+        document.addEventListener("astro:page-load", () => controller.schedule());
+        this.schedule();
+      },
+      schedule() {
+        if (this.ticking) return;
+        this.ticking = true;
+        window.requestAnimationFrame(() => {
+          this.ticking = false;
+          this.update();
+        });
+      },
+      update() {
+        const sections = document.querySelectorAll("[data-trust-sticky='true']");
+        if (!sections.length) return;
+
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        sections.forEach((section) => {
+          if (!(section instanceof HTMLElement)) return;
+
+          if (reducedMotion) {
+            section.style.setProperty("--trust-progress", "1");
+            return;
+          }
+
+          const inner = section.querySelector("[data-trust-sticky-inner]");
+          if (!(inner instanceof HTMLElement)) return;
+
+          const stickyTop = Number.parseFloat(window.getComputedStyle(inner).top) || 0;
+          const scrollSpan = Math.max(section.offsetHeight - inner.offsetHeight, 1);
+          const sectionTop = section.getBoundingClientRect().top;
+          const progress = Math.max(0, Math.min((stickyTop - sectionTop) / scrollSpan, 1));
+
+          section.style.setProperty("--trust-progress", progress.toFixed(4));
+
+          const wordNodes = section.querySelectorAll("[data-trust-word-progress]");
+          const totalWords = wordNodes.length || 1;
+
+          wordNodes.forEach((wordNode, index) => {
+            if (!(wordNode instanceof HTMLElement)) return;
+
+            const wordProgress = Math.max(
+              0,
+              Math.min(progress * totalWords - index, 1),
+            );
+
+            wordNode.style.setProperty("--word-progress", wordProgress.toFixed(4));
+          });
+        });
+      },
+    };
+
+    win[key] = controller;
+
+    const sections = document.querySelectorAll("[data-trust-sticky='true']");
+    if (!sections.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+      controller.start();
+      return;
+    }
+
+    const visibilityObserver = new IntersectionObserver((entries, observer) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        controller.start();
+        observer.disconnect();
+      }
+    }, {
+      rootMargin: "300px 0px",
+      threshold: 0,
+    });
+
+    sections.forEach((section) => visibilityObserver.observe(section));
+  })();
+</script>

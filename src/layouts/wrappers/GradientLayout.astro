@@ -1,0 +1,19 @@
+---
+// src/layouts/GradientLayout.astro
+// Gradient background wrapper with optional dim border at bottom
+interface Props {
+  class?: string;
+  borderPosition?: "top" | "bottom" | "both" | "none";
+}
+
+const { class: className = "", borderPosition = "bottom" } = Astro.props;
+
+const showTopBorder = borderPosition === "top" || borderPosition === "both";
+const showBottomBorder = borderPosition === "bottom" || borderPosition === "both";
+---
+
+<div class:list={["hero-gradient-bg bg-cover bg-center lg:bg-fixed relative", className]}>
+  {showTopBorder && <div class="section-dim-border"></div>}
+  <slot />
+  {showBottomBorder && <div class="section-dim-border absolute bottom-0 top-auto"></div>}
+</div>

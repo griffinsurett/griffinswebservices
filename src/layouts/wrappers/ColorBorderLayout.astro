@@ -1,0 +1,19 @@
+---
+// src/layouts/ColorBorderLayout.astro
+// Wrapper with colored section border
+interface Props {
+  class?: string;
+  borderPosition?: "top" | "bottom" | "both" | "none";
+}
+
+const { class: className = "", borderPosition = "top" } = Astro.props;
+
+const showTopBorder = borderPosition === "top" || borderPosition === "both";
+const showBottomBorder = borderPosition === "bottom" || borderPosition === "both";
+---
+
+<div class:list={["relative", className]}>
+  {showTopBorder && <div class="section-color-border"></div>}
+  <slot />
+  {showBottomBorder && <div class="section-color-border absolute bottom-0 top-auto"></div>}
+</div>

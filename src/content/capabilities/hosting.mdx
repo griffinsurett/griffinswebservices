@@ -1,0 +1,187 @@
+---
+title: "Hosting"
+description: "We host and maintain websites so they stay online, stay updated, and keep working without you having to chase technical issues."
+heading: "Managed hosting that keeps the site handled."
+icon: "fa6-solid:server"
+order: 5
+redirectFrom:
+  - "/hosting-and-infrastructure"
+  - "/capabilities/hosting-and-infrastructure"
+  - "/website-maintenance"
+  - "/solutions/website-maintenance"
+  - "/app-maintenance"
+  - "/solutions/app-maintenance"
+solutions:
+  - websites
+  - business-websites
+  - e-commerce-websites
+  - web-apps
+  - blogs
+---
+
+import TrustStatement from "@/components/TrustStatement.astro";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import StandardCapabilityIntroSplitSection from "@/layouts/sections/StandardCapabilityIntroSplitSection.astro";
+import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
+
+export const hostingOverviewPoints = [
+  {
+    icon: "fa6-solid:server",
+    title: "A steadier website foundation",
+    description:
+      "Hosting should keep the site available, updated, and less fragile so problems do not keep turning into fire drills.",
+  },
+  {
+    icon: "fa6-solid:rotate",
+    title: "Less technical chasing",
+    description:
+      "Routine updates, maintenance, and hosting issues should already be covered instead of becoming another task for the business owner.",
+  },
+  {
+    icon: "fa6-solid:life-ring",
+    title: "Support from the same team",
+    description:
+      "It is easier to keep the site healthy when the same team that knows the website is also handling the maintenance and recovery work.",
+  },
+];
+
+export const hostingCapabilityItems = [
+  {
+    icon: "fa6-solid:heart-pulse",
+    title: "Uptime Monitoring",
+    description:
+      "Monitoring and alerting help catch downtime or instability quickly so issues can be investigated before they drag on.",
+  },
+  {
+    icon: "fa6-solid:arrows-rotate",
+    title: "Updates And Maintenance",
+    description:
+      "Platform, plugin, package, and routine maintenance work stays handled so the site does not quietly fall behind.",
+  },
+  {
+    icon: "fa6-solid:hard-drive",
+    title: "Backups And Recovery",
+    description:
+      "Backups and restore paths are part of the setup so there is a cleaner way back if something breaks or changes unexpectedly.",
+  },
+  {
+    icon: "fa6-solid:wrench",
+    title: "Technical Support",
+    description:
+      "When something changes, the same team can troubleshoot the hosting layer and the website itself without sending you between vendors.",
+  },
+];
+
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
+  <TrustStatement
+    text="Your website should stay online, stay current, and stay supported without you having to babysit the technical side."
+    textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
+  />
+
+  <Fragment slot="topic-sections">
+    <StandardCapabilityIntroSplitSection
+      title="What This Helps With"
+      heading="Keep the website stable, current, and easier to support over time."
+      description="Hosting work is not just server space. It is the ongoing technical layer that helps the site stay available, stay updated, and stay recoverable without turning routine issues into recurring stress."
+      points={hostingOverviewPoints}
+    />
+
+    <ContentRenderer
+      items={hostingCapabilityItems}
+      variant="CardVariant"
+      title="Included Areas"
+      heading="Hosting support we usually handle."
+      description="This is the core hosting and maintenance work we use to keep the site online, updated, and easier to manage after launch."
+      sectionLayout="default"
+      columns={4}
+      showButtonSection={false}
+    />
+
+    <WrittenLayout
+      showHeadingSection={false}
+      tocTitle="On This Page"
+      headingSelector="h2, h3"
+      className="pt-0"
+    >
+      <section>
+        <h2>What hosting should cover beyond just server space</h2>
+        <p>
+          Good hosting should do more than keep files somewhere on the internet. It should
+          support the actual health of the website: uptime, updates, recoverability, and a
+          cleaner technical path when something changes unexpectedly.
+        </p>
+        <p>
+          A business should not have to wonder who to contact, whether backups are usable,
+          or whether the site has quietly drifted out of date. Hosting becomes far more
+          useful when it is treated like ongoing operational support instead of just an
+          invoice from a provider.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where hosting problems usually show up</h2>
+        <p>
+          Hosting issues do not always appear as dramatic outages. A lot of the time they
+          show up as smaller technical problems that keep piling up: software falls behind,
+          backups are unclear, support is fragmented, and no one is quite sure who owns the
+          problem when the site behaves strangely.
+        </p>
+        <h3>Common issues we try to prevent</h3>
+        <ul>
+          <li>Outages or instability that take too long to notice or diagnose.</li>
+          <li>Routine updates being delayed until they become risky or disruptive.</li>
+          <li>Backups existing in theory but not being easy to verify or restore.</li>
+          <li>Business owners getting stuck between a host, a developer, and generic support channels.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>What we usually handle in hosting and maintenance work</h2>
+        <p>
+          The work usually includes the hosting environment itself, plus the ongoing care
+          that keeps the site usable after launch. That means monitoring, updates, backups,
+          and support all need to be treated as part of the same system rather than as
+          disconnected tasks.
+        </p>
+        <p>
+          For many businesses, that also means keeping one team close to the technical side
+          of the site so fixes happen faster and less time gets wasted figuring out where a
+          problem actually lives.
+        </p>
+      </section>
+
+      <section>
+        <h2>Why businesses keep this work with the same team</h2>
+        <p>
+          The biggest advantage is continuity. When the same team knows the site structure,
+          the hosting setup, and the maintenance history, support becomes much more direct.
+          Problems do not have to be translated from one vendor to another before anything
+          useful happens.
+        </p>
+        <p>
+          That continuity also helps with future improvements. When the site needs to be
+          updated, expanded, or repaired, there is already a clearer technical context in
+          place instead of starting from scratch every time.
+        </p>
+      </section>
+
+      <section>
+        <h2>When this capability is the right fit</h2>
+        <p>
+          Hosting and maintenance work makes the most sense for businesses that do not want
+          to manage the technical side of the site themselves and do not want to coordinate
+          multiple vendors just to keep the website working.
+        </p>
+        <p>
+          It is especially useful when the site is already important to the business and
+          needs to stay dependable after launch, not just during the initial build.
+        </p>
+      </section>
+    </WrittenLayout>
+  </Fragment>
+</CapabilityBodyLayout>

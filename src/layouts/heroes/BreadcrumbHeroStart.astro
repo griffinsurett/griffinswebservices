@@ -1,0 +1,272 @@
+---
+// src/layouts/heroes/BreadcrumbHeroStart.astro
+import Button from "@/components/Button/Button";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import Hero from "@/components/Hero.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { siteData } from "@/content/siteData";
+import type { HeadingContent } from "@/content/schema";
+import { query } from "@/utils/query";
+
+interface CTA {
+  text: string;
+  link: string;
+  rightIcon?: string;
+}
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+export interface Props {
+  title?: string;
+  heading?: HeadingContent;
+  description?: string;
+  primaryCTA?: CTA;
+  breadcrumbs?: BreadcrumbItem[];
+  className?: string;
+  id?: string;
+  rightColumnClassName?: string;
+  absoluteBreadcrumbs?: boolean;
+  breadcrumbsClassName?: string;
+}
+
+const defaultDescription =
+  "Hand-crafted websites, automated systems, and ongoing support so you can sell more, grow faster, and stay secure without juggling multiple vendors.";
+
+const {
+  title,
+  heading,
+  description = siteData.description ?? defaultDescription,
+  primaryCTA: incomingPrimaryCTA,
+  breadcrumbs = [],
+  className = "",
+  id = "hero",
+  rightColumnClassName = "",
+  absoluteBreadcrumbs = false,
+  breadcrumbsClassName = "",
+} = Astro.props as Props;
+
+const primaryCTA: CTA = {
+  text: "Book An Intro Call",
+  link: "#contact",
+  ...incomingPrimaryCTA,
+  rightIcon: incomingPrimaryCTA?.rightIcon ?? "lu:arrow-up-right",
+};
+
+const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
+const hasStaticBreadcrumbs = !absoluteBreadcrumbs && breadcrumbs.length > 0;
+const mobileLeftColumnHeightClass = hasStaticBreadcrumbs
+  ? "min-h-[calc(100svh-8.5rem)]"
+  : "min-h-screen";
+---
+
+<Hero
+  id={id}
+  class={`landscape-hero ${className}`}
+  size="full"
+  contentAlign="center"
+  contentVerticalAlign="center"
+>
+  <div class="relative z-10 min-h-screen inner-section">
+    {
+      absoluteBreadcrumbs && breadcrumbs.length > 0 && (
+        <nav
+          aria-label="Breadcrumb"
+          class={`hero-breadcrumbs absolute inset-x-0 top-24 z-20 mx-auto w-[95%] text-left lg:top-28 lg:mx-0 lg:w-full ${breadcrumbsClassName}`.trim()}
+        >
+            <ol class="flex flex-wrap items-center justify-start gap-x-2 gap-y-2 list-none p-0 m-0">
+            {breadcrumbs.map((item, index) => {
+              const isLast = index === breadcrumbs.length - 1;
+              const isHome = item.label.trim().toLowerCase() === "home";
+              const labelContent = isHome ? (
+                <span
+                  class="inline-flex items-center justify-center"
+                  aria-hidden="true"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-[0.9rem] w-[0.9rem]"
+                  >
+                    <path d="M3 10.5 12 3l9 7.5" />
+                    <path d="M5.25 9.75V21h13.5V9.75" />
+                  </svg>
+                </span>
+              ) : (
+                item.label
+              );
+              return (
+                <li class="flex items-center gap-2">
+                  {item.href && !isLast ? (
+                    <a
+                      href={item.href}
+                      class="hero-breadcrumb-link"
+                      aria-label={isHome ? item.label : undefined}
+                    >
+                      {labelContent}
+                    </a>
+                  ) : (
+                    <span
+                      class="hero-breadcrumb-link"
+                      aria-current={isLast ? "page" : undefined}
+                      aria-label={isHome ? item.label : undefined}
+                    >
+                      {labelContent}
+                    </span>
+                  )}
+
+                  {!isLast && <span aria-hidden="true" class="text-text/40">/</span>}
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      )
+    }
+
+    <div class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-2 pb-12 lg:max-w-7xl lg:px-0 lg:pb-0">
+      {
+        !absoluteBreadcrumbs && breadcrumbs.length > 0 && (
+          <div class="flex min-h-[8.5rem] items-end pt-24 lg:min-h-[8.5rem] lg:pt-16">
+            <nav
+              aria-label="Breadcrumb"
+              class={`hero-breadcrumbs mx-auto w-[95%] text-left lg:mx-0 lg:w-full ${breadcrumbsClassName}`.trim()}
+            >
+              <ol class="flex flex-wrap items-center justify-start gap-x-2 gap-y-2 list-none p-0 m-0">
+                {breadcrumbs.map((item, index) => {
+                  const isLast = index === breadcrumbs.length - 1;
+                  const isHome = item.label.trim().toLowerCase() === "home";
+                  const labelContent = isHome ? (
+                    <span
+                      class="inline-flex items-center justify-center"
+                      aria-hidden="true"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="h-[0.9rem] w-[0.9rem]"
+                      >
+                        <path d="M3 10.5 12 3l9 7.5" />
+                        <path d="M5.25 9.75V21h13.5V9.75" />
+                      </svg>
+                    </span>
+                  ) : (
+                    item.label
+                  );
+                  return (
+                    <li class="flex items-center gap-2">
+                      {item.href && !isLast ? (
+                        <a
+                          href={item.href}
+                          class="hero-breadcrumb-link"
+                          aria-label={isHome ? item.label : undefined}
+                        >
+                          {labelContent}
+                        </a>
+                      ) : (
+                        <span
+                          class="hero-breadcrumb-link"
+                          aria-current={isLast ? "page" : undefined}
+                          aria-label={isHome ? item.label : undefined}
+                        >
+                          {labelContent}
+                        </span>
+                      )}
+
+                      {!isLast && <span aria-hidden="true" class="text-text/40">/</span>}
+                    </li>
+                  );
+                })}
+              </ol>
+            </nav>
+          </div>
+        )
+      }
+
+      <div class="flex flex-1 items-center">
+        <div class="w-full lg:flex lg:flex-row lg:items-stretch lg:gap-16">
+          <div class={`flex ${mobileLeftColumnHeightClass} w-full flex-col items-start justify-center gap-5 text-left lg:min-h-auto lg:w-1/2 lg:flex-[0_0_50%] lg:gap-8`}>
+            <SectionHeader
+              className="text-left max-w-[42rem]"
+              title={title}
+              heading={heading}
+              headingTag="h1"
+              headingClassName="h2 font-semibold"
+              description={description ?? defaultDescription}
+              descriptionClassName="hero-text max-w-3xl leading-relaxed"
+            />
+
+            <div class="flex w-auto max-w-full flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 xl:gap-6">
+              <Button
+                client:idle
+                href={primaryCTA.link}
+                variant="primary"
+                size="lg"
+                rightIcon={primaryCTA.rightIcon}
+                className="!w-auto whitespace-nowrap"
+                buttonWrapperClasses="!w-auto justify-start"
+              >
+                {primaryCTA.text}
+              </Button>
+
+              <ContentRenderer
+                query={query("testimonials")
+                  .where((entry) => entry.data.featured === true)
+                  .limit(3)}
+                variant="TestimonialCirclesVariant"
+                className="shrink-0"
+                counterStart={10}
+                counterEnd={100}
+                counterDuration={1800}
+                counterSuffix="+"
+                counterLabel="Happy Clients"
+              />
+            </div>
+          </div>
+
+          <div
+            class={`w-full lg:w-1/2 lg:flex-[0_0_50%] ${rightColumnClassName} ${hasRightContent ? "" : "hidden lg:block"}`}
+            aria-hidden={hasRightContent ? undefined : "true"}
+          >
+            <slot name="right">
+              <slot />
+            </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Hero>
+
+<style>
+  .hero-breadcrumb-link {
+    font-size: 0.85rem;
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-text) 72%, transparent);
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  a.hero-breadcrumb-link:hover {
+    color: var(--color-heading);
+  }
+
+  @media (max-width: 1023px) {
+    .hero-breadcrumb-link {
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+    }
+  }
+</style>

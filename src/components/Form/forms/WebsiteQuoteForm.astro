@@ -1,0 +1,160 @@
+---
+import FormWrapper from "@/components/Form/FormWrapper";
+import Input from "@/components/Form/inputs/Input";
+import Select from "@/components/Form/inputs/Select";
+import Textarea from "@/components/Form/inputs/Textarea";
+import { submitToFormspree } from "@/utils/formspree";
+
+interface Props {
+  className?: string;
+  buttonText?: string;
+  capabilityTitle?: string;
+  capabilitySlug?: string;
+  serviceCategory?: string;
+  formType?: string;
+}
+
+const {
+  className = "",
+  buttonText = "Talk to an expert",
+  capabilityTitle = "Capability",
+  capabilitySlug,
+  serviceCategory = "capabilities",
+  formType = "website",
+} = Astro.props;
+
+const currentPageUrl = Astro.url.href;
+const referralSourceOptions = [
+  { value: "referral", label: "Referral" },
+  { value: "google-search", label: "Google Search" },
+  { value: "ai-prompt-engine", label: "AI Prompt Engine" },
+  { value: "social-media", label: "Social Media" },
+  { value: "repeat-client", label: "Repeat Client" },
+  { value: "other", label: "Other" },
+];
+
+const FORMSPREE_BASE_ACTION = "https://formspree.io/f/";
+const quoteFormId = import.meta.env.PUBLIC_FORMSPREE_QUOTE_ID;
+const quoteFormAction = quoteFormId
+  ? `${FORMSPREE_BASE_ACTION}${quoteFormId}`
+  : undefined;
+
+const handleSubmit = async (values: Record<string, unknown>) => {
+  if (!quoteFormAction) {
+    throw new Error("Quote form is temporarily unavailable. Please try again later.");
+  }
+
+  await submitToFormspree({
+    endpoint: quoteFormAction,
+    values,
+    formName: "Website Quote Request",
+    excludeKeys: ["terms-agreement"],
+  });
+};
+---
+
+<div class={className}>
+  <FormWrapper
+    client:idle
+    onSubmit={handleSubmit}
+    formAction={quoteFormAction}
+    formMethod="post"
+    className="flex flex-col gap-5"
+    includeTermsCheckbox={false}
+    successMessage="Thanks. We’ll review your project details and reach out with next steps."
+    submitButton={{
+      text: buttonText,
+      className: "whitespace-nowrap",
+      disabled: !quoteFormAction,
+      loadingText: "Sending your request..."
+    }}
+  >
+    <input type="hidden" name="pageUrl" value={currentPageUrl} />
+    <input type="hidden" name="serviceCategory" value={serviceCategory} />
+    <input type="hidden" name="formType" value={formType} />
+    <input type="hidden" name="capabilityTitle" value={capabilityTitle} />
+    {capabilitySlug && <input type="hidden" name="capabilitySlug" value={capabilitySlug} />}
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <Input
+        client:idle
+        name="firstName"
+        label="First Name"
+        type="text"
+        required={true}
+        minLength={2}
+        placeholder="First name"
+        inputClassName="min-h-14"
+      />
+
+      <Input
+        client:idle
+        name="lastName"
+        label="Last Name"
+        type="text"
+        required={true}
+        minLength={2}
+        placeholder="Last name"
+        inputClassName="min-h-14"
+      />
+    </div>
+
+    <Input
+      client:idle
+      name="email"
+      label="Email"
+      type="email"
+      required={true}
+      placeholder="Email address"
+      inputClassName="min-h-14"
+    />
+
+    <Input
+      client:idle
+      name="phone"
+      label="Phone"
+      type="tel"
+      placeholder="Phone number"
+      inputClassName="min-h-14"
+    />
+
+    <Textarea
+      client:idle
+      name="projectSummary"
+      label="Tell us more about your website project."
+      required={true}
+      minLength={20}
+      placeholder="What are you trying to improve, launch, redesign, or fix?"
+      rows={6}
+      textareaClassName="min-h-44"
+    />
+
+    <Select
+      client:idle
+      name="budgetRange"
+      label="What is your estimated website budget?"
+      required={true}
+      options={[
+        { value: "under-2500", label: "Under $2,500" },
+        { value: "2500-5000", label: "$2,500 - $5,000" },
+        { value: "5000-10000", label: "$5,000 - $10,000" },
+        { value: "10000-plus", label: "$10,000+" },
+        { value: "not-sure", label: "Not sure yet" },
+      ]}
+      defaultValue=""
+      placeholder="Select an option"
+      selectClassName="min-h-14"
+    />
+
+    <Select
+      client:idle
+      name="referralSource"
+      label="How did you hear about us?"
+      required={true}
+      options={referralSourceOptions}
+      defaultValue=""
+      placeholder="Select an option"
+      selectClassName="min-h-14"
+    />
+  </FormWrapper>
+</div>

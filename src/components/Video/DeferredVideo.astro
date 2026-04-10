@@ -1,0 +1,402 @@
+---
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { generateVideoPoster } from "@/utils/videoThumbnails";
+
+type VideoSource = {
+  src: string;
+  type?: string;
+  media?: string;
+};
+
+type PosterInput =
+  | string
+  | ImageMetadata
+  | {
+      src?: string;
+      width?: number;
+      height?: number;
+    }
+  | undefined;
+
+interface Props extends Record<string, any> {
+  src?: string;
+  sources?: VideoSource[];
+  poster?: PosterInput;
+  alt?: string;
+  wrapperClass?: string;
+  posterClass?: string;
+  videoClass?: string;
+  showPlayButton?: boolean;
+  lazy?: boolean;
+  muted?: boolean;
+  autoplay?: boolean;
+  hoverPlay?: boolean;
+  controls?: boolean;
+  loop?: boolean;
+  playsinline?: boolean;
+  preload?: "none" | "metadata" | "auto";
+  timecodeSeconds?: number;
+  posterWidth?: number;
+  priority?: boolean;
+}
+
+const {
+  src: videoSrc,
+  sources: videoSources = [],
+  poster,
+  alt = "Video preview",
+  wrapperClass = "",
+  posterClass = "",
+  videoClass = "",
+  showPlayButton = true,
+  lazy = true,
+  muted = true,
+  autoplay = false,
+  hoverPlay = false,
+  controls = false,
+  loop = false,
+  playsinline = true,
+  preload,
+  timecodeSeconds = 0,
+  posterWidth = 1600,
+  priority = false,
+  ...rest
+} = Astro.props as Props;
+
+const normalizedSources: VideoSource[] = [];
+if (typeof videoSrc === "string" && videoSrc.length > 0) {
+  normalizedSources.push({
+    src: videoSrc,
+    type: videoSrc.endsWith(".mov")
+      ? "video/quicktime"
+      : videoSrc.endsWith(".webm")
+        ? "video/webm"
+        : "video/mp4",
+  });
+}
+if (Array.isArray(videoSources)) {
+  for (const source of videoSources) {
+    if (source && typeof source.src === "string" && source.src.length > 0) {
+      normalizedSources.push(source);
+    }
+  }
+}
+
+if (!normalizedSources.length) {
+  throw new Error("[DeferredVideo] Missing video source. Provide `src` or `sources`.");
+}
+
+const primarySource = normalizedSources[0];
+
+type PosterPicture = {
+  img: {
+    src: string;
+    width: number;
+    height: number;
+  };
+  placeholderSrc?: string;
+};
+
+function normalizePosterSource(source: PosterInput): string | ImageMetadata | undefined {
+  if (!source) return undefined;
+  if (typeof source === "string") return source;
+  if (
+    typeof source === "object" &&
+    "src" in source &&
+    typeof source.src === "string" &&
+    source.src.length > 0
+  ) {
+    return source as ImageMetadata | string;
+  }
+  return undefined;
+}
+
+async function buildPosterPictureFromMetadata(
+  source: string | ImageMetadata,
+  targetWidth: number
+): Promise<PosterPicture> {
+  const optimized = await getImage({
+    src: source,
+    width: targetWidth,
+    format: "webp",
+    quality: 68,
+  });
+
+  const placeholder = await getImage({
+    src: source,
+    width: 32,
+    format: "webp",
+    quality: 30,
+  });
+
+  return {
+    img: {
+      src: optimized.src,
+      width: optimized.attributes.width as number,
+      height: optimized.attributes.height as number,
+    },
+    placeholderSrc: placeholder.src,
+  };
+}
+
+let posterPicture: PosterPicture | null = null;
+let manualPosterUrl: string | undefined = undefined;
+
+const normalizedPoster = normalizePosterSource(poster);
+if (normalizedPoster && typeof normalizedPoster !== "string") {
+  posterPicture = await buildPosterPictureFromMetadata(normalizedPoster, posterWidth);
+} else if (typeof normalizedPoster === "string") {
+  manualPosterUrl = normalizedPoster;
+}
+
+if (!posterPicture && !manualPosterUrl) {
+  const posterAsset = await generateVideoPoster(primarySource.src, {
+    timecodeSeconds,
+    width: posterWidth,
+  });
+  posterPicture = {
+    img: {
+      src: posterAsset.src,
+      width: posterAsset.width,
+      height: posterAsset.height,
+    },
+    placeholderSrc: posterAsset.placeholderSrc,
+  };
+}
+
+const videoPoster = posterPicture?.img.src ?? manualPosterUrl;
+const componentId = `deferred-video-${crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
+const finalPreload = preload ?? (lazy ? "metadata" : "auto");
+const shouldRenderPlayButton = showPlayButton && autoplay !== true;
+const posterLoading = priority ? "eager" : "lazy";
+const posterFetchPriority = priority ? "high" : "auto";
+const posterDecoding = priority ? "sync" : "async";
+---
+
+<figure
+  id={componentId}
+  class={`deferred-video relative w-full ${wrapperClass}`.trim()}
+  data-video-shell="true"
+  data-lazy-video-root="true"
+  data-video-hover-play={hoverPlay ? "true" : "false"}
+>
+  <div class="relative h-full w-full overflow-hidden">
+    {(posterPicture || manualPosterUrl) && (
+      <div
+        class={`absolute inset-0 z-10 poster ${posterClass}`.trim()}
+        data-video-poster
+        style={posterPicture?.placeholderSrc
+          ? `background-image: url(${posterPicture.placeholderSrc});`
+          : undefined}
+      >
+        <img
+          src={videoPoster}
+          alt={alt}
+          width={posterPicture?.img.width}
+          height={posterPicture?.img.height}
+          loading={posterLoading}
+          decoding={posterDecoding}
+          fetchpriority={posterFetchPriority}
+          class="h-full w-full object-cover"
+        />
+
+        {shouldRenderPlayButton && (
+          <button
+            type="button"
+            class="play-button"
+            aria-label="Play video"
+            data-video-trigger
+          >
+            <span class="sr-only">Play video</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="h-12 w-12 text-white drop-shadow-lg">
+              <path d="M8 5v14l11-7z" fill="currentColor"></path>
+            </svg>
+          </button>
+        )}
+      </div>
+    )}
+
+    <video
+      class={`h-full w-full object-cover ${videoClass}`.trim()}
+      muted={muted}
+      autoplay={!lazy && autoplay}
+      controls={controls}
+      loop={loop}
+      playsinline={playsinline}
+      poster={videoPoster}
+      preload={finalPreload}
+      data-video-autoplay={autoplay ? "true" : "false"}
+      data-video-src={lazy ? primarySource.src : undefined}
+      src={!lazy ? primarySource.src : undefined}
+      {...rest}
+    >
+      {normalizedSources.map((source) => (
+        <source
+          src={!lazy ? source.src : undefined}
+          data-video-src={lazy ? source.src : undefined}
+          type={source.type}
+          media={source.media}
+        />
+      ))}
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</figure>
+
+<script is:inline define:vars={{ componentId }}>
+  (() => {
+    const root = document.getElementById(componentId);
+    if (!(root instanceof HTMLElement)) return;
+    if (root.dataset.deferredVideoInit === "true") return;
+    root.dataset.deferredVideoInit = "true";
+
+    const video = root.querySelector("video");
+    if (!(video instanceof HTMLVideoElement)) return;
+    const hoverPlay = root.dataset.videoHoverPlay === "true";
+
+    const markLoaded = () => {
+      if (root.dataset.videoLoaded === "true") return;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          root.dataset.videoLoaded = "true";
+        });
+      });
+    };
+
+    const ensureVideoSource = () => {
+      let attached = false;
+
+      const directSrc = video.dataset.videoSrc;
+      if (directSrc && video.getAttribute("src") !== directSrc) {
+        video.src = directSrc;
+        attached = true;
+      }
+
+      const sourceNodes = video.querySelectorAll("source[data-video-src]");
+      sourceNodes.forEach((node) => {
+        const nodeSrc = node.getAttribute("data-video-src");
+        if (nodeSrc && node.getAttribute("src") !== nodeSrc) {
+          node.setAttribute("src", nodeSrc);
+          attached = true;
+        }
+      });
+
+      if (attached) {
+        if (video.preload === "none") {
+          video.preload = "metadata";
+        }
+        video.load();
+      }
+
+      return attached;
+    };
+
+    const tryPlay = () => {
+      if (video.dataset.videoAutoplay !== "true") return;
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => undefined);
+      }
+    };
+
+    const playOnIntent = () => {
+      ensureVideoSource();
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => undefined);
+      }
+    };
+
+    const resetHoverPreview = () => {
+      if (!hoverPlay) return;
+      video.pause();
+      try {
+        video.currentTime = 0;
+      } catch {
+        // Ignore browsers that prevent synchronous seek during hover reset.
+      }
+      delete root.dataset.videoLoaded;
+    };
+
+    if (video.readyState >= 2) {
+      markLoaded();
+    }
+
+    video.addEventListener("loadeddata", markLoaded);
+    video.addEventListener("canplay", markLoaded);
+    video.addEventListener("playing", markLoaded);
+
+    const trigger = root.querySelector("[data-video-trigger]");
+    if (trigger instanceof HTMLButtonElement) {
+      trigger.addEventListener("click", () => {
+        playOnIntent();
+      });
+    }
+
+    if (hoverPlay) {
+      root.addEventListener("pointerenter", playOnIntent);
+      root.addEventListener("pointerleave", resetHoverPreview);
+      root.addEventListener("focusin", playOnIntent);
+      root.addEventListener("focusout", resetHoverPreview);
+    }
+
+    if (!video.dataset.videoSrc) {
+      if (!hoverPlay) {
+        tryPlay();
+      }
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          ensureVideoSource();
+          if (!hoverPlay) {
+            tryPlay();
+          }
+          observer.disconnect();
+        });
+      },
+      { threshold: 0.2, rootMargin: "0px 0px 200px 0px" }
+    );
+
+    observer.observe(root);
+  })();
+</script>
+
+<style>
+  .deferred-video .poster {
+    display: grid;
+    place-items: center;
+    transition: opacity 350ms ease, visibility 350ms ease;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .deferred-video[data-video-loaded="true"] .poster {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .deferred-video .play-button {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    border: 0;
+    border-radius: 9999px;
+    padding: 1rem;
+    background: rgba(15, 15, 15, 0.55);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    transition: transform 200ms ease, background 200ms ease;
+  }
+
+  .deferred-video .play-button:hover,
+  .deferred-video .play-button:focus-visible {
+    transform: translate(-50%, -50%) scale(1.05);
+    background: rgba(15, 15, 15, 0.7);
+  }
+</style>

@@ -1,0 +1,244 @@
+---
+import FormWrapper from "@/components/Form/FormWrapper";
+import Input from "@/components/Form/inputs/Input";
+import Select from "@/components/Form/inputs/Select";
+import Textarea from "@/components/Form/inputs/Textarea";
+import Checkbox from "@/components/Form/inputs/Checkbox";
+import { submitToFormspree } from "@/utils/formspree";
+
+const currentPageUrl = Astro.url.href;
+
+const FORMSPREE_BASE_ACTION = "https://formspree.io/f/";
+const premiumWebsiteQuoteFormId =
+  import.meta.env.PUBLIC_FORMSPREE_PREMIUM_WEBSITE_ID;
+const quoteFormAction = premiumWebsiteQuoteFormId
+  ? `${FORMSPREE_BASE_ACTION}${premiumWebsiteQuoteFormId}`
+  : undefined;
+
+const businessGoals = [
+  { name: "goal_generate_leads", label: "Generate more qualified leads" },
+  { name: "goal_improve_conversions", label: "Improve conversion rate from existing traffic" },
+  { name: "goal_sell_online", label: "Sell products or services online" },
+  { name: "goal_take_bookings", label: "Take bookings, appointments, or consultations" },
+  { name: "goal_build_authority", label: "Build credibility and position the brand more strongly" },
+  { name: "goal_publish_content", label: "Publish content and grow search visibility" },
+  { name: "goal_support_campaigns", label: "Support ads, promotions, or campaign traffic" },
+  { name: "goal_reduce_manual_work", label: "Reduce manual follow-up with better systems and flows" },
+];
+
+const handleSubmit = async (values: Record<string, unknown>) => {
+  if (!quoteFormAction) {
+    throw new Error("Quote form is temporarily unavailable. Please try again later.");
+  }
+
+  await submitToFormspree({
+    endpoint: quoteFormAction,
+    values,
+    formName: "Premium Website Quote Request",
+    excludeKeys: ["terms-agreement"],
+  });
+};
+---
+
+<div
+  id="premium-website-quote"
+  class="section-box card-bg relative overflow-hidden"
+>
+  <div class="relative z-10 p-6 lg:p-8">
+    <div class="mb-6 space-y-2">
+      <h3 class="text-2xl text-heading">Request your custom quote</h3>
+      <p class="text-sm leading-relaxed text-text/75">
+        Required fields are kept lean: name, email, budget, website type, and project summary.
+      </p>
+    </div>
+
+    <FormWrapper
+      client:idle
+      onSubmit={handleSubmit}
+      formAction={quoteFormAction}
+      formMethod="post"
+      className="flex flex-col gap-6"
+      successMessage="Thanks. We’ll review your project and follow up with next steps for a premium website quote."
+      submitButton={{
+        text: "Request Custom Quote",
+        className: "w-full",
+        disabled: !quoteFormAction,
+        loadingText: "Sending your quote request..."
+      }}
+    >
+      <input type="hidden" name="pageUrl" value={currentPageUrl} />
+      <input type="hidden" name="serviceCategory" value="websites" />
+      <input type="hidden" name="serviceTier" value="premium-website" />
+      <input type="hidden" name="leadIntent" value="new-website" />
+
+      <div class="space-y-4">
+        <div>
+          <h4 class="text-sm uppercase tracking-[0.22em] text-heading">Contact</h4>
+          <p class="mt-2 text-sm text-text/70">Basic contact details so we can follow up with the right quote.</p>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <Input
+            client:idle
+            name="name"
+            label="Name"
+            type="text"
+            required={true}
+            minLength={2}
+            placeholder="Your name *"
+            showLabel={false}
+          />
+
+          <Input
+            client:idle
+            name="email"
+            label="Email"
+            type="email"
+            required={true}
+            placeholder="Email address *"
+            showLabel={false}
+          />
+
+          <Input
+            client:idle
+            name="phone"
+            label="Phone"
+            type="tel"
+            placeholder="Phone number"
+            showLabel={false}
+          />
+
+          <Input
+            client:idle
+            name="businessName"
+            label="Business Name"
+            type="text"
+            placeholder="Business name"
+            showLabel={false}
+          />
+        </div>
+      </div>
+
+      <div class="space-y-4 border-t border-white/10 pt-6">
+        <div>
+          <h4 class="text-sm uppercase tracking-[0.22em] text-heading">Project Qualification</h4>
+          <p class="mt-2 text-sm text-text/70">Tell us what kind of site you want and the level of investment you have in mind.</p>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <Select
+            client:idle
+            name="budgetRange"
+            label="Budget Range"
+            required={true}
+            options={[
+              { value: "1500-2500", label: "$1,500 - $2,500" },
+              { value: "2500-5000", label: "$2,500 - $5,000" },
+              { value: "5000-10000", label: "$5,000 - $10,000" },
+              { value: "10000-plus", label: "$10,000+" },
+              { value: "need-guidance", label: "Not sure / need guidance" },
+            ]}
+            defaultValue=""
+            placeholder="Budget range *"
+            showLabel={false}
+          />
+
+          <Select
+            client:idle
+            name="websiteType"
+            label="Website Type"
+            required={true}
+            options={[
+              { value: "fast-loading-marketing-site", label: "Fast loading marketing site" },
+              { value: "booking-or-ecommerce-site", label: "Booking or ecommerce site" },
+            ]}
+            defaultValue=""
+            placeholder="Website type *"
+            showLabel={false}
+          />
+
+          <Input
+            client:idle
+            name="currentWebsiteUrl"
+            label="Current Website URL"
+            type="url"
+            placeholder="Current website URL"
+            containerClassName="md:col-span-2"
+            showLabel={false}
+          />
+
+          <Select
+            client:idle
+            name="timeline"
+            label="Preferred Timeline"
+            options={[
+              { value: "asap", label: "As soon as possible" },
+              { value: "2-4-weeks", label: "Within 2-4 weeks" },
+              { value: "1-2-months", label: "Within 1-2 months" },
+              { value: "2-4-months", label: "Within 2-4 months" },
+              { value: "flexible", label: "Flexible / exploring options" },
+            ]}
+            defaultValue=""
+            placeholder="Preferred timeline"
+            showLabel={false}
+          />
+
+          <Select
+            client:idle
+            name="pageCount"
+            label="Approximate Scope"
+            options={[
+              { value: "5-8-pages", label: "5-8 pages" },
+              { value: "8-15-pages", label: "8-15 pages" },
+              { value: "15-plus-pages", label: "15+ pages" },
+              { value: "site-plus-content-hub", label: "Site plus blog/resource hub" },
+              { value: "not-sure", label: "Not sure yet" },
+            ]}
+            defaultValue=""
+            placeholder="Approximate scope / page count"
+            showLabel={false}
+          />
+        </div>
+      </div>
+
+      <div class="space-y-4 border-t border-white/10 pt-6">
+        <div>
+          <h4 class="text-sm uppercase tracking-[0.22em] text-heading">Business Goals</h4>
+          <p class="mt-2 text-sm text-text/70">Optional, but useful for understanding what the website should help the business do.</p>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          {businessGoals.map((goal) => (
+            <Checkbox
+              client:idle
+              name={goal.name}
+              containerClassName="m-0"
+              labelClassName="flex items-start gap-3 rounded-2xl faded-border bg-white/3 p-4 transition-colors hover:bg-transparent"
+              checkboxClassName="mt-1 h-4 w-4 rounded accent-accent"
+            >
+              <span class="text-sm leading-relaxed text-text/85">{goal.label}</span>
+            </Checkbox>
+          ))}
+        </div>
+      </div>
+
+      <div class="space-y-4 border-t border-white/10 pt-6">
+        <div>
+          <h4 class="text-sm uppercase tracking-[0.22em] text-heading">Project Summary</h4>
+          <p class="mt-2 text-sm text-text/70">Tell us what you want to build, what the site needs to do, and what makes it more custom.</p>
+        </div>
+
+        <Textarea
+          client:idle
+          name="projectSummary"
+          label="Project Summary"
+          required={true}
+          minLength={20}
+          placeholder="Describe what you want to build, what the website needs to help your business achieve, and any complexity we should factor into the quote. *"
+          rows={6}
+          showLabel={false}
+        />
+      </div>
+    </FormWrapper>
+  </div>
+</div>

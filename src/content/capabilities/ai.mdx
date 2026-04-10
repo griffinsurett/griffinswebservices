@@ -1,0 +1,277 @@
+---
+title: "Ai"
+description: "We help businesses use AI across the website, marketing, internal workflows, and team rollout so it saves time, cuts costs, and does real work."
+itemLayout: "../../layouts/collections/CapabilityCustomLayout.astro"
+heading:
+  before: "Use"
+  text: "Ai"
+  after: "across the business to save money, move faster, and do real work."
+order: 6
+icon: "fa6-solid:robot"
+tags:
+  - featured
+redirectFrom:
+  - "/capabilities/ai-for-web"
+solutions:
+  - websites
+  - business-websites
+  - landing-pages
+  - web-apps
+---
+
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import AIChatSimulation from "@/components/AnimatedExamples/AIChatSimulation";
+import LeadsSpreadsheet from "@/components/AnimatedExamples/LeadsSpreadsheet";
+import AIWorkspaceDemo from "@/components/AnimatedExamples/AIWorkspaceDemo";
+import PromptNotepadDemo from "@/components/AnimatedExamples/PromptNotepadDemo";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import CapabilityTopicShowcaseSection from "@/layouts/sections/CapabilityTopicShowcaseSection.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import CardVariant from "@/components/starter/ContentRenderer/variants/CardVariant.astro";
+import { related, sortByOrder } from "@/utils/query";
+
+export const aiApproachCards = [
+  {
+    icon: "fa6-solid:globe",
+    title: "AI On Your Website",
+    description:
+      "Add AI where it helps visitors get answers faster, move quicker, and turn into better leads.",
+  },
+  {
+    icon: "fa6-solid:bullhorn",
+    title: "AI In Marketing",
+    description:
+      "Use AI for research, outlines, drafts, and planning so marketing work starts faster and keeps moving.",
+  },
+  {
+    icon: "fa6-solid:gears",
+    title: "AI In Internal Workflows",
+    description:
+      "Use AI on repeat work, summaries, handoffs, and internal tasks so less time gets burned on manual work.",
+  },
+  {
+    icon: "fa6-solid:diagram-project",
+    title: "AI Strategy, Setup & Oversight",
+    description:
+      "Choose the right tools, build reusable prompt systems, roll them out to the team, and keep them useful over time.",
+  },
+];
+
+export const aiOnYourWebsiteCards = [
+  {
+    icon: "fa6-solid:robot",
+    title: "AI Help On The Website",
+    description:
+      "We can add AI tools that answer questions, sort requests, and help visitors get what they need faster.",
+  },
+  {
+    icon: "fa6-solid:clipboard-list",
+    title: "Smarter Forms & Lead Flows",
+    description:
+      "AI can help sort leads, clean up intake, and speed up follow-up after someone reaches out.",
+  },
+  {
+    icon: "fa6-solid:wand-magic-sparkles",
+    title: "Better Search & Content Help",
+    description:
+      "We can improve site search, answers, and content help so visitors reach the right info sooner.",
+  },
+];
+
+export const aiInMarketingCards = [
+  {
+    icon: "fa6-solid:calendar-days",
+    title: "Plan Campaigns Faster",
+    description:
+      "AI can help speed up ideas, outlines, and planning so marketing work starts moving sooner.",
+  },
+  {
+    icon: "fa6-solid:file-lines",
+    title: "Make More Content Faster",
+    description:
+      "AI can help with drafts, ideas, rewrites, and content work so your business can put out more without a bigger team.",
+  },
+  {
+    icon: "fa6-solid:chart-line",
+    title: "Do More With Less",
+    description:
+      "We help set up marketing work so AI can take pressure off the team and help the business get more done.",
+  },
+];
+
+export const aiInInternalWorkflowsCards = [
+  {
+    icon: "fa6-solid:clock",
+    title: "Save Time On Repeat Work",
+    description:
+      "AI can help with the same tasks over and over so less money and time get burned on busy work.",
+  },
+  {
+    icon: "fa6-solid:file-pen",
+    title: "Speed Up Writing & Research",
+    description:
+      "AI can help with drafts, notes, summaries, and research so the team can do more work in less time.",
+  },
+  {
+    icon: "fa6-solid:diagram-project",
+    title: "Connect Tools That Work Together",
+    description:
+      "We connect tools so work moves faster, less gets stuck, and the business does not need as much manual help.",
+  },
+];
+
+export const aiStrategySetupOversightCards = [
+  {
+    icon: "fa6-solid:arrows-rotate",
+    title: "Roll AI Into The Workflow",
+    description:
+      "We help fit AI into day-to-day work so it becomes part of how the business gets things done.",
+  },
+  {
+    icon: "fa6-solid:people-group",
+    title: "Use The Tools Better",
+    description:
+      "We help the business learn the tools faster so people can get more from them without wasting time.",
+  },
+  {
+    icon: "fa6-solid:arrow-trend-up",
+    title: "Improve What Works Over Time",
+    description:
+      "Once the first setup is in place, we keep refining it so the business keeps getting more value from AI over time.",
+  },
+];
+
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+  grandparentContent={{
+    testimonialsTitle: "Testimonials",
+    testimonialsHeading:
+      "What business owners say after we help them use AI in practical ways.",
+    testimonialsDescription:
+      "Real feedback from businesses that wanted to save time, improve workflows, and use AI without adding more mess.",
+    faqTitle: "FAQs",
+    faqHeading: "Common Questions About AI Help For Businesses",
+  }}
+>
+  <BreadcrumbHeroCenter
+    slot="hero"
+    title="AI Help For Businesses"
+    heading={{
+      before: "Use",
+      text: "AI",
+      after: "across the business to save money, move faster, and do real work."
+    }}
+    description="We help businesses use AI on the website, in marketing, across internal workflows, and in team systems so it actually saves time, reduces costs, and helps the business do more."
+    breadcrumbs={[
+      { label: "Home", href: "/" },
+      { label: "Capabilities", href: "/capabilities" },
+      { label: "AI" },
+    ]}
+    primaryCTA={{
+      text: "Give Us a Call",
+      link: "#capability-quote",
+    }}
+    id="capabilities-quote-hero"
+  />
+
+  <Section class="outer-section">
+    <div class="inner-section">
+      <SectionHeader
+        title="What We Help With"
+        heading="Use AI across customer experience, marketing, internal work, and team rollout."
+        description="The goal is not AI for show. The goal is AI that handles useful work, helps the team move faster, and gets set up in a way people can actually reuse and improve."
+        className="mx-auto max-w-5xl text-center"
+        headingClassName="h2 leading-[0.98] font-semibold text-heading"
+        descriptionClassName="large-text mx-auto max-w-4xl"
+      />
+
+      <CardVariant
+        items={aiApproachCards}
+        columns={4}
+        showButtonSection={false}
+        className="mt-10 px-0"
+        contentClassName=""
+        card={{
+          stretchToFill: true,
+        }}
+      />
+    </div>
+  </Section>
+
+  <ContentRenderer
+    query={related("technologies", "capabilities", "ai").orderBy(sortByOrder())}
+    variant="TechnologiesVariant"
+    title="AI Technologies"
+    description="These are some of the AI tools we use across websites, marketing, workflows, and team systems."
+  />
+
+  <TrustStatement
+    text="AI should help your business do real work across the website, marketing, internal workflows, and team systems."
+    textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
+  />
+
+  <Fragment slot="topic-sections">
+    <CapabilityTopicShowcaseSection
+      title="AI On Your Website"
+      heading="Use AI on the website too when it helps people move faster and helps the business work better."
+      description="We can add AI to the website in ways that help visitors get answers faster, move quicker, and turn into better leads."
+      cards={aiOnYourWebsiteCards}
+    >
+      <Fragment slot="content">
+        <p>AI on the website works best when it helps visitors get unstuck, find the right answer faster, and move toward the next step without adding noise.</p>
+        <p>This can support lead qualification, content discovery, and faster customer help when the business wants the site to do more than just sit there.</p>
+      </Fragment>
+
+      <AIChatSimulation slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="AI In Marketing"
+      heading="Use AI in marketing to make more, move faster, and get more done."
+      description="We help use AI in marketing so your business can make more content, move faster, and get more out without needing as much extra help."
+      reverse={true}
+      cards={aiInMarketingCards}
+    >
+      <Fragment slot="content">
+        <p>Marketing teams can use AI to speed up research, outlines, planning, drafts, and idea development without giving up judgment or control.</p>
+        <p>The goal is not generic output. The goal is a faster content and campaign workflow that still sounds like the business and supports real decisions.</p>
+      </Fragment>
+
+      <LeadsSpreadsheet slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="AI In Internal Workflows"
+      heading="Use AI in internal workflows so repeat work, summaries, and handoffs move faster."
+      description="We help use AI inside the business on repeat work, summaries, handoffs, and team tasks so less time gets burned on manual work."
+      cards={aiInInternalWorkflowsCards}
+    >
+      <Fragment slot="content">
+        <p>Internal AI systems help with repetitive work that slows teams down: summaries, standard responses, handoffs, intake organization, and process cleanup.</p>
+        <p>That gives the business a more reusable system instead of relying on one-off prompt experiments that disappear after a week.</p>
+      </Fragment>
+
+      <AIWorkspaceDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="AI Strategy, Setup & Oversight"
+      heading="Set up AI the right way with reusable systems, clear rollout, and ongoing oversight."
+      description="We help choose tools, build reusable prompt systems, roll AI out to the team, and keep it useful over time."
+      reverse={true}
+      cards={aiStrategySetupOversightCards}
+    >
+      <Fragment slot="content">
+        <p>AI only becomes useful long term when the tool choices, instructions, team rollout, and review process are thought through from the start.</p>
+        <p>This area covers the systems that keep AI practical, reusable, and easier to trust as more people in the business start using it.</p>
+      </Fragment>
+
+      <PromptNotepadDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+  </Fragment>
+</CapabilityBodyLayout>

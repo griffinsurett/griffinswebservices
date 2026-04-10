@@ -1,0 +1,245 @@
+// src/content/config.ts
+/**
+ * Collection structure:
+ *
+ * src/content/[collection]/
+ *   _meta.mdx         ← Collection config (frontmatter) + index page content (body)
+ *                        The _ prefix excludes it from collection entries
+ *   item-one.mdx      ← Collection item
+ *   item-two.mdx      ← Collection item
+ *
+ * _meta.mdx frontmatter controls:
+ * - title: Display name for the collection
+ * - description: Collection description
+ * - hasPage: Whether to generate /[collection] index page
+ * - itemsHasPage: Whether items get individual pages
+ * - featuredImage: Hero image for index page
+ * - seo: SEO overrides
+ */
+import { file } from "astro/loaders";
+import { defineCollection, z } from "astro:content";
+import { baseSchema, MenuSchema, MenuItemFields, refSchema } from "./schema";
+import { MenuItemsLoader } from "@/utils/loaders/MenuItemsLoader";
+
+export const collections = {
+  // ── menus.json ─────────────────────────────────────────
+  "menus": defineCollection({
+    loader: file("src/content/menus/menus.json"),
+    schema: MenuSchema,
+  }),
+
+  // ── menu-items.json ─────────────────────────────────────
+  "menu-items": defineCollection({
+    loader: MenuItemsLoader(),
+    schema: ({ image }) => MenuItemFields({ image }),
+  }),
+
+  "contact-us": defineCollection({
+    loader: file("src/content/contact-us/contact-us.json"),
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        linkPrefix: z.string().optional(),
+      }),
+  }),
+
+  "social-media": defineCollection({
+    loader: file("src/content/social-media/socialmedia.json"),
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        link: z.string().optional(),
+      }),
+  }),
+
+  // ── legal ───────────────────────────────────────────────
+  "legal": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        effectiveDate: z
+          .union([z.date(), z.string()])
+          .optional()
+          .transform((val) => {
+            if (!val) return undefined;
+            if (val instanceof Date) return val;
+            return new Date(val);
+          }),
+      }),
+  }),
+
+  "about-us": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        statLabel: z.string().optional(),
+        statValue: z.number().optional(),
+        statPrefix: z.string().optional(),
+        statSuffix: z.string().optional(),
+        statDescription: z.string().optional(),
+        reviewLabel: z.string().optional(),
+        reviewLink: z.string().url().optional(),
+        featureItems: z
+          .array(
+            z.object({
+              icon: z.string(),
+              text: z.string(),
+            }),
+          )
+          .default([]),
+      })
+  }),
+
+  "blog": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        author: refSchema("authors"),
+        tags: z.array(z.string()).default([]),
+        readingTime: z.number().optional(),
+        capabilities: refSchema("capabilities"),
+      }),
+  }),
+
+  "authors": defineCollection({
+    loader: file("src/content/authors/authors.json"),
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        email: z.string().email().optional(),
+        social: z
+          .object({
+            twitter: z.string().url().optional(),
+            github: z.string().url().optional(),
+            linkedin: z.string().url().optional(),
+            website: z.string().url().optional(),
+          })
+          .optional(),
+        role: z.string().optional(),
+      }),
+  }),
+
+  "testimonials": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        author: z.string(),
+        role: z.string(),
+        company: z.string().optional(),
+        rating: z.number().min(1).max(5).default(5),
+        featured: z.boolean().default(false),
+      }),
+  }),
+
+  "projects": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).omit({ featuredImage: true }).extend({
+        client: z.string().optional(),
+        projectUrl: z.string().url().optional(),
+        technologies: z.array(z.string()).default([]),
+        industry: refSchema("industries"),
+        featuredVideo: z.string().optional(),
+        fullSiteImage: z
+          .object({
+            src: image(),
+            alt: z.string(),
+          })
+          .optional(),
+      }),
+  }),
+
+  "faq": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        category: z.string().optional(),
+        solutions: refSchema(["solutions", "features"]),
+        capabilities: refSchema("capabilities"),
+      }),
+  }),
+
+  // ── solutions ─────────────────────────────────────────────
+  "solutions": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        price: z.string().optional(),
+        featured: z.boolean().optional(),
+      }),
+  }),
+
+  "pricing": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        link: z.string().url().optional(),
+        price: z.string().optional(),
+        pricePrefix: z.string().optional(),
+        priceSuffix: z.string().optional(),
+        featured: z.boolean().optional(),
+        features: z.array(z.string()).default([]),
+        solutions: refSchema("solutions"),
+        capabilities: refSchema("capabilities"),
+      }),
+  }),
+
+  // ── features ──────────────────────────────────────────────
+  "features": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        solutions: refSchema("solutions"),
+      }),
+  }),
+
+  // ── capabilities ──────────────────────────────────────────
+  "capabilities": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        features: z.array(z.string()).default([]),
+        solutions: refSchema(["solutions", "features"]),
+        technologyCards: refSchema("technologies"),
+      }),
+  }),
+
+  // ── industries ────────────────────────────────────────────
+  "industries": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }),
+  }),
+
+  // ── technologies ──────────────────────────────────────────
+  "technologies": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        capabilities: refSchema("capabilities"),
+        solutions: refSchema("solutions"),
+      }),
+  }),
+
+  // ── stats ──────────────────────────────────────────
+  "stats": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        stat: z.string().optional(),
+        statValue: z.number().optional(),
+        statStart: z.number().optional(),
+        statPrefix: z.string().optional(),
+        statSuffix: z.string().optional(),
+        statAnimate: z.boolean().optional(),
+        icon: z.string().optional(),
+        highlight: z.boolean().optional(),
+      }),
+  }),
+
+  // ── benefits ──────────────────────────────────────────
+  "benefits": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        highlight: z.boolean().optional(),
+        solutions: refSchema(["solutions", "features"]),
+      }),
+  }),
+
+  // ── process ──────────────────────────────────────────
+  "process": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }),
+  }),
+
+  // ── philosophy ──────────────────────────────────────────
+  "philosophy": defineCollection({
+    schema: ({ image }) =>
+      baseSchema({ image }),
+  }),
+
+};

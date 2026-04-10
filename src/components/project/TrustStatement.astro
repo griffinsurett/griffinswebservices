@@ -1,0 +1,19 @@
+---
+import Section from "@/components/project/Section.astro";
+
+interface Props {
+  text: string;
+  className?: string;
+}
+
+const { text, className = "min-h-[40vh] flex items-center mx-auto inner-section" } = Astro.props;
+---
+
+<Section
+  tag="aside"
+  class={`trust-statement ${className}`.trim()}
+  aria-label="Trust statement"
+  animateOnce={false}
+>
+  <h2 class="text-3xl md:text-4xl lg:text-5xl text-left lg:text-center">{text}</h2>
+</Section>

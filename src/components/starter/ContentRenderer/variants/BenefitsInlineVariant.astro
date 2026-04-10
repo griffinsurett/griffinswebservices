@@ -1,0 +1,68 @@
+---
+// src/components/starter/ContentRenderer/variants/BenefitsInlineVariant.astro
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import type { FeatureCardData } from "@/components/LoopComponents/FeatureCard";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import Section from "@/components/project/Section.astro";
+import CardRenderer from "@/components/LoopTemplates/CardRenderer";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  columns?: 1 | 2 | 3 | 4;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "",
+  columns = 2,
+  id,
+  collectionTitle,
+} = Astro.props as Props;
+
+const safeItems = toArray(items) as FeatureCardData[];
+const sectionTitle = collectionTitle ?? title;
+
+// SectionHeader handles heading normalization automatically
+const showHeader = Boolean(sectionTitle || heading || description);
+
+const featureCardProps = {
+  listItemProps: {
+    layout: "horizontal" as const,
+    alignment: "left" as const,
+    className: "gap-5 text-left items-start w-full",
+    containerClassName: "text-left space-y-2",
+    iconClassName: "icon-large z-10 card-icon-color mr-5 shrink-0",
+  },
+};
+---
+
+<Section id={id} class={`outer-section relative ${className}`.trim()}>
+  <div class="space-y-10">
+    {
+      showHeader && (
+        <SectionHeader
+          title={sectionTitle}
+          heading={heading}
+          description={description}
+          className="text-center"
+          headingClassName="h2 mb-4"
+          descriptionClassName="text-lg text-muted max-w-2xl mx-auto"
+        />
+      )
+    }
+
+    {
+      safeItems.length > 0 && (
+        <CardRenderer
+          client:visible
+          items={safeItems}
+          columns={columns}
+          featureCardProps={featureCardProps}
+        />
+      )
+    }
+  </div>
+</Section>

@@ -1,0 +1,89 @@
+---
+// src/components/starter/ContentRenderer/variants/ContactListVariant.astro
+/**
+ * Contact List Variant
+ *
+ * Slimmed down list presentation of contact links (phone, email, etc.)
+ * Mirrors ListVariant spacing but decorates each entry with its icon + prefix.
+ *
+ * Uses the linkBehavior system for URL/displayValue generation.
+ * Items should have: url, displayValue (from prepareEntry), title, icon
+ */
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import Section from "@/components/project/Section.astro";
+import DividerHeading from "@/components/project/DividerHeading/DividerHeading";
+import Icon from "@/components/starter/Icon";
+import Button from "@/components/starter/Button/Button";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  ctaHref?: string;
+  ctaText?: string;
+}
+
+const {
+  items = [],
+  title,
+  description,
+  className = "",
+  id,
+  showHeadingDivider = false,
+  showHeadingSection = true,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+const fallbackIcon = "fa6-solid:circle-dot";
+---
+
+<Section id={id} class={`${className}`}>
+  <!-- {showHeadingSection && (title || description) && (
+    <DividerHeading
+      title={title}
+      showDivider={showHeadingDivider}
+      className="mb-4"
+      headingClassName="h4 text-heading"
+    />
+  )} -->
+
+  {safeItems.length > 0 && (
+    <ul class="flex flex-col items-start justify-center gap-3 list-none">
+      {safeItems.map((item: any) => {
+        // url and displayValue come from linkBehavior in prepareEntry
+        const href = item.url;
+        // Use displayValue if available (from linkBehavior), fallback to description
+        const displayValue = item.displayValue ?? item.description;
+        const iconName = item.icon ?? fallbackIcon;
+        return (
+          <li class="py-0" data-contact-id={item.slug}>
+            {href ? (
+              <Button
+                href={href}
+                variant="link"
+                size="sm"
+                aria-label={displayValue}
+              >
+                <Icon
+                  icon={iconName}
+                  size="md"
+                  className="w-5 h-5 mr-1 shrink-0 text-primary"
+                />
+                <span class="text-base">{displayValue}</span>
+              </Button>
+            ) : (
+              <div class="flex items-center gap-3">
+                <Icon
+                  icon={iconName}
+                  size="md"
+                  className="w-5 h-5 shrink-0 text-primary"
+                />
+                <span class="text-heading font-semibold text-base">
+                  {displayValue}
+                </span>
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  )}
+</Section>

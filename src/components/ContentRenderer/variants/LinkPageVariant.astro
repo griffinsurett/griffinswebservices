@@ -1,0 +1,221 @@
+---
+// src/components/ContentRenderer/variants/LinkPageVariant.astro
+/**
+ * Link Page Variant - Single-column links page layout.
+ */
+
+import LinkCard from "@/components/LoopComponents/LinkCard";
+import LinkPageShareButton from "@/components/LinkPageShareButton";
+import Logo from "@/components/Logo/Logo.astro";
+import Section from "@/components/Section.astro";
+import ThemeControls from "@/components/ThemeControls/ThemeControls.jsx";
+import HorizontalLegalFooter from "@/components/Footer/HorizontalLegalFooter";
+import BackgroundMedia from "@/components/BackgroundMedia.astro";
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import { toArray } from "@/utils/array";
+import { formatPhoneNumber } from "@/utils/string";
+import { getCollection } from "astro:content";
+
+interface Props extends BaseVariantProps {
+  showIcons?: boolean;
+}
+
+const {
+  items = [],
+  title,
+  description,
+  className = "",
+  id,
+  showIcons = true,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+const socialLinks = await getCollection("social-media");
+const contactLinks = await getCollection("contact-us");
+const phoneEntry = contactLinks.find(
+  (entry) =>
+    entry.id === "phone" ||
+    entry.data.linkPrefix === "tel:" ||
+    entry.data.tags?.includes("phone"),
+);
+const phoneValue = phoneEntry?.data.description?.trim();
+const formattedPhoneValue = phoneValue ? formatPhoneNumber(phoneValue) : "";
+const phoneHref = phoneValue
+  ? `${phoneEntry?.data.linkPrefix ?? "tel:"}${phoneValue}`
+  : undefined;
+const hasContactPageItem = safeItems.some(
+  (item) => typeof item?.url === "string" && item.url === "/contact-us",
+);
+const hasPhoneItem = safeItems.some(
+  (item) =>
+    typeof item?.url === "string" &&
+    (item.url === phoneHref || item.url === `tel:${phoneValue ?? ""}`),
+);
+const linkItems = [
+  ...safeItems,
+  ...(hasContactPageItem
+    ? []
+    : [
+        {
+          title: "Contact Us",
+          url: "/contact-us",
+          icon: "fa6-solid:address-card",
+          openInNewTab: false,
+        },
+      ]),
+  ...(phoneHref && !hasPhoneItem
+    ? [
+        {
+          title: formattedPhoneValue || "Call Us",
+          url: phoneHref,
+          icon: "fa6-solid:phone",
+          openInNewTab: false,
+        },
+      ]
+    : []),
+];
+const linkHeroVideoSrc = "/video3.mp4";
+---
+
+<Section id={id} class={`min-h-screen ${className}`}>
+  <div class="relative flex flex-col">
+    <header
+      class="relative z-20 hidden w-full md:block"
+      role="banner"
+      aria-label="Links page header"
+    >
+      <div
+        class="grid grid-cols-[1fr_auto_1fr] items-center head-foot-section py-2 gap-4"
+      >
+        <div class="justify-self-start">
+          <Logo
+            loading="eager"
+            trigger="scroll"
+            animateOutText={true}
+            altContext="Links"
+            titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide font-semibold no-translate"
+            titleRestClass="font-light emphasized-text uppercase text-[0.7rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.2em]"
+          />
+        </div>
+
+        <ThemeControls client:idle />
+
+        <div class="justify-self-end">
+          <LinkPageShareButton
+            shareTitle="Griffin's Web Services Links"
+            client:idle
+          />
+        </div>
+      </div>
+    </header>
+
+    <div class="w-full md:mx-auto md:max-w-[34rem] md:px-4">
+      <div
+        class="relative aspect-[277/180] w-full overflow-hidden rounded-none [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_78%,rgba(0,0,0,0.35)_90%,rgba(0,0,0,0)_96%)]"
+      >
+        <BackgroundMedia
+          backgroundMedia={{
+            video: {
+              src: linkHeroVideoSrc,
+              autoPlay: true,
+              muted: true,
+              loop: true,
+              playsInline: true,
+              controls: false,
+              lazy: true,
+              preload: "none",
+              generateThumbAt: 0.5,
+              posterWidth: 960,
+              videoClass: "rounded-none object-cover object-center",
+            },
+            overlayClass: "bg-linear-to-t from-black via-black/40 to-black/60",
+          }}
+        />
+
+        <header
+          class="absolute inset-x-0 top-0 z-20 md:hidden"
+          role="banner"
+          aria-label="Links page header"
+        >
+          <div
+            class="grid grid-cols-[1fr_auto_1fr] items-center head-foot-section py-2 gap-4"
+          >
+            <div aria-hidden="true"></div>
+
+            <ThemeControls client:idle />
+
+            <div class="justify-self-end">
+              <LinkPageShareButton
+                shareTitle="Griffin's Web Services Links"
+                client:idle
+              />
+            </div>
+          </div>
+        </header>
+      </div>
+    </div>
+
+    <div
+      class="mx-auto flex w-full max-w-[34rem] flex-col gap-3 overflow-hidden px-4 sm:gap-7"
+    >
+      <p
+        class="hidden pt-4 text-center text-base md:text-lg xl:text-xl leading-relaxed text-text/80 md:block"
+      >
+        We're a New Jersey based Web Agency that creates fast, engaging websites
+        built to grow your business.
+      </p>
+
+      <div class="flex justify-center pt-1 md:hidden">
+        <div class="flex max-w-[22rem] flex-col items-center text-center">
+          <Logo
+            loading="eager"
+            trigger="scroll"
+            animateOutText={true}
+            altContext="Links"
+            titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide font-semibold no-translate"
+            titleRestClass="font-light emphasized-text uppercase text-[0.7rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.2em]"
+          />
+          <p class="mt-3 text-sm leading-relaxed text-text/80">
+            We're a New Jersey based Web Agency that creates fast, engaging
+            websites built to grow your business.
+          </p>
+        </div>
+      </div>
+
+      {
+        linkItems.length > 0 && (
+          <nav class="relative z-10" aria-label="Links menu">
+            <ul class="grid grid-cols-1 gap-4 list-none sm:gap-5">
+              {linkItems.map((item, index) => (
+                <li
+                  class="h-full"
+                  data-animate="fade-in-up"
+                  data-animate-once="true"
+                  data-animate-delay={String(index * 70)}
+                  data-animate-threshold="0.15"
+                  data-animate-root-margin="-10% 0px -10% 0px"
+                >
+                  <LinkCard
+                    data={{
+                      ...item,
+                      ...(showIcons ? {} : { icon: undefined }),
+                    }}
+                    className="h-full"
+                  />
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+    </div>
+    <HorizontalLegalFooter
+      client:visible
+      socialLinks={socialLinks.map((entry) => ({
+        title: entry.data.title,
+        url: entry.data.link,
+        icon: entry.data.icon,
+      }))}
+    />
+  </div>
+</Section>

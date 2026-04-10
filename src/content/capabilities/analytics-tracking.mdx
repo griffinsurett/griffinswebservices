@@ -1,0 +1,190 @@
+---
+title: "Analytics & Tracking"
+description: "Collect only the metrics that matter and transform them into action. We instrument funnels, QA data, and publish dashboards so every team trusts the numbers."
+heading:
+  before: "Insightful"
+  text: "analytics setups"
+  after: "that inform action."
+order: 4
+icon: "fa6-solid:chart-line"
+redirectFrom:
+  - "/solutions/analytics-tracking"
+solutions:
+  - business-websites
+  - landing-pages
+  - e-commerce-websites
+  - web-apps
+---
+
+import TrustStatement from "@/components/TrustStatement.astro";
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import StandardCapabilityIntroSplitSection from "@/layouts/sections/StandardCapabilityIntroSplitSection.astro";
+import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
+
+export const analyticsOverviewPoints = [
+  {
+    icon: "fa6-solid:chart-column",
+    title: "Cleaner data from the start",
+    description:
+      "Tracking only helps when tags, events, and consent rules are set up in a way the team can actually trust.",
+  },
+  {
+    icon: "fa6-solid:chart-line",
+    title: "Better reporting clarity",
+    description:
+      "The goal is not more dashboards. It is knowing which campaigns, offers, and pages are producing real outcomes.",
+  },
+  {
+    icon: "fa6-solid:crosshairs",
+    title: "A clearer next move",
+    description:
+      "Good analytics should make it easier to adjust campaigns, improve funnels, and decide what to work on next.",
+  },
+];
+
+export const analyticsCapabilityItems = [
+  {
+    icon: "fa6-solid:chart-simple",
+    title: "Analytics Setup",
+    description:
+      "GA4, Tag Manager, and consent frameworks configured correctly so every visit, event, and conversion starts from clean data.",
+  },
+  {
+    icon: "fa6-solid:bullseye",
+    title: "Event Tracking",
+    description:
+      "Custom events, parameters, and data layers that capture the interactions your marketing and product teams care about.",
+  },
+  {
+    icon: "fa6-solid:flag-checkered",
+    title: "Conversion Tracking",
+    description:
+      "Funnel instrumentation, attribution pixels, and CRM syncing so sales-ready actions are measured and reported in the right tools.",
+  },
+  {
+    icon: "fa6-solid:gauge-high",
+    title: "Reporting Dashboards",
+    description:
+      "Dashboards built around the KPIs your team actually uses, so marketing, leadership, and operations can read the same picture.",
+  },
+];
+
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
+  <TrustStatement text="We set up tracking that actually works—clean data, no guesswork." />
+
+  <Fragment slot="topic-sections">
+    <StandardCapabilityIntroSplitSection
+      title="What This Helps With"
+      heading="Turn tracking into something the team can actually use."
+      description="Analytics and tracking should make it easier to understand campaign performance, funnel behavior, and where real outcomes are coming from. The point is cleaner measurement that leads to clearer decisions."
+      points={analyticsOverviewPoints}
+    />
+
+    <ContentRenderer
+      items={analyticsCapabilityItems}
+      variant="CardVariant"
+      title="Included Areas"
+      heading="Analytics work we usually set up and support."
+      description="This is the core analytics and tracking work we put in place so the reporting, attribution, and data flow stay useful over time."
+      sectionLayout="default"
+      columns={4}
+      showButtonSection={false}
+    />
+
+    <WrittenLayout
+      showHeadingSection={false}
+      tocTitle="On This Page"
+      headingSelector="h2, h3"
+      className="pt-0"
+    >
+      <section>
+        <h2>What analytics and tracking should actually do</h2>
+        <p>
+          Analytics work should make it easier to understand what is happening on the
+          website, which channels are producing outcomes, and where the next improvement
+          should happen. The goal is not to pile on more dashboards. The goal is cleaner
+          measurement that gives the business a more reliable picture of what is working.
+        </p>
+        <p>
+          When tracking is weak, teams often end up making decisions from partial data,
+          broken attribution, or reports that do not line up with the real customer
+          journey. That creates hesitation. It also makes it harder to see whether the
+          problem is the traffic, the offer, the page flow, or the way conversions are
+          being recorded.
+        </p>
+      </section>
+
+      <section>
+        <h2>Where analytics usually breaks down</h2>
+        <p>
+          Most analytics problems do not start in the dashboard. They start earlier, in
+          the setup itself. Events may be inconsistent, forms may not be tracked
+          correctly, consent rules may block data in one place but not another, and key
+          actions may never be mapped to business outcomes at all.
+        </p>
+        <h3>Common issues we look for</h3>
+        <ul>
+          <li>GA4 or Tag Manager is installed, but key actions are not configured in a meaningful way.</li>
+          <li>Ad platforms, CRM actions, and on-site conversions are measured in separate systems that do not line up.</li>
+          <li>Teams are looking at traffic numbers without a clear view of which campaigns or pages actually produce leads or sales.</li>
+          <li>Dashboards exist, but the underlying event structure is too messy to trust.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>What we usually set up</h2>
+        <p>
+          The work usually starts with the measurement foundation. That means making sure
+          the right platforms are connected, the right events are defined, and the right
+          conversion points are being recorded cleanly. From there, reporting becomes far
+          more useful because the data finally reflects the actual path customers are
+          taking.
+        </p>
+        <h3>Typical analytics work includes</h3>
+        <ul>
+          <li>GA4, Tag Manager, and consent-aware tracking configuration</li>
+          <li>Custom event and parameter mapping for the actions that matter</li>
+          <li>Conversion tracking tied to forms, bookings, purchases, or lead actions</li>
+          <li>Dashboard setup built around the KPIs the business actually uses</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Why reporting clarity matters</h2>
+        <p>
+          Reporting only becomes valuable when it helps the team decide what to do next.
+          A clean analytics setup should make it easier to compare channels, assess page
+          performance, understand which funnels are leaking, and see whether changes are
+          improving results over time.
+        </p>
+        <p>
+          That clarity matters because marketing, SEO, paid traffic, landing pages, and
+          website updates all depend on the same question: what is actually moving the
+          business forward? Better tracking helps answer that without relying on guesswork.
+        </p>
+      </section>
+
+      <section>
+        <h2>When this capability is the right next move</h2>
+        <p>
+          Analytics and tracking work makes the most sense when the business already has
+          traffic, campaigns, or active website activity but lacks confidence in the data.
+          If the numbers feel inconsistent, attribution feels fuzzy, or reporting is too
+          shallow to guide decisions, that is usually a sign the measurement layer needs to
+          be cleaned up first.
+        </p>
+        <p>
+          For some businesses, that also becomes the bridge between marketing work and
+          website work. Once the data is clearer, it becomes easier to see whether the next
+          gain should come from improving the offer, tightening the page flow, adjusting
+          campaigns, or fixing technical friction in the funnel.
+        </p>
+      </section>
+    </WrittenLayout>
+  </Fragment>
+</CapabilityBodyLayout>

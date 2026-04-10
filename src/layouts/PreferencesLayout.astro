@@ -1,0 +1,89 @@
+---
+// src/layouts/PreferencesLayout.astro
+/**
+ * Preferences Layout
+ *
+ * Consolidates all user preference systems:
+ * - Cookie consent (with script management)
+ * - Accessibility preferences
+ * - Language translation scripts (Google Translate)
+ *
+ * Uses client:firstInteraction for eager loading on user interaction.
+ */
+
+// Cookie Consent Preferences
+import CookiePreferencesButton from "@/integrations/preferences/consent/ui/CookiePreferencesButton";
+import CookieConsentBanner from "@/integrations/preferences/consent/ui/CookieConsentBanner";
+import ConsentScript from "@/integrations/preferences/consent/core/scripts/ConsentScript.astro";
+
+// Accessibility Preferences
+import AccessibilityButton from "@/integrations/preferences/accessibility/ui/AccessibilityButton";
+// Note: AccessibilityScript and accessibility.css are imported in Theme.astro for early loading
+
+import BrowserTranslateScript from "@/integrations/preferences/language/core/scripts/BrowserTranslateScript.astro";
+import "@/integrations/preferences/language/styles/language-switcher.css";
+import DividerHeading from "@/components/DividerHeading/DividerHeading";
+import Button from "@/components/Button/Button";
+
+interface Props {
+  showHeading?: boolean;
+  layout?: "vertical" | "horizontal";
+  class?: string;
+}
+
+const {
+  showHeading = true,
+  layout = "vertical",
+  class: className = "",
+} = Astro.props as Props;
+
+const isHorizontal = layout === "horizontal";
+const wrapperClasses = [
+  "preferences-layout flex flex-col gap-4 w-full",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+const itemsClasses = isHorizontal
+  ? "flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center sm:justify-between flex-wrap gap-2 lg:gap-4 w-full"
+  : "flex flex-col justify-center items-center sm:items-start gap-2 text-center sm:text-left";
+const linkClasses = [
+  "text-text hover:underline",
+  isHorizontal ? "whitespace-nowrap text-sm" : "",
+]
+  .filter(Boolean)
+  .join(" ");
+const actionWrapperClasses = isHorizontal
+  ? "inline-flex items-center gap-2 text-sm justify-center"
+  : "inline-flex items-center gap-2 text-sm justify-center sm:justify-start";
+---
+
+{/* Consent Script - Inline initialization, runs immediately */}
+<ConsentScript />
+
+{/* Browser Translation Script - Both native and Google enabled */}
+<BrowserTranslateScript enableNative={true} enableGoogle={true} />
+
+<div class={wrapperClasses}>
+  {showHeading && (
+    <DividerHeading title="Preferences" className="mb-4" />
+  )}
+
+  <div class={itemsClasses}>
+    {/* CCPA Opt-Out Link */}
+    <Button
+      variant="link"
+      href="/privacy-policy#ccpa-rights"
+      size="sm"
+    >
+      Do Not Sell My Personal Information
+    </Button>
+
+    {/* Cookie Preferences Button - Client-side only */}
+      <CookiePreferencesButton client:visible />
+    <CookieConsentBanner client:firstInteraction />
+
+    {/* Accessibility Button - Client-side only */}
+      <AccessibilityButton client:visible />
+  </div>
+</div>

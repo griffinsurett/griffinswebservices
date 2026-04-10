@@ -1,0 +1,76 @@
+---
+// src/components/starter/ContentRenderer/variants/MenuVariant.astro
+/**
+ * Menu Variant - Responsive Navigation Menu
+ *
+ * Builds tree structure from flat items.
+ * Mobile menu hydrates on hover/touch for instant interactivity.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import MenuList from "@/components/LoopTemplates/Menu/MenuList.astro";
+import HamburgerMenuDrawer from "@/components/LoopTemplates/Menu/HamburgerMenu/HamburgerMenuDrawer";
+import { buildMenuTree } from "@/utils/menuQueries";
+import { toArray } from "@/utils/array";
+
+type MenuMode = "responsive" | "flat-only" | "hamburger-only";
+
+interface Props extends BaseVariantProps {
+  maxDepth?: number;
+  mode?: MenuMode;
+  closeButton?: boolean;
+  hamburgerTransform?: boolean;
+}
+
+const {
+  items = [],
+  className = "",
+  id,
+  maxDepth = 3,
+  mode = "responsive",
+  closeButton = false,
+  hamburgerTransform = true,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+
+// Build hierarchical tree from flat items
+const menuTree = buildMenuTree(safeItems);
+
+// Determine which versions to show based on mode
+const showDesktop = mode === "responsive" || mode === "flat-only";
+const showMobile = mode === "responsive" || mode === "hamburger-only";
+
+// Responsive visibility classes
+const desktopClasses = mode === "responsive" ? "hidden md:block" : "";
+const mobileClasses = showMobile && mode === "responsive" ? "md:hidden" : "";
+---
+
+<nav
+  id={id}
+  role="navigation"
+  aria-label="Main navigation"
+  class={`menu-variant ${className}`}
+>
+  {
+    showDesktop && (
+      <div class={`menu-desktop ${desktopClasses}`}>
+        <MenuList items={menuTree} level={0} />
+      </div>
+    )
+  }
+
+  {
+    showMobile && (
+      <div class={`menu-mobile ${mobileClasses}`}>
+        <HamburgerMenuDrawer
+          client:hover
+          items={menuTree}
+          className="menu-mobile-inner"
+          closeButton={closeButton}
+          hamburgerTransform={hamburgerTransform}
+        />
+      </div>
+    )
+  }
+</nav>

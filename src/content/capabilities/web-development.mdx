@@ -1,0 +1,227 @@
+---
+title: "Development"
+description: "We build the parts of your website that need to keep working: the code, setup, and connections that affect speed, stability, and future changes."
+itemLayout: "../../layouts/collections/CapabilityCustomLayout.astro"
+heading:
+  before: "Built to"
+  text: "hold up,"
+  after: "stay fast, and be easier to grow."
+order: 2
+icon: "fa6-solid:code"
+tags:
+  - featured
+solutions:
+  - websites
+  - blogs
+  - business-websites
+  - landing-pages
+  - e-commerce-websites
+  - web-apps
+---
+
+import CapabilityBodyLayout from "@/layouts/collections/CapabilityBodyLayout.astro";
+import CustomWebsiteBuildDemo from "@/components/AnimatedExamples/CustomWebsiteBuildDemo";
+import PlatformCmsDevelopmentDemo from "@/components/AnimatedExamples/PlatformCmsDevelopmentDemo";
+import WebsiteLoadComparison from "@/components/AnimatedExamples/WebsiteLoadComparison";
+import SupportChat from "@/components/AnimatedExamples/SupportChat";
+import CapabilityTopicShowcaseSection from "@/layouts/sections/CapabilityTopicShowcaseSection.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+
+export const customWebsiteDevelopmentCards = [
+  {
+    icon: "fa6-solid:display",
+    title: "Front-End Development",
+    description:
+      "We build the part people see and click, so the site feels clear, smooth, and easy to use.",
+  },
+  {
+    icon: "fa6-solid:plug",
+    title: "Custom Features & Integrations",
+    description:
+      "Forms, bookings, calculators, CRM links, and other custom pieces built to fit how your business works.",
+  },
+  {
+    icon: "fa6-solid:arrow-up-right-dots",
+    title: "Built To Grow",
+    description:
+      "We structure the site so new pages, new offers, and new features can be added without breaking what already works.",
+  },
+  {
+    icon: "fa6-solid:broom",
+    title: "Clean, Maintainable Code",
+    description: "Code that stays neat and easier to update later.",
+  },
+];
+
+export const platformCmsCards = [
+  {
+    icon: "fa6-brands:shopify",
+    title: "Shopify Development",
+    description:
+      "We build, improve, and manage Shopify stores, pages, themes, and app connections.",
+  },
+  {
+    icon: "fa6-brands:wordpress",
+    title: "WordPress Development",
+    description:
+      "We clean up, rebuild, and manage WordPress sites, themes, plugins, and content.",
+  },
+  {
+    icon: "simple-icons:webflow",
+    title: "Webflow Development",
+    description:
+      "We build and improve Webflow sites, collections, components, and CMS setups.",
+  },
+  {
+    icon: "fa6-solid:screwdriver-wrench",
+    title: "Platform Fixes & Management",
+    description:
+      "If a platform site is already live, we can fix bugs, make page changes, handle updates, and keep it running better.",
+  },
+];
+
+export const performanceOptimizationCards = [
+  {
+    icon: "fa6-solid:bolt",
+    title: "Performance Audits",
+    description:
+      "We check what is slowing the site down and show the biggest fixes first.",
+  },
+  {
+    icon: "fa6-solid:gauge-high",
+    title: "Load Speed Improvements",
+    description:
+      "We cut slow-loading code and blocking files so pages load faster, even on mobile.",
+  },
+  {
+    icon: "fa6-solid:image",
+    title: "Image Optimization",
+    description:
+      "We resize and compress images so they stay sharp without slowing the page down.",
+  },
+  {
+    icon: "fa6-solid:minimize",
+    title: "Asset Optimization",
+    description:
+      "We trim scripts, fonts, and other files so they stop slowing the site down.",
+  },
+  {
+    icon: "fa6-solid:cloud",
+    title: "Caching Strategies",
+    description:
+      "We set up caching so repeat visits load much faster.",
+  },
+  {
+    icon: "fa6-solid:heart-pulse",
+    title: "Core Web Vitals Improvements",
+    description:
+      "We fix Google's page speed and page feel issues so the site feels smoother to use.",
+  },
+];
+
+export const ongoingMaintenanceCards = [
+  {
+    icon: "fa6-solid:screwdriver-wrench",
+    title: "Website Maintenance & Support",
+    description:
+      "We keep the site updated, test changes, and catch issues before they turn into bigger problems.",
+  },
+  {
+    icon: "fa6-solid:screwdriver-wrench",
+    title: "Software Updates",
+    description:
+      "We update your CMS, tools, and site packages in a safe order so updates do not break things.",
+  },
+  {
+    icon: "fa6-solid:headset",
+    title: "Technical Support",
+    description:
+      "When something goes wrong, we find the problem and fix it.",
+  },
+  {
+    icon: "fa6-solid:shield-halved",
+    title: "Security Monitoring",
+    description:
+      "We watch for security issues, tighten weak spots, and help keep the site safer.",
+  },
+];
+
+<CapabilityBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+  grandparentContent={{
+    testimonialsTitle: "Testimonials",
+    testimonialsHeading:
+      "What business owners say after we fix the foundation.",
+    testimonialsDescription:
+      "Real feedback from businesses that needed a faster, more reliable site and a team that could keep it working.",
+    faqTitle: "FAQs",
+    faqHeading: "Common Questions About Web Development",
+  }}
+>
+  <TrustStatement
+    text="Good development keeps your website fast, stable, and easy to change as your business grows."
+    textClassName="text-left text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-heading"
+  />
+
+  <Fragment slot="topic-sections">
+    <CapabilityTopicShowcaseSection
+      title="Custom Website Development"
+      heading="Custom builds with more speed, control, and room to grow."
+      description="When you need more speed, control, and room to grow, we build more custom from the start."
+      cards={customWebsiteDevelopmentCards}
+    >
+      <Fragment slot="content">
+        <p>Custom development makes sense when the business needs a faster, cleaner foundation with fewer platform limits and more room for tailored behavior.</p>
+        <p>It is the path for businesses that want stronger control over performance, structure, and long-term changes.</p>
+      </Fragment>
+
+      <CustomWebsiteBuildDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Platform & CMS Development"
+      heading="Shopify, WordPress, and Webflow with clear expectations."
+      description="We can build, fix, and manage Shopify, WordPress, and Webflow sites too."
+      reverse={true}
+      cards={platformCmsCards}
+    >
+      <Fragment slot="content">
+        <p>Platform and CMS work can still be a good fit when the business needs a managed system, editor access, or an existing stack supported without pretending it has no tradeoffs.</p>
+        <p>We use this area to stay honest about where these tools work well and where they start limiting speed, flexibility, or maintainability.</p>
+      </Fragment>
+
+      <PlatformCmsDevelopmentDemo slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Performance Optimization"
+      heading="Turn a slow website into something lighter, faster, and easier to trust."
+      description="We take slow websites and make them lighter, faster, and easier to trust."
+      cards={performanceOptimizationCards}
+    >
+      <Fragment slot="content">
+        <p>Performance work focuses on the technical weight that slows pages down: oversized media, inefficient loading, bulky systems, and unnecessary complexity.</p>
+        <p>Sometimes that means tuning. Sometimes it means a cleaner rebuild so the site stops carrying more than the job requires.</p>
+      </Fragment>
+
+      <WebsiteLoadComparison slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+
+    <CapabilityTopicShowcaseSection
+      title="Ongoing Maintenance & Fixes"
+      heading="Keep the site working and easier to manage."
+      description="After launch, we keep the site updated, fix problems, and handle the small technical work that keeps it dependable."
+      reverse={true}
+      cards={ongoingMaintenanceCards}
+    >
+      <Fragment slot="content">
+        <p>Maintenance work keeps the website stable after launch by handling updates, technical fixes, and the small cleanup jobs that stop problems from building up.</p>
+        <p>It gives the business a steady way to keep the site healthy instead of waiting until something breaks badly enough to become urgent.</p>
+      </Fragment>
+
+      <SupportChat slot="demo" client:visible className="h-full w-full" />
+    </CapabilityTopicShowcaseSection>
+  </Fragment>
+</CapabilityBodyLayout>

@@ -1,0 +1,66 @@
+---
+title: "About Us"
+description: "We’re a New Jersey–based web design and development agency building custom web solutions for businesses that want clarity, performance, and reliability. As a small team, we take a hands-on approach—working closely with our clients from planning to launch and beyond. Our focus is on creating fast, secure, and maintainable digital experiences that support real business goals."
+heading:
+  before: "We're not another agency."
+  text: "We're your dedicated web team."
+hasPage: true
+itemsHasPage: false
+redirectFrom:
+  - "/about"
+  - "/aboutus"
+addToMenu:
+  - menu: "main-menu"
+    order: 5
+  - menu: "footer-menu-2"
+    order: 1
+---
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query, sortByOrder, byTag, byItemKeys } from "@/utils/query";
+import Video from "@/components/Video/Video.astro";
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
+import TrustStatement from "@/components/TrustStatement.astro";
+import Section from "@/components/Section.astro";
+
+    <div class="min-h-screen flex items-center">
+    <TrustStatement text="We're a New Jersey–based web design and development agency building custom web solutions for businesses that want clarity, performance, and reliability. As a small team, we take a hands-on approach—working closely with our clients from planning to launch and beyond. Our focus is on creating fast, secure, and maintainable digital experiences that support real business goals." />
+    </div>
+
+    <Section class="inner-section">
+      {/* <Video
+        src="/speed-site.mov"
+        alt="Speed site walkthrough"
+        controls
+        clientLoadPlaceholder={true}
+        wrapperClass="video-shell w-full max-w-4xl mx-auto"
+      /> */}
+    </Section>
+
+    <ContentRenderer
+      query={byItemKeys("about-us", ["our-vision", "our-mission"])}
+      variant="CardVariant"
+      columns={2}
+      gap="md"
+    />
+
+    <ContentRenderer
+      query={byTag("benefits", "featured").orderBy(sortByOrder())}
+      variant="BenefitsVariant"
+      columns={2}
+      gap="lg"
+      title="Why Choose Us"
+      heading="What Makes Our Websites Different"
+    />
+
+    <ContentRenderer
+      query={query("testimonials").where((entry) => entry.data.rating >= 4)}
+      variant="TestimonialCarouselVariant"
+      id="testimonials-home"
+    />
+    
+    <ContentRenderer
+      query={byTag("technologies", "featured").orderBy(sortByOrder())}
+      variant="TechnologiesVariant"
+    />
+
+    <HomeSolutionBridge />

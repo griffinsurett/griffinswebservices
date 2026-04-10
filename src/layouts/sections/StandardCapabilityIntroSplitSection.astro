@@ -1,0 +1,109 @@
+---
+import Icon from "@/components/Icon";
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+
+interface Point {
+  icon?: string;
+  title: string;
+  description: string;
+}
+
+interface Props {
+  title?: string;
+  heading?: string | Record<string, unknown>;
+  description?: string;
+  points?: Point[];
+  className?: string;
+}
+
+const {
+  title,
+  heading,
+  description,
+  points = [],
+  className = "",
+} = Astro.props as Props;
+
+const safePoints = points.filter(Boolean);
+---
+
+<Section class={`outer-section relative ${className}`.trim()}>
+  <div class="inner-section">
+    <div class="standard-capability-intro grid gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-14">
+      <SectionHeader
+        title={title}
+        heading={heading}
+        description={description}
+        className="text-left max-w-3xl"
+        headingClassName="h2 mb-6 text-heading"
+        descriptionClassName="large-text max-w-2xl"
+      />
+
+      {safePoints.length > 0 && (
+        <div class="standard-capability-intro__points">
+          {safePoints.map((point) => (
+            <article class="standard-capability-intro__point card-bg">
+              <span class="standard-capability-intro__icon primary-gradient" aria-hidden="true">
+                <Icon
+                  icon={point.icon ?? "lucide:arrow-right"}
+                  size="sm"
+                  color="var(--color-bg)"
+                />
+              </span>
+
+              <div class="space-y-2">
+                <h3 class="standard-capability-intro__title">{point.title}</h3>
+                <p class="standard-capability-intro__description">{point.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</Section>
+
+<style>
+  .standard-capability-intro__points {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+
+  .standard-capability-intro__point {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    padding: 1.3rem 1.4rem;
+    border-radius: 1.5rem;
+    border: 1px solid color-mix(in srgb, var(--color-primary-light) 14%, transparent);
+  }
+
+  .standard-capability-intro__icon {
+    display: inline-flex;
+    width: 2.6rem;
+    height: 2.6rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-primary-light) 22%, transparent);
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--color-primary) 16%, transparent);
+    flex-shrink: 0;
+  }
+
+  .standard-capability-intro__title {
+    margin: 0;
+    color: var(--color-heading);
+    font-size: 1.08rem;
+    line-height: 1.25;
+    font-weight: 600;
+  }
+
+  .standard-capability-intro__description {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+</style>

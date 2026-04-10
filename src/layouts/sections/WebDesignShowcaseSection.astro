@@ -1,0 +1,254 @@
+---
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+import fariasDesktop from "../../../public/project-images-and-videos/fariasdemolition.com/images/fariasdemolition.com-desktop copy.jpg";
+import koiDesktop from "@/assets/projects/koiroofingandsolar.com.jpg";
+import koiMobile from "@/assets/projects/koiroofingandsolar.com-mobile-old.jpg";
+import prontoDesktop from "@/assets/projects/pronto-junk-removal.jpg";
+import prontoDesktopAlt from "@/assets/projects/pronto-junk-removal2.jpg";
+import roonysDesktop from "@/assets/projects/roonys-marketing.jpg";
+import beyondDesktop from "@/assets/projects/beyond-strength.jpg";
+import tsfDesktop from "@/assets/projects/tsf.jpg";
+import cbcDesktopAlt from "@/assets/projects/CBC copy.jpg";
+
+interface Props {
+  className?: string;
+  id?: string;
+}
+
+interface ResponsiveImageSource {
+  type: string;
+  srcSet: string;
+  sizes: string;
+}
+
+interface ResponsiveImage {
+  src: string;
+  srcSet: string;
+  sizes: string;
+  width: number;
+  height: number;
+  sources: ResponsiveImageSource[];
+}
+
+interface CardDefinition {
+  title: string;
+  src: ImageMetadata;
+  cardClass: string;
+  imageClass: string;
+  size: "wide" | "narrow";
+  maxAspectRatio?: number;
+}
+
+const { className = "", id = "web-design-showcase" } = Astro.props as Props;
+
+const WIDE_CARD_WIDTHS = [368, 552, 736, 920];
+const NARROW_CARD_WIDTHS = [224, 336, 448, 560];
+const CARD_SIZES = {
+  wide: "23rem",
+  narrow: "14rem",
+} as const;
+const IMAGE_FORMATS = [
+  { format: "avif" as const, quality: 60 },
+  { format: "webp" as const, quality: 74 },
+];
+const FALLBACK_FORMAT = "webp" as const;
+const AVIF_MAX_HEIGHT = 16383;
+
+const cards: CardDefinition[] = [
+  {
+    title: "Faria's Demolition alternate desktop website preview",
+    src: fariasDesktop,
+    size: "wide",
+    cardClass:
+      "relative overflow-hidden border border-[color-mix(in_srgb,var(--color-heading)_24%,transparent)] shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] col-start-1 row-start-1 row-span-2",
+    imageClass: "object-top",
+  },
+  {
+    title: "Tok Secret Formula desktop website preview",
+    src: tsfDesktop,
+    size: "wide",
+    cardClass:
+      "relative overflow-hidden border border-[color-mix(in_srgb,var(--color-heading)_24%,transparent)] shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] col-start-2 row-start-1 row-span-2",
+    imageClass: "object-top",
+  },
+  {
+    title: "Koi Roofing and Solar desktop website preview",
+    src: koiDesktop,
+    size: "wide",
+    cardClass:
+      "relative overflow-hidden border border-[color-mix(in_srgb,var(--color-heading)_24%,transparent)] shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] col-start-3 row-start-1",
+    imageClass: "object-top",
+  },
+  {
+    title: "Roony's Marketing desktop website preview",
+    src: roonysDesktop,
+    size: "wide",
+    cardClass:
+      "relative overflow-hidden border border-[color-mix(in_srgb,var(--color-heading)_24%,transparent)] shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] col-start-3 row-start-2",
+    imageClass: "object-top",
+  },
+  {
+    title: "Koi Roofing and Solar mobile website preview",
+    src: koiMobile,
+    size: "narrow",
+    maxAspectRatio: 6000 / 786,
+    cardClass:
+      "relative overflow-hidden border border-[color-mix(in_srgb,var(--color-heading)_24%,transparent)] shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] col-start-4 row-start-1 row-span-2",
+    imageClass: "object-[78%_top]",
+  },
+  {
+    title: "Pronto Junk Removal desktop website preview",
+    src: prontoDesktop,
+    size: "wide",
+    cardClass:
+      "relative overflow-hidden border border-[color-mix(in_srgb,var(--color-heading)_24%,transparent)] shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] col-start-5 row-start-1",
+    imageClass: "object-top",
+  },
+  {
+    title: "Beyond Strength Fitness desktop website preview",
+    src: beyondDesktop,
+    size: "wide",
+    cardClass:
+      "relative overflow-hidden border border-[color-mix(in_srgb,var(--color-heading)_24%,transparent)] shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] col-start-5 row-start-2",
+    imageClass: "object-top",
+  },
+  {
+    title: "Pronto Junk Removal alternate desktop website preview",
+    src: prontoDesktopAlt,
+    size: "wide",
+    cardClass:
+      "relative overflow-hidden border border-[color-mix(in_srgb,var(--color-heading)_24%,transparent)] shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] col-start-6 row-start-1 row-span-2",
+    imageClass: "object-top",
+  },
+  {
+    title: "Certified Bag Chasers alternate desktop website preview",
+    src: cbcDesktopAlt,
+    size: "wide",
+    cardClass:
+      "relative overflow-hidden border border-[color-mix(in_srgb,var(--color-heading)_24%,transparent)] shadow-[0_24px_60px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] col-start-7 row-start-1 row-span-2",
+    imageClass: "object-top",
+  },
+];
+
+const buildResponsiveImage = async (
+  card: CardDefinition
+): Promise<ResponsiveImage> => {
+  const { src, size, maxAspectRatio } = card;
+  const widths = size === "narrow" ? NARROW_CARD_WIDTHS : WIDE_CARD_WIDTHS;
+  const sizes = CARD_SIZES[size];
+  const sourceAspectRatio = src.height / src.width;
+  const aspectRatio = maxAspectRatio
+    ? Math.min(sourceAspectRatio, maxAspectRatio)
+    : sourceAspectRatio;
+
+  const optimizedByFormat = await Promise.all(
+    IMAGE_FORMATS.map(async ({ format, quality }) => {
+      const formatWidths =
+        format === "avif"
+          ? widths.filter(
+              (width) => Math.round(aspectRatio * width) <= AVIF_MAX_HEIGHT
+            )
+          : widths;
+
+      if (!formatWidths.length) {
+        return null;
+      }
+
+      const images = await Promise.all(
+        formatWidths.map((width) =>
+          aspectRatio < sourceAspectRatio
+            ? getImage({
+                src,
+                width,
+                height: Math.round(aspectRatio * width),
+                format,
+                quality,
+                fit: "cover",
+                position: "top",
+              })
+            : getImage({
+                src,
+                width,
+                format,
+                quality,
+              })
+        )
+      );
+
+      return { format, images, widths: formatWidths };
+    })
+  ).then((entries) => entries.filter(Boolean));
+
+  const fallbackEntry =
+    optimizedByFormat.find((entry) => entry.format === FALLBACK_FORMAT) ??
+    optimizedByFormat[optimizedByFormat.length - 1];
+
+  if (!fallbackEntry) {
+    throw new Error("No fallback image format generated for showcase card.");
+  }
+
+  const fallbackImage = fallbackEntry.images[fallbackEntry.images.length - 1];
+  const fallbackWidth = widths[widths.length - 1];
+  const fallbackHeight = Math.round(aspectRatio * fallbackWidth);
+
+  return {
+    src: fallbackImage.src,
+    srcSet: fallbackEntry.images
+      .map((image, index) => `${image.src} ${fallbackEntry.widths[index]}w`)
+      .join(", "),
+    sizes,
+    width: fallbackWidth,
+    height: fallbackHeight,
+    sources: optimizedByFormat
+      .filter((entry) => entry.format !== FALLBACK_FORMAT)
+      .map((entry) => ({
+        type: `image/${entry.format}`,
+        srcSet: entry.images
+          .map((image, index) => `${image.src} ${entry.widths[index]}w`)
+          .join(", "),
+        sizes,
+      })),
+  };
+};
+
+const processedCards = await Promise.all(
+  cards.map(async (card) => ({
+    ...card,
+    image: await buildResponsiveImage(card),
+  }))
+);
+---
+
+<section
+  id={id}
+  class={`relative isolate overflow-hidden overflow-y-visible p-4 ${className}`.trim()}
+  aria-label="Selected web design portfolio showcase"
+>
+  <div class="relative left-1/2 bottom-image-fade grid h-[100svh] w-max max-w-none gap-2 -translate-x-1/2 [grid-template-columns:23rem_23rem_23rem_14rem_23rem_23rem_23rem] [grid-template-rows:minmax(0,1fr)_minmax(0,1fr)] lg:left-0 lg:-translate-x-[clamp(7rem,10vw,12rem)]">
+    {processedCards.map((card, index) => (
+      <article class={card.cardClass}>
+        <picture>
+          {card.image.sources.map((source) => (
+            <source
+              srcset={source.srcSet}
+              sizes={source.sizes}
+              type={source.type}
+            />
+          ))}
+          <img
+            src={card.image.src}
+            srcset={card.image.srcSet}
+            sizes={card.image.sizes}
+            alt={card.title}
+            width={card.image.width}
+            height={card.image.height}
+            loading={index < 2 ? "eager" : "lazy"}
+            decoding="async"
+            class={`block size-full object-cover scale-[1.01] ${card.imageClass}`.trim()}
+          />
+        </picture>
+      </article>
+    ))}
+  </div>
+</section>

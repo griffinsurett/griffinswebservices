@@ -1,0 +1,47 @@
+---
+// src/layouts/Header.astro
+/**
+ * Site Header with Navigation
+ */
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import Logo from "@/components/Logo/Logo.astro";
+import ThemeControls from "@/components/ThemeControls/ThemeControls.jsx";
+import { related } from "@/utils/query/snippets";
+---
+<header
+  class="site-header fixed w-full top-0 z-[100000]"
+  role="banner"
+  aria-label="Primary site header"
+>
+  <div class="grid grid-cols-[1fr_auto_1fr] items-center head-foot-section py-2 gap-4">
+    <div class="justify-self-start">
+      <Logo
+        loading="eager"
+        trigger="scroll"
+        animateOutText={true}
+        altContext="Home"
+        titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-wide no-translate"
+        titleRestClass="font-light emphasized-text uppercase whitespace-nowrap text-[0.66rem] sm:text-xs lg:text-sm p-0 m-0 tracking-[0.16em] sm:tracking-[0.2em]"
+      />
+    </div>
+
+    <ThemeControls client:idle />
+
+    <div class="justify-self-end">
+      <nav
+        class="flex items-center justify-center sm:gap-4"
+        aria-label="Primary navigation"
+        role="navigation"
+      >
+        <ContentRenderer
+          query={related("menu-items", "menu", "main-menu")}
+          variant="MenuVariant"
+          mode="hamburger-only"
+          className="header-navigation"
+          hamburgerTransform={true}
+          closeButton={false}
+        />
+      </nav>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,128 @@
+---
+// IconListVariant.astro
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import IconListItem from "@/components/LoopComponents/IconListItem";
+import FeatureCard from "@/components/LoopComponents/FeatureCard";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import Section from "@/components/project/Section.astro";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  columns?: 1 | 2 | 3;
+  gap?: "sm" | "md" | "lg";
+  itemLayout?: "vertical" | "horizontal" | "horizontal-reverse";
+  slotContainerClassName?: string;
+}
+
+const {
+  items = [],
+  title,
+  collectionTitle,
+  heading,
+  headingTag,
+  headingClassName = "text-3xl md:text-4xl lg:text-5xl leading-[1.15em] text-heading",
+  description,
+  className = "",
+  columns = 2,
+  gap = "lg",
+  id,
+  itemLayout = "horizontal",
+  slotContainerClassName = "",
+} = Astro.props as Props;
+
+const hasSlotContent = Astro.slots.has("default");
+
+const safeItems = toArray(items);
+const sectionTitle = title ?? collectionTitle;
+const showHeader = Boolean(sectionTitle ?? description ?? heading);
+---
+
+<Section id={id} class={`py-16 ${className}`.trim()}>
+  <div class="mx-auto inner-section">
+    <div
+      class={`flex flex-col lg:space-x-15 ${
+        showHeader ? "lg:flex-row lg:items-start" : ""
+      }`.trim()}
+    >
+      {
+        showHeader && (
+          <div class="w-full min-w-0 lg:w-1/2 sticky-section lg:self-start">
+            <SectionHeader
+              title={sectionTitle}
+              heading={heading}
+              description={description}
+              className="space-y-2 text-left w-full"
+              headingTag={headingTag}
+              headingClassName={headingClassName}
+              descriptionClassName="large-text leading-relaxed"
+              titleVisibleRootMargin={0}
+            />
+
+            {Astro.slots.has("under-text") && (
+              <div class="mt-8">
+                <slot name="under-text" />
+              </div>
+            )}
+          </div>
+        )
+      }
+
+      {
+        safeItems.length > 0 && (
+          <div
+            class={`w-full min-w-0 py-6 lg:py-0 ${showHeader ? "lg:w-1/2" : ""}`.trim()}
+          >
+            <ul class={`flex flex-col gap-4 list-none`.trim()}>
+              {safeItems.map((item: any) => (
+                <li
+                  class="relative overflow-hidden"
+                  data-animate="fade-in-up"
+                  data-animate-threshold="0.15"
+                  data-animate-root-margin="-10% 0px -10% 0px"
+                >
+                  {item.url ? (
+                    <FeatureCard
+                      client:visible
+                      data={item}
+                      ringDuration={800}
+                      listItemProps={{
+                        layout: itemLayout,
+                        alignment: "left",
+                        className: "gap-1 w-full flex items-start",
+                        iconClassName: "icon-large card-icon-color mr-4",
+                        iconSize: "xl",
+                        titleTag: "h3",
+                        titleClassName: "text-heading h3 my-4",
+                        descriptionClassName: "text-lg text-text",
+                      }}
+                    />
+                  ) : (
+                    <IconListItem
+                      data={item}
+                      layout={itemLayout}
+                      alignment="left"
+                      className="text-left gap-1 w-full flex items-start"
+                      iconClassName="icon-large card-icon-color mr-4"
+                      iconSize="xl"
+                      titleTag="h3"
+                      titleClassName="text-heading h3 my-4"
+                      descriptionClassName="text-lg text-text"
+                    />
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+
+    {
+      hasSlotContent && (
+        <div class={`mt-8 ${slotContainerClassName}`.trim()}>
+          <slot />
+        </div>
+      )
+    }
+  </div>
+</Section>

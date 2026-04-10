@@ -1,0 +1,153 @@
+---
+// src/components/LoopTemplates/HeroChecklist.astro
+import HeroChecklistItem from "@/components/LoopComponents/HeroChecklistItem.astro";
+import type { IconType } from "@/content/schema";
+import type { AstroComponentFactory } from "astro/runtime/server";
+import { toArray } from "@/utils/array";
+
+type ItemContent = string | number | boolean | null | undefined;
+type ItemRecord = {
+  id?: string | number;
+  key?: string | number;
+  slug?: string;
+  title?: ItemContent;
+  text?: ItemContent;
+  content?: ItemContent;
+  html?: string;
+  icon?: IconType | AstroComponentFactory | Record<string, any> | null;
+  class?: string;
+  className?: string;
+  iconWrapperClassName?: string;
+  iconClassName?: string;
+  textClassName?: string;
+  component?: AstroComponentFactory;
+  props?: Record<string, any>;
+};
+
+export type HeroChecklistItemInput = ItemContent | ItemRecord;
+
+export interface Props {
+  /** Items rendered into HeroChecklistItem components */
+  items?: HeroChecklistItemInput[];
+  /** Wrapper classes for the outer list element */
+  class?: string;
+  /** Classes applied to the list element itself */
+  listClassName?: string;
+  /** Additional classes merged into each item */
+  itemClassName?: string;
+  /** Tag name for the list wrapper */
+  as?: "ul" | "ol" | "div";
+  /** Default icon wrapper classes passed to each HeroChecklistItem */
+  iconWrapperClassName?: string;
+  /** Default icon classes passed to each HeroChecklistItem */
+  iconClassName?: string;
+  /** Default text classes passed to each HeroChecklistItem */
+  textClassName?: string;
+}
+
+const {
+  items = [],
+  class: wrapperClassName = "",
+  listClassName = "space-y-2 lg:space-y-3 py-2 lg:py-0",
+  itemClassName = "",
+  as = "ul",
+  iconWrapperClassName,
+  iconClassName,
+  textClassName,
+} = Astro.props as Props;
+
+const normalizedItems = toArray(items).map((item, index) => {
+  if (typeof item === "string" || typeof item === "number" || typeof item === "boolean") {
+    return {
+      content: String(item),
+    };
+  }
+
+  if (item && typeof item === "object") {
+    const {
+      title,
+      text,
+      content,
+      html,
+      icon,
+      class: itemClass,
+      className,
+      component,
+      props,
+      iconWrapperClassName: itemIconWrapperClass,
+      iconClassName: itemIconClass,
+      textClassName: itemTextClass,
+    } = item as ItemRecord;
+
+    const resolvedContent =
+      content ?? text ?? title ?? (typeof html === "string" ? html : undefined);
+
+    return {
+      content: resolvedContent,
+      html: typeof html === "string" ? html : undefined,
+      icon,
+      className: [itemClass, className].filter(Boolean).join(" "),
+      component: typeof component === "function" ? component : undefined,
+      props: props ?? {},
+      iconWrapperClassName: itemIconWrapperClass,
+      iconClassName: itemIconClass,
+      textClassName: itemTextClass,
+    };
+  }
+
+  return {
+    content: "",
+  };
+});
+
+const ListTag = as === "ol" ? "ol" : as === "div" ? "div" : "ul";
+const hasDefaultSlot = Astro.slots.has("default");
+---
+
+<ListTag class={`${listClassName} ${wrapperClassName}`.trim()}>
+  {
+    hasDefaultSlot ? (
+      <slot />
+    ) : (
+      normalizedItems.map((item) => {
+        const {
+          icon,
+          className = "",
+          content,
+          component: ItemComponent,
+          html,
+          props = {},
+          iconWrapperClassName: itemIconWrapperClass,
+          iconClassName: itemIconClass,
+          textClassName: itemTextClass,
+        } = item;
+
+        const mergedItemClassName = [itemClassName, className].filter(Boolean).join(" ").trim();
+        const mergedIconWrapperClass =
+          itemIconWrapperClass ?? iconWrapperClassName;
+        const mergedIconClass = itemIconClass ?? iconClassName;
+        const mergedTextClass = itemTextClass ?? textClassName;
+
+        return (
+          <HeroChecklistItem
+            icon={icon}
+            class={mergedItemClassName}
+            iconWrapperClassName={mergedIconWrapperClass}
+            iconClassName={mergedIconClass}
+            textClassName={mergedTextClass}
+          >
+            {
+              ItemComponent ? (
+                <ItemComponent {...props} />
+              ) : html ? (
+                <span class="contents" set:html={html} />
+              ) : (
+                content
+              )
+            }
+          </HeroChecklistItem>
+        );
+      })
+    )
+  }
+</ListTag>

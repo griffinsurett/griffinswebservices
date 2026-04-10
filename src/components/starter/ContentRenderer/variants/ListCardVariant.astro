@@ -1,0 +1,108 @@
+---
+// src/components/starter/ContentRenderer/variants/ListCardVariant.astro
+/**
+ * List Card Variant
+ * Single column of horizontal FeatureCards.
+ * Uses the same CardRenderer pattern as CardVariant but with horizontal layout.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import type {
+  FeatureCardData,
+  FeatureCardProps,
+} from "@/components/LoopComponents/FeatureCard";
+import CardRenderer from "@/components/LoopTemplates/CardRenderer";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import Section from "@/components/project/Section.astro";
+import Button from "@/components/starter/Button/Button";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  ctaHref?: string;
+  ctaText?: string;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "outer-section bg-bg",
+  collectionUrl,
+  collectionTitle,
+  id,
+  showButtonSection = true,
+  ctaHref,
+  ctaText,
+} = Astro.props as Props;
+
+const safeItems = toArray(items) as FeatureCardData[];
+
+// SectionHeader handles heading normalization automatically
+const showHeader = Boolean(title || heading || description);
+const gridMarginClass = showHeader ? "mt-5 lg:px-25" : "";
+const showCTA =
+  showButtonSection &&
+  shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+  (ctaText || title || collectionTitle) &&
+  (ctaHref || collectionUrl);
+
+// Configure FeatureCard for horizontal layout
+const featureCardProps: Partial<FeatureCardProps> = {
+  listItemProps: {
+    layout: "horizontal",
+    alignment: "left",
+    className: "gap-6 items-start",
+    iconClassName: "card-icon-color mr-2",
+    iconSize: "xl",
+    titleClassName: "h3 mb-1",
+    titleTag: "h3",
+    descriptionClassName: "text-text leading-relaxed",
+    descriptionTag: "p",
+  },
+};
+---
+
+<Section id={id} class={`relative overflow-hidden ${className}`.trim()}>
+  <div class="inner-section">
+    {
+      showHeader && (
+        <div class="heading-padding">
+          <SectionHeader
+            title={title}
+            heading={heading}
+            description={description}
+          />
+        </div>
+      )
+    }
+
+    <CardRenderer
+      client:visible
+      items={safeItems}
+      columns={1}
+      className={gridMarginClass}
+      featureCardProps={featureCardProps}
+      disableStagger={true}
+      animation={{
+        type: (index) => (index % 2 === 0 ? "fade-in-left" : "fade-in-right"),
+        once: true,
+      }}
+    />
+
+    {
+      showCTA && (
+        <div class="buttons-section-center">
+          <Button
+            href={ctaHref ?? collectionUrl}
+            rightIcon="lu:arrow-right"
+            variant="secondary"
+          >
+            {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+          </Button>
+        </div>
+      )
+    }
+  </div>
+</Section>

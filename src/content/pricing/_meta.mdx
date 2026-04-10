@@ -1,0 +1,42 @@
+---
+title: "Pricing"
+description: "Direct pricing entries for website builds and related upgrade paths, organized without pricing parent containers."
+heading:
+  before: "Pricing built around"
+  text: "direct options"
+  after: "that are referenced where they belong."
+hasPage: true
+itemsHasPage: true
+itemsRootPath: false
+itemsLayout: "../../layouts/collections/PricingItemLayout.astro"
+addToMenu:
+  - menu: "main-menu"
+    order: 3
+  - menu: "links-menu"
+    order: 1
+    icon: "fa6-solid:user"
+redirectFrom:
+  - /website-packages
+  - /pricing/website-packages
+  - /performance-hosting-maintenance
+  - /pricing/performance-hosting-maintenance
+---
+import WebsitePricingLayout from '@/layouts/sections/WebsitePricingLayout.astro';
+
+<WebsitePricingLayout
+  newWebsiteOptions={{
+    title: "Website Pricing",
+    heading: "Looking for a Brand-New Website Built to Hold Up and Convert?",
+    description: "Choose the website option that fits where your business is now, then move forward with a site built to look professional, load fast, and support real growth from the start.",
+  }}
+  existingWebsiteServices={{
+    title: "Existing Website Services",
+    heading: "Already Have a Website That Needs Work?",
+    description: "If your site needs cleanup, redesign work, structural changes, or a platform move, these services are built to strengthen what already exists without starting from scratch.",
+  }}
+  enhancementOptions={{
+    title: "Need Something More Specific?",
+    heading: "Enhancements That Layer Onto the Core Website Work",
+    description: "When the core site is not enough on its own, these enhancement options help you expand into SEO, automation, booking, e-commerce, systems, and brand support.",
+  }}
+/>

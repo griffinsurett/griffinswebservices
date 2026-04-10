@@ -1,0 +1,111 @@
+---
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { animationProps } from "@/integrations/scroll-animations/props";
+
+interface IntroItem {
+  issue: string;
+}
+
+interface Props {
+  heading?: string;
+  items?: IntroItem[];
+  className?: string;
+  id?: string;
+}
+
+const defaultItems: IntroItem[] = [
+  {
+    issue: "You do not have a website yet, so people have nothing strong to find or trust.",
+  },
+  {
+    issue: "Your site loads slowly, feels hard to use on a phone, or loses people too fast.",
+  },
+  {
+    issue: "The site was cheap to start, but now it keeps costing money without helping much.",
+  },
+  {
+    issue: "Your site depends on one person, so if they disappear, you are stuck.",
+  },
+  {
+    issue: "People visit the site, but they are not turning into calls, forms, or sales.",
+  },
+];
+
+const {
+  heading = "Does any of this sound familiar?",
+  items = defaultItems,
+  className = "",
+  id = "problems-we-solve",
+} = Astro.props as Props;
+
+const getCardSpanClass = (index: number) => {
+  if (index < 3) return "lg:col-span-2";
+  return index === 3 ? "lg:col-span-3 lg:col-start-1" : "lg:col-span-3 lg:col-start-4";
+};
+---
+
+<Section id={id} class={`outer-section relative ${className}`.trim()}>
+  <div class="inner-section">
+    <div
+      class="mx-auto max-w-6xl space-y-8 lg:space-y-12"
+      {...animationProps("fade-in-up", { once: true, threshold: 0.08 })}
+    >
+      <SectionHeader
+        className="mx-auto max-w-5xl text-center"
+        heading={heading}
+        headingClassName="h2 leading-[0.98] font-semibold text-heading"
+      />
+
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-6 lg:gap-6">
+        {items.map((item, index) => (
+          <article
+            class:list={[
+              "group relative overflow-hidden rounded-[2rem] p-6 md:p-7",
+              "flex items-start gap-4 card-bg outer-card-transition",
+              getCardSpanClass(index),
+            ]}
+            {...animationProps("fade-in-up", {
+              once: true,
+              threshold: 0.12,
+            })}
+          >
+            <span class="problem-card__number" aria-hidden="true">
+              {index + 1}.
+            </span>
+            <p class="problem-card__issue">{item.issue}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .problem-card__number {
+    display: inline-block;
+    min-width: auto;
+    height: auto;
+    flex-shrink: 0;
+    color: var(--color-primary-light);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .problem-card__issue {
+    margin: 0;
+    color: var(--color-heading);
+    font-size: clamp(1.05rem, 1.2vw, 1.35rem);
+    line-height: 1.35;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  @media (max-width: 1023px) {
+    .problem-card__number {
+      font-size: 1.7rem;
+    }
+  }
+</style>

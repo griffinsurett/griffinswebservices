@@ -1,0 +1,196 @@
+---
+// src/layouts/FrontPageHero.astro
+// Hero with TextHero layout + Portfolio showcase
+import Button from "@/components/Button/Button";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Hero from "@/components/Hero.astro";
+import ScrollIndicator from "@/components/ScrollIndicator.astro";
+import { query } from "@/utils/query";
+import { ctaData, siteData } from "@/content/siteData";
+import type { HeadingContent } from "@/content/schema";
+
+interface CTA {
+  text: string;
+  link: string;
+  rightIcon?: string;
+}
+
+export interface Props {
+  heading?: HeadingContent;
+  description?: string;
+  /** Subheading text shown above the checklist */
+  subheading?: string;
+  /** Checklist items shown in the hero */
+  checklist?: string[];
+  primaryCTA?: CTA;
+  secondaryCTA?: CTA;
+  className?: string;
+  id?: string;
+  scrollToSection?: string;
+}
+
+const defaultDescription =
+  "Hand-crafted websites, automated systems, and ongoing support so you can sell more, grow faster, and stay secure without juggling multiple vendors.";
+
+const defaultSubheading = "We're a New Jersey based Web Agency that creates fast, engaging websites built to grow your business.";
+
+const defaultChecklist = [
+  "Website Design & Development",
+  "Secure Hosting, Maintenance & Support",
+  "SEO Ready Architecture",
+  "Built for Long-Term Growth",
+];
+
+const {
+  heading,
+  description = siteData.description ?? defaultDescription,
+  subheading = defaultSubheading,
+  checklist = defaultChecklist,
+  primaryCTA: incomingPrimaryCTA,
+  secondaryCTA: incomingSecondaryCTA,
+  className = "",
+  id = "hero",
+  scrollToSection,
+} = Astro.props as Props;
+
+const primaryCTA: CTA = {
+  text: ctaData.text,
+  link: ctaData.link,
+  ...incomingPrimaryCTA,
+  rightIcon: incomingPrimaryCTA?.rightIcon ?? "lu:arrow-up-right",
+};
+
+const secondaryCTA: CTA | undefined = incomingSecondaryCTA
+  ? {
+      ...incomingSecondaryCTA,
+      rightIcon: incomingSecondaryCTA.rightIcon ?? "lu:arrow-up-right",
+    }
+  : undefined;
+
+const checklistGradientId = `${id}-hero-check-gradient`;
+---
+
+<Hero
+  id={id}
+  class={`landscape-hero ${className}`}
+  size="full"
+  contentAlign="center"
+  contentVerticalAlign="center"
+>
+  <div class="relative z-10 inner-section flex flex-wrap items-center h-full">
+    <div class="mx-auto px-2 lg:px-0 max-w-6xl lg:max-w-7xl w-full h-full">
+      <div class="lg:flex lg:flex-row lg:items-stretch lg:space-x-25 space-y-2 lg:space-y-0 h-full">
+        <!-- Left side: Text content -->
+        <div class="flex-1 flex flex-col gap-3 lg:gap-6 justify-left hero-content">
+          <div class="flex flex-wrap items-end gap-4">
+            <SectionHeader
+              className="text-left lg:text-left"
+              heading={heading}
+              headingTag="h1"
+              headingClassName="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[70px] leading-[1.02]"
+            />
+          </div>
+        </div>
+
+        <!-- Right side: Portfolio showcase -->
+        <div
+          class="relative flex-1 w-full h-full flex flex-col gap-3 sm:gap-4 hero-portfolio"
+        >
+          <!-- <div class="flex flex-col gap-4 lg:gap-3"> -->
+            <p
+              class="m-0 text-base sm:text-xl md:text-2xl xl:text-3xl pr-5 lg:pr-auto"
+              role="heading"
+              aria-level="2"
+            >
+              {subheading}
+            </p>
+            <svg
+              aria-hidden="true"
+              width="0"
+              height="0"
+              focusable="false"
+              class="absolute pointer-events-none w-0 h-0 overflow-hidden"
+            >
+              <defs>
+                <linearGradient id={checklistGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="currentColor" class="text-primary-100" />
+                  <stop offset="55%" stop-color="currentColor" class="text-primary" />
+                  <stop offset="100%" stop-color="currentColor" class="text-primary-800" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <ul class="m-0 space-y-2 lg:space-y-3 p-0">
+              {
+                checklist.map((service) => (
+                  <li class="list-none flex items-center gap-1.5">
+                    <span class="faded-bg p-1 rounded-full flex items-center justify-center text-accent flex-shrink-0">
+                      <svg
+                        class="w-3 h-3 lg:w-4 lg:h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke={`url(#${checklistGradientId})`}
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span class="text-text text-base lg:text-lg leading-relaxed">
+                      {service}
+                    </span>
+                  </li>
+                ))
+              }
+            </ul>
+          <!-- </div> -->
+          <div
+            class="flex flex-col items-start gap-3 xl:flex-row xl:items-center xl:gap-5 xl:w-full"
+          >
+            <ContentRenderer
+              query={query("testimonials")
+                .where((entry) => entry.data.featured === true)
+                .limit(3)}
+              variant="TestimonialCirclesVariant"
+              className="order-1 px-0 xl:order-2"
+              counterStart={10}
+              counterEnd={100}
+              counterDuration={1800}
+              counterSuffix="+"
+              counterLabel="Happy Clients"
+            />
+
+            <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap order-2 xl:order-1">
+              <Button
+                href={primaryCTA.link}
+                variant="primary"
+                size="lg"
+                rightIcon={primaryCTA.rightIcon}
+                className="!w-auto whitespace-nowrap"
+                buttonWrapperClasses="!w-auto justify-start"
+              >
+                {primaryCTA.text}
+              </Button>
+              {secondaryCTA && (
+                <Button
+                  href={secondaryCTA.link}
+                  variant="secondary"
+                  size="lg"
+                  rightIcon={secondaryCTA.rightIcon}
+                  className="!w-auto whitespace-nowrap"
+                  buttonWrapperClasses="!w-auto justify-start"
+                >
+                  {secondaryCTA.text}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<ScrollIndicator slot="after" href={scrollToSection} />
+</Hero>

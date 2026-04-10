@@ -1,0 +1,16 @@
+---
+title: "FAQs"
+description: "Questions about timelines, content, SEO campaigns, support, and what it is like to build and grow a website with us."
+heading: "Common Questions Before We Build"
+hasPage: false
+itemsHasPage: false
+---
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query, sortByOrder } from "@/utils/query";
+
+<ContentRenderer
+  query={query("faq").orderBy(sortByOrder())}
+  variant="AccordionVariant"
+  allowMultiple={false}
+  showButtonSection={false}
+/>

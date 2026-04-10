@@ -1,0 +1,147 @@
+---
+// src/components/starter/ContentRenderer/variants/VideoAccordionVariant.astro
+/**
+ * VideoAccordionVariant
+ * Recreates the legacy Website Types accordion with synced video playback.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import Section from "@/components/project/Section.astro";
+import VideoAccordion from "@/components/LoopTemplates/VideoAccordion";
+import Button from "@/components/starter/Button/Button";
+import ContentBridge from "@/components/starter/ContentRenderer/ContentBridge/ContentBridge.astro";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import fallbackVideo from "@/assets/Black-Microwave-Earrape.mp4";
+import { toArray } from "@/utils/array";
+import { generateVideoPoster } from "@/utils/videoThumbnails";
+
+interface Props extends BaseVariantProps {
+  items?: any[];
+  autoAdvanceDelay?: number;
+  ctaHref?: string;
+  ctaText?: string;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "",
+  collectionUrl,
+  collectionTitle,
+  id,
+  autoAdvanceDelay = 3000,
+  showButtonSection = true,
+  ctaHref,
+  ctaText,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+const solutionEntries = safeItems.filter(
+  (item: any) => item?.parent === "website-solutions"
+);
+const contentItems = solutionEntries.length > 0 ? solutionEntries : safeItems;
+const sectionTitle = title ?? collectionTitle;
+
+// SectionHeader handles heading normalization automatically
+const showHeader = Boolean(sectionTitle || heading || description);
+
+async function resolveVideoPoster(src?: string, slug?: string) {
+  if (!src || src.startsWith("http")) {
+    return null;
+  }
+
+  try {
+    return await generateVideoPoster(src);
+  } catch (error) {
+    console.warn(
+      `[VideoAccordionVariant] Failed to generate poster for ${slug ?? src}`,
+      error
+    );
+    return null;
+  }
+}
+
+const accordionItems = await Promise.all(
+  contentItems.map(async (item: any, index: number) => {
+    const slug = item?.slug ?? `solution-${index}`;
+    const hasPage = item?.hasPage !== false && Boolean(item?.url);
+    const videoSrc = item?.videoSrc ?? fallbackVideo;
+    const hasManualPoster = typeof item?.videoPoster === "string";
+    const poster = hasManualPoster
+      ? {
+          src: item.videoPoster,
+          placeholderSrc: item.videoPlaceholder,
+          width: item.posterWidth,
+          height: item.posterHeight,
+        }
+      : await resolveVideoPoster(videoSrc, slug);
+
+    return {
+      key: slug,
+      icon: item?.icon,
+      title: item?.title,
+      description: item?.description ?? item?.summary ?? item?.excerpt,
+      slug,
+      contentSlotId: `${id}-slot-${index}`,
+      videoSrc,
+      videoPoster: poster?.src,
+      videoPlaceholder: poster?.placeholderSrc,
+      posterWidth: poster?.width,
+      posterHeight: poster?.height,
+      hasPage,
+      url: hasPage ? item?.url : undefined,
+    };
+  })
+);
+---
+
+<Section id={id} class={`outer-section relative ${className}`.trim()}>
+  <div class="inner-section">
+    {
+      showHeader && (
+        <SectionHeader
+          title={sectionTitle}
+          heading={heading}
+          description={description}
+          className="text-center max-w-5xl mx-auto"
+          titleClassName="tracking-[0.25em]"
+          descriptionClassName="large-text text-text/80"
+        />
+      )
+    }
+
+    {
+      accordionItems.length > 0 && (
+        <ContentBridge items={contentItems} bridgeId={id}>
+          <VideoAccordion
+            items={accordionItems}
+            autoAdvanceDelay={autoAdvanceDelay}
+            className={showHeader ? "mt-12" : ""}
+            client:visible
+          />
+        </ContentBridge>
+      )
+    }
+
+    {
+      showButtonSection &&
+        shouldShowCollectionCTA(collectionUrl, contentItems.length) &&
+        (ctaText || title || collectionTitle) &&
+        (ctaHref || collectionUrl) && (
+          <div class="buttons-section-center">
+            <Button
+              client:visible
+              href={ctaHref ?? collectionUrl}
+              rightIcon="lu:arrow-right"
+              variant="secondary"
+            >
+              {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+            </Button>
+          </div>
+        )
+    }
+  </div>
+</Section>

@@ -1,0 +1,341 @@
+---
+// src/components/ContentRenderer/variants/CardVariant.astro
+/**
+ * Card Variant styled after our legacy WebsiteTypesSection
+ * Retains ContentRenderer metadata + CTA behavior while reusing FeatureCard styling.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import type { FeatureCardData, FeatureCardProps } from "@/components/LoopComponents/FeatureCard";
+import CardRenderer from "@/components/LoopTemplates/CardRenderer";
+import ContentBridge from "../ContentBridge/ContentBridge.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Section from "@/components/Section.astro";
+import Button from "@/components/Button/Button";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  /** Column count: 1-4 or "auto" (responsive max 3 based on item count) */
+  columns?: 1 | 2 | 3 | 4 | "auto";
+  sectionLayout?: "default" | "split" | "auto";
+  ctaHref?: string;
+  ctaText?: string;
+  card?: CardPropOverrides;
+  ctaInlineOnDesktop?: boolean;
+  /** Show MDX body content in cards instead of just description */
+  showBody?: boolean;
+}
+
+type CardPropOverrides = Partial<Omit<FeatureCardProps, "data">> & {
+  listItem?: FeatureCardProps["listItemProps"];
+};
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "outer-section",
+  columns = "auto",
+  sectionLayout = "auto",
+  collectionUrl,
+  collectionTitle,
+  id,
+  showButtonSection = true,
+  ctaHref,
+  ctaText,
+  card,
+  ctaInlineOnDesktop = false,
+  showBody = false,
+} = Astro.props as Props;
+
+const safeItems = toArray(items) as FeatureCardData[];
+const showHeader = Boolean(title || heading || description);
+const shouldAutoSplit =
+  showHeader &&
+  sectionLayout === "auto" &&
+  [2, 4, 8].includes(safeItems.length);
+const resolvedSectionLayout =
+  sectionLayout === "auto"
+    ? shouldAutoSplit
+      ? "split"
+      : "default"
+    : sectionLayout;
+const isSplitLayout = resolvedSectionLayout === "split";
+
+// Calculate effective columns:
+// - regular auto layout = min(3, itemCount)
+// - split auto layout = 2 columns for balanced 2/4/8 card sets
+const maxColumns =
+  columns === "auto"
+    ? isSplitLayout
+      ? 2
+      : 3
+    : columns;
+const effectiveColumns = Math.min(maxColumns, safeItems.length || 1) as 1 | 2 | 3 | 4;
+
+const normalizeCardProps = (
+  overrides?: CardPropOverrides,
+): Partial<FeatureCardProps> | undefined => {
+  if (!overrides) return undefined;
+  const { listItem, listItemProps, ...rest } = overrides as CardPropOverrides & {
+    listItemProps?: FeatureCardProps["listItemProps"];
+  };
+  const mergedListItemProps = {
+    ...(listItemProps ?? {}),
+    ...(listItem ?? {}),
+  };
+  return {
+    ...rest,
+    ...(Object.keys(mergedListItemProps).length > 0
+      ? { listItemProps: mergedListItemProps }
+      : {}),
+  };
+};
+
+const featureCardPropOverrides = normalizeCardProps(card);
+const splitFeatureCardPropOverrides: Partial<FeatureCardProps> | undefined = isSplitLayout
+  ? {
+      ...featureCardPropOverrides,
+      className: [featureCardPropOverrides?.className, "h-full"].filter(Boolean).join(" "),
+      innerClassName: [
+        featureCardPropOverrides?.innerClassName,
+        "h-full min-h-[25rem] lg:min-h-[27rem]",
+      ]
+        .filter(Boolean)
+        .join(" "),
+      stretchToFill: true,
+    }
+  : featureCardPropOverrides;
+
+const resolveCardClassName = (item: FeatureCardData): string => {
+  if (!item || typeof item !== "object") return "";
+  const record = item as Record<string, any>;
+  const classes = [record.class, record.className].filter(
+    (value): value is string =>
+      typeof value === "string" && value.trim().length > 0,
+  );
+  return classes.join(" ");
+};
+
+const resolveRingDuration = (item: FeatureCardData): number => {
+  if (!item || typeof item !== "object") return 800;
+  const record = item as Record<string, any>;
+  return typeof record?.ringDuration === "number" ? record.ringDuration : 800;
+};
+
+const gridMarginClass = showHeader ? "mt-12" : "";
+const showCTA =
+  showButtonSection &&
+  shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+  (ctaText || title || collectionTitle) &&
+  (ctaHref || collectionUrl);
+const showSidebar = showHeader || showCTA;
+const sectionOverflowClass = isSplitLayout ? "" : "overflow-hidden";
+
+---
+
+<Section id={id} class={`relative ${sectionOverflowClass} ${className}`.trim()}>
+  <div class="inner-section">
+    {isSplitLayout ? (
+      showSidebar ? (
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-12 xl:gap-16">
+          <div class="flex flex-col gap-6 sticky-section lg:self-start">
+            {showHeader && (
+              <SectionHeader
+                title={title}
+                heading={heading}
+                description={description}
+                className="text-section text-left"
+                descriptionClassName="large-text text-left"
+              />
+            )}
+
+            {showCTA && (
+              <div class="flex items-start">
+                <Button
+                  href={ctaHref ?? collectionUrl}
+                  rightIcon="lu:arrow-right"
+                  variant="primary"
+                >
+                  {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          <div>
+            {showBody ? (
+              <ContentBridge items={safeItems} bridgeId={id}>
+                <Fragment slot="default">
+                  <CardRenderer
+                    client:visible
+                    items={safeItems.map((item, index) => ({
+                      ...item,
+                      contentSlotId: `${id}-slot-${index}`,
+                    }))}
+                    columns={effectiveColumns}
+                    showBody={showBody}
+                    getCardClassName={resolveCardClassName}
+                    getRingDuration={resolveRingDuration}
+                    featureCardProps={splitFeatureCardPropOverrides}
+                    animation={{
+                      once: false,
+                      threshold: 0.15,
+                      rootMargin: "-10% 0px -10% 0px",
+                    }}
+                  />
+                </Fragment>
+              </ContentBridge>
+            ) : (
+              <CardRenderer
+                client:visible
+                items={safeItems}
+                columns={effectiveColumns}
+                showBody={false}
+                getCardClassName={resolveCardClassName}
+                getRingDuration={resolveRingDuration}
+                featureCardProps={splitFeatureCardPropOverrides}
+                animation={{
+                  once: false,
+                  threshold: 0.15,
+                  rootMargin: "-10% 0px -10% 0px",
+                }}
+              />
+            )}
+          </div>
+        </div>
+      ) : showBody ? (
+        <ContentBridge items={safeItems} bridgeId={id}>
+          <Fragment slot="default">
+            <CardRenderer
+              client:visible
+              items={safeItems.map((item, index) => ({
+                ...item,
+                contentSlotId: `${id}-slot-${index}`,
+              }))}
+              columns={effectiveColumns}
+              showBody={showBody}
+              getCardClassName={resolveCardClassName}
+              getRingDuration={resolveRingDuration}
+              featureCardProps={splitFeatureCardPropOverrides}
+              animation={{
+                once: false,
+                threshold: 0.15,
+                rootMargin: "-10% 0px -10% 0px",
+              }}
+            />
+          </Fragment>
+        </ContentBridge>
+      ) : (
+        <CardRenderer
+          client:visible
+          items={safeItems}
+          columns={effectiveColumns}
+          showBody={false}
+          getCardClassName={resolveCardClassName}
+          getRingDuration={resolveRingDuration}
+          featureCardProps={featureCardPropOverrides}
+          animation={{
+            once: false,
+            threshold: 0.15,
+            rootMargin: "-10% 0px -10% 0px",
+          }}
+        />
+      )
+    ) : (
+      <>
+        {showHeader && (
+          <div
+            class={
+              ctaInlineOnDesktop && showCTA
+                ? "flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between"
+                : ""
+            }
+          >
+            <div class={ctaInlineOnDesktop && showCTA ? "lg:flex-1" : "heading-padding"}>
+              <SectionHeader
+                title={title}
+                heading={heading}
+                description={description}
+                className={
+                  ctaInlineOnDesktop && showCTA ? "text-section lg:text-left" : undefined
+                }
+                descriptionClassName={
+                  ctaInlineOnDesktop && showCTA ? "large-text lg:text-left" : undefined
+                }
+              />
+            </div>
+
+            {ctaInlineOnDesktop && showCTA && (
+              <div class="hidden lg:flex items-center">
+                <Button
+                  href={ctaHref ?? collectionUrl}
+                  rightIcon="lu:arrow-right"
+                  variant="secondary"
+                >
+                  {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {showBody ? (
+          <ContentBridge items={safeItems} bridgeId={id}>
+            <Fragment slot="default">
+              <CardRenderer
+                client:visible
+                items={safeItems.map((item, index) => ({
+                  ...item,
+                  contentSlotId: `${id}-slot-${index}`,
+                }))}
+                columns={effectiveColumns}
+                showBody={showBody}
+                className={gridMarginClass}
+                getCardClassName={resolveCardClassName}
+                getRingDuration={resolveRingDuration}
+                featureCardProps={featureCardPropOverrides}
+                animation={{
+                  once: false,
+                  threshold: 0.15,
+                  rootMargin: "-10% 0px -10% 0px",
+                }}
+              />
+            </Fragment>
+          </ContentBridge>
+        ) : (
+          <CardRenderer
+            client:visible
+            items={safeItems}
+            columns={effectiveColumns}
+            showBody={false}
+            className={gridMarginClass}
+            getCardClassName={resolveCardClassName}
+            getRingDuration={resolveRingDuration}
+            featureCardProps={splitFeatureCardPropOverrides}
+            animation={{
+              once: false,
+              threshold: 0.15,
+              rootMargin: "-10% 0px -10% 0px",
+            }}
+          />
+        )}
+
+        {showCTA && (
+          <div class={`buttons-section-center ${ctaInlineOnDesktop ? "lg:hidden" : ""}`.trim()}>
+            <Button
+              href={ctaHref ?? collectionUrl}
+              rightIcon="lu:arrow-right"
+              variant="secondary"
+              client:idle
+            >
+              {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+            </Button>
+          </div>
+        )}
+      </>
+    )}
+  </div>
+</Section>

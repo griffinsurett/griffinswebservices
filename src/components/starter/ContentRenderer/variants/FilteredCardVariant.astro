@@ -1,0 +1,265 @@
+---
+// src/components/starter/ContentRenderer/variants/FilteredCardVariant.astro
+/**
+ * Filtered Card Variant
+ *
+ * Extends CardVariant with auto-detecting filtering capabilities.
+ * Automatically derives filter tabs from the items' data structure:
+ * - If items have `parent` field → group by parent
+ * - If items have `tags` field → group by tags
+ * - If items have a reference field → group by that reference
+ *
+ * No manual filter configuration needed - just use the query.
+ *
+ * @example
+ * // Auto-detect: items have parent field, so filter by parent
+ * <ContentRenderer
+ *   query={query('capabilities').where((e) => !!e.data.parent)}
+ *   variant="FilteredCardVariant"
+ * />
+ *
+ * @example
+ * // Auto-detect: items have tags, so filter by tags
+ * <ContentRenderer
+ *   query={query('blog')}
+ *   variant="FilteredCardVariant"
+ * />
+ *
+ * @example
+ * // Override: explicitly set field and options
+ * <ContentRenderer
+ *   query={query('projects')}
+ *   variant="FilteredCardVariant"
+ *   filter={{ field: "category", showCount: true }}
+ * />
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import type {
+  FeatureCardData,
+  FeatureCardProps,
+} from "@/components/LoopComponents/FeatureCard";
+import type { FilterConfig } from "@/components/LoopTemplates/FilteredCardRenderer";
+import FilteredCardRenderer from "@/components/LoopTemplates/FilteredCardRenderer";
+import ContentBridge from "../ContentBridge/ContentBridge.astro";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import Section from "@/components/project/Section.astro";
+import Button from "@/components/starter/Button/Button";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  /** Optional filter configuration for overrides (auto-detects if not provided) */
+  filter?: FilterConfig;
+  /** Grid columns (1-4) */
+  columns?: 1 | 2 | 3 | 4;
+  /** Custom CTA href (defaults to collectionUrl) */
+  ctaHref?: string;
+  /** Custom CTA text */
+  ctaText?: string;
+  /** Card prop overrides */
+  card?: CardPropOverrides;
+  /** Show CTA inline on desktop */
+  ctaInlineOnDesktop?: boolean;
+  /** Show MDX body content in cards */
+  showBody?: boolean;
+  /** Filter tab size */
+  filterSize?: "sm" | "md" | "lg";
+  /** Additional class for filter tabs container */
+  filterClassName?: string;
+}
+
+type CardPropOverrides = Partial<Omit<FeatureCardProps, "data">> & {
+  listItem?: FeatureCardProps["listItemProps"];
+};
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "outer-section",
+  columns = 3,
+  collectionUrl,
+  collectionTitle,
+  id,
+  showButtonSection = true,
+  ctaHref,
+  ctaText,
+  card,
+  ctaInlineOnDesktop = false,
+  showBody = false,
+  filter,
+  filterSize = "sm",
+  filterClassName = "",
+} = Astro.props as Props;
+
+const safeItems = toArray(items) as FeatureCardData[];
+
+const normalizeCardProps = (
+  overrides?: CardPropOverrides
+): Partial<FeatureCardProps> | undefined => {
+  if (!overrides) return undefined;
+  const { listItem, listItemProps, ...rest } =
+    overrides as CardPropOverrides & {
+      listItemProps?: FeatureCardProps["listItemProps"];
+    };
+  const mergedListItemProps = {
+    ...(listItemProps ?? {}),
+    ...(listItem ?? {}),
+  };
+  return {
+    ...rest,
+    ...(Object.keys(mergedListItemProps).length > 0
+      ? { listItemProps: mergedListItemProps }
+      : {}),
+  };
+};
+
+const featureCardPropOverrides = normalizeCardProps(card);
+
+const resolveCardClassName = (item: FeatureCardData): string => {
+  if (!item || typeof item !== "object") return "";
+  const record = item as Record<string, any>;
+  const classes = [record.class, record.className].filter(
+    (value): value is string =>
+      typeof value === "string" && value.trim().length > 0
+  );
+  return classes.join(" ");
+};
+
+const resolveRingDuration = (item: FeatureCardData): number => {
+  if (!item || typeof item !== "object") return 800;
+  const record = item as Record<string, any>;
+  return typeof record?.ringDuration === "number" ? record.ringDuration : 800;
+};
+
+// SectionHeader handles heading normalization automatically
+const showHeader = Boolean(title || heading || description);
+const gridMarginClass = showHeader ? "mt-12" : "";
+const showCTA =
+  showButtonSection &&
+  shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+  (ctaText || title || collectionTitle) &&
+  (ctaHref || collectionUrl);
+---
+
+<Section id={id} class={`relative overflow-hidden ${className}`.trim()}>
+  <div class="inner-section">
+    {
+      showHeader && (
+        <div
+          class={
+            ctaInlineOnDesktop && showCTA
+              ? "flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between"
+              : ""
+          }
+        >
+          <div
+            class={
+              ctaInlineOnDesktop && showCTA ? "lg:flex-1" : "heading-padding"
+            }
+          >
+            <SectionHeader
+              title={title}
+              heading={heading}
+              description={description}
+              className={
+                ctaInlineOnDesktop && showCTA
+                  ? "text-section lg:text-left"
+                  : undefined
+              }
+              descriptionClassName={
+                ctaInlineOnDesktop && showCTA
+                  ? "large-text lg:text-left"
+                  : undefined
+              }
+            />
+          </div>
+
+          {ctaInlineOnDesktop && showCTA && (
+            <div class="hidden lg:flex items-center">
+              <Button
+                href={ctaHref ?? collectionUrl}
+                rightIcon="lu:arrow-right"
+                variant="secondary"
+              >
+                {ctaText ??
+                  `View All ${(title ?? collectionTitle ?? "").trim()}`}
+              </Button>
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    {
+      /* Only use ContentBridge when showBody is true - avoids expensive MDX rendering */
+    }
+    {
+      showBody ? (
+        <ContentBridge items={safeItems} bridgeId={id}>
+          <Fragment slot="default">
+            <FilteredCardRenderer
+              client:visible
+              items={safeItems.map((item, index) => ({
+                ...item,
+                contentSlotId: `${id}-slot-${index}`,
+              }))}
+              filter={filter}
+              filterSize={filterSize}
+              filterClassName={filterClassName}
+              columns={columns}
+              showBody={showBody}
+              className={gridMarginClass}
+              getCardClassName={resolveCardClassName}
+              getRingDuration={resolveRingDuration}
+              featureCardProps={featureCardPropOverrides}
+              animation={{
+                once: false,
+                threshold: 0.15,
+                rootMargin: "-10% 0px -10% 0px",
+              }}
+            />
+          </Fragment>
+        </ContentBridge>
+      ) : (
+        <FilteredCardRenderer
+          client:visible
+          items={safeItems}
+          filter={filter}
+          filterSize={filterSize}
+          filterClassName={filterClassName}
+          columns={columns}
+          showBody={false}
+          className={gridMarginClass}
+          getCardClassName={resolveCardClassName}
+          getRingDuration={resolveRingDuration}
+          featureCardProps={featureCardPropOverrides}
+          animation={{
+            once: false,
+            threshold: 0.15,
+            rootMargin: "-10% 0px -10% 0px",
+          }}
+        />
+      )
+    }
+
+    {
+      showCTA && (
+        <div
+          class={`buttons-section-center ${ctaInlineOnDesktop ? "lg:hidden" : ""}`.trim()}
+        >
+          <Button
+            href={ctaHref ?? collectionUrl}
+            rightIcon="lu:arrow-right"
+            variant="secondary"
+            client:idle
+          >
+            {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+          </Button>
+        </div>
+      )
+    }
+  </div>
+</Section>

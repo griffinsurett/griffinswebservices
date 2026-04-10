@@ -1,0 +1,77 @@
+---
+// src/components/starter/ContentRenderer/variants/BenefitsVariant.astro
+/**
+ * BenefitsVariant
+ * Masonry grid layout for benefits with MDX body content.
+ * Each card renders its MDX Content directly for individual hydration.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import MasonryGrid from "@/components/LoopTemplates/MasonryGrid.astro";
+import SectionHeader from "@/components/project/SectionHeader.astro";
+import Section from "@/components/project/Section.astro";
+import Button from "@/components/starter/Button/Button";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  ctaHref?: string;
+  ctaText?: string;
+}
+
+const {
+  items = [],
+  title,
+  heading,
+  description,
+  className = "outer-section",
+  collectionUrl,
+  collectionTitle,
+  id,
+  showButtonSection = true,
+  ctaHref,
+  ctaText,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+const sectionTitle = title ?? collectionTitle;
+
+// SectionHeader handles heading normalization automatically
+const showHeader = Boolean(sectionTitle || heading || description);
+const gridMarginClass = showHeader ? "mt-12" : "";
+const showCTA =
+  showButtonSection &&
+  shouldShowCollectionCTA(collectionUrl, safeItems.length) &&
+  (ctaText || title || collectionTitle) &&
+  (ctaHref || collectionUrl);
+---
+
+<Section id={id} class={`relative overflow-hidden ${className}`.trim()}>
+  <div class="inner-section">
+    {showHeader && (
+      <div class="heading-padding">
+        <SectionHeader
+          title={sectionTitle}
+          heading={heading}
+          description={description}
+          className="text-section"
+        />
+      </div>
+    )}
+
+    <MasonryGrid items={safeItems} className={gridMarginClass} />
+
+    {showCTA && (
+      <div class="buttons-section-center">
+        <Button
+          href={ctaHref ?? collectionUrl}
+          rightIcon="lu:arrow-right"
+          variant="secondary"
+          client:idle
+        >
+          {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
+        </Button>
+      </div>
+    )}
+  </div>
+</Section>

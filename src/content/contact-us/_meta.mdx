@@ -1,0 +1,24 @@
+---
+title: "Contact Us"
+description: "Have a project in mind or just want to say hello? We'd love to hear from you. Reach out and let's start a conversation about how we can help bring your vision to life."
+hasPage: true
+itemsHasPage: false
+redirectFrom: ["/contact", "/contactus"]
+addToMenu:
+  - menu: "main-menu"
+    order: 6
+  - menu: "footer-menu-2"
+    order: 2
+itemsLinkBehavior:
+  mode: prefixed
+  linkPrefix: linkPrefix
+  valueFormatter: phone
+---
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<ContentRenderer
+  query={query("contact-us")}
+  variant="ContactVariant"
+  columns={2}
+/>

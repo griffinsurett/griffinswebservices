@@ -1,0 +1,115 @@
+---
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import Section from "@/components/Section.astro";
+import Button from "@/components/Button/Button";
+import IconListItem from "@/components/LoopComponents/IconListItem";
+import SmallChecklistItem from "@/components/LoopComponents/SmallChecklistItem.astro";
+import type { CollectionLayoutProps } from "./types";
+
+const {
+  entry,
+  collection,
+  collectionMeta,
+  Content,
+  seoProps = {},
+} = Astro.props as CollectionLayoutProps;
+
+const data = entry?.data || {};
+const {
+  title,
+  description,
+  price,
+  pricePrefix,
+  priceSuffix,
+  icon,
+  features = [],
+  link,
+} = data;
+
+const slug = entry?.slug ?? "";
+const isPremiumWebsite = slug === "premium-website";
+const safeFeatures = Array.isArray(features)
+  ? features.filter((feature) => typeof feature === "string" && feature.trim().length > 0)
+  : [];
+const hasExternalLink = typeof link === "string" && /^(https?:)?\/\//.test(link);
+const backHref = `/${collection ?? "pricing"}`;
+---
+
+<SiteLayout {...seoProps}>
+  {isPremiumWebsite ? (
+    <>{Content && <Content />}</>
+  ) : (
+    <Section class="outer-section relative overflow-hidden">
+      <div class="inner-section">
+        <div class="mx-auto max-w-4xl">
+          <div class="group relative overflow-hidden rounded-3xl card-bg shadow-xl">
+            <div class="inner-card-style inner-card-transition inner-card-color" aria-hidden="true"></div>
+            <div class="relative z-10 p-6 lg:p-8">
+              <IconListItem
+                data={{ icon, title, description }}
+                layout="vertical"
+                alignment="center"
+                iconSize="xl"
+                iconClassName="mx-auto border-2 border-soft-strong bg-gradient-to-br from-primary/12 to-primary/5 text-primary"
+                titleTag="h1"
+                titleClassName="mb-3 text-heading text-3xl lg:text-4xl font-semibold"
+                descriptionClassName="text-base lg:text-lg leading-relaxed text-text/85"
+              />
+
+              <div class="mt-8 text-center">
+                <p class="flex flex-wrap items-baseline justify-center gap-x-2 gap-y-1 font-semibold tracking-tight text-heading">
+                  {pricePrefix && (
+                    <span class="text-sm uppercase tracking-[0.24em] text-muted">{pricePrefix}</span>
+                  )}
+                  <span class="text-4xl">{price}</span>
+                  {priceSuffix && (
+                    <span class="text-sm uppercase tracking-[0.24em] text-muted">{priceSuffix}</span>
+                  )}
+                </p>
+              </div>
+
+              {safeFeatures.length > 0 && (
+                <ul class="mx-auto mt-8 flex w-full max-w-2xl flex-col gap-3 text-left">
+                  {safeFeatures.map((feature) => (
+                    <SmallChecklistItem
+                      as="li"
+                      class="items-center gap-2"
+                      iconWrapperClassName="faded-bg flex items-center justify-center rounded-full p-1 text-accent flex-shrink-0"
+                      iconClassName="h-3 w-3 lg:h-4 lg:w-4"
+                      textClassName="text-text text-sm lg:text-base leading-relaxed"
+                    >
+                      {feature}
+                    </SmallChecklistItem>
+                  ))}
+                </ul>
+              )}
+
+              <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                {link && (
+                  <Button
+                    href={link}
+                    variant="primary"
+                    rightIcon="lu:arrow-up-right"
+                    target={hasExternalLink ? "_blank" : undefined}
+                    rel={hasExternalLink ? "noopener noreferrer" : undefined}
+                    className="justify-center text-center"
+                  >
+                    Get Started
+                  </Button>
+                )}
+                <Button
+                  href={backHref}
+                  variant="secondary"
+                  rightIcon="lu:arrow-left"
+                  className="justify-center text-center"
+                >
+                  View All Pricing
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Section>
+  )}
+</SiteLayout>

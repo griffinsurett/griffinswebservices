@@ -1,0 +1,945 @@
+/* src/styles/global.css */
+@import "tailwindcss";
+
+/* Tell Tailwind to scan integration components for class usage */
+@source "../integrations";
+
+@import "../integrations/preferences/language/styles/language-switcher.css";
+@import "../integrations/preferences/shared/styles/preferences.css";
+@import "../integrations/preferences/accessibility/styles/accessibility.css";
+@import "./legal.css";
+@import "./system.css";
+@import "./menu.css";
+
+/* ============================================================
+ * 1. COLOR MODES & TOKENS
+ * ============================================================ */
+@custom-variant light  (&:where([data-theme="light"], [data-theme="light"] *));
+@custom-variant dark   (&:where([data-theme="dark"],  [data-theme="dark"]  *));
+
+@theme {
+    /* Base palette */
+  --color-primary-dark: #080808;
+  --color-secondary-dark: #030303;
+  --color-tertiary-dark: var(--color-zinc-900);
+  --color-primary-light: var(--color-zinc-50);
+  --color-secondary-light: var(--color-zinc-100);
+  --color-tertiary-light: var(--color-zinc-200);
+  --main-accent: #5e76f6;
+
+  /* ───── ACCENT – secondary / interactive ───── */
+  --color-accent: #5e76f6;  /* complementary accent color */
+
+  /* ───── PRIMARY – change ONLY this one line for the brand ───── */
+  --color-primary: var(--color-accent);   /* keep in sync with accent picker */
+    --color-primary-secondary: color-mix(
+    in srgb,
+    var(--color-primary) 85%,
+    var(--primary-dark)
+    );
+
+  /* ───── Neutrals ───── */
+  /* Text colors */
+  --color-heading: var(--color-tertiary-dark);
+  --color-text: var(--color-zinc-200);
+  --color-muted: var(--color-zinc-300);
+
+  /* Background surfaces */
+  --color-bg: var(--color-primary-dark);
+  --color-bg2: var(--color-secondary-dark);
+  --color-bg3: var(--color-tertiary-dark);
+  --color-surface: oklch(97.5% 0.006 260); /* cards, nav, modals */
+
+  /* color helpers */
+  --color-primary-50:   oklch(from var(--color-primary) calc(l + 0.40) c h);
+  --color-primary-100:  oklch(from var(--color-primary) calc(l + 0.35) c h);
+  --color-primary-200:  oklch(from var(--color-primary) calc(l + 0.25) c h);
+  --color-primary-300:  oklch(from var(--color-primary) calc(l + 0.15) c h);
+  --color-primary-400:  oklch(from var(--color-primary) calc(l + 0.08) c h);
+  --color-primary-500:  var(--color-primary);
+  --color-primary-600:  oklch(from var(--color-primary) calc(l - 0.08) c h);
+  --color-primary-700:  oklch(from var(--color-primary) calc(l - 0.15) c h);
+  --color-primary-800:  oklch(from var(--color-primary) calc(l - 0.25) c h);
+  --color-primary-900:  oklch(from var(--color-primary) calc(l - 0.35) c h);
+  --color-primary-950:  oklch(from var(--color-primary) calc(l - 0.45) c h);
+
+  --color-accent-50:   oklch(from var(--color-accent) calc(l + 0.40) c h);
+  --color-accent-100:  oklch(from var(--color-accent) calc(l + 0.35) c h);
+  --color-accent-200:  oklch(from var(--color-accent) calc(l + 0.25) c h);
+  --color-accent-300:  oklch(from var(--color-accent) calc(l + 0.15) c h);
+  --color-accent-400:  oklch(from var(--color-accent) calc(l + 0.08) c h);
+  --color-accent-500:  var(--color-accent);
+  --color-accent-600:  oklch(from var(--color-accent) calc(l - 0.08) c h);
+  --color-accent-700:  oklch(from var(--color-accent) calc(l - 0.15) c h);
+  --color-accent-800:  oklch(from var(--color-accent) calc(l - 0.25) c h);
+  --color-accent-900:  oklch(from var(--color-accent) calc(l - 0.35) c h);
+  --color-accent-950:  oklch(from var(--color-accent) calc(l - 0.45) c h);
+
+    /* Extras */
+  --color-border: color-mix(in srgb, var(--color-heading) 10%, transparent);
+  --color-border-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
+  --color-border-soft: var(--color-border);
+  --color-border-soft-strong: var(--color-border-strong);
+  --color-border-dim: var(--color-border-strong);
+  --font-header: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
+  --font-body: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
+}
+
+html, body {
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
+}
+
+@layer components {
+    button, a {
+    @apply cursor-pointer;
+    }
+
+  /* Base button styles */
+  .btn-base {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply font-semibold rounded-lg transition-all duration-200;
+    @apply focus:outline-none;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-base:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--color-bg, #0f0f0f) 75%, transparent),
+      0 0 0 4px color-mix(in srgb, var(--color-primary) 80%, transparent);
+  }
+
+  /* Size variants */
+  .btn-none {
+    @apply p-0 text-sm;
+  }
+
+  .btn-sm {
+    @apply px-4 py-2 lg:px-8 lg:py-3 text-xs sm:text-sm;
+  }
+
+  .btn-md {
+    @apply px-6 py-3 lg:px-10 lg:py-4 text-sm sm:text-base;
+  }
+
+  .btn-lg {
+    @apply px-10 py-4 lg:px-12 lg:py-5 text-base lg:text-lg xl:text-xl;
+  }
+
+  /* Link base styles */
+  .link-base {
+    @apply inline-flex items-center gap-1 tracking-wide;
+    @apply text-text hover:text-primary hover:underline;
+    @apply bg-transparent font-normal;
+    @apply transition-colors duration-200;
+    @apply focus:outline-none focus:ring-0 focus:ring-offset-0;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .link-base:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--color-bg, #0f0f0f) 75%, transparent),
+      0 0 0 4px color-mix(in srgb, var(--color-primary) 80%, transparent);
+  }
+
+  /* Link sizes (no padding) */
+  .link-sm {
+    @apply text-sm;
+  }
+  
+  .link-md {
+    @apply text-base;
+  }
+  
+  .link-lg {
+    @apply text-lg;
+  }
+
+  /* Logo Link styles */
+  .logo-link-base {
+    @apply inline-flex items-center gap-1 tracking-wide;
+    @apply text-primary hover:text-primary-700;
+    @apply bg-transparent font-normal;
+    @apply transition-colors duration-200;
+    @apply focus:outline-none focus:ring-0 focus:ring-offset-0;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .logo-link-base:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--color-bg, #0f0f0f) 75%, transparent),
+      0 0 0 4px color-mix(in srgb, var(--color-primary) 80%, transparent);
+  }
+
+  .logo-link-icon {
+    @apply inline-flex items-center justify-center;
+    @apply w-0 opacity-0 overflow-hidden;
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .logo-link-icon img {
+    @apply transition-transform duration-300 ease-out;
+    transform: rotate(0deg);
+  }
+  .circle-checkbox-input:focus-visible + .circle-checkbox-visual {
+    outline: 2px solid color-mix(in srgb, var(--color-primary) 85%, #ffffff00);
+    outline-offset: 3px;
+  }
+
+  .logo-link-text {
+    @apply inline-block transition-all duration-300 ease-out;
+  }
+
+  .logo-link-base:hover .logo-link-icon {
+    @apply w-5 opacity-100 mr-1;
+  }
+
+  .logo-link-base:hover .logo-link-icon img {
+    transform: rotate(-720deg);
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Override base background utility to use the gradient */
+  .bg-bg {
+    background-color: transparent;
+    @apply bg-gradient;
+  }
+}
+
+@property --ab-progress {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* ============================================================
+ * 2. BASE LAYER & THEME SWITCHING
+ * ============================================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* overscroll-behavior: none; */
+    background: transparent;
+  }
+
+  body {
+    font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
+    background-color: transparent;
+    /* overscroll-behavior: none; */
+    @apply overflow-x-hidden;
+  }
+
+  /* Remove focus outlines globally - using custom focus indicators instead */
+  *:focus {
+    outline: none;
+  }
+
+  ::selection {
+    color: var(--color-accent);
+    transition: all 0.3s ease-in-out;
+  }
+
+  /* Theme-specific overrides */
+  [data-theme="light"] {
+    --color-primary: var(--color-zinc-900);
+    --color-heading: var(--color-tertiary-dark);
+    --color-text: var(--color-zinc-600);
+    --color-muted: var(--text-zinc-600);
+    --color-bg: var(--color-primary-light);
+    --color-bg2: var(--color-secondary-light);
+    --color-bg3: var(--color-tertiary-light);
+    --color-border: color-mix(in srgb, var(--color-heading) 10%, transparent);
+    --color-border-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
+    --color-border-soft: var(--color-border);
+    --color-border-soft-strong: var(--color-border-strong);
+    --color-border-dim: var(--color-border-strong);
+  }
+
+  [data-theme="dark"] {
+    --color-primary: var(--color-accent);
+    --color-heading: var(--color-primary-light);
+    --color-text: var(--color-zinc-200);
+    --color-muted: var(--color-zinc-300);
+    --color-bg: var(--color-primary-dark);
+    --color-bg2: var(--color-secondary-dark);
+    --color-bg3: var(--color-tertiary-dark);
+  }
+}
+
+/* ============================================================
+ * 3. UTILITY SHORTCUTS
+ * ============================================================ */
+
+/* Text & color helpers */
+@utility muted-text {
+  @apply dark:text-zinc-200 light:text-zinc-600;
+}
+
+@utility bottom-image-fade {
+  @apply [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_70%,rgba(0,0,0,0.35)_85%,rgba(0,0,0,0)_92%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_70%,rgba(0,0,0,0.35)_85%,rgba(0,0,0,0)_92%)]
+}
+
+/* todo:make top image fade */
+/* @utility bottom-image-fade {
+  @apply [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_55%,rgba(0,0,0,0.35)_78%,rgba(0,0,0,0)_92%)] [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_55%,rgba(0,0,0,0.35)_78%,rgba(0,0,0,0)_92%)]
+} */
+
+/* Horizontal edge fade - for filter tabs and horizontal scrollable content */
+@utility horizontal-edge-fade {
+  mask-image: linear-gradient(
+    to right,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,1) 8%,
+    rgba(0,0,0,1) 92%,
+    rgba(0,0,0,0) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0,0,0,0) 0%,
+    rgba(0,0,0,1) 8%,
+    rgba(0,0,0,1) 92%,
+    rgba(0,0,0,0) 100%
+  );
+}
+
+/* Hide scrollbar while keeping scroll functionality */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Fade around entire border - vignette effect from center outward */
+@utility border-image-fade {
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 30% 35%,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,1) 50%,
+    rgba(0,0,0,0.4) 75%,
+    rgba(0,0,0,0) 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 60% at 30% 35%,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,1) 50%,
+    rgba(0,0,0,0.4) 75%,
+    rgba(0,0,0,0) 100%
+  );
+}
+
+@utility heading-accent-text {
+  color: var(--color-primary);
+}
+
+/* Text color for use on primary/accent backgrounds (buttons, gradients, etc.) */
+@utility text-bg {
+  @apply dark:text-primary-light light:text-primary-dark;
+}
+
+@utility logo-class {
+  @apply light:invert;
+}
+
+/* Background & border helpers */
+@utility faded-bg {
+  @apply dark:bg-white/5 dark:hover:bg-white/8;
+  @apply light:bg-black/5 light:hover:bg-black/8;
+  @apply transition-all hover:transform main-duration;
+}
+
+@utility faded-bg2 {
+  @apply bg-primary-light/20 hover:bg-primary-dark/50;
+}
+
+@utility faded-accent-border {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border);
+}
+
+@utility border-soft {
+  border-color: var(--color-border);
+}
+
+@utility border-soft-strong {
+  border-color: var(--color-border-strong);
+}
+
+@utility input-bg {
+  @apply dark:bg-primary-light/3 light:bg-primary-dark/3 transition-all main-duration;
+}
+
+@utility card-bg {
+  @apply dark:bg-primary-light/3 light:bg-primary-dark/3 faded-accent-border transition-all main-duration;
+}
+
+@utility card-bg-2 {
+  @apply bg-bg3 faded-accent-border transition-all main-duration;
+}
+
+/* @utility hover-card-bg {
+  @apply hover:bg-transparent hover:border-primary/50;
+} */
+
+@utility border-off-hover {
+  @apply hover:border-transparent;
+}
+
+@utility rounded-border {
+  @apply inline-block text-primary rounded-full font-medium;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border);
+}
+
+@utility faded-border {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border);
+}
+
+/* Layout & spacing */
+@utility paragraph-spacing {
+  @apply max-w-3xl mx-auto;
+}
+
+@utility button-style {
+  @apply rounded-full cursor-pointer;
+}
+
+@utility section-border-styles {
+  @apply absolute top-0 left-0 right-0 h-px;
+}
+
+@utility main-duration {
+  @apply duration-450;
+}
+
+/* Form controls */
+@utility form-field {
+  @apply w-full input-bg rounded-xl px-4 py-3 focus:outline-none main-duration transition-all;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border);
+  @apply text-muted;
+
+  &::placeholder {
+    @apply text-muted;
+  }
+
+  &[type="select"],
+  select& {
+    appearance: none;
+  }
+}
+
+@utility form-field-error {
+  @apply border-red-500 focus:border-red-500;
+}
+
+@utility form-option {
+  @apply bg-bg text-heading;
+}
+
+@utility bg-gradient {
+  @apply bg-linear-to-r from-bg3 to-bg;
+}
+
+@utility primary-gradient {
+  @apply bg-linear-to-r from-primary to-primary-700;
+}
+
+@utility accent-primary-gradient {
+@apply bg-linear-to-r from-accent to-accent-700;
+}
+
+@utility secondary-gradient {
+  @apply bg-linear-to-r from-accent-300 to-accent;
+}
+
+@utility gradient-disappear-on-hover {
+  @apply hover:bg-transparent hover:from-transparent hover:to-transparent
+}
+
+@utility inner-card-transition {
+    @apply opacity-0 group-hover:opacity-0 transition-opacity main-duration;
+  }
+
+  @utility inner-card-style {
+    @apply absolute;
+  }
+
+  @utility inner-card-color {
+    @apply inset-0 bg-transparent;
+  }
+
+  @utility consent-banner {
+  @apply max-w-xl w-full bg-transparent border-0 p-0 shadow-none;
+}
+
+  @utility hero-spacing {
+    @apply space-y-3 lg:space-y-2.5;
+  }
+
+/* Hero spacing landscape adjustments - small landscape devices only */
+.hero-spacing {
+  @media (orientation: landscape) and (max-height: 700px) {
+    gap: 0rem; /* space-y-2 */
+    padding-top: 2rem; /* pt-4 */
+  }
+}
+
+/* ============================================================
+ * LANDSCAPE VIEWPORT ADJUSTMENTS
+ * For hero sections and menus on landscape devices
+ * Only targets mobile/tablet - excludes desktop via max-width
+ * ============================================================ */
+.landscape-hero {
+  /* Landscape phones/tablets with short viewports */
+  @media (orientation: landscape) and (max-height: 700px) and (max-width: 1024px) {
+    padding-top: 6rem;
+    min-height: auto !important;
+  }
+
+  @media (orientation: landscape) and (max-height: 500px) and (max-width: 1024px) {
+    padding-top: 6rem;
+    padding-bottom: 2rem;
+  }
+}
+
+  @utility heading-padding {
+    @apply lg:px-20;
+  }
+
+  @utility sticky-section {
+    @apply lg:sticky lg:top-17;
+  }
+
+  @utility head-foot-section {
+    @apply w-19/20 mx-auto;
+  }
+
+/* ============================================================
+ * 4. COMPONENT PATTERNS
+ * ============================================================ */
+@layer components {
+  .site-fixed-bg {
+    @apply bg-cover bg-center;
+    background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
+  }
+
+  /* Hero & decorative elements */
+  .hero-gradient-bg {
+    @apply bg-cover bg-center;
+    background-image: linear-gradient(
+      323.34deg,
+      var(--color-accent) -85.13%,
+      var(--color-bg) 40.1%
+    );
+  }
+
+  .text-border {
+    -webkit-text-stroke: 2px var(--color-primary);
+  }
+
+  /* Section scaffolding */
+  .outer-section {
+    @apply relative py-24 px-2;
+  }
+
+  .inner-section {
+    @apply w-9/10 lg:max-w-7xl lg:px-2 mx-auto;
+  }
+
+  .inner-section-sm {
+    @apply w-8/10 mx-auto;
+  }
+
+  .section-box {
+    @apply rounded-3xl p-8 lg:p-12 relative overflow-hidden;
+  }
+
+  .buttons-section-center {
+    @apply text-center mt-12 w-2/3 lg:w-1/2 mx-auto;
+  }
+
+  .section-dim-border {
+    @apply section-border-styles bg-gradient-to-r from-transparent to-transparent;
+    background-image: linear-gradient(
+      to right,
+      transparent,
+      var(--color-border-dim),
+      transparent
+    );
+  }
+
+  .section-color-border {
+    @apply section-border-styles bg-gradient-to-r from-transparent via-primary to-transparent;
+  }
+
+  /* Vertical gradient line for blockquotes - matches section-color-border style */
+  .blockquote-gradient-line {
+    @apply relative pl-6;
+  }
+
+  .blockquote-gradient-line::before {
+    content: "";
+    @apply absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary to-transparent;
+  }
+
+  .text-section {
+    @apply text-center mb-8;
+  }
+
+  .written-rich-text {
+    @apply space-y-8 text-lg leading-relaxed text-muted;
+  }
+
+  .written-rich-text > *:first-child {
+    @apply mt-0;
+  }
+
+  .written-rich-text h2 {
+    @apply text-3xl lg:text-4xl font-semibold text-heading leading-tight mt-0;
+  }
+
+  .written-rich-text h3 {
+    @apply text-2xl font-semibold text-heading mt-10;
+  }
+
+  .written-rich-text h4 {
+    @apply text-xl font-semibold text-heading mt-8;
+  }
+
+  .written-rich-text p {
+    @apply text-muted text-lg leading-relaxed;
+  }
+
+  .written-rich-text ul,
+  .written-rich-text ol {
+    @apply pl-6 space-y-3 text-muted;
+  }
+
+  .written-rich-text ul {
+    @apply list-disc;
+  }
+
+  .written-rich-text ol {
+    @apply list-decimal;
+  }
+
+  .written-rich-text li {
+    @apply text-base lg:text-lg leading-relaxed;
+  }
+
+  .written-rich-text blockquote {
+    @apply border-l-2 pl-5 italic text-heading text-xl leading-tight;
+    border-color: var(--color-border-strong);
+  }
+
+  .written-rich-text strong {
+    @apply text-heading font-semibold;
+  }
+
+  .written-rich-text a {
+    @apply text-primary underline decoration-primary/40 transition-colors duration-200 hover:decoration-primary;
+  }
+
+  .emphasized-text {
+    @apply text-transparent secondary-gradient bg-clip-text;
+  }
+
+  .hover-emphasis-text {
+    @apply text-heading hover:text-transparent hover:secondary-gradient hover:bg-clip-text
+  }
+  
+  .text-primary-gradient {
+    @apply text-transparent primary-gradient bg-clip-text;
+  }
+
+  /* Card shells */
+  .outer-card-transition {
+    @apply transition-all hover:transform main-duration;
+  }
+
+  .outer-card-color {
+    @apply card-bg;
+  }
+
+  .outer-card-style {
+    @apply relative overflow-hidden shadow-xl hover:shadow-2xl rounded-3xl p-9;
+  }
+
+  .inner-card-transition {
+    @apply opacity-0 group-hover:opacity-0 transition-opacity main-duration;
+  }
+
+  .inner-card-style {
+    @apply absolute;
+  }
+
+  .inner-card-color {
+    @apply inset-0 bg-transparent;
+  }
+
+  .card-icon-color {
+    @apply bg-gradient-to-br border-primary border-2 from-primary light:to-bg2 dark:to-primary/25 text-bg;
+  }
+
+  .card-icon-color-2 {
+    @apply bg-gradient-to-br border-primary border-2 from-primary light:to-bg2 dark:to-primary text-bg;
+  }
+
+  /* Filter icon wrapper - card-bg with accent, primary style on hover/active */
+  .filter-icon-wrapper {
+    @apply card-bg text-accent transition-all main-duration;
+  }
+
+  .filter-icon-wrapper.active,
+  .group:hover .filter-icon-wrapper {
+    @apply bg-gradient-to-br border-primary border-2 from-primary light:to-bg2 dark:to-primary/25 text-bg;
+  }
+
+  /* Grid helpers */
+  .max-2-primary {
+    @apply grid lg:grid-cols-2 gap-6 lg:gap-12;
+  }
+
+  .max-3-primary {
+    @apply grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:mb-16;
+  }
+
+  .max-3-secondary {
+    @apply grid lg:grid-cols-2 xl:grid-cols-3 gap-8 lg:mb-16;
+  }
+
+  /* Card hover modes */
+  .card-hover-large {
+    @apply hover:-translate-y-3 hover:shadow-2xl hover:border-accent;
+  }
+
+  .card-hover-small {
+    @apply hover:-translate-y-2 hover:shadow-xl hover:border-accent;
+  }
+
+/* Icon sizing */
+  .icon-large {
+    @apply w-16 h-16 text-xl lg:text-2xl flex items-center justify-center rounded-full relative;
+  }
+
+  .icon-medium {
+    @apply w-14 h-14 rounded-full flex items-center justify-center text-lg font-semibold shrink-0;
+  }
+
+  .icon-small {
+    @apply relative rounded-full w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center text-lg lg:text-xl;
+  }
+
+  .icon-xsmall {
+    @apply w-8 h-8 rounded-full flex items-center justify-center;
+  }
+
+  .icon-2xl {
+    @apply w-20 h-20 text-2xl lg:text-3xl flex items-center justify-center rounded-full relative;
+  }
+
+  .icon-3xl {
+    @apply w-24 h-24 text-3xl lg:text-4xl flex items-center justify-center rounded-full relative;
+  }
+
+  /* Border callouts */
+  .border-title {
+    @apply border-2 px-5 py-2 text-sm uppercase tracking-wider mb-6 rounded-border;
+  }
+
+  .tag-title {
+    @apply px-3 py-1 text-xs uppercase tracking-wider rounded-border;
+  }
+
+  .footer-nav {
+    @apply text-2xl font-semibold;
+  }
+
+  button {
+    @apply cursor-pointer;
+  }
+
+  /* Typography helpers */
+  .h1 {
+    @apply text-4xl md:text-5xl leading-tight text-heading;
+  }
+
+  .h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl text-heading;
+  }
+
+  .h3 {
+    @apply text-2xl md:text-3xl text-heading;
+  }
+
+  .h4 {
+    @apply text-xl text-heading;
+  }
+
+  .h5 {
+    @apply text-lg text-heading;
+  }
+
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5 {
+    @apply font-header tracking-wide font-semibold;
+  }
+
+  p {
+    @apply text-text;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong,
+  b {
+    @apply font-semibold;
+  }
+
+  /* .hero-heading {
+    @apply text-4xl md:text-5xl lg:text-6xl xl:text-7xl;
+  } */
+
+  .hero-text {
+    @apply text-sm sm:text-xl md:text-2xl leading-relaxed;
+  }
+
+  .small-text {
+    @apply text-sm lg:text-base leading-relaxed;
+  }
+
+  .large-text {
+    @apply text-xl lg:text-2xl leading-relaxed;
+  }
+
+  /* Buttons */
+  .button-transition {
+    @apply transition-all main-duration hover:transform hover:shadow-2xl;
+  }
+
+  .button-hover-transition {
+    @apply transition-all duration-700 ease-out hover:shadow-2xl;
+  }
+
+  .primary-button-transition {
+    @apply transition-all duration-700 ease-out hover:-translate-y-1 hover:shadow-2xl;
+  }
+
+  /* Animated border skin */
+  .animated-border-overlay {
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    padding: var(--ab-border-width, 2px);
+    background: conic-gradient(
+      from 0deg,
+      var(--ab-color, var(--color-accent)) 0deg,
+      var(--ab-color, var(--color-accent)) var(--ab-progress, 0deg),
+      transparent var(--ab-progress, 0deg),
+      transparent 360deg
+    );
+  }
+
+  .animated-border-overlay.is-solid {
+    background: var(--ab-color, var(--color-accent));
+  }
+
+  .animated-border-overlay.progress {
+    transition:
+      opacity var(--ab-fade-duration, 220ms) cubic-bezier(.2, 0, 0, 1),
+      --ab-progress var(--ab-duration, 2000ms) linear;
+  }
+
+  .animated-border-overlay.progress-b-f {
+    transition: --ab-progress var(--ab-duration, 2000ms) cubic-bezier(.45, 0, .25, 1);
+  }
+
+  .animated-border-overlay.progress-infinite {
+    animation: ab-border-progress var(--ab-duration, 2000ms) linear infinite;
+  }
+}
+
+/* ============================================================
+ * 5. ANIMATIONS
+ * ============================================================ */
+@keyframes ab-border-progress {
+  0% {
+    --ab-progress: 0deg;
+  }
+  100% {
+    --ab-progress: 360deg;
+  }
+}
+
+/* Disable animated borders for reduced motion (accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  .animated-border-overlay {
+    display: none !important;
+  }
+}
+
+[data-a11y-motion="reduced"] .animated-border-overlay {
+  display: none !important;
+}
+
+/* ============================================================
+ * 6. MASONRY GRID LAYOUT
+ * ============================================================ */
+.masonry-grid {
+  display: flex;
+  gap: 1rem;
+}
+
+.masonry-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Individual masonry cards */
+.masonry-card {
+  @apply card-bg rounded-2xl p-6 flex flex-col;
+}
+
+/* Responsive: mobile - single column */
+@media (max-width: 768px) {
+  .masonry-grid {
+    flex-direction: column;
+  }
+}

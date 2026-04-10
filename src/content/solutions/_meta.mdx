@@ -1,0 +1,22 @@
+---
+title: "Solutions"
+description: "Comprehensive web solutions tailored to your business needs"
+heading:
+  before: "Solutions built around"
+  text: "what your business"
+  after: "actually needs."
+hasPage: false
+itemsHasPage: true
+itemsChildHasPage: false
+itemsRootPath: true
+itemsLayout: "../../layouts/collections/ServicesLayout.astro"
+---
+import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
+import { roots } from '@/utils/query/snippets';
+
+<ContentRenderer
+  query={roots("solutions")}
+  variant="CardVariant"
+  columns={3}
+  gap="lg"
+/>

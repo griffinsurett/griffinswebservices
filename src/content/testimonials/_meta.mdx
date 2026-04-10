@@ -1,0 +1,21 @@
+---
+title: "Testimonials"
+description: "Real feedback from real clients. See why businesses trust us to deliver websites that work."
+heading: "Hear it from our clients themselves."
+hasPage: true
+itemsHasPage: false
+addToMenu:
+  - menu: "footer-menu-2"
+---
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro"
+
+<ContentRenderer
+  query={query("testimonials")}
+  variant="TestimonialGridVariant"
+  columns={2}
+  gap="lg"
+/>
+
+ <HomeSolutionBridge />
