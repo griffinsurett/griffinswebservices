@@ -35,19 +35,33 @@ export default function DecorativeWrapper({
     ].join(", ");
 
     const makeDecorative = () => {
-      container.setAttribute("aria-hidden", "true");
-      container.setAttribute("role", "presentation");
-      container.setAttribute("aria-live", "off");
-      container.setAttribute("data-decorative", "true");
-      container.setAttribute("inert", "");
+      if (container.getAttribute("aria-hidden") !== "true") {
+        container.setAttribute("aria-hidden", "true");
+      }
+      if (container.getAttribute("role") !== "presentation") {
+        container.setAttribute("role", "presentation");
+      }
+      if (container.getAttribute("aria-live") !== "off") {
+        container.setAttribute("aria-live", "off");
+      }
+      if (container.getAttribute("data-decorative") !== "true") {
+        container.setAttribute("data-decorative", "true");
+      }
+      if (!container.hasAttribute("inert")) {
+        container.setAttribute("inert", "");
+      }
 
       const focusableElements = container.querySelectorAll<HTMLElement>(
         focusableSelectors,
       );
 
       focusableElements.forEach((el) => {
-        el.setAttribute("tabindex", "-1");
-        el.setAttribute("aria-hidden", "true");
+        if (el.getAttribute("tabindex") !== "-1") {
+          el.setAttribute("tabindex", "-1");
+        }
+        if (el.getAttribute("aria-hidden") !== "true") {
+          el.setAttribute("aria-hidden", "true");
+        }
       });
     };
 
@@ -61,7 +75,7 @@ export default function DecorativeWrapper({
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ["href", "tabindex", "controls", "contenteditable"],
+      attributeFilter: ["href", "controls", "contenteditable"],
     });
 
     return () => {
