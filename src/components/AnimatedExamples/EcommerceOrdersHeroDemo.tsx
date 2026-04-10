@@ -62,7 +62,7 @@ export default function EcommerceOrdersHeroDemo({
         <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:4.85rem_4.85rem]" />
 
         <div className="relative border-b border-white/8 bg-white/4 px-4 py-3">
-          <div className="flex items-center justify-between text-[0.58rem] uppercase tracking-[0.16em] text-text/40">
+          <div className="flex flex-col items-start gap-1 text-[0.58rem] uppercase tracking-[0.16em] text-text/40 sm:flex-row sm:items-center sm:justify-between">
             <span>Live Orders</span>
             <span className="flex items-center gap-1">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -70,14 +70,14 @@ export default function EcommerceOrdersHeroDemo({
             </span>
           </div>
 
-          <p className="mt-2 max-w-[20rem] text-[0.72rem] leading-relaxed text-text/62">
+          <p className="mt-2 max-w-[24rem] text-[0.72rem] leading-relaxed text-text/62">
             The point is not the product name. It is the repeated feeling of seeing new sales come in and knowing the store is working.
           </p>
         </div>
 
-        <div className="relative h-[20rem] p-4">
-          <div className="grid h-full grid-cols-[11rem_minmax(0,1fr)] gap-4">
-            <div className="flex h-full flex-col gap-3">
+        <div className="relative p-4">
+          <div className="grid gap-4 lg:grid-cols-2 lg:items-stretch">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
               <div className="rounded-[1rem] border border-white/8 bg-white/[0.04] p-3">
                 <p className="text-[0.56rem] uppercase tracking-[0.12em] text-text/42">
                   Revenue today
@@ -102,7 +102,7 @@ export default function EcommerceOrdersHeroDemo({
                 </p>
               </div>
 
-              <div className="rounded-[1rem] border border-emerald-400/14 bg-emerald-400/[0.08] p-3">
+              <div className="rounded-[1rem] border border-emerald-400/14 bg-emerald-400/[0.08] p-3 sm:col-span-2 lg:col-span-1">
                 <p className="text-[0.56rem] uppercase tracking-[0.12em] text-emerald-300/80">
                   Latest sale
                 </p>
@@ -125,11 +125,11 @@ export default function EcommerceOrdersHeroDemo({
                 </span>
               </div>
 
-              <div className="relative mt-4 h-[14.4rem]">
+              <div className="relative mt-4 h-[14rem] sm:h-[15rem] lg:h-[16rem]">
                 {orders.map((order, index) => {
                   const visible = index < visibleCount;
                   const stackIndex = visibleCount - index - 1;
-                  const top = 0.85 + Math.max(stackIndex, 0) * 2.6;
+                  const top = 0.85 + Math.max(stackIndex, 0) * 2.45;
                   const scale = 1 - Math.max(stackIndex, 0) * 0.035;
                   const opacity = visible ? 1 - Math.max(stackIndex, 0) * 0.12 : 0;
 
@@ -163,17 +163,17 @@ export default function EcommerceOrdersHeroDemo({
                           </div>
 
                           <div className="min-w-0">
-                            <p className="truncate text-[0.72rem] font-medium text-white">
+                            <p className="truncate text-[0.68rem] font-medium text-white sm:text-[0.72rem]">
                               {order.label}
                             </p>
-                            <p className="mt-0.5 text-[0.58rem] text-text/56">
+                            <p className="mt-0.5 text-[0.54rem] text-text/56 sm:text-[0.58rem]">
                               {order.customer} completed {order.id}
                             </p>
                           </div>
                         </div>
 
                         <div className="text-right">
-                          <p className="text-[0.76rem] font-semibold text-white">
+                          <p className="text-[0.72rem] font-semibold text-white sm:text-[0.76rem]">
                             ${order.amount}
                           </p>
                           <p className="mt-0.5 text-[0.5rem] uppercase tracking-[0.12em] text-emerald-300">
