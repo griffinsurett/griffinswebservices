@@ -1,0 +1,53 @@
+---
+import CardRenderer from "@/components/LoopTemplates/CardRenderer";
+import Section from "@/components/Section.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+
+const cards = [
+  {
+    title: "Need a brand-new website?",
+    description:
+      "If you are starting fresh, go to pricing to compare the website options built for new launches.",
+    href: "/pricing",
+    icon: "lucide:sparkles",
+  },
+  {
+    title: "Already have a website?",
+    description:
+      "If the site already exists and needs redesign work, follow the existing-site path instead of starting with new-build pricing.",
+    href: "/website-redesign",
+    icon: "fa6-solid:pen-ruler",
+  },
+];
+---
+
+<Section class="outer-section">
+  <div class="inner-section">
+    <div class="web-design-decision-shell">
+      <SectionHeader
+        title="Choose Your Path"
+        heading="Are you starting from scratch or working with an existing site?"
+        description="Pick the path that matches where the project stands now so you land on the right next step."
+        className="mx-auto max-w-4xl text-center"
+        headingClassName="h2 mb-6 text-heading"
+        descriptionClassName="large-text mx-auto max-w-3xl"
+      />
+
+      <CardRenderer
+        client:visible
+        items={cards.map((card) => ({
+          ...card,
+          url: card.href,
+        }))}
+        columns={2}
+        className="mt-8 lg:mt-10"
+        disableStagger={true}
+        animation={{
+          once: false,
+          threshold: 0.15,
+          rootMargin: "-10% 0px -10% 0px",
+        }}
+      />
+    </div>
+  </div>
+</Section>
