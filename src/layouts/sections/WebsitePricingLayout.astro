@@ -14,14 +14,12 @@ interface SectionCopy {
 
 export interface Props {
   newWebsiteOptions?: SectionCopy;
-  existingWebsiteOptions?: SectionCopy;
   existingWebsiteServices?: SectionCopy;
   enhancementOptions?: SectionCopy;
 }
 
 const {
   newWebsiteOptions = {},
-  existingWebsiteOptions = {},
   existingWebsiteServices = {},
   enhancementOptions = {},
 } = Astro.props as Props;
@@ -44,20 +42,9 @@ const {
   id={enhancementOptions.id ?? "enhancements"}
   title={enhancementOptions.title ?? "Need Something More Specific?"}
   heading={enhancementOptions.heading ?? "Enhancements That Layer Onto the Core Website Work"}
-  description={enhancementOptions.description ?? "When you need more than the core build or maintenance path, these enhancement options cover SEO, automation, booking, e-commerce, systems, and brand-supporting work."}
+  description={enhancementOptions.description ?? "When you need more than the core build path, these enhancement options cover SEO, automation, booking, e-commerce, systems, and brand-supporting work."}
   columns={enhancementOptions.columns ?? "auto"}
   gap={enhancementOptions.gap ?? "lg"}
-/>
-
-<ContentRenderer
-  query={related("pricing", "capabilities", "hosting").orderBy(sortByOrder())}
-  variant="PricingVariant"
-  id={existingWebsiteOptions.id ?? "existing-site-options"}
-  title={existingWebsiteOptions.title ?? "Existing Website Support"}
-  heading={existingWebsiteOptions.heading ?? "Already Have a Website That Needs Hosting, Maintenance, or Ongoing Help?"}
-  description={existingWebsiteOptions.description ?? "Keep your existing website stable, secure, and professionally maintained with hosting and support options built for businesses that need dependable ongoing coverage."}
-  columns={existingWebsiteOptions.columns ?? 3}
-  gap={existingWebsiteOptions.gap ?? "lg"}
 />
 
 <ContentRenderer
@@ -66,8 +53,8 @@ const {
   sectionLayout="split"
   id={existingWebsiteServices.id ?? "website-improvements"}
   title={existingWebsiteServices.title ?? "Website Improvements & Upgrades"}
-  heading={existingWebsiteServices.heading ?? "Focused Improvements for Existing Websites"}
-  description={existingWebsiteServices.description ?? "When the site already exists, we handle the cleanup, restructuring, and platform-level changes needed to get it stable, clearer, and easier to grow."}
+  heading={existingWebsiteServices.heading ?? "Already Have a Website That Needs Work?"}
+  description={existingWebsiteServices.description ?? "When the site already exists, we handle cleanup, restructuring, redesign work, and platform-level changes to get it stable, clearer, and easier to grow."}
   columns={existingWebsiteServices.columns ?? "auto"}
   gap={existingWebsiteServices.gap ?? "lg"}
 />

@@ -179,7 +179,7 @@ export const performanceWorkCards = [
       />
 
       <div class="card-bg mt-10 overflow-hidden rounded-3xl p-4 shadow-[0_32px_120px_-52px_rgba(0,0,0,0.7)] sm:p-5 lg:p-6">
-        <WebsiteLoadComparison client:load className="w-full" />
+        <WebsiteLoadComparison client:visible className="w-full" />
       </div>
 
       <CardVariant
@@ -270,7 +270,7 @@ export const performanceWorkCards = [
   />
 
   <div slot="topic-demo" class="hidden">
-    <WebsiteLoadComparison />
+    <WebsiteLoadComparison client:visible />
   </div>
 
   <div slot="topic-content" class="hidden">

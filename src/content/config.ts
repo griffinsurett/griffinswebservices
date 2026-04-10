@@ -173,13 +173,13 @@ export const collections = {
       }),
   }),
 
-  "enhancements": defineCollection({
-    schema: ({ image }) =>
-      baseSchema({ image }).extend({
-        price: z.string().optional(),
-        featured: z.boolean().optional(),
-      }),
-  }),
+  // "enhancements": defineCollection({
+  //   schema: ({ image }) =>
+  //     baseSchema({ image }).extend({
+  //       price: z.string().optional(),
+  //       featured: z.boolean().optional(),
+  //     }),
+  // }),
 
   // ── features ──────────────────────────────────────────────
   "features": defineCollection({
