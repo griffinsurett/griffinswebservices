@@ -43,23 +43,6 @@ export default function HorizontalLegalFooter({
 
   return (
     <div className={wrapperClasses}>
-      {hasSocialLinks && (
-        <div className="flex justify-center p-4">
-          <ul className="flex flex-wrap justify-center gap-3.5 list-none sm:gap-4">
-            {socialLinks.map((entry) => (
-              <li key={`${entry.title}-${entry.url ?? "social"}`}>
-                <SocialIcon
-                  title={entry.title}
-                  url={entry.url}
-                  icon={entry.icon}
-                  size="md"
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       <div
         className={[
           "flex w-full flex-col gap-4 py-5 text-text/80",
@@ -68,6 +51,23 @@ export default function HorizontalLegalFooter({
           .filter(Boolean)
           .join(" ")}
       >
+        {hasSocialLinks && (
+          <div className="flex justify-center">
+            <ul className="flex flex-wrap justify-center gap-3.5 list-none sm:gap-4">
+              {socialLinks.map((entry) => (
+                <li key={`${entry.title}-${entry.url ?? "social"}`}>
+                  <SocialIcon
+                    title={entry.title}
+                    url={entry.url}
+                    icon={entry.icon}
+                    size="md"
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="overflow-x-auto">
           <div className="mx-auto flex min-w-max w-fit flex-nowrap items-center justify-center gap-2.5 px-2 sm:gap-4 sm:px-0">
             {LEGAL_LINKS.map((link) => (

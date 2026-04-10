@@ -135,7 +135,7 @@ export default function MobileMenuDrawer({
                     aria-hidden={index !== menuStack.length - 1}
                   >
                     <div
-                      className={`mx-auto flex h-full w-full max-w-[18rem] flex-col text-left ${
+                      className={`mx-auto flex h-full w-full max-w-[18rem] md:max-w-[22rem] lg:max-w-[26rem] xl:max-w-[30rem] flex-col text-left ${
                         index === 0 ? "justify-center" : ""
                       }`}
                     >
