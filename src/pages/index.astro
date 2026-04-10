@@ -2,9 +2,7 @@
 // src/pages/index.astro
 import SiteLayout from "@/layouts/SiteLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query } from "@/utils/query/query";
-import { sortByOrder, sortByDate } from "@/utils/query/sorting";
-import { byTag } from "@/utils/query/snippets";
+import { query, sortByOrder, sortByDate, byTag } from "@/utils/query";
 import { contactCtaData, siteData } from "@/content/siteData";
 import { roots, related } from "@/utils/query/snippets";
 import FrontPageHero from "@/layouts/heroes/FrontPageHero.astro";
