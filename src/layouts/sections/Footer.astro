@@ -56,13 +56,18 @@ Keep it practical, specific, and favorable where the evidence supports it.`;
           />
         </a>
 
-        <ContentRenderer
-          query={query("social-media")}
-          variant="SocialMediaVariant"
-          size="lg"
-          alignment="right"
-          className="flex leading-none lg:ml-auto lg:self-stretch [&_ul]:m-0 [&_ul]:flex [&_ul]:h-full [&_ul]:flex-wrap [&_ul]:items-stretch [&_ul]:justify-center [&_ul]:gap-0 [&_ul]:leading-none [&_ul]:text-text/55 lg:[&_ul]:justify-end [&_li]:flex [&_li]:h-full [&_li]:leading-none [&_a]:inline-flex [&_a]:h-[4.5rem] [&_a]:w-[4.5rem] [&_a]:items-center [&_a]:justify-center [&_a]:text-current [&_a]:transition-all [&_a]:duration-200 md:[&_a]:h-[5rem] md:[&_a]:w-[5rem] lg:[&_a]:h-full lg:[&_a]:min-h-[5.6rem] lg:[&_a]:w-[5.6rem] [&_a:hover]:bg-bg3 [&_a:hover]:text-heading [&_a:focus-visible]:bg-bg3 [&_a:focus-visible]:text-heading"
-        />
+        <div class="flex items-center leading-none lg:ml-auto lg:self-stretch">
+          <span class="hidden text-sm uppercase tracking-[0.18em] text-text/55 lg:inline-flex lg:pr-4">
+            Follow Us:
+          </span>
+          <ContentRenderer
+            query={query("social-media")}
+            variant="SocialMediaVariant"
+            size="lg"
+            alignment="right"
+            className="flex leading-none [&_ul]:m-0 [&_ul]:flex [&_ul]:h-full [&_ul]:flex-wrap [&_ul]:items-stretch [&_ul]:justify-center [&_ul]:gap-0 [&_ul]:leading-none [&_ul]:text-text/55 lg:[&_ul]:justify-end [&_li]:flex [&_li]:h-full [&_li]:leading-none [&_a]:inline-flex [&_a]:h-[4.5rem] [&_a]:w-[4.5rem] [&_a]:items-center [&_a]:justify-center [&_a]:text-current [&_a]:transition-all [&_a]:duration-200 md:[&_a]:h-[5rem] md:[&_a]:w-[5rem] lg:[&_a]:h-full lg:[&_a]:min-h-[5.6rem] lg:[&_a]:w-[5.6rem] [&_a:hover]:bg-bg3 [&_a:hover]:text-heading [&_a:focus-visible]:bg-bg3 [&_a:focus-visible]:text-heading"
+          />
+        </div>
       </div>
     </div>
 
