@@ -10,18 +10,20 @@ order: 4
 icon: "fa6-solid:handshake"
 ---
 import TrustStatement from '@/components/TrustStatement.astro';
-import DoubleCard from '@/layouts/sections/DoubleCard.astro';
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import HomeSolutionBridge from '@/layouts/sections/HomeSolutionBridge.astro';
+import IndustryProcessBenefitsSection from '@/layouts/sections/IndustryProcessBenefitsSection.astro';
+import IndustryQuoteSection from '@/layouts/sections/IndustryQuoteSection.astro';
+import TrustPanel from '@/layouts/sections/TrustPanel.astro';
 import { query, sortByOrder } from '@/utils/query';
-import { roots, related, byItemKeys } from '@/utils/query/snippets';
+import { related, byTag } from '@/utils/query/snippets';
 
 <TrustStatement text="Stop turning down web projects or outsourcing to unreliable freelancers. Partner with us for white-label development that ships on time, stays on brand, and makes your agency look great—while you keep the client relationship." />
 
-<DoubleCard />
+<HomeSolutionBridge />
 
 <ContentRenderer
-  query={roots("capabilities").orderBy(sortByOrder()).limit(7)}
+  query={byTag("capabilities", "featured").orderBy(sortByOrder())}
   variant="CardVariant"
   id="website-services"
   title="Website Services"
@@ -35,16 +37,14 @@ import { roots, related, byItemKeys } from '@/utils/query/snippets';
   gap="lg"
   showButtonSection={false}
   className="pt-35 lg:pt-20"
+  card={{
+    hoverOverlayClassName: "inset-0 bg-transparent",
+  }}
 />
 
-<ContentRenderer
-  query={byItemKeys("solutions", ["landing-pages", "business-websites", "e-commerce-websites"])}
-  variant="IconListVariant"
-  heading="Premium Websites for Agencies, Built for Your Growth."
-  title="Web Solutions"
-  description="We design top-tier websites for agency clients — custom-built for their goals, lightning-fast, secure, and easy to manage. No templates, no bloat — just powerful online presences that look sharp, perform flawlessly, and grow with your clients."
-  autoAdvanceDelay={2000}
-/>
+<IndustryProcessBenefitsSection />
+
+<IndustryQuoteSection industryTitle="Marketing Agencies" />
 
 <div class="bottom-content-section">
   <ContentRenderer
@@ -61,4 +61,4 @@ import { roots, related, byItemKeys } from '@/utils/query/snippets';
   />
 </div>
 
-<HomeSolutionBridge />
+<TrustPanel />

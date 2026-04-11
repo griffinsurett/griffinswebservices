@@ -1,0 +1,28 @@
+---
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query, sortByOrder } from "@/utils/query";
+import { related } from "@/utils/query/snippets";
+---
+
+<>
+  <ContentRenderer
+    query={query("process").orderBy(sortByOrder())}
+    variant="NumberCardVariant"
+    id="process"
+    title="How We Work"
+    heading="A Clear Plan From Start To Launch And Support"
+    description="Good websites do not come from guessing. They come from a clear plan, careful work, and support after launch."
+    gap="lg"
+    showButtonSection={false}
+  />
+
+  <ContentRenderer
+    query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
+    variant="BenefitsVariant"
+    id="benefits"
+    heading="Your website should help with things like this."
+    description="A good website should make your business easier to trust, easier to find, and easier to contact."
+    columns={2}
+    gap="lg"
+  />
+</>

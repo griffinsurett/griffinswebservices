@@ -1,0 +1,174 @@
+---
+import Section from "@/components/Section.astro";
+import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
+import Icon from "@/components/Icon";
+import SectionHeader from "@/components/SectionHeader.astro";
+
+interface Props {
+  id?: string;
+  industryTitle?: string;
+  heading?: string;
+  description?: string;
+  className?: string;
+}
+
+const {
+  id = "industry-quote",
+  industryTitle = "your industry",
+  heading = "Want a clearer next step for your website?",
+  description = "Share the basics here and we will follow up with the clearest recommendation for your website, your goals, and your next move.",
+  className = "",
+} = Astro.props as Props;
+
+const highlights = [
+  {
+    icon: "lucide:scan-search",
+    title: "Quick scope check",
+    description:
+      "We review what the site needs to do and whether this is a refresh, a rebuild, or something more custom.",
+  },
+  {
+    icon: "lucide:messages-square",
+    title: "More useful follow-up",
+    description:
+      "A short quote request gives us enough context to make the next conversation more specific and more helpful.",
+  },
+  {
+    icon: "lucide:rocket",
+    title: "Built around results",
+    description:
+      "We focus on the pages, performance, and trust signals that matter most for how this kind of business wins leads.",
+  },
+];
+---
+
+<Section id={id} class={`outer-section ${className}`.trim()}>
+  <div class="inner-section">
+    <div class="industry-quote-layout">
+      <div class="industry-quote-copy sticky-section lg:self-start">
+        <SectionHeader
+          title="Request a Quote"
+          heading={heading}
+          description={`If you are planning a website for ${industryTitle.toLowerCase()}, ${description.toLowerCase()}`}
+          className="text-left"
+          headingClassName="h2 mb-6 text-heading"
+          emphasisClassName="text-heading"
+          descriptionClassName="large-text max-w-2xl"
+        />
+
+        <ul class="industry-quote-highlights">
+          {highlights.map((item) => (
+            <li class="industry-quote-highlight">
+              <span class="industry-quote-icon" aria-hidden="true">
+                <Icon icon={item.icon} size="sm" />
+              </span>
+              <div class="space-y-1">
+                <p class="industry-quote-highlight-title">{item.title}</p>
+                <p class="industry-quote-highlight-text">{item.description}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="industry-quote-card section-box card-bg">
+        <div class="industry-quote-card__header">
+          <h3 class="industry-quote-card__title">Start your quote</h3>
+          <p class="industry-quote-card__description">
+            Send the basics and we will follow up with the right recommendation for your website.
+          </p>
+        </div>
+        <QuoteForm
+          capabilityTitle={industryTitle}
+          serviceCategory="industry-websites"
+          capabilitySlug={industryTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}
+          formType="industry"
+        />
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .industry-quote-layout {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: start;
+  }
+
+  .industry-quote-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .industry-quote-highlights {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .industry-quote-highlight {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .industry-quote-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 999px;
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+    flex-shrink: 0;
+  }
+
+  .industry-quote-highlight-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .industry-quote-highlight-text {
+    margin: 0;
+    max-width: 30rem;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--color-text) 74%, transparent);
+  }
+
+  .industry-quote-card {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 35px 90px -48px rgba(0, 0, 0, 0.55);
+  }
+
+  .industry-quote-card__header {
+    margin-bottom: 1.5rem;
+  }
+
+  .industry-quote-card__title {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+
+  .industry-quote-card__description {
+    margin: 0.65rem 0 0;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--color-text) 74%, transparent);
+  }
+
+  @media (min-width: 1024px) {
+    .industry-quote-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.95fr);
+    }
+  }
+</style>

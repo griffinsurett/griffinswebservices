@@ -75,7 +75,7 @@ export default function FaqAccordion({
               className="group flex w-full items-center justify-between gap-6 py-7 text-left text-heading transition-colors duration-200 md:py-9"
               onClick={() => toggleItem(itemId)}
             >
-              <span className="text-[1.7rem] font-medium leading-[1.15] tracking-[-0.03em] md:text-[2.1rem]">
+              <span className="text-[1.7rem] font-normal leading-[1.15] tracking-[-0.03em] md:text-[2.1rem]">
                 {item.title}
               </span>
               <span
