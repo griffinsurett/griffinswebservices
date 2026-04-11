@@ -47,7 +47,7 @@ const AI_PLATFORMS: AIPlatform[] = [
 export default function AIIconPrompt({
   prompt,
   className = "",
-  label = "Explore us in AI tools:",
+  label = "Ask AI about Us:",
   labelClassName = "",
   listClassName = "",
   promptSubject = "Griffin's Web Services",
