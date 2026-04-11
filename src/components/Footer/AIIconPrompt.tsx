@@ -65,7 +65,7 @@ export default function AIIconPrompt({
     >
       <p
         className={[
-          "text-sm font-light tracking-[0.02em] text-text/55 md:text-[0.95rem] lg:shrink-0",
+          "text-sm font-light tracking-[0.02em] text-muted md:text-[0.95rem] lg:shrink-0",
           labelClassName,
         ]
           .filter(Boolean)
