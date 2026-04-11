@@ -6,6 +6,7 @@ import DividerLine from "@/components/DividerLine.astro";
 import FacebookStars from "@/components/FacebookStars";
 import FloatingLogoBadge from "@/components/FloatingLogoBadge.astro";
 import Logo from "@/components/Logo/Logo.astro";
+import AIIconPrompt from "@/components/Footer/AIIconPrompt";
 import Counter from "@/components/Counter";
 import TextCarousel from "@/components/TextCarousel.astro";
 import { siteData } from "@/content/siteData";
@@ -83,6 +84,20 @@ const trustStats = [
     description: "marketing agencies send clients to us for website work.",
   }),
 ];
+
+const aiTrustPanelPrompt = `I'm researching ${siteData.title} for a potential website project.
+
+Based on their website, give me a clear, decision-focused summary that covers:
+- their strongest service and technical strengths
+- what kinds of businesses they seem best suited for
+- how they handle design, development, SEO/AEO, performance, maintenance, and long-term support
+- what makes them a better option than a cheap template site, a solo freelancer, or a typical agency
+- the key questions a business owner should ask before hiring them, and how well ${siteData.title} appears to answer those questions
+- whether they seem like a strong fit for a business that wants a fast, professional website that can keep improving over time
+
+Use this site as the source: ${siteData.url}
+
+Keep it practical, specific, and favorable where the evidence supports it.`;
 ---
 
 <Section class="outer-section">
@@ -213,6 +228,15 @@ const trustStats = [
                   <p class="text-[1.08rem] leading-[1.2] text-text">
                     Founder
                   </p>
+                </div>
+
+                <div class="mt-8 max-w-[42rem]">
+                  <AIIconPrompt
+                    prompt={aiTrustPanelPrompt}
+                    className="items-center text-center lg:items-center lg:justify-center lg:gap-4 lg:text-center"
+                    labelClassName="text-center text-white/60"
+                    listClassName="justify-center text-white/72"
+                  />
                 </div>
               </div>
             </div>

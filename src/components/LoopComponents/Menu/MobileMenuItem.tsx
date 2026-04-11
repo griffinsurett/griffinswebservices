@@ -8,6 +8,7 @@
 
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon";
+import { hasActiveDescendant, isActivePath } from "@/utils/navigation";
 
 interface MobileMenuItemProps {
   title: string;
@@ -15,6 +16,7 @@ interface MobileMenuItemProps {
   slug: string;
   children?: any[];
   openInNewTab?: boolean;
+  currentPath: string;
   onNavigate: () => void;
   onOpenSubmenu?: (submenu: { title: string; items: any[] }) => void;
 }
@@ -24,10 +26,15 @@ export default function MobileMenuItem({
   url,
   children = [],
   openInNewTab = false,
+  currentPath,
   onNavigate,
   onOpenSubmenu,
 }: MobileMenuItemProps) {
   const hasChildren = children.length > 0;
+  const isActive = isActivePath(url, currentPath);
+  const childIsActive = hasChildren
+    ? hasActiveDescendant({ children }, currentPath)
+    : false;
 
   const openSubmenu = () => {
     if (!hasChildren) return;
@@ -49,7 +56,9 @@ export default function MobileMenuItem({
         <div className="flex max-w-full items-start gap-2">
           <Button
             variant="menuItemButton"
-            className="hover-emphasis-text inline-flex max-w-full items-center gap-2 text-left"
+            className="inline-flex max-w-full items-center gap-2 text-left"
+            data-active={isActive ? "true" : undefined}
+            data-active-descendant={childIsActive ? "true" : undefined}
             onClick={handleParentClick}
             {...(url
               ? {
@@ -87,7 +96,8 @@ export default function MobileMenuItem({
         onClick={onNavigate}
         target={openInNewTab ? "_blank" : undefined}
         rel={openInNewTab ? "noopener noreferrer" : undefined}
-        className="hover-emphasis-text inline-flex max-w-full text-left"
+        className="inline-flex max-w-full text-left"
+        data-active={isActive ? "true" : undefined}
       >
         {title}
       </Button>

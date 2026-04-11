@@ -2,7 +2,7 @@
 
 /* Menu item spacing utility */
 @utility menu-item-spacing {
-  @apply space-y-3;
+  @apply space-y-0;
 }
 
 /* Menu hover behavior - works for infinite nesting */

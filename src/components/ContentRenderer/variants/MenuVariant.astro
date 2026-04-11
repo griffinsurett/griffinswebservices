@@ -35,6 +35,7 @@ const {
 
 const safeItems = toArray(items);
 const socialLinks = await getCollection("social-media");
+const currentPath = Astro.url.pathname;
 
 // Build hierarchical tree from flat items
 const menuTree = buildMenuTree(safeItems);
@@ -64,6 +65,7 @@ const mobileClasses = showMobile && mode === "responsive" ? "md:hidden" : "";
         <HamburgerMenuDrawer
           client:hover
           items={menuTree}
+          currentPath={currentPath}
           socialLinks={socialLinks.map((entry) => ({
             title: entry.data.title,
             url: entry.data.link,

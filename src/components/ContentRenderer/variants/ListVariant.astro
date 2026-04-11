@@ -48,7 +48,11 @@ const safeItems = toArray(items);
   {safeItems.length > 0 && (
     <nav class="flex flex-col gap-2 list-none" aria-label={title ? `${title} links` : undefined}>
       {safeItems.map((item) => (
-        <Button href={item.url} className="text-text" variant="link">
+        <Button
+          href={item.url}
+          className="text-text hover:!text-heading focus-visible:!text-heading no-underline hover:no-underline"
+          variant="link"
+        >
           {item.title}
         </Button>
       ))}

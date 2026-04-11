@@ -13,7 +13,7 @@ import { renderButtonIcon } from '../utils';
 export default function MenuItemButton({
   leftIcon,
   rightIcon,
-  className = 'p-0',
+  className = '',
   size = 'lg',
   children,
   ...props
@@ -25,7 +25,7 @@ export default function MenuItemButton({
   return (
     <ButtonBase
       {...props}
-      className={`${baseClasses} font-normal text-2xl leading-[1.18] lg:text-3xl lg:leading-[1.14] transition-all whitespace-normal text-balance`}
+      className={`${baseClasses} footer-cta-hover-gradient w-full justify-start rounded-none px-0 py-4 font-normal text-2xl leading-[1.18] text-heading no-underline whitespace-normal text-balance transition-all duration-300 hover:no-underline focus-visible:no-underline data-[active=true]:bg-linear-to-r data-[active=true]:from-primary data-[active=true]:to-primary-700 data-[active=true]:text-bg data-[active-descendant=true]:text-primary lg:text-3xl lg:leading-[1.14]`}
       leftIcon={renderButtonIcon(leftIcon, size)}
       rightIcon={renderButtonIcon(rightIcon, size)}
       size={size}

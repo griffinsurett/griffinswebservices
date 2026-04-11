@@ -15,6 +15,7 @@ import type { IconType } from "@/content/schema";
 
 interface MobileMenuDrawerProps {
   items: any[];
+  currentPath: string;
   socialLinks?: Array<{
     title: string;
     url?: string;
@@ -32,6 +33,7 @@ interface MenuLevel {
 
 export default function MobileMenuDrawer({
   items,
+  currentPath,
   socialLinks = [],
   className = "",
   hamburgerTransform = true,
@@ -167,8 +169,8 @@ export default function MobileMenuDrawer({
                       )}
 
                       <div
-                        className={`overflow-y-auto overflow-x-hidden pr-2 ${
-                          index > 0 ? "min-h-0 flex-1" : "max-h-full py-6"
+                        className={`overflow-y-auto overflow-x-hidden ${
+                          index > 0 ? "min-h-0 flex-1" : "max-h-full"
                         }`}
                       >
                         <ul className="menu-item-spacing text-left">
@@ -176,6 +178,7 @@ export default function MobileMenuDrawer({
                             <MobileMenuItem
                               key={item.slug || item.id}
                               {...item}
+                              currentPath={currentPath}
                               onNavigate={handleNavigate}
                               onOpenSubmenu={(submenu) =>
                                 handleOpenSubmenu(submenu.title, submenu.items)

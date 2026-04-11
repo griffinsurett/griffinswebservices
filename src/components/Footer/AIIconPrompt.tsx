@@ -89,7 +89,6 @@ export default function AIIconPrompt({
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Open ${name} with a prompt about ${promptSubject}`}
-              title={name}
               className="group inline-flex h-10 w-10 items-center justify-center rounded-xl border border-transparent transition-all duration-200 hover:border-border-soft hover:bg-bg3 hover:text-heading focus-visible:border-border-soft focus-visible:bg-bg3 focus-visible:text-heading md:h-11 md:w-11"
             >
               <span className="pointer-events-none absolute bottom-[calc(100%+0.75rem)] left-1/2 z-[2] -translate-x-1/2 rounded-lg border border-white/10 bg-bg3 px-3 py-1.5 text-xs font-medium text-heading opacity-0 shadow-2xl transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">

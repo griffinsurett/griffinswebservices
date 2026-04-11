@@ -7,7 +7,8 @@ import FacebookStars from "@/components/FacebookStars";
 import Icon from "@/components/Icon";
 import Counter from "@/components/Counter.astro";
 import FloatingLogoBadge from "@/components/FloatingLogoBadge.astro";
-import { contactCtaData, pricingCtaData } from "@/content/siteData";
+import AIIconPrompt from "@/components/Footer/AIIconPrompt";
+import { contactCtaData, pricingCtaData, siteData } from "@/content/siteData";
 import { byItemKeys } from "@/utils/query/snippets";
 import performanceImg from "@/assets/100performance.png";
 import meoncompImg from "@/assets/meoncomp.jpg";
@@ -71,6 +72,19 @@ const features =
 const performanceImageSrc = performanceImg;
 const performanceImageAlt = "100 performance score graphic";
 const bridgeBackgroundImage = meoncompImg;
+const aiBridgePrompt = `I'm researching ${siteData.title} for a potential website project.
+
+Based on their website, give me a clear, decision-focused summary that covers:
+- their strongest service and technical strengths
+- what kinds of businesses they seem best suited for
+- how they handle design, development, SEO/AEO, performance, maintenance, and long-term support
+- what makes them a better option than a cheap template site, a solo freelancer, or a typical agency
+- the key questions a business owner should ask before hiring them, and how well ${siteData.title} appears to answer those questions
+- whether they seem like a strong fit for a business that wants a fast, professional website that can keep improving over time
+
+Use this site as the source: ${siteData.url}
+
+Keep it practical, specific, and favorable where the evidence supports it.`;
 
 ---
 
@@ -144,6 +158,15 @@ const bridgeBackgroundImage = meoncompImg;
           >
             {bridgeDescription}
           </p>
+
+          <div class="mt-6 max-w-[31rem]">
+            <AIIconPrompt
+              prompt={aiBridgePrompt}
+              className="items-center text-center lg:items-center lg:justify-center lg:gap-4 lg:text-center"
+              labelClassName="text-center text-white/60"
+              listClassName="justify-center text-white/72"
+            />
+          </div>
         </div>
 
         <div class="relative z-10 flex min-h-[54rem] flex-col px-6 pb-6 pt-[10.5rem] lg:hidden">
@@ -155,6 +178,15 @@ const bridgeBackgroundImage = meoncompImg;
             <p class="mt-6 max-w-[20rem] font-inherit text-[1rem] leading-[1.52] text-white/84">
               {bridgeDescription}
             </p>
+
+            <div class="mt-5">
+              <AIIconPrompt
+                prompt={aiBridgePrompt}
+                className="items-center text-center"
+                labelClassName="text-center text-white/60"
+                listClassName="justify-center text-white/72"
+              />
+            </div>
           </div>
 
           <div class="mt-5 w-fit">
