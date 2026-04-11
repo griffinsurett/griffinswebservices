@@ -1,5 +1,4 @@
 // src/components/LoopComponents/SocialIcon.tsx
-import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
 import Icon from "@/components/Icon";
 import type { IconType } from "@/content/schema";
 import type { IconSize } from "@/integrations/icons";
@@ -11,6 +10,8 @@ export interface SocialIconProps {
   url?: string;
   icon?: IconType;
   size?: SocialIconSize;
+  onClick?: () => void;
+  ariaLabel?: string;
 }
 
 const PADDING_MAP: Record<SocialIconSize, string> = {
@@ -25,42 +26,56 @@ const ICON_SIZE_MAP: Record<SocialIconSize, IconSize> = {
   lg: "lg",
 };
 
+const DIMENSION_MAP: Record<SocialIconSize, string> = {
+  sm: "h-12 w-12",
+  md: "h-14 w-14",
+  lg: "h-16 w-16",
+};
+
 export default function SocialIcon({
   title,
   url,
   icon = "lu:globe",
   size = "md",
+  onClick,
+  ariaLabel,
 }: SocialIconProps) {
-  const wrapperClass = `${PADDING_MAP[size]} rounded-full inline-flex items-center justify-center faded-bg border border-soft-strong text-accent`;
+  const wrapperClass = `${DIMENSION_MAP[size]} ${PADDING_MAP[size]} inline-flex items-center justify-center text-text/55 transition-all duration-200 hover:bg-bg3 hover:text-heading focus-visible:bg-bg3 focus-visible:text-heading`;
   const iconSize = ICON_SIZE_MAP[size];
+  const resolvedAriaLabel = ariaLabel ?? (url ? `Visit our ${title}` : title);
+
+  if (url) {
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={wrapperClass}
+        aria-label={resolvedAriaLabel}
+        title={title}
+      >
+        <Icon icon={icon} size={iconSize} className="text-current" />
+      </a>
+    );
+  }
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={wrapperClass}
+        aria-label={resolvedAriaLabel}
+        title={title}
+      >
+        <Icon icon={icon} size={iconSize} className="text-current" />
+      </button>
+    );
+  }
 
   return (
-    <AnimatedBorder
-      variant="progress-b-f"
-      triggers="hover"
-      duration={800}
-      borderRadius="rounded-full"
-      borderWidth={2}
-      color="var(--color-accent)"
-      className="inline-flex transition-all duration-300 hover:-translate-y-1"
-      innerClassName="rounded-full w-full h-full"
-    >
-      {url ? (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`inline-flex rounded-full ${wrapperClass}`}
-          aria-label={`Visit our ${title}`}
-          title={title}
-        >
-          <Icon icon={icon} size={iconSize} className="text-current" />
-        </a>
-      ) : (
-        <div className={`inline-flex rounded-full ${wrapperClass}`} title={title}>
-          <Icon icon={icon} size={iconSize} className="text-current" />
-        </div>
-      )}
-    </AnimatedBorder>
+    <div className={wrapperClass} title={title}>
+      <Icon icon={icon} size={iconSize} className="text-current" />
+    </div>
   );
 }

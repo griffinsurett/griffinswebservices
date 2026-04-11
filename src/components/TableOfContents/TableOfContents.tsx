@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import AccordionItem from "@/components/LoopComponents/AccordionItem";
 
 interface TocItem {
   id: string;
@@ -49,7 +48,6 @@ export default function TableOfContents({
   const [groups, setGroups] = useState<TocGroup[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
-  const [mobileExpanded, setMobileExpanded] = useState(false);
 
   const selector = useMemo(() => {
     return headingSelector
@@ -192,9 +190,9 @@ export default function TableOfContents({
   };
 
   const tocContent = (
-    <ol id={listId} className="space-y-3 list-none p-0 m-0">
+    <ol id={listId} className="m-0 list-none p-0">
       {groups.length === 0 ? (
-        <li className="py-3 text-sm text-muted">{emptyLabel}</li>
+        <li className="px-5 py-5 text-sm text-text/60 md:px-6">{emptyLabel}</li>
       ) : (
         groups.map((group) => {
           const groupId = group.parent.id;
@@ -205,21 +203,30 @@ export default function TableOfContents({
           const childListId = `${groupId}-children`;
 
           return (
-            <li key={groupId} className="rounded-2xl list-none">
+            <li
+              key={groupId}
+              className="list-none border-t border-border-soft first:border-t-0"
+            >
               <button
                 type="button"
-                className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-left text-sm md:text-base no-underline transition-colors duration-200 hover:text-primary focus-visible:text-heading ${parentActive ? "text-accent font-semibold" : "text-text"}`}
+                className={`flex w-full items-start justify-between gap-3 px-5 py-5 text-left text-lg leading-[1.45] no-underline transition-colors duration-200 md:px-6 md:py-6 md:text-[1.05rem] ${
+                  parentActive
+                    ? "bg-bg text-heading"
+                    : "text-text/72 hover:bg-bg3/30 hover:text-text focus-visible:bg-bg3/30 focus-visible:text-heading"
+                }`}
                 aria-expanded={isOpen}
                 aria-controls={childListId}
                 onClick={(event) => handleParentClick(event, groupId)}
               >
-                <span className="flex-1 text-left leading-tight">{group.parent.text}</span>
+                <span className="flex-1 text-left leading-[1.45]">
+                  {group.parent.text}
+                </span>
               </button>
 
               {group.children.length > 0 && (
                 <ol
                   id={childListId}
-                  className={`${isOpen ? "flex" : "hidden"} flex-col gap-2 px-4 pb-3 pl-4 m-0 list-none`}
+                  className={`${isOpen ? "flex" : "hidden"} m-0 list-none flex-col gap-3 border-t border-border-soft bg-bg2/35 px-5 py-4 md:px-6`}
                   aria-hidden={!isOpen}
                 >
                   {group.children.map((child) => {
@@ -228,7 +235,11 @@ export default function TableOfContents({
                       <li key={child.id} className="list-none">
                         <a
                           href={`#${child.id}`}
-                          className={`flex items-start gap-3 text-sm no-underline transition-colors duration-200 hover:text-primary focus-visible:text-primary ${isChildActive ? "text-heading font-semibold" : "text-muted"}`}
+                          className={`flex items-start gap-3 text-[0.95rem] leading-[1.45] no-underline transition-colors duration-200 hover:text-primary focus-visible:text-primary ${
+                            isChildActive
+                              ? "font-semibold text-heading"
+                              : "text-text/60"
+                          }`}
                           aria-current={isChildActive}
                           onClick={(event) =>
                             handleChildClick(event, child.id)
@@ -251,31 +262,16 @@ export default function TableOfContents({
   return (
     <nav
       id={navId}
-      className={className}
+      className={`hidden lg:block ${className}`.trim()}
       aria-label={title}
     >
-      {/* Mobile: Accordion */}
-      <div className="lg:hidden">
-        <AccordionItem
-          id={`${navId}-mobile`}
-          title={title}
-          isExpanded={mobileExpanded}
-          onToggle={() => setMobileExpanded(!mobileExpanded)}
-          headerClassName="text-sm uppercase tracking-widest font-semibold text-muted"
-          showIndicator
-        >
-          {tocContent}
-        </AccordionItem>
-      </div>
-
-      {/* Desktop: Always visible */}
-      <div className="hidden lg:block card-bg faded-border rounded-3xl p-6 shadow-2xl">
-        <div className="flex items-center justify-center gap-4">
-          <p className="text-[0.7rem] uppercase tracking-[0.3em] font-semibold text-muted">{title}</p>
+      <div className="overflow-hidden rounded-[1.35rem] border border-border-soft bg-black/25 shadow-[0_22px_60px_-45px_rgba(0,0,0,0.65)]">
+        <div className="border-b border-border-soft px-5 py-5 md:px-6">
+          <p className="text-left text-[0.82rem] font-medium uppercase tracking-[0.24em] text-heading">
+            {title}
+          </p>
         </div>
-        <div className="mt-4">
-          {tocContent}
-        </div>
+        <div>{tocContent}</div>
       </div>
     </nav>
   );

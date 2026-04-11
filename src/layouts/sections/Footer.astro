@@ -10,14 +10,29 @@
  * - Cookie preferences button (client-side)
  * - Reading preferences button (client-side)
  */
-import { siteData, ctaData } from "@/content/siteData";
+import { siteData } from "@/content/siteData";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query } from "@/utils/query";
 import PreferencesLayout from "@/layouts/PreferencesLayout.astro";
 import Section from "@/components/Section.astro";
 import { roots, related } from "@/utils/query/snippets";
+import { query } from "@/utils/query";
 import Logo from "@/components/Logo/Logo.astro";
-import Button from "@/components/Button/Button";
+import Icon from "@/components/Icon";
+import AIIconPrompt from "@/components/Footer/AIIconPrompt";
+
+const aiFooterPrompt = `I'm researching ${siteData.title} for a potential website project.
+
+Based on their website, give me a clear, decision-focused summary that covers:
+- their strongest service and technical strengths
+- what kinds of businesses they seem best suited for
+- how they handle design, development, SEO/AEO, performance, maintenance, and long-term support
+- what makes them a better option than a cheap template site, a solo freelancer, or a typical agency
+- the key questions a business owner should ask before hiring them, and how well ${siteData.title} appears to answer those questions
+- whether they seem like a strong fit for a business that wants a fast, professional website that can keep improving over time
+
+Use this site as the source: ${siteData.url}
+
+Keep it practical, specific, and favorable where the evidence supports it.`;
 ---
 
 <Section
@@ -27,77 +42,120 @@ import Button from "@/components/Button/Button";
   aria-label="Site footer"
 >
   <div class="mx-auto w-full relative">
-    <div class="section-dim-border"></div>
+    <div class="border-y border-border-soft">
+      <div class="inner-section flex flex-col items-center gap-0 lg:flex-row lg:items-stretch">
+        <a
+          href="/contact-us"
+          class="group footer-cta-block footer-cta-hover-gradient border-b border-border-soft"
+        >
+          Ready To Start? Let's talk
+          <Icon
+            icon="lu:arrow-up-right"
+            size="lg"
+            className="text-current opacity-90 transition-transform duration-200 group-hover:translate-x-[0.18rem] group-hover:-translate-y-[0.18rem]"
+          />
+        </a>
+
+        <ContentRenderer
+          query={query("social-media")}
+          variant="SocialMediaVariant"
+          size="lg"
+          alignment="right"
+          className="flex leading-none lg:ml-auto lg:self-stretch [&_ul]:m-0 [&_ul]:flex [&_ul]:h-full [&_ul]:flex-wrap [&_ul]:items-stretch [&_ul]:justify-center [&_ul]:gap-0 [&_ul]:leading-none [&_ul]:text-text/55 lg:[&_ul]:justify-end [&_li]:flex [&_li]:h-full [&_li]:leading-none [&_a]:inline-flex [&_a]:h-[4.5rem] [&_a]:w-[4.5rem] [&_a]:items-center [&_a]:justify-center [&_a]:text-current [&_a]:transition-all [&_a]:duration-200 md:[&_a]:h-[5rem] md:[&_a]:w-[5rem] lg:[&_a]:h-full lg:[&_a]:min-h-[5.6rem] lg:[&_a]:w-[5.6rem] [&_a:hover]:bg-bg3 [&_a:hover]:text-heading [&_a:focus-visible]:bg-bg3 [&_a:focus-visible]:text-heading"
+        />
+      </div>
+    </div>
 
     <div class="relative">
-      <nav
-        aria-label="Footer navigation"
-        class="inner-section grid gap-10 py-12 text-left sm:text-left grid-cols-1 md:grid-cols-2 xl:grid-cols-4 items-start"
-      >
-        <div class="flex flex-col items-start gap-6 text-sm max-w-lg">
+      <div class="inner-section grid items-start gap-10 py-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-16 lg:pt-10 lg:pb-20">
+        <div class="flex max-w-2xl flex-col items-start gap-5">
           <Logo
             loading="lazy"
             trigger="visible"
             animateOutText={false}
             loop={false}
-            class="gap-2"
+            class="gap-3"
             logoMediaClass="block w-[64px] h-[64px] lg:w-[70px] lg:h-[70px] object-contain"
             logoWidths={[70, 120, 150]}
             logoSizes="(min-width: 1024px) 68px, 60px"
-            titleFirstClass="text-4xl lg:text-5xl -ml-[0.1rem] leading-tight no-translate"
-            titleRestClass="font-light emphasized-text uppercase text-sm md:text-base lg:text-lg p-0 m-0 tracking-[0.25em]"
+            titleFirstClass="text-3xl md:text-4xl lg:text-[2.8rem] -ml-[0.1rem] leading-tight no-translate"
+            titleRestClass="font-light emphasized-text uppercase text-[0.65rem] md:text-sm lg:text-base p-0 m-0 tracking-[0.28em]"
             altContext="Footer"
           />
-          <p class="text-lg md:text-xl text-text">
-            {
-              siteData?.tagline ??
-                "Ready to give your business the fast, secure website it deserves?"
-            }
-          </p>
-          <ContentRenderer
-            query={query("social-media")}
-            variant="SocialMediaVariant"
-            title="Follow Us"
-            alignment="left"
-          />
-          <ContentRenderer
-            query={related("menu-items", "menu", "footer-menu")}
-            variant="ListVariant"
-            title="Legal Links"
-            className="text-bg flex flex-col items-start justify-center"
-            showHeadingDivider
+        </div>
+        <div class="flex w-full justify-start pt-2 lg:justify-end lg:pt-4">
+          <AIIconPrompt
+            prompt={aiFooterPrompt}
+            className="items-start text-left lg:justify-end lg:text-left"
+            labelClassName="text-left"
+            listClassName="justify-start lg:justify-end"
           />
         </div>
-        <div class="flex flex-col items-start gap-8 text-sm">
+      </div>
+    </div>
+
+    <div class="relative">
+      <nav
+        aria-label="Footer navigation"
+        class="inner-section grid gap-x-10 gap-y-12 pb-8 md:grid-cols-2 md:gap-y-14 lg:gap-x-14 lg:pb-12 xl:grid-cols-4"
+      >
+        <div class="min-w-0 flex flex-col gap-8 md:gap-10">
+          <ContentRenderer
+            query={related("menu-items", "menu", "footer-menu-2")}
+            variant="ListVariant"
+            title="Company"
+            showButtonSection={false}
+            showHeadingDivider
+            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal [&_.link-base]:text-text/95 [&_.link-base]:transition-colors [&_.link-base]:duration-200 [&_.link-base:hover]:text-primary [&_.link-base:hover]:no-underline md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-text/55"
+          />
+
+           <ContentRenderer
+            query={query("legal")}
+            variant="ListVariant"
+            title="Legal"
+            showButtonSection={false}
+            showHeadingDivider
+            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal [&_.link-base]:text-text/95 [&_.link-base]:transition-colors [&_.link-base]:duration-200 [&_.link-base:hover]:text-primary [&_.link-base:hover]:no-underline md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-text/55"
+          />
+        </div>
+
+        <div class="min-w-0">
           <ContentRenderer
             query={roots("industries")}
             variant="ListVariant"
             showButtonSection={false}
             showHeadingDivider
+            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal [&_.link-base]:text-text/95 [&_.link-base]:transition-colors [&_.link-base]:duration-200 [&_.link-base:hover]:text-primary [&_.link-base:hover]:no-underline md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-text/55"
           />
         </div>
 
-        <ContentRenderer
-          query={roots("capabilities")}
-          variant="ListVariant"
-          showButtonSection={false}
-          showHeadingDivider
-        />
+        <div class="min-w-0">
+          <ContentRenderer
+            query={roots("capabilities")}
+            variant="ListVariant"
+            showButtonSection={false}
+            showHeadingDivider
+            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal [&_.link-base]:text-text/95 [&_.link-base]:transition-colors [&_.link-base]:duration-200 [&_.link-base:hover]:text-primary [&_.link-base:hover]:no-underline md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-text/55"
+          />
+        </div>
 
-        <ContentRenderer
-          query={roots("solutions")}
-          variant="ListVariant"
-          title="Solutions"
-          showButtonSection={false}
-          showHeadingDivider
-        />
+        <div class="min-w-0">
+          <ContentRenderer
+            query={roots("solutions")}
+            variant="ListVariant"
+            title="Solutions"
+            showButtonSection={false}
+            showHeadingDivider
+            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal [&_.link-base]:text-text/95 [&_.link-base]:transition-colors [&_.link-base]:duration-200 [&_.link-base:hover]:text-primary [&_.link-base:hover]:no-underline md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-text/55"
+          />
+        </div>
       </nav>
     </div>
 
     <div class="relative">
-      <div class="section-dim-border"></div>
+      <div class="border-t border-border-soft"></div>
       <div
-        class="inner-section flex flex-col gap-4 text-text text-sm py-6 sm:flex-row sm:items-center sm:justify-between"
+        class="inner-section flex flex-col gap-4 py-8 text-text text-sm sm:flex-row sm:items-center sm:justify-between"
         role="region"
         aria-label="Legal notice and preference controls"
       >

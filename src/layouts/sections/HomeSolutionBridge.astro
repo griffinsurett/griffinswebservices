@@ -9,7 +9,6 @@ import Counter from "@/components/Counter.astro";
 import FloatingLogoBadge from "@/components/FloatingLogoBadge.astro";
 import { contactCtaData, pricingCtaData } from "@/content/siteData";
 import { byItemKeys } from "@/utils/query/snippets";
-import { animationProps } from "@/integrations/scroll-animations/props";
 import performanceImg from "@/assets/100performance.png";
 import meoncompImg from "@/assets/meoncomp.jpg";
 
@@ -77,10 +76,7 @@ const bridgeBackgroundImage = meoncompImg;
 
 <Section class="outer-section">
   <div class="inner-section">
-    <div
-      class="bridge-roll-shell relative flex flex-col gap-5"
-      {...animationProps("fade-in-up", { once: true, threshold: 0.1 })}
-    >
+    <div class="bridge-roll-shell relative flex flex-col gap-5">
       <div
         class="pointer-events-none absolute left-8 top-8 z-20 w-64 overflow-hidden rounded-[1.4rem] border border-text/10 bg-bg/85 shadow-2xl backdrop-blur-xl max-lg:left-5 max-lg:top-0 max-lg:w-44 max-lg:-translate-y-[28%]"
       >
@@ -105,6 +101,8 @@ const bridgeBackgroundImage = meoncompImg;
         imageMaxWidth={1600}
         mediaOverlayClass="bg-bg/70"
         className="min-h-[41rem] max-lg:min-h-[54rem]"
+        animate="fade-in-up"
+        animationOptions={{ once: false, directional: true, threshold: 0.1 }}
       >
 
         <div

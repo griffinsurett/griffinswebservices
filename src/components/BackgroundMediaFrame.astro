@@ -1,5 +1,7 @@
 ---
 import BackgroundMedia from "@/components/BackgroundMedia.astro";
+import type { AnimationOptions, AnimationType } from "@/integrations/scroll-animations/props";
+import { animationProps } from "@/integrations/scroll-animations/props";
 
 interface Props {
   imageSrc?: any;
@@ -8,6 +10,8 @@ interface Props {
   mediaOverlayClass?: string;
   className?: string;
   backgroundMedia?: any;
+  animate?: AnimationType | false;
+  animationOptions?: AnimationOptions;
 }
 
 const {
@@ -17,6 +21,8 @@ const {
   mediaOverlayClass = "bg-bg/70",
   className = "",
   backgroundMedia,
+  animate = false,
+  animationOptions = {},
 } = Astro.props as Props;
 
 const resolvedBackgroundMedia =
@@ -39,6 +45,7 @@ if (!resolvedBackgroundMedia) {
 
 <div
   class={`relative overflow-hidden rounded-[2.4rem] border border-text/10 bg-bg3 shadow-2xl ${className}`.trim()}
+  {...(animate ? animationProps(animate, animationOptions) : {})}
 >
   <BackgroundMedia backgroundMedia={resolvedBackgroundMedia} />
   <slot />

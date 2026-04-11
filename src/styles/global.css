@@ -427,6 +427,14 @@ body {
   @apply rounded-full cursor-pointer;
 }
 
+@utility footer-cta-block {
+  @apply inline-flex w-full items-center justify-center gap-3 px-6 py-6 text-center text-xl font-normal text-heading transition-all duration-300 md:px-8 md:py-7 md:text-[1.7rem] lg:w-auto lg:justify-start lg:px-10 lg:text-left;
+}
+
+@utility footer-cta-hover-gradient {
+  @apply hover:bg-linear-to-r hover:from-primary hover:to-primary-700 hover:text-bg focus-visible:bg-linear-to-r focus-visible:from-primary focus-visible:to-primary-700 focus-visible:text-bg;
+}
+
 @utility section-border-styles {
   @apply absolute top-0 left-0 right-0 h-px;
 }
@@ -776,10 +784,6 @@ body {
     @apply px-3 py-1 text-xs uppercase tracking-wider rounded-border;
   }
 
-  .footer-nav {
-    @apply text-2xl font-semibold;
-  }
-
   button {
     @apply cursor-pointer;
   }
@@ -805,12 +809,15 @@ body {
     @apply text-lg text-heading;
   }
 
-  .h1,
+  .h1 {
+    @apply font-header tracking-wide font-semibold;
+  }
+
   .h2,
   .h3,
   .h4,
   .h5 {
-    @apply font-header tracking-wide font-semibold;
+    @apply font-header tracking-wide font-medium;
   }
 
   p {

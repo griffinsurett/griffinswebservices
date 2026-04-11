@@ -1,83 +1,222 @@
 ---
 // src/layouts/collections/BlogLayout.astro
-/**
- * Blog Layout - Specialized Layout for Blog Posts
- *
- * Alternative layout optimized for blog content.
- * Simpler than CollectionLayout with:
- * - Featured image above content
- * - Traditional blog post structure
- * - Author info at top
- *
- * Specify in _meta.mdx with: itemsLayout: "BlogLayout"
- */
-
 import SiteLayout from "@/layouts/SiteLayout.astro";
+import ArticleShareActions from "@/components/ArticleShareActions";
+import TableOfContents from "@/components/TableOfContents/TableOfContents";
+import AIIconPrompt from "@/components/Footer/AIIconPrompt";
 import { getAuthorName, getImageSrc } from "./helpers/layoutHelpers";
 import type { CollectionLayoutProps } from "./types";
+import { find, isCollectionReference } from "@/utils/query";
 
 const {
   entry,
-  collection,
-  collectionMeta,
   Content,
-  isIndexPage,
   seoProps = {},
-  ...extraProps
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
 const featuredImageSrc = getImageSrc(data.featuredImage);
+const contentId = `blog-article-${entry?.id ?? "content"}`;
+const breadcrumbs = [
+  { label: "Home", href: "/" },
+  { label: "Blog", href: "/blog" },
+  { label: data.title || "Post" },
+];
+
+let authorName = getAuthorName(data.author);
+let authorRole = "";
+let authorImageSrc = "";
+
+if (isCollectionReference(data.author)) {
+  const authorEntry = await find(data.author.collection, data.author.id);
+  if (authorEntry) {
+    const authorData = authorEntry.data as Record<string, any>;
+    authorName = authorData.title || authorData.name || authorName;
+    authorRole = authorData.role || "";
+    authorImageSrc = getImageSrc(authorData.featuredImage);
+  }
+}
+
+const publishedDate = data.publishDate
+  ? new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    }).format(new Date(data.publishDate))
+  : "";
+
+const articleAiPrompt = `Please summarize this article from Griffin's Web Services in a clear, useful way for a business owner.
+
+Article title: ${data.title || "Blog article"}
+${data.description ? `Article description: ${data.description}` : ""}
+Article URL: ${Astro.url.href}
+
+Please include:
+- the main point of the article
+- the most important takeaways
+- what actions a business owner should consider
+- a short plain-English summary
+
+Keep it concise, practical, and easy to scan.`;
 ---
 
 <SiteLayout {...seoProps}>
-  <div class="container mx-auto px-4 py-8">
-    <article class="max-w-4xl mx-auto">
-      {/* Featured image */}
-      {
-        featuredImageSrc && (
-          <div class="mb-8 rounded-xl overflow-hidden">
-            <img
-              src={featuredImageSrc}
-              alt={data.featuredImage?.alt || data.title}
-              class="w-full h-64 md:h-96 object-cover"
+  <section class="outer-section pt-[clamp(6.5rem,9vw,8.5rem)] pb-[clamp(4rem,6vw,6rem)]">
+    <div class="inner-section">
+      <nav aria-label="Breadcrumb" class="mb-[clamp(2rem,3vw,3rem)]">
+        <ol class="flex flex-wrap items-center gap-x-3 gap-y-2 list-none p-0 m-0">
+          {breadcrumbs.map((item, index) => {
+            const isLast = index === breadcrumbs.length - 1;
+            const isHome = item.label.trim().toLowerCase() === "home";
+            const labelContent = isHome ? (
+              <span
+                class="inline-flex items-center justify-center"
+                aria-hidden="true"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="h-[0.9rem] w-[0.9rem]"
+                >
+                  <path d="M3 10.5 12 3l9 7.5" />
+                  <path d="M5.25 9.75V21h13.5V9.75" />
+                </svg>
+              </span>
+            ) : (
+              item.label
+            );
+            return (
+              <li class="flex items-center gap-3">
+                {item.href && !isLast ? (
+                  <a
+                    href={item.href}
+                    class="text-[0.68rem] leading-none uppercase tracking-[0.1em] text-text/75 no-underline transition-colors duration-200 hover:text-heading lg:text-[0.86rem] lg:tracking-[0.14em]"
+                    aria-label={isHome ? item.label : undefined}
+                  >
+                    {labelContent}
+                  </a>
+                ) : (
+                  <span
+                    class="text-[0.68rem] leading-none uppercase tracking-[0.1em] text-text/75 lg:text-[0.86rem] lg:tracking-[0.14em]"
+                    aria-current={isLast ? "page" : undefined}
+                    aria-label={isHome ? item.label : undefined}
+                  >
+                    {labelContent}
+                  </span>
+                )}
+                {!isLast && <span aria-hidden="true" class="text-text/40">/</span>}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      <div class="grid gap-[clamp(2rem,3vw,3rem)] lg:grid-cols-[minmax(17rem,20rem)_minmax(0,1fr)] lg:items-start">
+        <aside class="sticky-section flex flex-col gap-6 lg:self-start">
+          <div class="overflow-hidden rounded-[1.2rem] border [border-color:color-mix(in_srgb,var(--color-heading)_10%,transparent)] [background:color-mix(in_srgb,var(--color-bg2)_88%,transparent)]">
+            <TableOfContents
+              client:visible
+              contentId={contentId}
+              title="Table of Contents"
+              headingSelector="h2, h3"
+              scrollOffset={140}
             />
           </div>
-        )
-      }
+        </aside>
 
-      {/* Article header */}
-      <header class="mb-8">
-        <h1 class="text-4xl md:text-5xl mb-4">{data.title}</h1>
+        <article class="min-w-0">
+          <header class="mb-9">
+            <div class="mb-[1.2rem] flex flex-wrap items-center justify-between gap-4">
+              {publishedDate && (
+                <p class="m-0 text-[1.05rem] leading-[1.4] text-text">
+                  <span class="text-heading">Published:</span> {publishedDate}
+                </p>
+              )}
 
-        {
-          data.description && (
-            <p class="text-xl text-text">{data.description}</p>
-          )
-        }
+              <ArticleShareActions
+                client:visible
+                shareUrl={Astro.url.href}
+                shareTitle={data.title}
+              />
+            </div>
 
-        {/* Metadata */}
-        <div class="flex flex-wrap gap-4 mt-4 text-sm text-text">
+            <h1 class="h2 m-0 text-heading [text-wrap:balance]">{data.title}</h1>
+
+            <div class="mt-8 flex flex-wrap items-start gap-6 lg:items-center">
+              <div class="inline-flex min-w-0 items-center gap-4">
+                {authorImageSrc ? (
+                  <img
+                    src={authorImageSrc}
+                    alt={authorName}
+                    class="h-[3.25rem] w-[3.25rem] shrink-0 rounded-full border object-cover [border-color:color-mix(in_srgb,var(--color-heading)_12%,transparent)]"
+                  />
+                ) : (
+                  <div
+                    class="inline-flex h-[3.25rem] w-[3.25rem] shrink-0 items-center justify-center rounded-full bg-primary/15 text-[0.95rem] font-bold uppercase tracking-[0.08em] text-primary-200"
+                    aria-hidden="true"
+                  >
+                    {authorName
+                      .split(" ")
+                      .filter(Boolean)
+                      .map((part: string) => part[0])
+                      .join("")
+                      .slice(0, 2)}
+                  </div>
+                )}
+
+                <div class="flex min-w-0 flex-col gap-[0.15rem]">
+                  <p class="m-0 text-base text-heading">{authorName}</p>
+                  {authorRole && (
+                    <p class="m-0 text-[0.96rem] text-text/70">{authorRole}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {data.description && (
+              <p class="mt-8 max-w-[42rem] text-[clamp(1.22rem,1.8vw,1.72rem)] leading-[1.55] text-text/85">
+                {data.description}
+              </p>
+            )}
+
+            <div class="mt-8 inline-flex max-w-full rounded-[1.35rem] border border-border-soft bg-black/20 px-5 py-5 md:px-7 md:py-6">
+              <AIIconPrompt
+                prompt={articleAiPrompt}
+                promptSubject={data.title || "this article"}
+                label="Summarize this article with ai:"
+                className="w-auto items-start text-left lg:justify-start lg:text-left"
+                labelClassName="text-left text-text/70"
+                listClassName="justify-start lg:justify-start"
+              />
+            </div>
+          </header>
+
           {
-            data.publishDate && (
-              <time datetime={new Date(data.publishDate).toISOString()}>
-                {new Date(data.publishDate).toLocaleDateString()}
-              </time>
+            featuredImageSrc && (
+              <div class="mb-10 overflow-hidden rounded-[1.65rem] border [border-color:color-mix(in_srgb,var(--color-heading)_10%,transparent)] [background:color-mix(in_srgb,var(--color-bg2)_88%,transparent)] [box-shadow:0_34px_80px_-50px_rgba(0,0,0,0.55)]">
+                <img
+                  src={featuredImageSrc}
+                  alt={data.featuredImage?.alt || data.title}
+                  class="block h-full w-full object-cover aspect-[16/9]"
+                />
+              </div>
             )
           }
-          {data.author && <span>By {getAuthorName(data.author)}</span>}
-          {data.readingTime && <span>{data.readingTime} min read</span>}
-        </div>
-      </header>
 
-      {/* Article content */}
-      {
-        Content && (
-          <div class="prose prose-lg max-w-none">
-            <Content />
-          </div>
-        )
-      }
-    </article>
-  </div>
+          {
+            Content && (
+              <div id={contentId} class="written-rich-text p-0">
+                <Content />
+              </div>
+            )
+          }
+        </article>
+      </div>
+    </div>
+  </section>
 </SiteLayout>

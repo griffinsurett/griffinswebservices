@@ -218,12 +218,6 @@ const quoteCardDescription = usesWebsiteQuoteForm
 
       <slot name="topic-sections" />
 
-      <HomeSolutionBridge
-        primaryCtaLink={solutionQuoteHref}
-        secondaryCtaText="Get Quote"
-        secondaryCtaLink={solutionQuoteHref}
-      />
-
       <div class="bottom-content-section">
         <ContentRenderer
           query={query("testimonials").where((entry) => entry.data.rating >= 4)}
@@ -294,6 +288,12 @@ const quoteCardDescription = usesWebsiteQuoteForm
           allowMultiple={false}
           title={resolvedGrandparentContent.faqTitle}
           heading={resolvedGrandparentContent.faqHeading}
+        />
+
+        <HomeSolutionBridge
+          primaryCtaLink={solutionQuoteHref}
+          secondaryCtaText="Get Quote"
+          secondaryCtaLink={solutionQuoteHref}
         />
       </div>
     </>
