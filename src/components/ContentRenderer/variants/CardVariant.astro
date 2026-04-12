@@ -155,9 +155,10 @@ const sectionOverflowClass = isSplitLayout ? "" : "overflow-hidden";
             {showCTA && (
               <div class="flex items-start">
                 <Button
+                  client:visible
                   href={ctaHref ?? collectionUrl}
                   rightIcon="lu:arrow-right"
-                  variant="primary"
+                  variant="secondary"
                 >
                   {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
                 </Button>
@@ -271,6 +272,7 @@ const sectionOverflowClass = isSplitLayout ? "" : "overflow-hidden";
             {ctaInlineOnDesktop && showCTA && (
               <div class="hidden lg:flex items-center">
                 <Button
+                  client:visible
                   href={ctaHref ?? collectionUrl}
                   rightIcon="lu:arrow-right"
                   variant="secondary"
@@ -326,10 +328,10 @@ const sectionOverflowClass = isSplitLayout ? "" : "overflow-hidden";
         {showCTA && (
           <div class={`buttons-section-center ${ctaInlineOnDesktop ? "lg:hidden" : ""}`.trim()}>
             <Button
+              client:visible
               href={ctaHref ?? collectionUrl}
               rightIcon="lu:arrow-right"
               variant="secondary"
-              client:idle
             >
               {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
             </Button>

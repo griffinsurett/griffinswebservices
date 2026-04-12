@@ -168,6 +168,7 @@ const showCTA =
         {ctaInlineOnDesktop && showCTA && (
           <div class="hidden lg:flex items-center">
             <Button
+              client:visible
               href={ctaHref ?? collectionUrl}
               rightIcon="lu:arrow-right"
               variant="secondary"
@@ -230,10 +231,10 @@ const showCTA =
     {showCTA && (
       <div class={`buttons-section-center ${ctaInlineOnDesktop ? "lg:hidden" : ""}`.trim()}>
         <Button
+          client:visible
           href={ctaHref ?? collectionUrl}
           rightIcon="lu:arrow-right"
           variant="secondary"
-          client:idle
         >
           {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
         </Button>

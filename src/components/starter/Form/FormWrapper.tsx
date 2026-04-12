@@ -220,13 +220,13 @@ export default function FormWrapper({
   };
 
   const defaultTermsLabel = (
-    <>
+    <span className="text-muted">
       I agree to the{" "}
       <a
         href={termsOfServiceUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-accent hover:underline"
+        className="text-text hover:underline"
       >
         Terms of Service
       </a>{" "}
@@ -235,11 +235,11 @@ export default function FormWrapper({
         href={privacyPolicyUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-accent hover:underline"
+        className="text-text hover:underline"
       >
         Privacy Policy
       </a>
-    </>
+    </span>
   );
 
   const contextValue = useMemo(

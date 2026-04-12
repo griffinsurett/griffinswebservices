@@ -46,7 +46,7 @@ export default function HorizontalLegalFooter({
       <div
         className={[
           "flex w-full flex-col gap-4 py-5 text-text/80 lg:gap-5",
-          showBorder || hasSocialLinks ? "border-t border-soft" : "",
+          showBorder || hasSocialLinks ? "border-t border-border-soft" : "",
         ]
           .filter(Boolean)
           .join(" ")}

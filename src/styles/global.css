@@ -42,7 +42,7 @@
   /* Text colors */
   --color-heading: var(--color-tertiary-dark);
   --color-text: var(--color-zinc-200);
-  --color-muted: var(--color-zinc-300);
+  --color-muted: color-mix(in srgb, var(--color-text) 55%, transparent);
 
   /* Background surfaces */
   --color-bg: var(--color-primary-dark);
@@ -262,7 +262,7 @@ body {
     --color-primary: var(--color-zinc-900);
     --color-heading: var(--color-tertiary-dark);
     --color-text: var(--color-zinc-600);
-    --color-muted: var(--text-zinc-600);
+    --color-muted: var(--text-gray-500);
     --color-bg: var(--color-primary-light);
     --color-bg2: var(--color-secondary-light);
     --color-bg3: var(--color-tertiary-light);
@@ -277,7 +277,7 @@ body {
     --color-primary: var(--color-accent);
     --color-heading: var(--color-primary-light);
     --color-text: var(--color-zinc-200);
-    --color-muted: var(--color-zinc-300);
+    --color-muted: color-mix(in srgb, var(--color-text) 55%, transparent);
     --color-bg: var(--color-primary-dark);
     --color-bg2: var(--color-secondary-dark);
     --color-bg3: var(--color-tertiary-dark);

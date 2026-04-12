@@ -79,7 +79,7 @@ export default function CustomWebsiteBuildDemo({
           <div className="rounded-full border border-soft bg-white/[0.03] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-text/70">
             Custom Build
           </div>
-          <div className="flex items-center gap-2 text-[11px] text-text/55">
+          <div className="flex items-center gap-2 text-[11px] text-muted">
             <span
               className={`h-2 w-2 rounded-full transition-colors duration-500 ${
                 showFinalPreview ? "bg-primary shadow-[0_0_0_5px_rgba(99,122,255,0.12)]" : "bg-text/20"

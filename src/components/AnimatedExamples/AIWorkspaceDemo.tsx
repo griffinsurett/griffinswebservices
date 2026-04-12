@@ -72,7 +72,7 @@ export default function AIWorkspaceDemo({ className = "" }: AIWorkspaceDemoProps
               </div>
               <span>Workspace</span>
             </div>
-            <div className="rounded-full border border-white/10 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-text/55">
+            <div className="rounded-full border border-white/10 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-muted">
               New
             </div>
           </div>
@@ -80,7 +80,7 @@ export default function AIWorkspaceDemo({ className = "" }: AIWorkspaceDemoProps
           <div className="mt-5 space-y-2">
             <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2.5">
               <div className="text-xs text-heading">Follow-up drafts</div>
-              <div className="mt-1 text-[11px] leading-relaxed text-text/55">
+              <div className="mt-1 text-[11px] leading-relaxed text-muted">
                 Write, revise, and summarize repeat work.
               </div>
             </div>

@@ -124,7 +124,7 @@ export default function MobileMenuDrawer({
           className={`${className} mobile-menu-nav landscape-hero relative h-full w-full overflow-hidden`}
           aria-label="Mobile navigation"
         >
-          <div className="mobile-menu-content inner-section absolute inset-x-0 top-24 bottom-56 md:bottom-44">
+          <div className="mobile-menu-content inner-section absolute inset-x-0 top-24 bottom-72 md:bottom-52">
             <div className="relative flex h-full w-full justify-center overflow-hidden">
               <div
                 className="flex h-full w-full transition-transform duration-300 ease-in-out"
@@ -195,9 +195,11 @@ export default function MobileMenuDrawer({
           </div>
 
           <div className="absolute inset-x-0 bottom-0">
+            <div className="border-t border-border-soft"></div>
             <div className="inner-section">
               <HorizontalLegalFooter
                 socialLinks={socialLinks}
+                showBorder={false}
                 onLinkClick={() => toggleMenu(false)}
               />
             </div>

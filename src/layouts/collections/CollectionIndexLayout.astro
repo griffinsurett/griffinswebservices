@@ -36,6 +36,16 @@ const {
 
 const { title: pageTitle, description: pageDescription } = seoProps;
 const pageHeading = collectionMeta?.heading || pageTitle;
+const heroMinHeight =
+  collectionName === "about-us"
+    ? "100vh"
+    : collectionName === "contact-us"
+      ? "72vh"
+      : "50vh";
+const heroBreadcrumbs =
+  collectionName === "about-us"
+    ? [{ label: "Home", href: "/" }, { label: pageTitle }]
+    : [];
 
 // Use featuredImage from _meta.mdx if provided, otherwise undefined (will use default)
 const heroImage = collectionMeta.featuredImage;
@@ -48,7 +58,8 @@ const heroImage = collectionMeta.featuredImage;
       heading={pageHeading}
       description={pageDescription}
       image={heroImage}
-      minHeight="50vh"
+      minHeight={heroMinHeight}
+      breadcrumbs={heroBreadcrumbs}
     />
 
     {/* Content - Either custom MDX or default grid */}

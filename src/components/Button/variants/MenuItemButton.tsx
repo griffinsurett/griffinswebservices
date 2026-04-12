@@ -25,7 +25,7 @@ export default function MenuItemButton({
   return (
     <ButtonBase
       {...props}
-      className={`${baseClasses} footer-cta-hover-gradient w-full justify-start rounded-none px-0 py-4 font-normal text-2xl leading-[1.18] text-heading no-underline whitespace-normal text-balance transition-all duration-300 hover:no-underline focus-visible:no-underline data-[active=true]:bg-linear-to-r data-[active=true]:from-primary data-[active=true]:to-primary-700 data-[active=true]:text-bg data-[active-descendant=true]:text-primary lg:text-3xl lg:leading-[1.14]`}
+      className={`${baseClasses} w-full justify-start rounded-none px-0 py-2.5 font-normal text-2xl leading-[1.18] text-heading whitespace-normal text-balance transition-colors duration-300 lg:leading-[1.14]`}
       leftIcon={renderButtonIcon(leftIcon, size)}
       rightIcon={renderButtonIcon(rightIcon, size)}
       size={size}

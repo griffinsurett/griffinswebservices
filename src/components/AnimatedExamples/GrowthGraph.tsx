@@ -162,7 +162,7 @@ export default function GrowthGraph({
       >
         <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[1.6rem] bg-[radial-gradient(circle_at_top,rgba(99,122,255,0.12),transparent_55%),linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] px-6 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-10">
           <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:6.5rem_6.5rem]" />
-          <div className="relative flex items-center justify-between text-sm text-text/55 sm:text-base">
+          <div className="relative flex items-center justify-between text-sm text-muted sm:text-base">
             <span>Today</span>
             <span>Future</span>
           </div>

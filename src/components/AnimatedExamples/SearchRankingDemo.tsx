@@ -191,7 +191,7 @@ export default function SearchRankingDemo({
 
                   <div className="flex items-start gap-2">
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/8">
-                      <Icon icon="lucide:globe" size="sm" className="text-text/55" />
+                      <Icon icon="lucide:globe" size="sm" className="text-muted" />
                     </div>
                     <div className="min-w-0">
                       <p className="truncate text-[0.68rem] text-text/58">

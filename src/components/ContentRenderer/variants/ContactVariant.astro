@@ -91,9 +91,10 @@ const columnClasses = {
         (ctaHref || collectionUrl) && (
         <div class="mt-12 text-left">
           <Button
+            client:visible
             href={ctaHref ?? collectionUrl}
             rightIcon="lu:arrow-right"
-            variant="primary"
+            variant="secondary"
             size="lg"
           >
             {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
@@ -102,7 +103,12 @@ const columnClasses = {
       )}
     </div>
     <div class="flex flex-2 flex-col justify-between w-full">
-      <ContactForm />
+      <div class="section-box card-bg outer-card-transition relative overflow-hidden w-full">
+        <div class="inner-card-style inner-card-transition inner-card-color" aria-hidden="true"></div>
+        <div class="relative z-10">
+          <ContactForm />
+        </div>
+      </div>
     </div>
   </div>
 </Section>

@@ -8,5 +8,15 @@
     "order": 0,
     "openInNewTab": false,
     "menu": ["main-menu", "links-menu", "footer-menu-2"]
+  },
+  {
+    "id": "contact-us",
+    "title": "Contact Us",
+    "description": "Contact page link",
+    "url": "/contact-us",
+    "icon": "fa6-solid:envelope",
+    "order": 6,
+    "openInNewTab": false,
+    "menu": ["main-menu", "footer-menu-2"]
   }
 ]

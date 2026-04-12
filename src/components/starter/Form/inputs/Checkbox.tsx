@@ -42,7 +42,7 @@ export default function Checkbox({
           {...checkboxProps}
         />
         {labelContent && (
-          <span className="text-text">
+          <span className="text-muted">
             {labelContent}
             {required && <span className="text-red-500 ml-1">*</span>}
           </span>

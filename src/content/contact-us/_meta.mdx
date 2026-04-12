@@ -1,24 +1,17 @@
 ---
 title: "Contact Us"
-description: "Have a project in mind or just want to say hello? We'd love to hear from you. Reach out and let's start a conversation about how we can help bring your vision to life."
+description: "Tell us what you are planning and we will help you figure out the clearest next step for your website, improvements, or ongoing support."
+heading:
+  before: "Start with the clearest next step."
+  text: "Tell us what you need."
 hasPage: true
 itemsHasPage: false
-redirectFrom: ["/contact", "/contactus"]
-addToMenu:
-  - menu: "main-menu"
-    order: 6
-  - menu: "footer-menu-2"
-    order: 2
-itemsLinkBehavior:
-  mode: prefixed
-  linkPrefix: linkPrefix
-  valueFormatter: phone
 ---
-import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query } from "@/utils/query";
 
-<ContentRenderer
-  query={query("contact-us")}
-  variant="ContactVariant"
-  columns={2}
+import ContactQuoteSection from "@/layouts/sections/ContactQuoteSection.astro";
+import ContactForm from "@/components/Form/forms/ContactForm.astro";
+
+<ContactQuoteSection
+  showEyebrow={false}
+  formComponent={ContactForm}
 />

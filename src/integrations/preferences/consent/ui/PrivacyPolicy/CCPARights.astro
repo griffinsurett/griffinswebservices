@@ -14,18 +14,12 @@
  * This component can be embedded in privacy policies or displayed standalone.
  */
 import OptOutButton from "../OptOutButton";
-import { find } from "@/utils/query";
-import { formatPhoneNumber } from "@/utils/string";
 
 interface Props {
   sectionNumber?: number; // Optional section number for sequential numbering
 }
 
 const { sectionNumber } = Astro.props;
-
-// Query contact information dynamically from contact-us collection
-const emailEntry = await find("contact-us", "email");
-const phoneEntry = await find("contact-us", "phone");
 ---
 
 <div
@@ -164,34 +158,11 @@ const phoneEntry = await find("contact-us", "phone");
   <div class="bg-bg border-2 border-surface rounded-lg p-6 mt-4">
     <p class="font-semibold mb-3">Contact Us</p>
     <ul class="space-y-2 mb-4">
-      {
-        emailEntry && (
-          <li>
-            <strong>Email:</strong>{" "}
-            <a
-              href={`${emailEntry.data.linkPrefix || "mailto:"}${emailEntry.data.title}`}
-              class="text-primary underline hover:text-primary-700"
-            >
-              {emailEntry.data.title}
-            </a>
-          </li>
-        )
-      }
-      {
-        phoneEntry && (
-          <li>
-            <strong>Phone:</strong>{" "}
-            <a
-              href={`${phoneEntry.data.linkPrefix || "tel:"}${phoneEntry.data.title}`}
-              class="text-primary underline hover:text-primary-700"
-            >
-              {formatPhoneNumber(phoneEntry.data.title)}
-            </a>
-          </li>
-        )
-      }
       <li>
-        <strong>Subject Line:</strong> "CCPA Request - [Right to Know/Delete/Correct]"
+        <strong>Method:</strong> Use our contact form
+      </li>
+      <li>
+        <strong>Request Type:</strong> Start your message with "CCPA Request - [Right to Know/Delete/Correct]"
       </li>
       <li>
         <strong>Include:</strong> Your name, email, and description of your request
@@ -199,10 +170,10 @@ const phoneEntry = await find("contact-us", "phone");
       <li><strong>Response Time:</strong> We'll respond within 45 days</li>
     </ul>
     <a
-      href="/contact"
+      href="/contact-us"
       class="inline-block bg-primary text-bg px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
     >
-      Contact Us About Privacy →
+      Open Contact Form →
     </a>
   </div>
 

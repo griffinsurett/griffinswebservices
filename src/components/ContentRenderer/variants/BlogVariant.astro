@@ -149,9 +149,10 @@ const getStaggerDelay = (index: number): number => {
     (ctaHref || collectionUrl) && (
     <div class="mt-12 text-center">
       <Button
+        client:visible
         href={ctaHref ?? collectionUrl}
         rightIcon="lu:arrow-right"
-        variant="primary"
+        variant="secondary"
         size="lg"
       >
         {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}

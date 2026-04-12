@@ -67,7 +67,7 @@ const showCTA =
           href={ctaHref ?? collectionUrl}
           rightIcon="lu:arrow-right"
           variant="secondary"
-          client:idle
+          client:visible
         >
           {ctaText ?? `View All ${(title ?? collectionTitle ?? "").trim()}`}
         </Button>

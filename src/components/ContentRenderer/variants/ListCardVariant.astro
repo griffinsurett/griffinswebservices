@@ -89,6 +89,7 @@ const featureCardProps: Partial<FeatureCardProps> = {
     {showCTA && (
       <div class="buttons-section-center">
         <Button
+          client:visible
           href={ctaHref ?? collectionUrl}
           rightIcon="lu:arrow-right"
           variant="secondary"

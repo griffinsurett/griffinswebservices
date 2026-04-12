@@ -62,7 +62,7 @@ export default function PlatformCmsDevelopmentDemo({
                   "pointer-events-auto inline-flex items-center gap-2 rounded-t-2xl border border-b-0 px-3 py-2 text-sm transition-all duration-300 sm:px-4",
                   isActive
                     ? "border-soft bg-[#121722] text-heading"
-                    : "border-transparent bg-transparent text-text/55 hover:text-text/75",
+                    : "border-transparent bg-transparent text-muted hover:text-text",
                 ].join(" ")}
                 aria-pressed={isActive}
               >

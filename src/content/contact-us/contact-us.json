@@ -1,10 +1,9 @@
 [
   {
-    "id": "phone",
-    "title": "Call Us",
-    "description": "7329391309",
-    "icon": "fa6-solid:phone",
-    "tags": ["phone"],
-    "linkPrefix": "tel:"
+    "id": "contact-page",
+    "title": "Contact Us",
+    "description": "/contact-us",
+    "icon": "fa6-solid:address-card",
+    "tags": ["page"]
   }
 ]

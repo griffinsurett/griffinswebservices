@@ -40,7 +40,7 @@ export default function SocialIcon({
   onClick,
   ariaLabel,
 }: SocialIconProps) {
-  const wrapperClass = `${DIMENSION_MAP[size]} ${PADDING_MAP[size]} inline-flex items-center justify-center text-text/55 transition-all duration-200 hover:bg-bg3 hover:text-heading focus-visible:bg-bg3 focus-visible:text-heading`;
+  const wrapperClass = `${DIMENSION_MAP[size]} ${PADDING_MAP[size]} inline-flex items-center justify-center text-muted transition-all duration-200 hover:bg-bg3 hover:text-heading focus-visible:bg-bg3 focus-visible:text-heading`;
   const iconSize = ICON_SIZE_MAP[size];
   const resolvedAriaLabel = ariaLabel ?? (url ? `Visit our ${title}` : title);
 

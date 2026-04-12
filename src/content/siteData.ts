@@ -24,7 +24,7 @@ export const ctaData = {
 };
 
 export const contactCtaData = {
-  text: "Give Us a Call",
+  text: "Request a Quote",
   link: "/contact-us",
 };
 

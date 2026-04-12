@@ -8,7 +8,6 @@
 
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon";
-import { hasActiveDescendant, isActivePath } from "@/utils/navigation";
 
 interface MobileMenuItemProps {
   title: string;
@@ -31,10 +30,6 @@ export default function MobileMenuItem({
   onOpenSubmenu,
 }: MobileMenuItemProps) {
   const hasChildren = children.length > 0;
-  const isActive = isActivePath(url, currentPath);
-  const childIsActive = hasChildren
-    ? hasActiveDescendant({ children }, currentPath)
-    : false;
 
   const openSubmenu = () => {
     if (!hasChildren) return;
@@ -57,8 +52,6 @@ export default function MobileMenuItem({
           <Button
             variant="menuItemButton"
             className="inline-flex max-w-full items-center gap-2 text-left"
-            data-active={isActive ? "true" : undefined}
-            data-active-descendant={childIsActive ? "true" : undefined}
             onClick={handleParentClick}
             {...(url
               ? {
@@ -97,7 +90,6 @@ export default function MobileMenuItem({
         target={openInNewTab ? "_blank" : undefined}
         rel={openInNewTab ? "noopener noreferrer" : undefined}
         className="inline-flex max-w-full text-left"
-        data-active={isActive ? "true" : undefined}
       >
         {title}
       </Button>

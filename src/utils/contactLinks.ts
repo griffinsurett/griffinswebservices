@@ -4,10 +4,10 @@ import { formatPhoneNumber } from '@/utils/string';
 
 export interface ContactLink {
   id: string;
-  title: string;          // Display heading (e.g., "Call Us", "Email Us")
-  description: string;    // Raw contact value (phone digits, email address)
-  displayValue: string;   // Formatted value for UI (formatted phone, etc.)
-  url?: string;           // Full href (mailto:, tel:, etc.)
+  title: string;
+  description: string;
+  displayValue: string;
+  url?: string;
   linkPrefix?: string;
   tags?: string[];
   icon?: any;
@@ -26,16 +26,11 @@ export function normalizeContactLinks(items: Array<any>): ContactLink[] {
       const id = String(data.id ?? item?.id ?? 'contact');
       const linkPrefix = data.linkPrefix ?? '';
       const tags: string[] = Array.isArray(data.tags) ? data.tags : data.tags ? [data.tags] : [];
-
-      // Use description for the contact value (phone/email), title for the heading
       const rawValue = String(data.description ?? '');
       const title = String(data.title ?? '');
-
-      // Format the display value (phone numbers get formatted)
       const displayValue = linkPrefix?.toLowerCase().startsWith("tel")
         ? formatPhoneNumber(rawValue)
         : rawValue;
-
       const url = data.url ?? (linkPrefix ? `${linkPrefix}${rawValue}` : undefined);
 
       return {

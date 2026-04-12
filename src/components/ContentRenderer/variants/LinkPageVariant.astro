@@ -13,7 +13,6 @@ import HorizontalLegalFooter from "@/components/Footer/HorizontalLegalFooter";
 import BackgroundMedia from "@/components/BackgroundMedia.astro";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import { toArray } from "@/utils/array";
-import { formatPhoneNumber } from "@/utils/string";
 import { getCollection } from "astro:content";
 
 interface Props extends BaseVariantProps {
@@ -31,25 +30,8 @@ const {
 
 const safeItems = toArray(items);
 const socialLinks = await getCollection("social-media");
-const contactLinks = await getCollection("contact-us");
-const phoneEntry = contactLinks.find(
-  (entry) =>
-    entry.id === "phone" ||
-    entry.data.linkPrefix === "tel:" ||
-    entry.data.tags?.includes("phone"),
-);
-const phoneValue = phoneEntry?.data.description?.trim();
-const formattedPhoneValue = phoneValue ? formatPhoneNumber(phoneValue) : "";
-const phoneHref = phoneValue
-  ? `${phoneEntry?.data.linkPrefix ?? "tel:"}${phoneValue}`
-  : undefined;
 const hasContactPageItem = safeItems.some(
   (item) => typeof item?.url === "string" && item.url === "/contact-us",
-);
-const hasPhoneItem = safeItems.some(
-  (item) =>
-    typeof item?.url === "string" &&
-    (item.url === phoneHref || item.url === `tel:${phoneValue ?? ""}`),
 );
 const linkItems = [
   ...safeItems,
@@ -63,16 +45,6 @@ const linkItems = [
           openInNewTab: false,
         },
       ]),
-  ...(phoneHref && !hasPhoneItem
-    ? [
-        {
-          title: formattedPhoneValue || "Call Us",
-          url: phoneHref,
-          icon: "fa6-solid:phone",
-          openInNewTab: false,
-        },
-      ]
-    : []),
 ];
 const linkHeroVideoSrc = "/video3.mp4";
 ---
