@@ -25,7 +25,7 @@ export default function MenuItemButton({
   return (
     <ButtonBase
       {...props}
-      className={`${baseClasses} font-normal text-2xl lg:text-3xl transition-all`}
+      className={`${baseClasses} inline-flex w-auto items-center justify-start font-normal text-2xl lg:text-3xl transition-all`}
       leftIcon={renderButtonIcon(leftIcon, size)}
       rightIcon={renderButtonIcon(rightIcon, size)}
       size={size}

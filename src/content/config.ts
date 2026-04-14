@@ -68,6 +68,8 @@ export const collections = {
   "about-us": defineCollection({
     schema: ({ image }) =>
       baseSchema({ image }).extend({
+        heroIntro: z.string().optional(),
+        heroChecklist: z.array(z.string()).default([]),
         statLabel: z.string().optional(),
         statValue: z.number().optional(),
         statPrefix: z.string().optional(),

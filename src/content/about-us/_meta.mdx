@@ -3,7 +3,14 @@ title: "About Us"
 description: "We’re a New Jersey web design and development team building fast, reliable websites for businesses that want clarity, performance, and real support."
 heading:
   before: "We're not another agency."
-  text: "We're your dedicated web team."
+  text: "We're your"
+  after: "dedicated web team."
+heroIntro: "We’re a New Jersey web design and development team that stays close to the work, builds for the long term, and gives businesses a clear partner after launch."
+heroChecklist:
+  - "Small team, direct communication"
+  - "Design and development under one roof"
+  - "Built for long-term support"
+  - "Fast, reliable, maintainable websites"
 hasPage: true
 itemsHasPage: false
 redirectFrom:
@@ -22,12 +29,21 @@ import TrustStatement from "@/components/TrustStatement.astro";
 import WebDesignShowcaseSection from "@/layouts/sections/WebDesignShowcaseSection.astro";
 import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 import CollectionBodyLayout from "@/layouts/collections/CollectionBodyLayout.astro";
+import AboutHero from "@/layouts/heroes/AboutHero.astro";
 
 <CollectionBodyLayout
   title={frontmatter.title}
   heading={frontmatter.heading}
   description={frontmatter.description}
 >
+  <AboutHero
+    slot="hero"
+    heading={frontmatter.heading}
+    intro={frontmatter.heroIntro}
+    checklist={frontmatter.heroChecklist}
+    scrollToSection="#web-design-showcase"
+  />
+
   <WebDesignShowcaseSection />
 
   <TrustPanel />

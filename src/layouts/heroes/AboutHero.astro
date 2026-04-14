@@ -1,0 +1,111 @@
+---
+import Hero from "@/components/Hero.astro";
+import Heading from "@/components/Heading";
+import ScrollIndicator from "@/components/ScrollIndicator.astro";
+import type { HeadingContent } from "@/content/schema";
+
+export interface Props {
+  heading?: HeadingContent;
+  intro?: string;
+  checklist?: string[];
+  className?: string;
+  id?: string;
+  scrollToSection?: string;
+}
+
+const defaultIntro =
+  "We’re a New Jersey web design and development team that stays close to the work, builds for the long term, and gives businesses a clear partner after launch.";
+
+const defaultChecklist = [
+  "Small team, direct communication",
+  "Design and development under one roof",
+  "Built for long-term support",
+  "Fast, reliable, maintainable websites",
+];
+
+const {
+  heading,
+  intro = defaultIntro,
+  checklist = defaultChecklist,
+  className = "",
+  id = "about-hero",
+  scrollToSection,
+} = Astro.props as Props;
+
+const checklistGradientId = `${id}-check-gradient`;
+---
+
+<Hero
+  id={id}
+  class={`landscape-hero ${className}`}
+  size="full"
+  contentAlign="center"
+  contentVerticalAlign="center"
+>
+  <div class="relative z-10 inner-section flex h-full items-center">
+    <div class="mx-auto w-full max-w-6xl px-2 lg:max-w-7xl lg:px-0">
+      <div class="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(20rem,0.9fr)] lg:items-center lg:gap-18">
+        <div class="max-w-4xl">
+          <Heading
+            tagName="h1"
+            segmented={heading}
+            textClass="text-accent"
+            className="text-4xl sm:text-5xl md:text-6xl xl:text-[70px] leading-[1.02] font-semibold"
+          />
+        </div>
+
+        <div class="max-w-2xl text-left">
+          <p
+            class="m-0 text-base leading-relaxed text-text sm:text-xl md:text-2xl xl:text-3xl xl:leading-[1.25]"
+            role="heading"
+            aria-level="2"
+          >
+            {intro}
+          </p>
+
+          <svg
+            aria-hidden="true"
+            width="0"
+            height="0"
+            focusable="false"
+            class="absolute pointer-events-none h-0 w-0 overflow-hidden"
+          >
+            <defs>
+              <linearGradient id={checklistGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="currentColor" class="text-primary-100" />
+                <stop offset="55%" stop-color="currentColor" class="text-primary" />
+                <stop offset="100%" stop-color="currentColor" class="text-primary-800" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <ul class="mt-6 space-y-3 p-0 lg:mt-8">
+            {
+              checklist.map((item) => (
+                <li class="flex list-none items-center gap-2">
+                  <span class="faded-bg flex shrink-0 items-center justify-center rounded-full p-1 text-accent">
+                    <svg
+                      class="h-3 w-3 lg:h-4 lg:w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke={`url(#${checklistGradientId})`}
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
+                  <span class="text-base leading-relaxed text-text lg:text-lg">{item}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ScrollIndicator slot="after" href={scrollToSection} />
+</Hero>

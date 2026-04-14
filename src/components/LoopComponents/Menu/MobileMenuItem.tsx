@@ -48,10 +48,10 @@ export default function MobileMenuItem({
   if (hasChildren) {
     return (
       <li className="w-full max-w-full">
-        <div className="flex max-w-full items-start gap-2">
+        <div className="inline-flex max-w-full items-center gap-2 align-top">
           <Button
             variant="menuItemButton"
-            className="inline-flex max-w-full items-center gap-2 text-left"
+            className="max-w-full text-left"
             onClick={handleParentClick}
             {...(url
               ? {
@@ -68,7 +68,7 @@ export default function MobileMenuItem({
             type="button"
             onClick={openSubmenu}
             aria-label={`View submenu for ${title}`}
-            className="shrink-0 pt-1 text-text"
+            className="shrink-0 text-text"
           >
             <Icon
               icon="lu:chevron-right"
@@ -89,7 +89,7 @@ export default function MobileMenuItem({
         onClick={onNavigate}
         target={openInNewTab ? "_blank" : undefined}
         rel={openInNewTab ? "noopener noreferrer" : undefined}
-        className="inline-flex max-w-full text-left"
+        className="inline-flex w-full max-w-full text-left"
       >
         {title}
       </Button>
