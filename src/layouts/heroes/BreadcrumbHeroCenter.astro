@@ -29,6 +29,7 @@ export interface Props {
   breadcrumbsClassName?: string;
   id?: string;
   minHeight?: string;
+  showButtonSection?: boolean;
 }
 
 const defaultDescription =
@@ -44,6 +45,7 @@ const {
   breadcrumbsClassName = "",
   id = "hero",
   minHeight,
+  showButtonSection = true,
 } = Astro.props as Props;
 
 const primaryCTA: CTA = {
@@ -149,32 +151,34 @@ const resolvedMinHeight = minHeight ?? "100vh";
             descriptionClassName="hero-text max-w-3xl leading-relaxed lg:mx-auto"
           />
 
-          <div class="flex w-auto max-w-full flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 lg:justify-center xl:gap-6">
-            <Button
-              client:idle
-              href={primaryCTA.link}
-              variant="primary"
-              size="lg"
-              rightIcon={primaryCTA.rightIcon}
-              className="!w-auto whitespace-nowrap"
-              buttonWrapperClasses="!w-auto justify-start"
-            >
-              {primaryCTA.text}
-            </Button>
+          {showButtonSection && (
+            <div class="flex w-auto max-w-full flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 lg:justify-center xl:gap-6">
+              <Button
+                client:idle
+                href={primaryCTA.link}
+                variant="primary"
+                size="lg"
+                rightIcon={primaryCTA.rightIcon}
+                className="!w-auto whitespace-nowrap"
+                buttonWrapperClasses="!w-auto justify-start"
+              >
+                {primaryCTA.text}
+              </Button>
 
-            <ContentRenderer
-              query={query("testimonials")
-                .where((entry) => entry.data.featured === true)
-                .limit(3)}
-              variant="TestimonialCirclesVariant"
-              className="shrink-0"
-              counterStart={10}
-              counterEnd={100}
-              counterDuration={1800}
-              counterSuffix="+"
-              counterLabel="Happy Clients"
-            />
-          </div>
+              <ContentRenderer
+                query={query("testimonials")
+                  .where((entry) => entry.data.featured === true)
+                  .limit(3)}
+                variant="TestimonialCirclesVariant"
+                className="shrink-0"
+                counterStart={10}
+                counterEnd={100}
+                counterDuration={1800}
+                counterSuffix="+"
+                counterLabel="Happy Clients"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

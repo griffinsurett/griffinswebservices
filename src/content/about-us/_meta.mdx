@@ -1,6 +1,6 @@
 ---
 title: "About Us"
-description: "We’re a New Jersey–based web design and development agency building custom web solutions for businesses that want clarity, performance, and reliability. As a small team, we take a hands-on approach—working closely with our clients from planning to launch and beyond. Our focus is on creating fast, secure, and maintainable digital experiences that support real business goals."
+description: "We’re a New Jersey web design and development team building fast, reliable websites for businesses that want clarity, performance, and real support."
 heading:
   before: "We're not another agency."
   text: "We're your dedicated web team."
@@ -17,24 +17,17 @@ addToMenu:
 ---
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortByOrder, byTag, byItemKeys } from "@/utils/query";
-import Video from "@/components/Video/Video.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
-import Section from "@/components/Section.astro";
+import WebDesignShowcaseSection from "@/layouts/sections/WebDesignShowcaseSection.astro";
+import AboutPhilosophySection from "@/layouts/sections/AboutPhilosophySection.astro";
 
-    <div class="min-h-screen flex items-center">
-    <TrustStatement text="We're a New Jersey–based web design and development agency building custom web solutions for businesses that want clarity, performance, and reliability. As a small team, we take a hands-on approach—working closely with our clients from planning to launch and beyond. Our focus is on creating fast, secure, and maintainable digital experiences that support real business goals." />
+      <WebDesignShowcaseSection />
+
+
+    <div id="about-highlights" class="min-h-screen flex items-center">
+      <TrustStatement text="We're a New Jersey web design and development team building fast, reliable websites for businesses that want clarity, performance, and real support." />
     </div>
-
-    <Section class="inner-section">
-      {/* <Video
-        src="/speed-site.mov"
-        alt="Speed site walkthrough"
-        controls
-        clientLoadPlaceholder={true}
-        wrapperClass="video-shell w-full max-w-4xl mx-auto"
-      /> */}
-    </Section>
 
     <ContentRenderer
       query={byItemKeys("about-us", ["our-vision", "our-mission"])}
@@ -42,6 +35,8 @@ import Section from "@/components/Section.astro";
       columns={2}
       gap="md"
     />
+
+    <AboutPhilosophySection />
 
     <ContentRenderer
       query={byTag("benefits", "featured").orderBy(sortByOrder())}

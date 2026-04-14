@@ -1,0 +1,22 @@
+---
+import WebsitePlanningDemo from "@/components/AnimatedExamples/WebsitePlanningDemo";
+import CapabilityTopicShowcaseSection from "@/layouts/sections/CapabilityTopicShowcaseSection.astro";
+import { query, sortByOrder } from "@/utils/query";
+
+const philosophyCards = await query("philosophy").orderBy(sortByOrder()).all();
+---
+
+<CapabilityTopicShowcaseSection
+  title="Our Philosophy"
+  heading="We build websites to stay clear, fast, and dependable as your business grows."
+  description="The goal is not to launch something flashy and fix it later. The goal is to build it right enough that it keeps working as the business changes."
+  cards={philosophyCards}
+  sectionMinHeightClass="lg:min-h-[78svh]"
+>
+  <Fragment slot="content">
+    <p>Most websites get worse over time because the early decisions were rushed. Pages pile up, edits get harder, performance slips, and every new change feels heavier than it should.</p>
+    <p>Our philosophy is to prevent that. We make deliberate choices around structure, speed, security, and maintainability from the start so the site stays useful long after launch.</p>
+  </Fragment>
+
+  <WebsitePlanningDemo slot="demo" client:visible className="h-full w-full" />
+</CapabilityTopicShowcaseSection>

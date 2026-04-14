@@ -23,13 +23,16 @@ export interface Props {
   title?: string;
   heading?: HeadingContent;
   description?: string;
-  primaryCTA?: CTA;
+  primaryCTA?: CTA | null;
   breadcrumbs?: BreadcrumbItem[];
   className?: string;
   id?: string;
   rightColumnClassName?: string;
   absoluteBreadcrumbs?: boolean;
   breadcrumbsClassName?: string;
+  headingClassName?: string;
+  descriptionClassName?: string;
+  showButtonSection?: boolean;
 }
 
 const defaultDescription =
@@ -46,14 +49,19 @@ const {
   rightColumnClassName = "",
   absoluteBreadcrumbs = false,
   breadcrumbsClassName = "",
+  headingClassName = "h2 font-semibold",
+  descriptionClassName = "hero-text max-w-3xl leading-relaxed",
+  showButtonSection = true,
 } = Astro.props as Props;
 
-const primaryCTA: CTA = {
-  text: "Book An Intro Call",
-  link: "#contact",
-  ...incomingPrimaryCTA,
-  rightIcon: incomingPrimaryCTA?.rightIcon ?? "lu:arrow-up-right",
-};
+const primaryCTA = incomingPrimaryCTA === null
+  ? null
+  : {
+      text: "Book An Intro Call",
+      link: "#contact",
+      ...incomingPrimaryCTA,
+      rightIcon: incomingPrimaryCTA?.rightIcon ?? "lu:arrow-up-right",
+    };
 
 const hasRightContent = Astro.slots.has("right") || Astro.slots.has("default");
 const hasStaticBreadcrumbs = !absoluteBreadcrumbs && breadcrumbs.length > 0;
@@ -201,37 +209,41 @@ const mobileLeftColumnHeightClass = hasStaticBreadcrumbs
               title={title}
               heading={heading}
               headingTag="h1"
-              headingClassName="h2 font-semibold"
+              headingClassName={headingClassName}
               description={description ?? defaultDescription}
-              descriptionClassName="hero-text max-w-3xl leading-relaxed"
+              descriptionClassName={descriptionClassName}
             />
 
-            <div class="flex w-auto max-w-full flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 xl:gap-6">
-              <Button
-                client:idle
-                href={primaryCTA.link}
-                variant="primary"
-                size="lg"
-                rightIcon={primaryCTA.rightIcon}
-                className="!w-auto whitespace-nowrap"
-                buttonWrapperClasses="!w-auto justify-start"
-              >
-                {primaryCTA.text}
-              </Button>
+            {showButtonSection ? (
+              <div class="flex w-auto max-w-full flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 xl:gap-6">
+                {primaryCTA && (
+                  <Button
+                    client:idle
+                    href={primaryCTA.link}
+                    variant="primary"
+                    size="lg"
+                    rightIcon={primaryCTA.rightIcon}
+                    className="!w-auto whitespace-nowrap"
+                    buttonWrapperClasses="!w-auto justify-start"
+                  >
+                    {primaryCTA.text}
+                  </Button>
+                )}
 
-              <ContentRenderer
-                query={query("testimonials")
-                  .where((entry) => entry.data.featured === true)
-                  .limit(3)}
-                variant="TestimonialCirclesVariant"
-                className="shrink-0"
-                counterStart={10}
-                counterEnd={100}
-                counterDuration={1800}
-                counterSuffix="+"
-                counterLabel="Happy Clients"
-              />
-            </div>
+                <ContentRenderer
+                  query={query("testimonials")
+                    .where((entry) => entry.data.featured === true)
+                    .limit(3)}
+                  variant="TestimonialCirclesVariant"
+                  className="shrink-0"
+                  counterStart={10}
+                  counterEnd={100}
+                  counterDuration={1800}
+                  counterSuffix="+"
+                  counterLabel="Happy Clients"
+                />
+              </div>
+            ) : null}
           </div>
 
           <div
