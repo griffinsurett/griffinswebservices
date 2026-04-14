@@ -21,31 +21,15 @@ import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import WebDesignShowcaseSection from "@/layouts/sections/WebDesignShowcaseSection.astro";
 import AboutPhilosophySection from "@/layouts/sections/AboutPhilosophySection.astro";
+import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 
       <WebDesignShowcaseSection />
 
+      <TrustPanel />
 
-    <div id="about-highlights" class="min-h-screen flex items-center">
-      <TrustStatement text="We're a New Jersey web design and development team building fast, reliable websites for businesses that want clarity, performance, and real support." />
-    </div>
+      <TrustStatement text="We’re a New Jersey–based web design and development agency building custom web solutions for businesses that want clarity, performance, and reliability. As a small team, we take a hands-on approach, working closely with our clients from planning to launch and beyond. Our focus is on creating fast, secure, and maintainable digital experiences that support real business goals." />
 
-    <ContentRenderer
-      query={byItemKeys("about-us", ["our-vision", "our-mission"])}
-      variant="CardVariant"
-      columns={2}
-      gap="md"
-    />
-
-    <AboutPhilosophySection />
-
-    <ContentRenderer
-      query={byTag("benefits", "featured").orderBy(sortByOrder())}
-      variant="BenefitsVariant"
-      columns={2}
-      gap="lg"
-      title="Why Choose Us"
-      heading="What Makes Our Websites Different"
-    />
+    {/* <AboutPhilosophySection /> */}
 
     <ContentRenderer
       query={query("testimonials").where((entry) => entry.data.rating >= 4)}
@@ -56,6 +40,7 @@ import AboutPhilosophySection from "@/layouts/sections/AboutPhilosophySection.as
     <ContentRenderer
       query={byTag("technologies", "featured").orderBy(sortByOrder())}
       variant="TechnologiesVariant"
-    />
+    />  
 
     <HomeSolutionBridge />
+
