@@ -1,0 +1,48 @@
+---
+import type { HeadingContent } from "@/content/schema";
+import SecondaryHero from "@/layouts/heroes/SecondaryHero.astro";
+
+interface Props {
+  title?: string;
+  heading?: HeadingContent;
+  description?: string;
+  primaryCTA?: {
+    text: string;
+    link: string;
+    rightIcon?: string;
+  };
+  showButtonSection?: boolean;
+  className?: string;
+  contentClassName?: string;
+}
+
+const {
+  title,
+  heading,
+  description,
+  primaryCTA,
+  showButtonSection,
+  className = "",
+  contentClassName = "",
+} = Astro.props as Props;
+---
+
+<div class={className || undefined}>
+  {
+    Astro.slots.has("hero") ? (
+      <slot name="hero" />
+    ) : (
+      <SecondaryHero
+        title={title}
+        heading={heading}
+        description={description}
+        primaryCTA={primaryCTA}
+        showButtonSection={showButtonSection}
+      />
+    )
+  }
+
+  <div class={contentClassName || undefined}>
+    <slot />
+  </div>
+</div>

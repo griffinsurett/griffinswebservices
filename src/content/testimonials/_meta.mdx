@@ -10,12 +10,19 @@ addToMenu:
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query } from "@/utils/query";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro"
+import CollectionBodyLayout from "@/layouts/collections/CollectionBodyLayout.astro";
 
-<ContentRenderer
-  query={query("testimonials")}
-  variant="TestimonialGridVariant"
-  columns={2}
-  gap="lg"
-/>
+<CollectionBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
+  <ContentRenderer
+    query={query("testimonials")}
+    variant="TestimonialGridVariant"
+    columns={2}
+    gap="lg"
+  />
 
- <HomeSolutionBridge />
+  <HomeSolutionBridge />
+</CollectionBodyLayout>

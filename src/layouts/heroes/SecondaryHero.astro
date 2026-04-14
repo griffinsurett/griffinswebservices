@@ -1,0 +1,64 @@
+---
+import Hero from "@/components/Hero.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { siteData } from "@/content/siteData";
+import type { HeadingContent } from "@/content/schema";
+
+interface CTA {
+  text: string;
+  link: string;
+  rightIcon?: string;
+}
+
+export interface Props {
+  title?: string;
+  heading?: HeadingContent;
+  description?: string;
+  primaryCTA?: CTA;
+  className?: string;
+  id?: string;
+  showButtonSection?: boolean;
+}
+
+const defaultDescription =
+  siteData.description ??
+  "Hand-crafted websites, automated systems, and ongoing support so you can sell more, grow faster, and stay secure without juggling multiple vendors.";
+
+const {
+  title,
+  heading,
+  description = defaultDescription,
+  className = "",
+  id = "secondary-hero",
+} = Astro.props as Props;
+
+---
+
+<Hero
+  id={id}
+  class={`landscape-hero min-h-[50vh] ${className}`}
+  size="medium"
+  contentAlign="left"
+  contentVerticalAlign="center"
+>
+  <div class="relative z-10">
+    <div
+      class="mx-auto flex w-full max-w-7xl flex-col px-2 pb-6 pt-[clamp(7rem,9vw,8.5rem)] lg:px-0 lg:pb-0 lg:pt-[clamp(3.5rem,3.5vw,4rem)]"
+    >
+      <div class="flex flex-1 items-center justify-start">
+        <div class="flex w-full max-w-4xl flex-col items-start gap-5 px-2 text-left sm:px-4 lg:gap-8 lg:px-0">
+          <SectionHeader
+            className="w-full text-left"
+            title={title}
+            titleClassName="mb-1"
+            heading={heading}
+            headingTag="h1"
+            headingClassName="h1 font-semibold"
+            description={description}
+            descriptionClassName="hero-text max-w-2xl leading-relaxed"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</Hero>

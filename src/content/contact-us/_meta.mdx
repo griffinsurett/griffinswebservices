@@ -10,8 +10,19 @@ itemsHasPage: false
 
 import ContactQuoteSection from "@/layouts/sections/ContactQuoteSection.astro";
 import ContactForm from "@/components/Form/forms/ContactForm.astro";
+import CollectionBodyLayout from "@/layouts/collections/CollectionBodyLayout.astro";
 
-<ContactQuoteSection
-  showEyebrow={false}
-  formComponent={ContactForm}
-/>
+<CollectionBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+  primaryCTA={{
+    text: "Start Your Quote",
+    link: "#contact-quote",
+  }}
+>
+  <ContactQuoteSection
+    showEyebrow={false}
+    formComponent={ContactForm}
+  />
+</CollectionBodyLayout>

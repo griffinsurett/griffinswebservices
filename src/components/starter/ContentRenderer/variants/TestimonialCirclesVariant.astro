@@ -29,7 +29,7 @@ const {
   counterPrefix = "",
   counterSuffix = "+",
   counterLabel = "Happy Clients",
-  counterClassName = "text-heading m-0 p-0 text-3xl lg:text-4xl",
+  counterClassName = "text-heading m-0 p-0 text-[1.7rem] sm:text-3xl lg:text-4xl",
   link = "/#testimonials-home",
   id,
 } = Astro.props as Props;
@@ -95,7 +95,7 @@ const resolveImage = (face: any) => {
         class="leading-none"
       />
     </span>
-    <p class="small-text m-0 capitalize">
+    <p class="m-0 text-xs capitalize sm:text-sm">
       {counterLabel}
     </p>
   </div>

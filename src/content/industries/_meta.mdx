@@ -9,10 +9,17 @@ itemsLayout: "@/layouts/collections/IndustriesLayout.astro"
 ---
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
 import { query, sortByOrder } from '@/utils/query';
+import CollectionBodyLayout from "@/layouts/collections/CollectionBodyLayout.astro";
 
-<ContentRenderer
-  query={query("industries").orderBy(sortByOrder())}
-  variant="CardVariant"
-  columns={3}
-  gap="lg"
-/>
+<CollectionBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
+  <ContentRenderer
+    query={query("industries").orderBy(sortByOrder())}
+    variant="CardVariant"
+    columns={3}
+    gap="lg"
+  />
+</CollectionBodyLayout>

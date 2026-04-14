@@ -13,19 +13,25 @@ addToMenu:
     icon: "fa6-solid:briefcase"
 ---
 import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro';
-import { query, orderBy, sortByOrder } from '@/utils/query';
+import { query, sortByOrder } from '@/utils/query';
+import CollectionBodyLayout from "@/layouts/collections/CollectionBodyLayout.astro";
 
-<ContentRenderer
-  query={query('industries').orderBy(sortByOrder())}
-  variant="FilteredPortfolioVariant"
-  relatedCollection="projects"
-  relatedField="industry"
-  headingSectionClassName="hidden"
-  showButtonSection={false}
-/>
+<CollectionBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
+  <ContentRenderer
+    query={query('industries').orderBy(sortByOrder())}
+    variant="FilteredPortfolioVariant"
+    relatedCollection="projects"
+    relatedField="industry"
+    headingSectionClassName="hidden"
+    showButtonSection={false}
+  />
 
-
-<ContentRenderer
-  query={query("testimonials")}
-  variant="TestimonialCarouselVariant"
-/>
+  <ContentRenderer
+    query={query("testimonials")}
+    variant="TestimonialCarouselVariant"
+  />
+</CollectionBodyLayout>

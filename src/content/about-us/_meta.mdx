@@ -16,31 +16,34 @@ addToMenu:
     order: 1
 ---
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, sortByOrder, byTag, byItemKeys } from "@/utils/query";
+import { query, sortByOrder, byTag } from "@/utils/query";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import WebDesignShowcaseSection from "@/layouts/sections/WebDesignShowcaseSection.astro";
-import AboutPhilosophySection from "@/layouts/sections/AboutPhilosophySection.astro";
 import TrustPanel from "@/layouts/sections/TrustPanel.astro";
+import CollectionBodyLayout from "@/layouts/collections/CollectionBodyLayout.astro";
 
-      <WebDesignShowcaseSection />
+<CollectionBodyLayout
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
+>
+  <WebDesignShowcaseSection />
 
-      <TrustPanel />
+  <TrustPanel />
 
-      <TrustStatement text="We’re a New Jersey–based web design and development agency building custom web solutions for businesses that want clarity, performance, and reliability. As a small team, we take a hands-on approach, working closely with our clients from planning to launch and beyond. Our focus is on creating fast, secure, and maintainable digital experiences that support real business goals." />
+  <TrustStatement text="We’re a New Jersey–based web design and development agency building custom web solutions for businesses that want clarity, performance, and reliability. As a small team, we take a hands-on approach, working closely with our clients from planning to launch and beyond. Our focus is on creating fast, secure, and maintainable digital experiences that support real business goals." />
 
-    {/* <AboutPhilosophySection /> */}
+  <ContentRenderer
+    query={query("testimonials").where((entry) => entry.data.rating >= 4)}
+    variant="TestimonialCarouselVariant"
+    id="testimonials-home"
+  />
+  
+  <ContentRenderer
+    query={byTag("technologies", "featured").orderBy(sortByOrder())}
+    variant="TechnologiesVariant"
+  />  
 
-    <ContentRenderer
-      query={query("testimonials").where((entry) => entry.data.rating >= 4)}
-      variant="TestimonialCarouselVariant"
-      id="testimonials-home"
-    />
-    
-    <ContentRenderer
-      query={byTag("technologies", "featured").orderBy(sortByOrder())}
-      variant="TechnologiesVariant"
-    />  
-
-    <HomeSolutionBridge />
-
+  <HomeSolutionBridge />
+</CollectionBodyLayout>
