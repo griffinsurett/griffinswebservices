@@ -6,7 +6,7 @@
  * The default layout for collection index pages (e.g., /blog, /services).
  *
  * Behavior:
- * - Always shows SecondaryHero with title and description
+ * - Always shows BreadcrumbHeroCenter with title and description
  * - Uses featuredImage from _meta.mdx if provided, otherwise default
  * - If MDX Content exists → Renders it
  * - If no MDX Content → Renders default grid
@@ -14,7 +14,7 @@
 import type { CollectionKey } from "astro:content";
 import SiteLayout from "@/layouts/SiteLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import SecondaryHero from "@/layouts/heroes/SecondaryHero.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import { query, sortByDate } from "@/utils/query";
 import DoubleCard from "../sections/DoubleCard.astro";
 
@@ -40,18 +40,16 @@ const pageTitle = seoProps?.title || collectionMeta?.title || "Blog";
 const pageDescription = seoProps?.description || collectionMeta?.description || "";
 const pageHeading = collectionMeta?.heading || pageTitle;
 
-// Use featuredImage from _meta.mdx if provided, otherwise undefined (will use default)
-const heroImage = collectionMeta?.featuredImage;
 ---
 
 <SiteLayout {...seoProps}>
-    {/* Header - SecondaryHero with title and description */}
-    <SecondaryHero
-      title={pageTitle}
-      heading={pageHeading}
-      description={pageDescription}
-      image={heroImage}
-    />
+	    {/* Header - BreadcrumbHeroCenter with title and description */}
+	    <BreadcrumbHeroCenter
+	      title={pageTitle}
+	      heading={pageHeading}
+	      description={pageDescription}
+	      minHeight="60vh"
+	    />
 
     {/* Content - Either custom MDX or default grid */}
     <div>

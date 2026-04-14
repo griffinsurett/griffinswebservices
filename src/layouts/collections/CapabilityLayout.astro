@@ -8,6 +8,7 @@ import CapabilityQuoteSection from "@/layouts/sections/CapabilityQuoteSection.as
 import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
 import type { CollectionLayoutProps } from "./types";
 import { getItemKey } from "@/utils/collections";
+import { shouldCollectionHavePage } from "@/utils/pages";
 import { getBreadcrumbs, sortByOrder } from "@/utils/query";
 import { related } from "@/utils/query/snippets";
 
@@ -24,10 +25,14 @@ const entryKey = entry ? getItemKey(entry) : "";
 const breadcrumbRelations = entryKey
   ? await getBreadcrumbs("capabilities", entryKey, true)
   : [];
+const collectionHref =
+  collection && collectionMeta && shouldCollectionHavePage(collectionMeta)
+    ? `/${collection}`
+    : undefined;
 
 const capabilityBreadcrumbs = [
   { label: "Home", href: "/" },
-  { label: collectionMeta?.data?.title || "Capabilities", href: `/${collection}` },
+  { label: collectionMeta?.title || "Capabilities", href: collectionHref },
   ...breadcrumbRelations.map((relation) => ({
     label:
       relation.entry?.data?.title ||

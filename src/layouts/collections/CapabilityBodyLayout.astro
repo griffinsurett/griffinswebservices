@@ -11,6 +11,8 @@ import { contactCtaData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
 import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
+import { getCollectionMeta } from "@/utils/collections";
+import { shouldCollectionHavePage } from "@/utils/pages";
 import { getBreadcrumbs, query, sortByOrder } from "@/utils/query";
 import { related } from "@/utils/query/snippets";
 
@@ -57,10 +59,14 @@ const slug = pathname.split("/").filter(Boolean).at(-1) ?? "";
 const breadcrumbRelations = slug
   ? await getBreadcrumbs("capabilities", slug, true)
   : [];
+const capabilitiesMeta = getCollectionMeta("capabilities");
+const capabilitiesHref = shouldCollectionHavePage(capabilitiesMeta)
+  ? "/capabilities"
+  : undefined;
 
 const capabilityBreadcrumbs = [
   { label: "Home", href: "/" },
-  { label: "Capabilities", href: "/capabilities" },
+  { label: "Capabilities", href: capabilitiesHref },
   ...breadcrumbRelations.map((relation) => ({
     label:
       relation.entry?.data?.title ||

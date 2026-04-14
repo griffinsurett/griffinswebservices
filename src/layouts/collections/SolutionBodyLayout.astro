@@ -12,6 +12,8 @@ import type { HeadingContent } from "@/content/schema";
 import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
+import { getCollectionMeta } from "@/utils/collections";
+import { shouldCollectionHavePage } from "@/utils/pages";
 import { getBreadcrumbs, query, sortByOrder } from "@/utils/query";
 import { related } from "@/utils/query/snippets";
 
@@ -58,10 +60,14 @@ const {
 const pathname = Astro.url.pathname.replace(/\/+$/, "");
 const slug = pathname.split("/").filter(Boolean).at(-1) ?? "";
 const breadcrumbRelations = slug ? await getBreadcrumbs("solutions", slug, true) : [];
+const solutionsMeta = getCollectionMeta("solutions");
+const solutionsHref = shouldCollectionHavePage(solutionsMeta)
+  ? "/solutions"
+  : undefined;
 
 const solutionBreadcrumbs = [
   { label: "Home", href: "/" },
-  { label: "Solutions" },
+  { label: "Solutions", href: solutionsHref },
   ...breadcrumbRelations.map((relation) => ({
     label:
       relation.entry?.data?.title ||

@@ -15,9 +15,10 @@ export default function FacebookStars({
 
   return (
     <div className={`flex items-center gap-2 ${className}`.trim()}>
+      <span className="sr-only">{starCount} stars</span>
       <div
         className="flex gap-1 text-[1.2rem] leading-none text-[#ffc538] lg:text-[1.35rem]"
-        aria-label={`${starCount} stars`}
+        aria-hidden="true"
       >
         {stars.map((_, index) => (
           <span aria-hidden="true" key={index}>

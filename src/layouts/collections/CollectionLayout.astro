@@ -5,12 +5,12 @@
  *
  * The standard layout for individual collection items.
  * Features:
- * - Uses SecondaryHero with bannerImage (or default)
+ * - Uses BreadcrumbHeroCenter
  * - Metadata display (date, author, reading time)
  * - MDX content rendering
  */
 import SiteLayout from "@/layouts/SiteLayout.astro";
-import SecondaryHero from "@/layouts/heroes/SecondaryHero.astro";
+import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
 import type { CollectionLayoutProps } from "./types";
 
 const {
@@ -28,14 +28,11 @@ const data = entry?.data || {};
 
 <SiteLayout {...seoProps}>
     {/* Hero section - always displayed */}
-    <SecondaryHero
+    <BreadcrumbHeroCenter
       title={data.title}
       heading={data.heading}
       description={data.description}
-      image={data.bannerImage}
-      publishDate={data.publishDate}
-      author={data.author}
-      readingTime={data.readingTime}
+      minHeight="60vh"
     />
 
     {/* MDX content */}
