@@ -46,7 +46,6 @@ interface Props {
   ariaHidden?: boolean;
   priority?: boolean;
   hydrateOnHover?: boolean;
-  hoverPlay?: boolean;
   [key: string]: any;
 }
 
@@ -74,7 +73,6 @@ const {
   ariaHidden = false,
   priority = false,
   hydrateOnHover = false,
-  hoverPlay = false,
   ...rest
 } = Astro.props as Props;
 
@@ -230,7 +228,6 @@ const posterDecoding = priority ? "sync" : "async";
         preload={preload}
         sourceType={primaryType}
         aria-hidden={ariaHidden}
-        hoverPlay={hoverPlay}
         {...rest}
       >
         {clientSources.map((source) => (
@@ -258,7 +255,6 @@ const posterDecoding = priority ? "sync" : "async";
         preload={preload}
         sourceType={primaryType}
         aria-hidden={ariaHidden}
-        hoverPlay={hoverPlay}
         {...rest}
       >
         {clientSources.map((source) => (

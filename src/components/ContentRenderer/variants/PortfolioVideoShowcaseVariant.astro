@@ -3,7 +3,7 @@
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import Section from "@/components/Section.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
-import VideoShell from "@/components/Video/VideoShell.astro";
+import PortfolioMediaTile from "@/components/LoopComponents/Portfolio/PortfolioMediaTile.astro";
 import Button from "@/components/Button/Button";
 import { toArray } from "@/utils/array";
 import { animationProps } from "@/integrations/scroll-animations/props";
@@ -112,35 +112,15 @@ const desktopCardPositionClasses = [
 
         <div class="portfolio-video-showcase__cards">
           {videoProjects.map((item, index) => (
-            <article
-              class:list={[
-                "portfolio-video-showcase__card group outer-card-transition",
-                desktopCardPositionClasses[index] ?? "",
-              ]}
+            <PortfolioMediaTile
+              item={item}
+              className={`portfolio-video-showcase__card ${desktopCardPositionClasses[index] ?? ""}`.trim()}
               {...animationProps("fade-in-up", {
                 once: false,
                 threshold: 0.18,
                 rootMargin: "-8% 0px -15% 0px",
               })}
-            >
-              <VideoShell
-                src={item.featuredVideo}
-                alt={item.title ? `${item.title} website preview` : "Website preview"}
-                hydrateOnHover={false}
-                autoPlay={true}
-                muted={true}
-                loop={true}
-                controls={false}
-                lazy={true}
-                hoverPlay={true}
-                playsInline={true}
-                posterWidth={1280}
-                generateThumbAt={0.75}
-                wrapperClass="portfolio-video-showcase__media"
-                mediaClass="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.025]"
-                clientWrapperClass="h-full w-full overflow-hidden"
-              />
-            </article>
+            />
           ))}
         </div>
       </div>
@@ -195,22 +175,11 @@ const desktopCardPositionClasses = [
   }
 
   .portfolio-video-showcase__card {
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 35px 90px -48px rgba(0, 0, 0, 0.55);
-    isolation: isolate;
-    background: transparent;
     pointer-events: auto;
   }
 
   .portfolio-video-showcase__card::after {
     content: none;
-  }
-
-  .portfolio-video-showcase__media {
-    min-height: 18rem;
-    height: 100%;
-    aspect-ratio: 1 / 1;
   }
 
   @media (max-width: 1023px) {
@@ -259,10 +228,6 @@ const desktopCardPositionClasses = [
       width: min(100%, 36rem);
       position: relative;
       z-index: 3;
-    }
-
-    .portfolio-video-showcase__media {
-      min-height: clamp(18rem, 30vw, 27rem);
     }
   }
  </style>

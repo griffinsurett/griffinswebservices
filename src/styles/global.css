@@ -89,6 +89,15 @@ html, body {
   overflow-x: clip;
 }
 
+:root {
+  --site-header-height: 5.5rem;
+  --site-header-clearance: calc(var(--site-header-height) + clamp(1.5rem, 3vw, 2.5rem));
+}
+
+html {
+  scroll-padding-top: calc(var(--site-header-height) + 1rem);
+}
+
 body {
   font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
 }

@@ -36,26 +36,27 @@ const {
 
 <Hero
   id={id}
-  class={`landscape-hero min-h-[50vh] ${className}`}
-  size="medium"
+  class={`landscape-hero min-h-[34vh] sm:min-h-[38vh] lg:min-h-[50vh] ${className}`}
+  size="small"
   contentAlign="left"
   contentVerticalAlign="center"
 >
   <div class="relative z-10">
     <div
-      class="mx-auto flex w-full max-w-7xl flex-col px-2 pb-6 pt-[clamp(7rem,9vw,8.5rem)] lg:px-0 lg:pb-0 lg:pt-[clamp(3.5rem,3.5vw,4rem)]"
+      class="mx-auto flex w-full max-w-7xl flex-col px-4 pb-8 sm:px-6 lg:px-0 lg:pb-10"
+      style="padding-top: var(--site-header-clearance);"
     >
       <div class="flex flex-1 items-center justify-start">
-        <div class="flex w-full max-w-4xl flex-col items-start gap-5 px-2 text-left sm:px-4 lg:gap-8 lg:px-0">
+        <div class="flex w-full flex-col items-start gap-3 text-left lg:gap-4">
           <SectionHeader
-            className="w-full text-left"
+            className="mb-0 w-full text-left"
             title={title}
-            titleClassName="mb-1"
+            titleClassName="mb-0"
             heading={heading}
             headingTag="h1"
-            headingClassName="h1 font-semibold"
+            headingClassName="h1 mb-3 max-w-none font-semibold tracking-normal"
             description={description}
-            descriptionClassName="hero-text max-w-2xl leading-relaxed"
+            descriptionClassName="hero-text max-w-none text-left leading-relaxed"
           />
         </div>
       </div>

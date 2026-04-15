@@ -39,6 +39,7 @@ export interface PortfolioItemData {
   description?: string;
   client?: string;
   category?: string;
+  featuredVideo?: string;
   fullSiteImage?: any;
   bannerImage?: any;
   image?: string;
@@ -56,6 +57,10 @@ export interface PortfolioItemData {
  * Checks fullSiteImage, bannerImage, then image in order
  */
 export function getPortfolioImageSrc(item: PortfolioItemData): string {
+  if (typeof item.featuredVideo === "string" && item.featuredVideo.length > 0) {
+    return "";
+  }
+
   return (
     getImageSrc(item.fullSiteImage) ||
     getImageSrc(item.bannerImage) ||

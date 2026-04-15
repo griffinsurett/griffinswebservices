@@ -1,4 +1,5 @@
 ---
+// PortfolioVideoGridShowcaseVariant
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import Section from "@/components/Section.astro";
 import PortfolioMediaTile from "@/components/LoopComponents/Portfolio/PortfolioMediaTile.astro";
@@ -38,7 +39,7 @@ if (!gridProjects.length) {
 }
 ---
 
-<Section id={id} class={`outer-section relative ${className}`.trim()}>
+<Section id={id} class={`relative ${className}`.trim()}>
   <div class="inner-section">
     <div class="portfolio-video-grid">
       {gridProjects.map((item, index) => (

@@ -151,6 +151,13 @@ export interface ResponsiveCroppedImageFormatConfig {
   quality: number;
 }
 
+export interface ResponsiveImageConfig {
+  widths: number[];
+  sizes: string;
+  formats: ResponsiveCroppedImageFormatConfig[];
+  fallbackFormat?: ResponsiveCroppedImageFormatConfig["format"];
+}
+
 export interface ResponsiveCroppedImageConfig {
   widths: number[];
   sizes: string;
@@ -161,6 +168,15 @@ export interface ResponsiveCroppedImageConfig {
 }
 
 export interface ResponsiveCroppedImageResult {
+  src: string;
+  srcSet: string;
+  sizes: string;
+  width: number;
+  height: number;
+  sources: { type?: string; srcSet: string; sizes?: string }[];
+}
+
+export interface ResponsiveImageResult {
   src: string;
   srcSet: string;
   sizes: string;
@@ -272,6 +288,65 @@ export async function generateResponsiveCroppedImage(
     sizes,
     width: widths[widths.length - 1],
     height: Math.round(widths[widths.length - 1] * aspectRatio),
+    sources: optimizedByFormat
+      .filter((entry) => entry.format !== fallbackFormat)
+      .map((entry) => ({
+        type: `image/${entry.format}`,
+        srcSet: entry.images
+          .map((image, index) => `${image.src} ${widths[index]}w`)
+          .join(", "),
+        sizes,
+    })),
+  };
+}
+
+export async function generateResponsiveImage(
+  metadata: ImageMetadata,
+  {
+    widths,
+    sizes,
+    formats,
+    fallbackFormat = "webp",
+  }: ResponsiveImageConfig
+): Promise<ResponsiveImageResult | undefined> {
+  const { getImage } = await import("astro:assets");
+
+  const optimizedByFormat = await Promise.all(
+    formats.map(async ({ format, quality }) => {
+      const images = await Promise.all(
+        widths.map((width) =>
+          getImage({
+            src: metadata,
+            width,
+            format,
+            quality,
+          })
+        )
+      );
+
+      return { format, images };
+    })
+  );
+
+  const fallbackFormatEntry =
+    optimizedByFormat.find((entry) => entry.format === fallbackFormat) ??
+    optimizedByFormat[optimizedByFormat.length - 1];
+
+  if (!fallbackFormatEntry?.images.length) {
+    return undefined;
+  }
+
+  const fallbackImages = fallbackFormatEntry.images;
+  const defaultImage = fallbackImages[fallbackImages.length - 1];
+
+  return {
+    src: defaultImage.src,
+    srcSet: fallbackImages
+      .map((image, index) => `${image.src} ${widths[index]}w`)
+      .join(", "),
+    sizes,
+    width: defaultImage.attributes.width,
+    height: defaultImage.attributes.height,
     sources: optimizedByFormat
       .filter((entry) => entry.format !== fallbackFormat)
       .map((entry) => ({

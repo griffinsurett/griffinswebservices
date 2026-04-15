@@ -7,6 +7,7 @@ import PortfolioScreenShowcase from "@/components/LoopTemplates/Portfolio/Portfo
 import ComputerScreen from "@/components/LoopTemplates/ComputerScreen.astro";
 import { getImageAlt, resolveImageMetadata } from "@/utils/images";
 import { toArray } from "@/utils/array";
+import { generateVideoPoster } from "@/utils/videoThumbnails";
 
 type Breakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
 
@@ -83,11 +84,41 @@ const IMAGE_FORMATS: { format: OptimizedFormat; quality: number }[] = [
 // Process items and generate optimized images
 const processedItems = await Promise.all(
   safeItems.map(async (item, index) => {
+    const featuredVideo =
+      typeof item.featuredVideo === "string" && item.featuredVideo.length > 0
+        ? item.featuredVideo
+        : undefined;
     const primaryImage = item.fullSiteImage ?? item.bannerImage;
+    const altText = featuredVideo
+      ? item.title ?? "Project preview"
+      : primaryImage
+        ? getImageAlt(primaryImage, item.title ?? "Project preview")
+        : (item.title ?? "Project preview");
+
+    if (featuredVideo) {
+      const poster = await generateVideoPoster(featuredVideo, {
+        generateThumbAt: 0.75,
+        width: 1280,
+      });
+
+      const isFirstItem = index === 0;
+      const shouldOptimizeForLCP = optimizeForLCP && isFirstItem;
+
+      return {
+        data: { ...item, alt: altText },
+        mediaEntry: {
+          src: poster.src,
+          width: poster.width,
+          height: poster.height,
+          alt: altText,
+          loading: (shouldOptimizeForLCP ? "eager" : "lazy") as const,
+          decoding: (shouldOptimizeForLCP ? "sync" : "async") as const,
+          fetchPriority: (shouldOptimizeForLCP ? "high" : "auto") as const,
+        },
+      };
+    }
+
     const metadata = resolveImageMetadata(primaryImage);
-    const altText = primaryImage
-      ? getImageAlt(primaryImage, item.title ?? "Project preview")
-      : (item.title ?? "Project preview");
 
     if (!metadata) {
       return { data: item, mediaEntry: undefined };

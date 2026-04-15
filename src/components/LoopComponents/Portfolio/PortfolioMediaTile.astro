@@ -1,8 +1,10 @@
 ---
-import VideoShell from "@/components/Video/VideoShell.astro";
+import HoverScrollImage from "@/components/LoopComponents/Portfolio/HoverScrollImage";
+import HoverPlayVideo from "@/components/Video/HoverPlayVideo/HoverPlayVideo.astro";
 import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
 import {
   generateResponsiveCroppedImage,
+  generateResponsiveImage,
   getImageAlt,
   resolveImageMetadata,
 } from "@/utils/images";
@@ -26,30 +28,34 @@ const imageSource =
   entry?.fullSiteImage ?? entry?.bannerImage ?? entry?.image ?? entry?.featuredImage;
 const imageMetadata = resolveImageMetadata(imageSource);
 const imageSrc = getImageSrc(imageSource);
-const imageAlt = getImageAlt(imageSource, `${title} website preview`);
+const imageAlt = featuredVideo
+  ? `${title} website preview`
+  : getImageAlt(imageSource, `${title} website preview`);
 const mediaFrameClass = "block w-full overflow-hidden aspect-[20/13]";
+const imageSizes =
+  "(max-width: 767px) calc(100vw - 2rem), (max-width: 1199px) calc((100vw - 4rem) / 2), calc((100vw - 5rem) / 3)";
+const imageFormats = [
+  { format: "avif" as const, quality: 55 },
+  { format: "webp" as const, quality: 72 },
+];
 const croppedImage = imageMetadata
   ? await generateResponsiveCroppedImage(imageMetadata, {
       widths: [640, 960, 1280],
-      sizes:
-        "(max-width: 767px) calc(100vw - 2rem), (max-width: 1199px) calc((100vw - 4rem) / 2), calc((100vw - 5rem) / 3)",
+      sizes: imageSizes,
       aspectRatio: 13 / 20,
-      formats: [
-        { format: "avif", quality: 55 },
-        { format: "webp", quality: 72 },
-      ],
+      formats: imageFormats,
       fallbackFormat: "webp",
       position: "top",
     })
   : undefined;
-const videoPoster =
-  croppedImage
-    ? {
-        src: croppedImage.src,
-        width: croppedImage.width,
-        height: croppedImage.height,
-      }
-    : imageMetadata;
+const fullImage = imageMetadata
+  ? await generateResponsiveImage(imageMetadata, {
+      widths: [640, 960, 1280],
+      sizes: imageSizes,
+      formats: imageFormats,
+      fallbackFormat: "webp",
+    })
+  : undefined;
 ---
 
 <article
@@ -59,57 +65,70 @@ const videoPoster =
   {
     featuredVideo ? (
       <div class={mediaFrameClass}>
-        <VideoShell
+        <HoverPlayVideo
           src={featuredVideo}
           alt={imageAlt}
-          poster={videoPoster}
           class="m-0 h-full w-full"
-          hydrateOnHover={false}
-          autoPlay={false}
           muted={true}
           loop={true}
           controls={false}
           lazy={true}
-          hoverPlay={true}
           playsInline={true}
           posterWidth={1280}
+          generateThumbAt={0.75}
           wrapperClass="h-full w-full overflow-hidden"
           mediaClass="block !h-auto !w-full !object-contain object-top"
           clientWrapperClass="h-full w-full overflow-hidden items-start"
         />
       </div>
     ) : imageSrc ? (
-      <div class={mediaFrameClass}>
-        {croppedImage ? (
-          <picture class="block h-full w-full">
-            {croppedImage.sources.map((source) => (
-              <source
-                type={source.type}
-                srcset={source.srcSet}
-                sizes={source.sizes ?? croppedImage.sizes}
-              />
-            ))}
-            <img
-              src={croppedImage.src}
-              srcset={croppedImage.srcSet}
-              sizes={croppedImage.sizes}
-              width={croppedImage.width}
-              height={croppedImage.height}
-              alt={imageAlt}
-              loading="lazy"
-              decoding="async"
-              class="block h-full w-full object-cover object-top"
-            />
-          </picture>
-        ) : (
-          <img
-            src={imageSrc}
+      <div class={`${mediaFrameClass} relative`} data-hover-scroll-tile>
+        {
+          croppedImage && (
+            <figure
+              class="absolute inset-0 overflow-hidden bg-black/40 transition-opacity duration-300"
+              data-hover-scroll-placeholder
+              aria-hidden="true"
+            >
+              <picture>
+                {croppedImage.sources.map((source) => (
+                  <source
+                    type={source.type}
+                    srcset={source.srcSet}
+                    sizes={source.sizes ?? croppedImage.sizes}
+                  />
+                ))}
+                <img
+                  src={croppedImage.src}
+                  srcset={croppedImage.srcSet}
+                  sizes={croppedImage.sizes}
+                  alt=""
+                  width={croppedImage.width}
+                  height={croppedImage.height}
+                  loading="eager"
+                  decoding="async"
+                  draggable={false}
+                  class="block h-full w-full select-none object-cover object-top"
+                />
+              </picture>
+            </figure>
+          )
+        }
+
+        <div class="relative z-10 h-full">
+          <HoverScrollImage
+            client:visible
+            src={fullImage?.src ?? imageSrc}
+            srcSet={fullImage?.srcSet}
+            sizes={fullImage?.sizes}
+            sources={fullImage?.sources}
             alt={imageAlt}
+            width={fullImage?.width ?? imageMetadata?.width}
+            height={fullImage?.height ?? imageMetadata?.height}
             loading="lazy"
             decoding="async"
-            class="block h-full w-full object-cover object-top"
           />
-        )}
+        </div>
       </div>
     ) : (
       <div class={`${mediaFrameClass} flex items-center justify-center bg-black text-sm uppercase tracking-[0.28em] text-white/55`}>
