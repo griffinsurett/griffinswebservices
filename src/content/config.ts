@@ -131,6 +131,12 @@ export const collections = {
       baseSchema({ image }).omit({ featuredImage: true }).extend({
         client: z.string().optional(),
         projectUrl: z.string().url().optional(),
+        link: z
+          .object({
+            label: z.string(),
+            url: z.string().url(),
+          })
+          .optional(),
         technologies: z.array(z.string()).default([]),
         industry: refSchema("industries"),
         featuredVideo: z.string().optional(),

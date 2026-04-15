@@ -16,6 +16,7 @@ interface ProjectItem extends Record<string, any> {
 
 interface Props extends BaseVariantProps {
   maxItems?: number;
+  showMetadata?: boolean;
 }
 
 const {
@@ -23,6 +24,7 @@ const {
   className = "",
   id,
   maxItems = 3,
+  showMetadata = false,
 } = Astro.props as Props;
 
 const gridProjects = (toArray(items) as ProjectItem[])
@@ -40,7 +42,7 @@ if (!gridProjects.length) {
 ---
 
 <Section id={id} class={`relative ${className}`.trim()}>
-  <div class="inner-section">
+  <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-0">
     <div class="portfolio-video-grid">
       {gridProjects.map((item, index) => (
         <div
@@ -52,7 +54,7 @@ if (!gridProjects.length) {
             delay: Math.min(index * 80, 240),
           })}
         >
-          <PortfolioMediaTile item={item} />
+          <PortfolioMediaTile item={item} showMetadata={showMetadata} />
         </div>
       ))}
     </div>
