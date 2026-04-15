@@ -1,0 +1,120 @@
+---
+import VideoShell from "@/components/Video/VideoShell.astro";
+import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
+import {
+  generateResponsiveCroppedImage,
+  getImageAlt,
+  resolveImageMetadata,
+} from "@/utils/images";
+
+interface Props {
+  item: Record<string, any>;
+  className?: string;
+  [key: string]: unknown;
+}
+
+const {
+  item,
+  className = "",
+  ...rest
+} = Astro.props as Props;
+
+const entry = item?.data ? { ...item.data, ...item } : item;
+const title = entry?.title ?? "Project preview";
+const featuredVideo = entry?.featuredVideo;
+const imageSource =
+  entry?.fullSiteImage ?? entry?.bannerImage ?? entry?.image ?? entry?.featuredImage;
+const imageMetadata = resolveImageMetadata(imageSource);
+const imageSrc = getImageSrc(imageSource);
+const imageAlt = getImageAlt(imageSource, `${title} website preview`);
+const mediaFrameClass = "block w-full overflow-hidden aspect-[20/13]";
+const croppedImage = imageMetadata
+  ? await generateResponsiveCroppedImage(imageMetadata, {
+      widths: [640, 960, 1280],
+      sizes:
+        "(max-width: 767px) calc(100vw - 2rem), (max-width: 1199px) calc((100vw - 4rem) / 2), calc((100vw - 5rem) / 3)",
+      aspectRatio: 13 / 20,
+      formats: [
+        { format: "avif", quality: 55 },
+        { format: "webp", quality: 72 },
+      ],
+      fallbackFormat: "webp",
+      position: "top",
+    })
+  : undefined;
+const videoPoster =
+  croppedImage
+    ? {
+        src: croppedImage.src,
+        width: croppedImage.width,
+        height: croppedImage.height,
+      }
+    : imageMetadata;
+---
+
+<article
+  class={`relative isolate overflow-hidden bg-transparent shadow-[0_35px_90px_-48px_rgba(0,0,0,0.55)] outer-card-transition ${className}`.trim()}
+  {...rest}
+>
+  {
+    featuredVideo ? (
+      <div class={mediaFrameClass}>
+        <VideoShell
+          src={featuredVideo}
+          alt={imageAlt}
+          poster={videoPoster}
+          class="m-0 h-full w-full"
+          hydrateOnHover={false}
+          autoPlay={false}
+          muted={true}
+          loop={true}
+          controls={false}
+          lazy={true}
+          hoverPlay={true}
+          playsInline={true}
+          posterWidth={1280}
+          wrapperClass="h-full w-full overflow-hidden"
+          mediaClass="block !h-auto !w-full !object-contain object-top"
+          clientWrapperClass="h-full w-full overflow-hidden items-start"
+        />
+      </div>
+    ) : imageSrc ? (
+      <div class={mediaFrameClass}>
+        {croppedImage ? (
+          <picture class="block h-full w-full">
+            {croppedImage.sources.map((source) => (
+              <source
+                type={source.type}
+                srcset={source.srcSet}
+                sizes={source.sizes ?? croppedImage.sizes}
+              />
+            ))}
+            <img
+              src={croppedImage.src}
+              srcset={croppedImage.srcSet}
+              sizes={croppedImage.sizes}
+              width={croppedImage.width}
+              height={croppedImage.height}
+              alt={imageAlt}
+              loading="lazy"
+              decoding="async"
+              class="block h-full w-full object-cover object-top"
+            />
+          </picture>
+        ) : (
+          <img
+            src={imageSrc}
+            alt={imageAlt}
+            loading="lazy"
+            decoding="async"
+            class="block h-full w-full object-cover object-top"
+          />
+        )}
+      </div>
+    ) : (
+      <div class={`${mediaFrameClass} flex items-center justify-center bg-black text-sm uppercase tracking-[0.28em] text-white/55`}>
+        Preview coming soon
+      </div>
+    )
+  }
+</article>

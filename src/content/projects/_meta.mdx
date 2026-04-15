@@ -22,12 +22,9 @@ import CollectionBodyLayout from "@/layouts/collections/CollectionBodyLayout.ast
   description={frontmatter.description}
 >
   <ContentRenderer
-    query={query('industries').orderBy(sortByOrder())}
-    variant="FilteredPortfolioVariant"
-    relatedCollection="projects"
-    relatedField="industry"
-    headingSectionClassName="hidden"
-    showButtonSection={false}
+    query={query('projects').orderBy(sortByOrder())}
+    variant="PortfolioVideoGridShowcaseVariant"
+    maxItems={999}
   />
 
   <ContentRenderer
