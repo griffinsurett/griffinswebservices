@@ -4,7 +4,7 @@
 import type { IconType } from 'react-icons';
 import { LuArrowLeft, LuArrowRight, LuArrowUpRight, LuBadgeCheck, LuBookOpen, LuBot, LuCheck, LuChevronRight, LuClock, LuCode, LuCreditCard, LuFileText, LuGlobe, LuImage, LuInstagram, LuLayers, LuLinkedin, LuLock, LuMail, LuMapPin, LuMessageSquareText, LuMessagesSquare, LuMinus, LuNotebookPen, LuPhone, LuPlus, LuRocket, LuScanSearch, LuSend, LuSettings, LuShare2, LuShieldCheck, LuShoppingBag, LuShoppingCart, LuSparkles, LuStar } from 'react-icons/lu';
 import { FaAddressCard, FaArrowPointer, FaArrowRight, FaArrowTrendUp, FaArrowUpRightDots, FaArrowsRotate, FaArrowsUpDownLeftRight, FaAws, FaBolt, FaBox, FaBoxOpen, FaBoxesStacked, FaBriefcase, FaBroom, FaBullhorn, FaBullseye, FaCalendarCheck, FaCalendarDays, FaCartShopping, FaChartBar, FaChartColumn, FaChartLine, FaChartSimple, FaCircleCheck, FaCircleDot, FaClipboardCheck, FaClipboardList, FaClock, FaClockRotateLeft, FaCloud, FaCloudflare, FaCode, FaCommentDots, FaCompass, FaCompassDrafting, FaCreditCard, FaCrosshairs, FaCss3Alt, FaCubes, FaDiagramProject, FaDisplay, FaDumbbell, FaEnvelope, FaEnvelopeCircleCheck, FaEnvelopeOpenText, FaEye, FaFeather, FaFigma, FaFileInvoice, FaFileLines, FaFilePen, FaFilterCircleDollar, FaFlag, FaFlagCheckered, FaGaugeHigh, FaGears, FaGithub, FaGlobe, FaGrip, FaHandPointer, FaHandshake, FaHardDrive, FaHeadset, FaHeartPulse, FaHelmetSafety, FaHouse, FaHtml5, FaIdCard, FaImage, FaImages, FaInbox, FaJs, FaLaptop, FaLayerGroup, FaLifeRing, FaLink, FaLinkSlash, FaLocationDot, FaLock, FaMagnifyingGlass, FaMagnifyingGlassChart, FaMinimize, FaMobileScreen, FaMobileScreenButton, FaMoneyCheckDollar, FaNodeJs, FaPalette, FaPenNib, FaPenRuler, FaPenToSquare, FaPeopleGroup, FaPersonRunning, FaPhp, FaPlug, FaPuzzlePiece, FaPython, FaReact, FaRepeat, FaRoad, FaRobot, FaRocket, FaRotate, FaRotateLeft, FaRoute, FaScaleBalanced, FaScrewdriverWrench, FaServer, FaShareNodes, FaShieldHalved, FaShieldHeart, FaShop, FaShopify, FaSitemap, FaStamp, FaStore, FaTableCellsLarge, FaTableList, FaTags, FaUniversalAccess, FaUser, FaUserCheck, FaUsers, FaUtensils, FaWandMagicSparkles, FaWindowMaximize, FaWordpress, FaWrench, FaXmark } from 'react-icons/fa6';
-import { SiAnthropic, SiAstro, SiElementor, SiExpress, SiFacebook, SiFramer, SiGatsby, SiGooglegemini, SiNextdotjs, SiOpenai, SiSvelte, SiTailwindcss, SiTypescript, SiVercel, SiWebflow, SiX } from 'react-icons/si';
+import { SiAstro, SiClaude, SiElementor, SiExpress, SiFacebook, SiFramer, SiGatsby, SiGithubcopilot, SiGooglegemini, SiMake, SiNextdotjs, SiNotion, SiOpenai, SiPerplexity, SiSvelte, SiTailwindcss, SiTypescript, SiVercel, SiWebflow, SiX, SiZapier } from 'react-icons/si';
 
 export const iconMap = {
   'fa6:address-card': FaAddressCard,
@@ -171,22 +171,27 @@ export const iconMap = {
   'lu:shopping-cart': LuShoppingCart,
   'lu:sparkles': LuSparkles,
   'lu:star': LuStar,
-  'si:anthropic': SiAnthropic,
   'si:astro': SiAstro,
+  'si:claude': SiClaude,
   'si:elementor': SiElementor,
   'si:express': SiExpress,
   'si:facebook': SiFacebook,
   'si:framer': SiFramer,
   'si:gatsby': SiGatsby,
+  'si:githubcopilot': SiGithubcopilot,
   'si:googlegemini': SiGooglegemini,
+  'si:make': SiMake,
   'si:nextdotjs': SiNextdotjs,
+  'si:notion': SiNotion,
   'si:openai': SiOpenai,
+  'si:perplexity': SiPerplexity,
   'si:svelte': SiSvelte,
   'si:tailwindcss': SiTailwindcss,
   'si:typescript': SiTypescript,
   'si:vercel': SiVercel,
   'si:webflow': SiWebflow,
   'si:x': SiX,
+  'si:zapier': SiZapier,
 } satisfies Record<string, IconType>;
 
 export type IconKey = keyof typeof iconMap;

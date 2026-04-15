@@ -5,6 +5,10 @@ import SmoothScrollCarousel from "@/components/Carousels/SmoothScrollCarousel";
 import TechStackLabel from "@/components/LoopComponents/TechStackLabel";
 import Icon from "@/components/Icon";
 
+// Minimum number of items required to use the carousel.
+// Below this count, items are rendered as a static grid.
+const CAROUSEL_THRESHOLD = 6;
+
 interface TechStackItem {
   title?: string;
   icon?: string;
@@ -31,6 +35,20 @@ export default function TechStackSection({
         })),
     [technologies],
   );
+
+  const useCarousel = techList.length >= CAROUSEL_THRESHOLD;
+
+  const techItems = techList.map((tech, index) => (
+    <TechStackLabel
+      key={`${tech.name}-${index}`}
+      name={tech.name}
+      index={index}
+      onTechHover={setHoveredTech}
+      onTechLeave={() => setHoveredTech(null)}
+    >
+      <Icon icon={tech.icon} size="xl" aria-label={tech.name} />
+    </TechStackLabel>
+  ));
 
   return (
     <div className={`inner-section text-center lg:text-left ${className}`.trim()}>
@@ -62,31 +80,30 @@ export default function TechStackSection({
           </div>
         </div>
 
-        <SmoothScrollCarousel
-          startDelay={1500}
-          speed={30}
-          gap={32}
-          itemWidth={120}
-          autoplay
-          pauseOnHover
-          pauseOnEngage
-          gradientMask
-          gradientWidth={{ base: 48, md: 72 }}
-          drag
-          className="relative w-full h-[84px] md:h-[96px]"
-        >
-          {techList.map((tech, index) => (
-            <TechStackLabel
-              key={`${tech.name}-${index}`}
-              name={tech.name}
-              index={index}
-              onTechHover={setHoveredTech}
-              onTechLeave={() => setHoveredTech(null)}
-            >
-              <Icon icon={tech.icon} size="xl" aria-label={tech.name} />
-            </TechStackLabel>
-          ))}
-        </SmoothScrollCarousel>
+        {useCarousel ? (
+          <SmoothScrollCarousel
+            startDelay={1500}
+            speed={30}
+            gap={32}
+            itemWidth={120}
+            autoplay
+            pauseOnHover
+            pauseOnEngage
+            gradientMask
+            gradientWidth={{ base: 48, md: 72 }}
+            drag
+            className="relative w-full h-[84px] md:h-[96px]"
+          >
+            {techItems}
+          </SmoothScrollCarousel>
+        ) : (
+          <div
+            className="flex flex-wrap justify-center lg:justify-start items-center h-[84px] md:h-[96px]"
+            style={{ gap: "32px" }}
+          >
+            {techItems}
+          </div>
+        )}
       </div>
     </div>
   );
