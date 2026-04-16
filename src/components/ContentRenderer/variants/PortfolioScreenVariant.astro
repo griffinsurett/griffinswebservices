@@ -195,8 +195,8 @@ const shouldEagerLoad = optimizeForLCP || !clientLoadPlaceholder;
 
 const heightClasses =
   size === "large"
-    ? "h-[420px] sm:h-[520px] lg:h-[600px]"
-    : "h-[420px] sm:h-[520px] lg:h-[450px]";
+    ? "aspect-[23/15] max-h-[600px]"
+    : "aspect-[23/15] max-h-[450px]";
 ---
 
 <div

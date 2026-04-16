@@ -271,6 +271,9 @@ export default function FormWrapper({
         {shouldUseNativeSubmission &&
           shouldReloadAfterSuccess &&
           currentUrl && <input type="hidden" name="_next" value={currentUrl} />}
+        {shouldUseNativeSubmission && formspreeFormName && (
+          <input type="hidden" name="formName" value={formspreeFormName} />
+        )}
 
         {status === "submitting" && (
           <LoadingMessage>{loadingMessage}</LoadingMessage>

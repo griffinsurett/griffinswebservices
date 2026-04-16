@@ -3,7 +3,6 @@ import FormWrapper from "@/components/Form/FormWrapper";
 import Input from "@/components/Form/inputs/Input";
 import Select from "@/components/Form/inputs/Select";
 import Textarea from "@/components/Form/inputs/Textarea";
-import { submitToFormspree } from "@/utils/formspree";
 
 interface Props {
   className?: string;
@@ -38,27 +37,15 @@ const quoteFormId = import.meta.env.PUBLIC_FORMSPREE_QUOTE_ID;
 const quoteFormAction = quoteFormId
   ? `${FORMSPREE_BASE_ACTION}${quoteFormId}`
   : undefined;
-
-const handleSubmit = async (values: Record<string, unknown>) => {
-  if (!quoteFormAction) {
-    throw new Error("Quote form is temporarily unavailable. Please try again later.");
-  }
-
-  await submitToFormspree({
-    endpoint: quoteFormAction,
-    values,
-    formName: "Website Quote Request",
-    excludeKeys: ["terms-agreement"],
-  });
-};
 ---
 
 <div class={className}>
   <FormWrapper
     client:idle
-    onSubmit={handleSubmit}
     formAction={quoteFormAction}
     formMethod="post"
+    useNativeFormSubmission={true}
+    formspreeFormName="Website Quote Request"
     className="flex flex-col gap-5"
     includeTermsCheckbox={false}
     successMessage="Thanks. We’ll review your project details and reach out with next steps."
