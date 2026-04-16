@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CircleCheckbox } from "./checkboxes/CircleCheckbox";
 import AccentPickerContent from "./AccentPickerContent";
+import Icon from "@/components/Icon";
 
 interface AccentPickerProps {
   gradientId: string;
@@ -12,7 +13,6 @@ export default function AccentPicker({ gradientId, onApplied }: AccentPickerProp
   const [hasOpened, setHasOpened] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return;
     const handleClick = (event: MouseEvent) => {
@@ -36,12 +36,7 @@ export default function AccentPicker({ gradientId, onApplied }: AccentPickerProp
         aria-label="Pick accent color"
         className="faded-bg"
       >
-        <svg className="h-[21px] w-[21px]" viewBox="0 0 100 100" aria-hidden="true">
-          <path
-            d="M50 10C50 10 25 35 25 55C25 70.464 37.536 83 50 83C62.464 83 75 70.464 75 55C75 35 50 10 50 10Z"
-            fill={`url(#${gradientId})`}
-          />
-        </svg>
+        <Icon icon="fa6:droplet" size="sm" color={`url(#${gradientId})`} />
       </CircleCheckbox>
 
       {hasOpened && (

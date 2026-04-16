@@ -49,6 +49,11 @@ export const ICON_LIBRARIES = {
     componentPrefix: 'Md',
     aliases: [],
   },
+  ri: {
+    package: 'react-icons/ri',
+    componentPrefix: 'Ri',
+    aliases: ['remix'],
+  },
 };
 
 /**
@@ -69,6 +74,8 @@ export const SCANNABLE_PREFIXES = [
   'bi',
   'si',
   'simple-icons',
+  'ri',
+  'remix',
 ];
 
 // Build and export alias map and normalizer so both generator and loader can share it

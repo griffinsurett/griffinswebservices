@@ -101,10 +101,16 @@ export function getIconData(library: string, iconName: string): IconData | null 
 }
 
 /**
- * Recursively convert IconData tree to React elements
+ * Recursively convert IconData tree to React elements.
+ * When overrideColor is true, strip fill/stroke from child nodes so the
+ * parent SVG's color cascades down (overriding brand colors).
  */
-function iconDataToElement(node: IconData): ReactNode {
-  const children = node.child?.map(iconDataToElement) ?? [];
+function iconDataToElement(node: IconData, overrideColor = false): ReactNode {
+  const children = node.child?.map((c) => iconDataToElement(c, overrideColor)) ?? [];
+  if (overrideColor) {
+    const { fill: _f, stroke: _s, ...attr } = node.attr as any;
+    return createElement(node.tag, attr, ...children);
+  }
   return createElement(node.tag, node.attr, ...children);
 }
 
@@ -131,12 +137,20 @@ function renderLibraryIcon(library: string, iconName: string, options: IconRende
   const data = getIconData(library, iconName);
   if (!data) return null;
 
+  // Stroke-based icons (Lucide) have fill:"none" on the root — color applies to stroke.
+  // Fill-based icons (FA6, SI) have no stroke on the root — color applies to fill.
+  const isStrokeBased = data.attr.fill === 'none';
   const svgAttrs: Record<string, any> = {
     ...data.attr,
     width: iconSizeMap[size],
     height: iconSizeMap[size],
+    // Fill-based: default to currentColor so text-* classes work; explicit color overrides.
+    // Stroke-based: always set stroke (currentColor or explicit).
+    ...(isStrokeBased
+      ? { stroke: color ?? 'currentColor' }
+      : { fill: color ?? 'currentColor' }),
     className,
-    style: { color, ...(style || {}) },
+    style: style ?? undefined,
   };
 
   if (ariaLabel) {
@@ -146,7 +160,7 @@ function renderLibraryIcon(library: string, iconName: string, options: IconRende
     svgAttrs['aria-hidden'] = ariaHidden === false ? 'false' : 'true';
   }
 
-  const children = data.child?.map(iconDataToElement) ?? [];
+  const children = data.child?.map((c) => iconDataToElement(c, !!color)) ?? [];
   return createElement('svg', svgAttrs, ...children);
 }
 

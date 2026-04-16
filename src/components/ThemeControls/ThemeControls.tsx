@@ -42,69 +42,8 @@ function MobileActionButton({
   );
 }
 
-function ThemeGlyph({
-  isLight,
-  gradientId,
-  className = "h-[18px] w-[18px]",
-}: {
-  isLight: boolean;
-  gradientId: string;
-  className?: string;
-}) {
-  const maskId = useId();
-  const R = 18;
-  const ratio = 0.69;
-  const rIn = R * ratio;
-  const dx = -R * 0.4;
-  const dy = R * -0.2;
-
-  if (isLight) {
-    return (
-      <svg
-        viewBox="13 13 74 74"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={className}
-        aria-hidden="true"
-      >
-        <circle cx="50" cy="50" r="18" fill={`url(#${gradientId})`} />
-        <g stroke={`url(#${gradientId})`} strokeWidth="4" strokeLinecap="round">
-          <line x1="50" y1="15" x2="50" y2="25" />
-          <line x1="50" y1="75" x2="50" y2="85" />
-          <line x1="15" y1="50" x2="25" y2="50" />
-          <line x1="75" y1="50" x2="85" y2="50" />
-          <line x1="25.86" y1="25.86" x2="32.32" y2="32.32" />
-          <line x1="67.68" y1="67.68" x2="74.14" y2="74.14" />
-          <line x1="25.86" y1="74.14" x2="32.32" y2="67.68" />
-          <line x1="67.68" y1="32.32" x2="74.14" y2="25.86" />
-        </g>
-      </svg>
-    );
-  }
-
-  return (
-    <svg
-      viewBox="32 32 36 36"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <defs>
-        <mask id={maskId}>
-          <rect width="100%" height="100%" fill="#000" />
-          <circle cx="50" cy="50" r={18} fill="#fff" />
-          <circle cx={50 + dx} cy={50 + dy} r={rIn} fill="#000" />
-        </mask>
-      </defs>
-      <circle
-        cx="50"
-        cy="50"
-        r={18}
-        mask={`url(#${maskId})`}
-        fill={`url(#${gradientId})`}
-      />
-    </svg>
-  );
+function ThemeGlyph({ isLight, gradientId }: { isLight: boolean; gradientId: string }) {
+  return <Icon icon={isLight ? "fa6:sun" : "fa6:moon"} size="md" color={`url(#${gradientId})`} />;
 }
 
 export default function ThemeControls({ className = "" }: ThemeControlsProps) {
@@ -204,13 +143,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
         .filter(Boolean)
         .join(" ")}
     >
-      <svg
-        aria-hidden="true"
-        width="0"
-        height="0"
-        focusable="false"
-        className="pointer-events-none absolute h-0 w-0 overflow-hidden"
-      >
+      <svg aria-hidden="true" width="0" height="0" focusable="false" className="pointer-events-none absolute h-0 w-0 overflow-hidden">
         <defs>
           <linearGradient id={iconGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="currentColor" className="text-primary-100" />
@@ -274,7 +207,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
               <MobileActionButton
                 label="Accent"
                 onClick={() => setMobilePanel("accent")}
-                leading={<Icon icon="fa6:palette" size="md" className="text-current" />}
+                leading={<Icon icon="fa6:droplet" size="md" color={`url(#${accentGradientId})`} />}
                 trailing={
                   <span
                     className="inline-flex h-4 w-4 rounded-full border border-white/15"
