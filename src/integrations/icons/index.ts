@@ -5,7 +5,7 @@ export {
   renderIcon,
   renderStringIcon,
   renderObjectIcon,
-  getIconComponent,
+  getIconData,
   getIconName,
   getLibraryName,
   parseIconString,
@@ -16,7 +16,7 @@ export {
   type IconRenderOptions,
 } from './utils/iconLoader';
 
-export { iconMap, type IconKey } from './utils/iconMap.generated';
+export { iconMap, type IconKey, type IconData } from './utils/iconMap.generated';
 
 export {
   ICON_LIBRARIES,

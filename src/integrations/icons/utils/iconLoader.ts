@@ -14,8 +14,8 @@
  */
 
 import { isValidElement, type ReactNode, createElement } from 'react';
-import { iconMap, type IconKey } from './iconMap.generated';
-import { ICON_LIBRARIES, normalizeLibraryPrefix } from './iconConfig.js';
+import { iconMap, type IconKey, type IconData } from './iconMap.generated';
+import { normalizeLibraryPrefix } from './iconConfig.js';
 
 /**
  * Map icon size names to pixel values
@@ -86,45 +86,37 @@ export function isValidIconString(icon: string): boolean {
 }
 
 /**
- * Get React component for an icon from a library
- * 
- * @param library - Library prefix (lu, fa, etc.)
- * @param iconName - Icon name in kebab-case
- * @returns React icon component or null if not found
- * @example
- * getIconComponent('lu', 'arrow-right') // LuArrowRight component
+ * Get raw SVG data for an icon from the map
  */
-export function getIconComponent(library: string, iconName: string): any {
+export function getIconData(library: string, iconName: string): IconData | null {
   const normalizedLibrary = normalizeLibraryPrefix(library);
   const iconId = `${normalizedLibrary}:${iconName}` as IconKey;
-  const IconComponent = iconMap[iconId];
+  const data = iconMap[iconId];
 
-  if (!IconComponent) {
+  if (!data) {
     console.warn(`Icon not found: ${library}:${iconName}`);
   }
 
-  return IconComponent;
+  return data ?? null;
+}
+
+/**
+ * Recursively convert IconData tree to React elements
+ */
+function iconDataToElement(node: IconData): ReactNode {
+  const children = node.child?.map(iconDataToElement) ?? [];
+  return createElement(node.tag, node.attr, ...children);
 }
 
 /**
  * Render an emoji or text as an icon
- * 
- * @param icon - Emoji or text string
- * @param options - Render options
- * @returns React element displaying the emoji/text
  */
-function renderEmojiIcon(
-  icon: string,
-  options: IconRenderOptions
-): ReactNode {
+function renderEmojiIcon(icon: string, options: IconRenderOptions): ReactNode {
   const { size, className = '', color, ariaLabel, style } = options;
   const sizeValue = iconSizeMap[size];
-
-  const combinedStyle = { fontSize: sizeValue, color, ...(style || {}) };
-
   return createElement('span', {
     className: `inline-flex items-center justify-center ${className}`,
-    style: combinedStyle,
+    style: { fontSize: sizeValue, color, ...(style || {}) },
     role: 'img',
     'aria-label': ariaLabel,
     children: icon,
@@ -132,46 +124,30 @@ function renderEmojiIcon(
 }
 
 /**
- * Render an icon from a library (Lucide, FA, etc.)
- * 
- * @param library - Library prefix
- * @param iconName - Icon name
- * @param options - Render options
- * @returns React icon component or null
+ * Render an icon from the data map
  */
-function renderLibraryIcon(
-  library: string,
-  iconName: string,
-  options: IconRenderOptions
-): ReactNode {
+function renderLibraryIcon(library: string, iconName: string, options: IconRenderOptions): ReactNode {
   const { size, className = '', color, ariaLabel, ariaHidden, style } = options;
-  const IconComponent = getIconComponent(library, iconName);
+  const data = getIconData(library, iconName);
+  if (!data) return null;
 
-  if (!IconComponent) {
-    return null;
-  }
-
-  const iconProps: Record<string, any> = {
-    size: iconSizeMap[size],
+  const svgAttrs: Record<string, any> = {
+    ...data.attr,
+    width: iconSizeMap[size],
+    height: iconSizeMap[size],
     className,
-    color,
-    style,
+    style: { color, ...(style || {}) },
   };
 
-  // Handle accessibility attributes
-  // Priority: explicit ariaHidden > ariaLabel presence > default hidden
   if (ariaLabel) {
-    iconProps['aria-label'] = ariaLabel;
-    // Only set aria-hidden if explicitly provided when there's a label
-    if (ariaHidden === true) {
-      iconProps['aria-hidden'] = 'true';
-    }
+    svgAttrs['aria-label'] = ariaLabel;
+    if (ariaHidden === true) svgAttrs['aria-hidden'] = 'true';
   } else {
-    // No label - default to hidden unless explicitly set to false
-    iconProps['aria-hidden'] = ariaHidden === false ? 'false' : 'true';
+    svgAttrs['aria-hidden'] = ariaHidden === false ? 'false' : 'true';
   }
 
-  return createElement(IconComponent, iconProps);
+  const children = data.child?.map(iconDataToElement) ?? [];
+  return createElement('svg', svgAttrs, ...children);
 }
 
 /**
