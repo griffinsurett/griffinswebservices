@@ -17,4 +17,4 @@ export const ACCENT_COLORS = [
 
 export type AccentColor = (typeof ACCENT_COLORS)[number];
 
-export const DEFAULT_THEME: "light" | "dark" = "dark";
+export const DEFAULT_THEME: "system" = "system";

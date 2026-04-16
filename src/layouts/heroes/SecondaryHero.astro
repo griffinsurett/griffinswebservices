@@ -38,7 +38,7 @@ const {
   id={id}
   class={`landscape-hero min-h-[40vh] md:min-h-[50vh] lg:min-h-[55vh] ${className}`}
   size="small"
-  contentAlign="left"
+  contentAlign="center"
   contentVerticalAlign="center"
 >
   <div class="relative z-10">
@@ -46,17 +46,17 @@ const {
       class="mx-auto flex w-full max-w-7xl flex-col px-4 pb-8 sm:px-6 lg:px-0 lg:pb-10"
       style="padding-top: var(--site-header-clearance);"
     >
-      <div class="flex flex-1 items-center justify-start">
-        <div class="flex w-full flex-col items-start gap-3 text-left lg:gap-4">
+      <div class="flex flex-1 items-center justify-center">
+        <div class="flex w-full flex-col items-center gap-3 text-center lg:gap-4">
           <SectionHeader
-            className="mb-0 w-full text-left"
+            className="mb-0 w-full text-center"
             title={title}
             titleClassName="mb-0"
             heading={heading}
             headingTag="h1"
             headingClassName="h1 mb-3 max-w-none font-semibold tracking-normal"
             description={description}
-            descriptionClassName="hero-text max-w-none text-left leading-relaxed"
+            descriptionClassName="hero-text max-w-none text-center leading-relaxed"
           />
         </div>
       </div>

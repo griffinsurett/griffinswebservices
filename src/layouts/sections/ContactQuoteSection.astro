@@ -3,6 +3,8 @@ import Section from "@/components/Section.astro";
 import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
 import Icon from "@/components/Icon";
 import SectionHeader from "@/components/SectionHeader.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
 interface Props {
   id?: string;
@@ -64,6 +66,19 @@ const highlights = [
           descriptionClassName="large-text max-w-2xl"
         />
 
+        <ContentRenderer
+          query={query("testimonials")
+            .where((entry) => entry.data.featured === true)
+            .limit(3)}
+          variant="TestimonialCirclesVariant"
+          className="contact-quote-testimonials"
+          counterStart={10}
+          counterEnd={100}
+          counterDuration={1800}
+          counterSuffix="+"
+          counterLabel="Happy Clients"
+        />
+
         <ul class="contact-quote-highlights">
           {highlights.map((item) => (
             <li class="contact-quote-highlight">
@@ -111,6 +126,10 @@ const highlights = [
     padding: 0;
     display: grid;
     gap: 1.25rem;
+  }
+
+  .contact-quote-testimonials {
+    padding-inline: 0;
   }
 
   .contact-quote-highlight {
