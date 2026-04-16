@@ -1,6 +1,8 @@
 ---
 // PortfolioScreenVariant.astro
-// Below-the-fold portfolio showcase - hydrates only when visible
+// Same structure as the old variant — ComputerScreen chrome + PortfolioScreenShowcase —
+// but each slide renders video natively (plays to end) or scrolls the full-site image
+// to the bottom before advancing. Includes the bottom-image-fade mask.
 import { getImage } from "astro:assets";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import PortfolioScreenShowcase from "@/components/LoopTemplates/Portfolio/PortfolioScreenShowcase";
@@ -32,7 +34,6 @@ const {
   size = "large",
 } = Astro.props as Props;
 
-// Map Tailwind breakpoints to media queries
 const breakpointMap: Record<Breakpoint, string> = {
   sm: "(min-width: 640px)",
   md: "(min-width: 768px)",
@@ -40,8 +41,6 @@ const breakpointMap: Record<Breakpoint, string> = {
   xl: "(min-width: 1280px)",
   "2xl": "(min-width: 1536px)",
 };
-
-// Map breakpoints to max-width media queries (for hide)
 const breakpointMaxMap: Record<Breakpoint, string> = {
   sm: "(max-width: 639px)",
   md: "(max-width: 767px)",
@@ -50,38 +49,27 @@ const breakpointMaxMap: Record<Breakpoint, string> = {
   "2xl": "(max-width: 1535px)",
 };
 
-// Determine media query based on show/hide config
 let mediaQuery: string | undefined;
 if (responsivity?.show) {
-  // Show only on this breakpoint and above
   mediaQuery = breakpointMap[responsivity.show];
 } else if (responsivity?.hide) {
-  // Hide on this breakpoint and above (show only below it)
   mediaQuery = breakpointMaxMap[responsivity.hide];
 }
 
 const safeItems = toArray(items);
+if (!safeItems.length) return;
 
-if (!safeItems.length) {
-  return;
-}
-
-// Target widths for responsive images - max-w-[920px] container, so ~850px actual display
 const IMAGE_WIDTHS = [480, 640, 850, 1024];
 const SIZES =
   "(max-width: 640px) calc(100vw - 48px), (max-width: 1024px) min(calc(100vw - 48px), 850px), 850px";
-// Clamp extremely tall screenshots
 const MAX_RENDER_HEIGHT = 2500;
-
 type OptimizedFormat = "avif" | "webp";
 const FALLBACK_FORMAT: OptimizedFormat = "webp";
-// Higher quality for website screenshots with text/UI - need sharpness
 const IMAGE_FORMATS: { format: OptimizedFormat; quality: number }[] = [
   { format: "avif", quality: 60 },
   { format: "webp", quality: 75 },
 ];
 
-// Process items and generate optimized images
 const processedItems = await Promise.all(
   safeItems.map(async (item, index) => {
     const featuredVideo =
@@ -95,15 +83,14 @@ const processedItems = await Promise.all(
         ? getImageAlt(primaryImage, item.title ?? "Project preview")
         : (item.title ?? "Project preview");
 
+    // Video item — generate a poster for the SSR placeholder only
     if (featuredVideo) {
       const poster = await generateVideoPoster(featuredVideo, {
         generateThumbAt: 0.75,
         width: 1280,
       });
-
-      const isFirstItem = index === 0;
-      const shouldOptimizeForLCP = optimizeForLCP && isFirstItem;
-
+      const isFirst = index === 0;
+      const lcpFirst = optimizeForLCP && isFirst;
       return {
         data: { ...item, alt: altText },
         mediaEntry: {
@@ -111,89 +98,61 @@ const processedItems = await Promise.all(
           width: poster.width,
           height: poster.height,
           alt: altText,
-          loading: (shouldOptimizeForLCP ? "eager" : "lazy") as const,
-          decoding: (shouldOptimizeForLCP ? "sync" : "async") as const,
-          fetchPriority: (shouldOptimizeForLCP ? "high" : "auto") as const,
+          loading: (lcpFirst ? "eager" : "lazy") as const,
+          decoding: (lcpFirst ? "sync" : "async") as const,
+          fetchPriority: (lcpFirst ? "high" : "auto") as const,
         },
       };
     }
 
+    // Image item — full responsive srcset
     const metadata = resolveImageMetadata(primaryImage);
+    if (!metadata) return { data: item, mediaEntry: undefined };
 
-    if (!metadata) {
-      return { data: item, mediaEntry: undefined };
-    }
-
-    // Generate optimized images for each format + width combo
     const optimizedByFormat = await Promise.all(
       IMAGE_FORMATS.map(async ({ format, quality }) => {
         const images = await Promise.all(
           IMAGE_WIDTHS.map((width) => {
             const aspectRatio = metadata.height / metadata.width;
             const naturalHeight = Math.round(aspectRatio * width);
-            const constrainedHeight = Math.min(
-              naturalHeight,
-              MAX_RENDER_HEIGHT,
-            );
+            const constrainedHeight = Math.min(naturalHeight, MAX_RENDER_HEIGHT);
             const shouldConstrain = constrainedHeight < naturalHeight;
             const resizeOptions = shouldConstrain
-              ? {
-                  height: constrainedHeight,
-                  fit: "cover" as const,
-                  position: "top" as const,
-                }
+              ? { height: constrainedHeight, fit: "cover" as const, position: "top" as const }
               : {};
-
-            return getImage({
-              src: metadata,
-              width,
-              format,
-              quality,
-              ...resizeOptions,
-            });
+            return getImage({ src: metadata, width, format, quality, ...resizeOptions });
           }),
         );
         return { format, images };
       }),
     );
 
-    const fallbackFormatEntry =
-      optimizedByFormat.find((entry) => entry.format === FALLBACK_FORMAT) ??
+    const fallbackEntry =
+      optimizedByFormat.find((e) => e.format === FALLBACK_FORMAT) ??
       optimizedByFormat[optimizedByFormat.length - 1];
+    if (!fallbackEntry?.images.length) return { data: item, mediaEntry: undefined };
 
-    if (!fallbackFormatEntry) {
-      return { data: item, mediaEntry: undefined };
-    }
-
-    const fallbackImages = fallbackFormatEntry.images;
-    if (!fallbackImages.length) {
-      return { data: item, mediaEntry: undefined };
-    }
-
+    const fallbackImages = fallbackEntry.images;
     const fallbackSrcSet = fallbackImages
       .map((img, i) => `${img.src} ${IMAGE_WIDTHS[i]}w`)
       .join(", ");
     const defaultImage = fallbackImages[fallbackImages.length - 1];
-
-    // Calculate actual output dimensions (Astro's attributes may return source dimensions)
     const defaultWidth = IMAGE_WIDTHS[IMAGE_WIDTHS.length - 1];
-    const aspectRatio = metadata.height / metadata.width;
-    const naturalHeight = Math.round(aspectRatio * defaultWidth);
-    const defaultHeight = Math.min(naturalHeight, MAX_RENDER_HEIGHT);
+    const defaultHeight = Math.min(
+      Math.round((metadata.height / metadata.width) * defaultWidth),
+      MAX_RENDER_HEIGHT,
+    );
 
     const pictureSources = optimizedByFormat
-      .filter((entry) => entry.format !== FALLBACK_FORMAT)
-      .map((entry) => ({
-        type: `image/${entry.format}`,
-        srcSet: entry.images
-          .map((img, i) => `${img.src} ${IMAGE_WIDTHS[i]}w`)
-          .join(", "),
+      .filter((e) => e.format !== FALLBACK_FORMAT)
+      .map((e) => ({
+        type: `image/${e.format}`,
+        srcSet: e.images.map((img, i) => `${img.src} ${IMAGE_WIDTHS[i]}w`).join(", "),
         sizes: SIZES,
       }));
 
-    // First item gets LCP optimization if enabled
-    const isFirstItem = index === 0;
-    const shouldOptimizeForLCP = optimizeForLCP && isFirstItem;
+    const isFirst = index === 0;
+    const lcpFirst = optimizeForLCP && isFirst;
 
     return {
       data: item,
@@ -204,17 +163,17 @@ const processedItems = await Promise.all(
         width: defaultWidth,
         height: defaultHeight,
         alt: altText,
-        loading: (shouldOptimizeForLCP ? "eager" : "lazy") as const,
-        decoding: (shouldOptimizeForLCP ? "sync" : "async") as const,
-        fetchPriority: (shouldOptimizeForLCP ? "high" : "auto") as const,
+        loading: (lcpFirst ? "eager" : "lazy") as const,
+        decoding: (lcpFirst ? "sync" : "async") as const,
+        fetchPriority: (lcpFirst ? "high" : "auto") as const,
         sources: pictureSources,
       },
     };
   }),
 );
 
-const portfolioItems = processedItems.map((entry) => entry.data);
-const showcaseMedia = processedItems.map((entry) => entry.mediaEntry);
+const portfolioItems = processedItems.map((e) => e.data);
+const showcaseMedia = processedItems.map((e) => e.mediaEntry);
 
 const showcaseProps = {
   items: portfolioItems,
@@ -223,26 +182,17 @@ const showcaseProps = {
   optimizeFirstImage: optimizeForLCP,
 };
 
-// Generate Tailwind classes for show/hide based on responsivity
 let visibilityClasses = "";
 if (responsivity?.show) {
-  // Hidden by default, show only at breakpoint and above
   visibilityClasses = `hidden ${responsivity.show}:block`;
 } else if (responsivity?.hide) {
-  // Visible by default, hide at breakpoint and above
   visibilityClasses = `block ${responsivity.hide}:hidden`;
 }
 
-// Get first item's optimized media for SSR placeholder (use full srcset for LCP)
 const firstMedia = showcaseMedia[0];
 const firstItem = portfolioItems[0];
-
-// Placeholder always shows if we have media - prevents blank screen while carousel hydrates
-// clientLoadPlaceholder controls loading strategy: false = eager (SSR), true = lazy (client)
-// optimizeForLCP overrides to eager regardless of clientLoadPlaceholder
 const shouldEagerLoad = optimizeForLCP || !clientLoadPlaceholder;
 
-// Height classes based on size prop - same on mobile/tablet, different on lg+
 const heightClasses =
   size === "large"
     ? "h-[420px] sm:h-[520px] lg:h-[600px]"
@@ -253,61 +203,52 @@ const heightClasses =
   id={id}
   class={`relative overflow-hidden z-10 ${className} ${visibilityClasses}`.trim()}
 >
-  <div class={`relative w-full max-w-[920px] mx-auto ${heightClasses}`}>
+  <div class={`relative w-full max-w-230 mx-auto ${heightClasses}`}>
     <div class="relative h-full top-0 rounded-lg">
-      <!-- ComputerScreen wrapper with client carousel inside -->
       <ComputerScreen>
         <div
           class="relative h-full bottom-image-fade"
           data-portfolio-container
         >
-          <!-- SSR placeholder image - always shows to prevent blank screen while carousel hydrates -->
-          {
-            firstMedia && (
-              <figure
-                class="absolute inset-0 pointer-events-none overflow-hidden bg-black/40 z-0"
-                data-ssr-placeholder
-              >
-                <picture>
-                  {firstMedia.sources?.map((source) => (
-                    <source
-                      type={source.type}
-                      srcset={source.srcSet}
-                      sizes={source.sizes || firstMedia.sizes}
-                    />
-                  ))}
-                  <img
-                    src={firstMedia.src}
-                    srcset={firstMedia.srcSet}
-                    sizes={firstMedia.sizes}
-                    alt={
-                      firstMedia.alt || firstItem?.title || "Project preview"
-                    }
-                    width={firstMedia.width}
-                    height={firstMedia.height}
-                    loading={shouldEagerLoad ? "eager" : "lazy"}
-                    decoding={shouldEagerLoad ? "sync" : "async"}
-                    fetchpriority={shouldEagerLoad ? "high" : "auto"}
-                    draggable={false}
-                    class="block h-auto min-h-full w-full select-none object-cover object-top"
+          {firstMedia && (
+            <figure
+              class="absolute inset-0 pointer-events-none overflow-hidden bg-black/40 z-0"
+              data-ssr-placeholder
+            >
+              <picture>
+                {firstMedia.sources?.map((source) => (
+                  <source
+                    type={source.type}
+                    srcset={source.srcSet}
+                    sizes={source.sizes || firstMedia.sizes}
                   />
-                </picture>
-              </figure>
-            )
-          }
-
-          <!-- Client carousel loads here - sits on top with z-10 -->
-          <div class="relative z-10 h-full">
-            {
-              mediaQuery ? (
-                <PortfolioScreenShowcase
-                  client:media={mediaQuery}
-                  {...showcaseProps}
+                ))}
+                <img
+                  src={firstMedia.src}
+                  srcset={firstMedia.srcSet}
+                  sizes={firstMedia.sizes}
+                  alt={firstMedia.alt || firstItem?.title || "Project preview"}
+                  width={firstMedia.width}
+                  height={firstMedia.height}
+                  loading={shouldEagerLoad ? "eager" : "lazy"}
+                  decoding={shouldEagerLoad ? "sync" : "async"}
+                  fetchpriority={shouldEagerLoad ? "high" : "auto"}
+                  draggable={false}
+                  class="block h-auto min-h-full w-full select-none object-cover object-top"
                 />
-              ) : (
-                <PortfolioScreenShowcase client:visible {...showcaseProps} />
-              )
-            }
+              </picture>
+            </figure>
+          )}
+
+          <div class="relative z-10 h-full">
+            {mediaQuery ? (
+              <PortfolioScreenShowcase
+                client:media={mediaQuery}
+                {...showcaseProps}
+              />
+            ) : (
+              <PortfolioScreenShowcase client:visible {...showcaseProps} />
+            )}
           </div>
         </div>
       </ComputerScreen>
@@ -316,7 +257,6 @@ const heightClasses =
 </div>
 
 <style>
-  /* SSR placeholder - visible until carousel loads, then hidden via JS */
   [data-ssr-placeholder] {
     opacity: 1;
     visibility: visible;

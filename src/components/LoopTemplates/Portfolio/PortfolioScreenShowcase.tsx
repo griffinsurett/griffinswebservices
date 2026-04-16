@@ -49,29 +49,68 @@ function ComputerScreen({
   showDevOverlay = false,
 }: ScreenProps) {
   const [isHydrated, setIsHydrated] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
+  // Reset + play/pause video when slide activates/deactivates
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (isActive && !isTransitioning) {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [isActive, isTransitioning]);
+
+  const isVideo = typeof item.featuredVideo === "string" && item.featuredVideo.length > 0;
   const fallbackSrc = getPortfolioImageSrc(item);
+  const handleCycleComplete = totalSlides > 1 ? onCycleComplete : undefined;
 
-  const renderMedia = () => {
-    if (!isHydrated) {
-      return (
-        <div className="flex h-full w-full items-center justify-center bg-linear-to-b from-bg2 via-bg to-bg/80" />
-      );
-    }
-
-    if (!mediaEntry?.src && !fallbackSrc) {
-      return (
-        <div className="flex h-full w-full items-center justify-center bg-linear-to-b from-bg2 via-bg to-bg/80 text-white/30">
-          Preview coming soon
-        </div>
-      );
-    }
-
+  if (!isHydrated) {
     return (
+      <div className="h-full w-full bg-linear-to-b from-bg2 via-bg to-bg/80" />
+    );
+  }
+
+  // Video slide: play to end, then advance
+  if (isVideo) {
+    return (
+      <div className="relative h-full w-full overflow-hidden bg-black">
+        <video
+          ref={videoRef}
+          src={item.featuredVideo}
+          muted
+          playsInline
+          preload="metadata"
+          onEnded={handleCycleComplete}
+          className="block h-full w-full object-cover object-top"
+        />
+      </div>
+    );
+  }
+
+  // Image slide: scroll to end via ScrollableViewport, then advance
+  if (!mediaEntry?.src && !fallbackSrc) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-linear-to-b from-bg2 via-bg to-bg/80 text-white/30">
+        Preview coming soon
+      </div>
+    );
+  }
+
+  return (
+    <ScrollableViewport
+      isActive={isActive}
+      isTransitioning={isTransitioning}
+      onScrollComplete={handleCycleComplete}
+      resetOnActivate={true}
+      showDevOverlay={showDevOverlay}
+    >
       <ClientImage
         src={mediaEntry?.src || fallbackSrc}
         srcSet={mediaEntry?.srcSet}
@@ -86,20 +125,6 @@ function ComputerScreen({
         draggable={false}
         className="block h-auto min-h-full w-full select-none object-cover object-top"
       />
-    );
-  };
-
-  const handleScrollComplete = totalSlides > 1 ? onCycleComplete : undefined;
-
-  return (
-    <ScrollableViewport
-      isActive={isActive}
-      isTransitioning={isTransitioning}
-      onScrollComplete={handleScrollComplete}
-      resetOnActivate={true}
-      showDevOverlay={showDevOverlay}
-    >
-      {renderMedia()}
     </ScrollableViewport>
   );
 }

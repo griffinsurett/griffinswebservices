@@ -151,27 +151,51 @@ export default function ScrollableViewport({
     return () => observer?.disconnect();
   }, [contentReady, isActive, measureScrollDuration]);
 
-  // Trigger callback after scroll completes
-  // Use a ref to track the current duration to avoid restarting timer on every measurement
-  const scrollDurationRef = useRef(scrollDurationMs);
-  scrollDurationRef.current = scrollDurationMs;
+  // Fire onScrollComplete when the viewport actually reaches the bottom.
+  // Watching scroll position is reliable regardless of image load timing or
+  // paused-state flicker — we only advance when scrollTop hits the real bottom.
+  const onScrollCompleteRef = useRef(onScrollComplete);
+  onScrollCompleteRef.current = onScrollComplete;
+  const firedRef = useRef(false);
 
   useEffect(() => {
-    if (!contentReady || !isActive || !onScrollComplete) return;
-    // Don't start new cycle if autoscroll is paused by user interaction
-    if (autoScroll.paused) return;
+    if (!isActive) {
+      firedRef.current = false;
+      return;
+    }
+  }, [isActive]);
 
+  useEffect(() => {
+    if (!contentReady || !isActive || !onScrollCompleteRef.current) return;
+
+    const el = viewportRef.current;
+    if (!el) return;
+
+    firedRef.current = false;
+    const BOTTOM_THRESHOLD_PX = 4;
     const BETWEEN_SLIDE_PAUSE_MS = 450;
-    const totalDuration =
-      AUTO_SCROLL_START_DELAY_MS + scrollDurationRef.current + BETWEEN_SLIDE_PAUSE_MS;
-    const timer = window.setTimeout(() => {
-      // Double-check we're still active before completing cycle
-      if (!autoScroll.paused) {
-        onScrollComplete();
+    let pauseTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const checkBottom = () => {
+      if (firedRef.current) return;
+      const remaining = el.scrollHeight - el.clientHeight - el.scrollTop;
+      if (remaining <= BOTTOM_THRESHOLD_PX) {
+        firedRef.current = true;
+        pauseTimer = setTimeout(() => {
+          onScrollCompleteRef.current?.();
+        }, BETWEEN_SLIDE_PAUSE_MS);
       }
-    }, totalDuration);
-    return () => window.clearTimeout(timer);
-  }, [isActive, contentReady, onScrollComplete, autoScroll.paused]);
+    };
+
+    el.addEventListener("scroll", checkBottom, { passive: true });
+    // Also check immediately in case content is shorter than the viewport
+    checkBottom();
+
+    return () => {
+      el.removeEventListener("scroll", checkBottom);
+      if (pauseTimer) clearTimeout(pauseTimer);
+    };
+  }, [isActive, contentReady]);
 
   // When manual scroll is disabled, we use pointer-events:none on the scrollable
   // figure so wheel/touch events pass through to the page. But we need an outer
