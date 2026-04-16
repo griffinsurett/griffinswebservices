@@ -22,6 +22,7 @@ export interface Props {
   loop?: boolean;
   autoplay?: boolean;
   altContext?: string;
+  colorMode?: "invert" | "dark" | "light";
 }
 
 const {
@@ -41,6 +42,7 @@ const {
   loop = true,
   autoplay = false,
   altContext,
+  colorMode = "invert",
 } = Astro.props;
 
 // Build alt text: "Griffin's Web Services Logo" + optional context
@@ -61,6 +63,25 @@ const DEFAULT_LOGO_CLASSES =
 
 const LOGO_WIDTHS = logoWidths ?? DEFAULT_LOGO_WIDTHS;
 const LOGO_SIZES = logoSizes ?? DEFAULT_LOGO_SIZES;
+// Filter strategy: wrap the entire logo image (Lottie or static) in a <span>
+// with the filter class. This means the filter is on a parent of both the
+// Lottie SVG and the fallback <Image>, so they always match.
+// logo-class stays on the Lottie container for the a11y selector only —
+// we neutralize its baked-in light:invert with [filter:none] so it never
+// interferes; all filter logic lives solely on the wrapper span.
+//
+// Logo is naturally light (white), so:
+//   "invert": light:invert  — dark on light theme, natural on dark theme
+//   "light":  no filter     — always natural/light
+//   "dark":   invert        — always dark in both themes
+const logoWrapperFilter =
+  colorMode === "dark"
+    ? "invert"
+    : colorMode === "light"
+      ? ""
+      : "light:invert"; // "invert" default
+
+const lottieClassName = "logo-class [filter:none]"; // a11y selector; filter neutralized here
 const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
 const hydrationMode =
   hydrate ?? (trigger === "scroll" ? "scroll" : trigger === "visible" ? "visible" : "load");
@@ -71,112 +92,114 @@ const hydrationMode =
   translate="no"
   class={`notranslate flex justify-center items-center gap-1.5 ${className}`}
 >
-  {shouldUseLottie ? (
-    hydrationMode === "scroll" ? (
-      <LottieLogo
-        alt={alt}
-        loading={loading}
-        trigger={trigger}
-        className="logo-class"
-        mediaClasses={logoClasses}
-        loop={loop}
-        autoplay={autoplay}
-        client:scroll
-      >
-        <Image
-          src={POSTER_SRC}
-          alt=""
+  <span class={logoWrapperFilter || undefined}>
+    {shouldUseLottie ? (
+      hydrationMode === "scroll" ? (
+        <LottieLogo
+          alt={alt}
           loading={loading}
-          decoding="async"
-          class={logoClasses}
-          widths={LOGO_WIDTHS}
-          sizes={LOGO_SIZES}
-          fetchpriority={loading === "eager" ? "high" : "low"}
-          aria-hidden="true"
-        />
-      </LottieLogo>
-    ) : hydrationMode === "visible" ? (
-      <LottieLogo
-        alt={alt}
-        loading={loading}
-        trigger={trigger}
-        className="logo-class"
-        mediaClasses={logoClasses}
-        loop={loop}
-        autoplay={autoplay}
-        client:visible
-      >
-        <Image
-          src={POSTER_SRC}
-          alt=""
+          trigger={trigger}
+          className={lottieClassName}
+          mediaClasses={logoClasses}
+          loop={loop}
+          autoplay={autoplay}
+          client:scroll
+        >
+          <Image
+            src={POSTER_SRC}
+            alt=""
+            loading={loading}
+            decoding="async"
+            class={logoClasses}
+            widths={LOGO_WIDTHS}
+            sizes={LOGO_SIZES}
+            fetchpriority={loading === "eager" ? "high" : "low"}
+            aria-hidden="true"
+          />
+        </LottieLogo>
+      ) : hydrationMode === "visible" ? (
+        <LottieLogo
+          alt={alt}
           loading={loading}
-          decoding="async"
-          class={logoClasses}
-          widths={LOGO_WIDTHS}
-          sizes={LOGO_SIZES}
-          fetchpriority={loading === "eager" ? "high" : "low"}
-          aria-hidden="true"
-        />
-      </LottieLogo>
-    ) : hydrationMode === "idle" ? (
-      <LottieLogo
-        alt={alt}
-        loading={loading}
-        trigger={trigger}
-        className="logo-class"
-        mediaClasses={logoClasses}
-        loop={loop}
-        autoplay={autoplay}
-        client:idle
-      >
-        <Image
-          src={POSTER_SRC}
-          alt=""
+          trigger={trigger}
+          className={lottieClassName}
+          mediaClasses={logoClasses}
+          loop={loop}
+          autoplay={autoplay}
+          client:visible
+        >
+          <Image
+            src={POSTER_SRC}
+            alt=""
+            loading={loading}
+            decoding="async"
+            class={logoClasses}
+            widths={LOGO_WIDTHS}
+            sizes={LOGO_SIZES}
+            fetchpriority={loading === "eager" ? "high" : "low"}
+            aria-hidden="true"
+          />
+        </LottieLogo>
+      ) : hydrationMode === "idle" ? (
+        <LottieLogo
+          alt={alt}
           loading={loading}
-          decoding="async"
-          class={logoClasses}
-          widths={LOGO_WIDTHS}
-          sizes={LOGO_SIZES}
-          fetchpriority={loading === "eager" ? "high" : "low"}
-          aria-hidden="true"
-        />
-      </LottieLogo>
+          trigger={trigger}
+          className={lottieClassName}
+          mediaClasses={logoClasses}
+          loop={loop}
+          autoplay={autoplay}
+          client:idle
+        >
+          <Image
+            src={POSTER_SRC}
+            alt=""
+            loading={loading}
+            decoding="async"
+            class={logoClasses}
+            widths={LOGO_WIDTHS}
+            sizes={LOGO_SIZES}
+            fetchpriority={loading === "eager" ? "high" : "low"}
+            aria-hidden="true"
+          />
+        </LottieLogo>
+      ) : (
+        <LottieLogo
+          alt={alt}
+          loading={loading}
+          trigger={trigger}
+          className={lottieClassName}
+          mediaClasses={logoClasses}
+          loop={loop}
+          autoplay={autoplay}
+          client:load
+        >
+          <Image
+            src={POSTER_SRC}
+            alt=""
+            loading={loading}
+            decoding="async"
+            class={logoClasses}
+            widths={LOGO_WIDTHS}
+            sizes={LOGO_SIZES}
+            fetchpriority={loading === "eager" ? "high" : "low"}
+            aria-hidden="true"
+          />
+        </LottieLogo>
+      )
     ) : (
-      <LottieLogo
+      <Image
+        src={POSTER_SRC}
         alt={alt}
         loading={loading}
-        trigger={trigger}
-        className="logo-class"
-        mediaClasses={logoClasses}
-        loop={loop}
-        autoplay={autoplay}
-        client:load
-      >
-        <Image
-          src={POSTER_SRC}
-          alt=""
-          loading={loading}
-          decoding="async"
-          class={logoClasses}
-          widths={LOGO_WIDTHS}
-          sizes={LOGO_SIZES}
-          fetchpriority={loading === "eager" ? "high" : "low"}
-          aria-hidden="true"
-        />
-      </LottieLogo>
-    )
-  ) : (
-    <Image
-      src={POSTER_SRC}
-      alt={alt}
-      loading={loading}
-      decoding="async"
-      class={logoClasses}
-      widths={LOGO_WIDTHS}
-      sizes={LOGO_SIZES}
-      fetchpriority={loading === "eager" ? "high" : undefined}
-    />
-  )}
+        decoding="async"
+        class={logoClasses}
+        widths={LOGO_WIDTHS}
+        sizes={LOGO_SIZES}
+        fetchpriority={loading === "eager" ? "high" : undefined}
+      />
+    )}
+  </span>
 
   {showText && (
     <div>
@@ -187,6 +210,7 @@ const hydrationMode =
         animateOutText={animateOutText}
         firstClass={titleFirstClass}
         restClass={titleRestClass}
+        colorMode={colorMode}
       />
     </div>
   )}
