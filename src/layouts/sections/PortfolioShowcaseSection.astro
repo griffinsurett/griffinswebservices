@@ -2,7 +2,8 @@
 // src/layouts/PortfolioShowcaseSection.astro
 // Full-viewport portfolio showcase section - loads only when scrolled into view
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query } from "@/utils/query";
+import { query, sortByOrder } from "@/utils/query";
+import { byTag } from "@/utils/query/snippets";
 import LogoCircle from "@/components/LogoCircle";
 import DecorativeArc from "@/components/DecorativeArc";
 import Heading from "@/components/Heading";
@@ -67,7 +68,7 @@ const { className = "", id = "portfolio-showcase" } = Astro.props as Props;
       data-animate-once="true"
     >
       <ContentRenderer
-        query={query("projects")}
+        query={byTag("projects", "screen").orderBy(sortByOrder())}
         variant="PortfolioScreenVariant"
         className="pt-0"
       />
