@@ -19,6 +19,7 @@ interface PricingItemRecord extends Record<string, any> {
   priceSuffix?: string;
   tags?: string[];
   features?: string[];
+  note?: string;
 }
 
 interface Props extends BaseVariantProps {
@@ -95,6 +96,7 @@ const isExternalHref = (href?: string) =>
         const features = Array.isArray(item.features)
           ? item.features.filter((feature) => typeof feature === "string" && feature.trim().length > 0)
           : [];
+        const note = typeof item.note === "string" && item.note.trim().length > 0 ? item.note.trim() : null;
         const pricePrefix = typeof item.pricePrefix === "string" ? item.pricePrefix.trim() : "";
         const priceSuffix = typeof item.priceSuffix === "string" ? item.priceSuffix.trim() : "";
 

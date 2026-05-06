@@ -176,6 +176,7 @@ export const collections = {
         priceSuffix: z.string().optional(),
         featured: z.boolean().optional(),
         features: z.array(z.string()).default([]),
+        note: z.string().optional(),
         solutions: refSchema("solutions"),
         capabilities: refSchema("capabilities"),
       }),
