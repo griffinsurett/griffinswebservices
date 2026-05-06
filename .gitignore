@@ -29,6 +29,5 @@ pnpm-debug.log*
 # Vercel
 .vercel/output
 
-# Large image files (over GitHub 100MB limit)
-public/project-images-and-videos/fariasdemolition.com/images/fariasdemolition.com-desktop.png
-public/project-images-and-videos/fariasdemolition.com/images/fariasdemolition.com-mobile.png
+# Large media files — kept local only, not committed to git
+public/project-images-and-videos/
