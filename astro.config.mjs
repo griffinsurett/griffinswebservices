@@ -10,7 +10,8 @@ import { manualChunks, assetFileNames } from './vite.chunks.js';
 import iconGeneratorIntegration from './src/integrations/icons/icon-generator.integration.mjs';
 import clientDirectivesIntegration from './src/integrations/client-directives/client-directives.integration.mjs';
 import conditionalPartytown from './src/integrations/partytown/partytown.integration.mjs';
-import { SITE_URL } from './src/content/siteDomain.js';
+import robotsLlmsIntegration from './src/integrations/robots-llms/robots-llms.integration.ts';
+import { SITE_URL } from './src/content/siteData.ts';
 
 const redirects = await buildRedirectConfig();
 
@@ -53,6 +54,7 @@ export default defineConfig({
     }),
     sitemap(),
     conditionalPartytown(),
+    robotsLlmsIntegration(),
   ],
   
   build: {
