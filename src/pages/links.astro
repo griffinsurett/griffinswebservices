@@ -4,7 +4,7 @@ import ContentRenderer from '@/components/ContentRenderer/ContentRenderer.astro'
 import { related } from '@/utils/query/snippets';
 ---
 
-<BaseLayout title="Links" description="All my important links in one place">
+<BaseLayout title="Links" description="All my important links in one place" addToLLMs={false}>
   <ContentRenderer
     query={related("menu-items", "menu", "links-menu")}
     variant="LinkPageVariant"

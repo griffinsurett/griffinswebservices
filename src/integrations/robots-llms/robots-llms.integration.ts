@@ -1,33 +1,41 @@
 // src/integrations/robots-llms/robots-llms.integration.ts
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readdirSync, readFileSync, rmSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { scanCollections } from '../../utils/filesystem/contentScanner';
-import { shouldItemHavePage, shouldItemUseRootPath } from '../../utils/filesystem/pageLogic';
-import { SITE_URL, siteData } from '../../content/siteData';
+import { siteData } from '../../content/siteData';
 import type { AstroIntegration } from 'astro';
+
+interface PageManifestEntry {
+  path: string;
+  title: string;
+  description: string;
+  robots: string;
+  addToLLMs: boolean;
+}
+
+function readManifest(distDir: string): PageManifestEntry[] {
+  const seoDir = join(distDir, '__seo');
+  if (!existsSync(seoDir)) return [];
+  return readdirSync(seoDir)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => {
+      try {
+        return JSON.parse(readFileSync(join(seoDir, f), 'utf8')) as PageManifestEntry;
+      } catch {
+        return null;
+      }
+    })
+    .filter(Boolean) as PageManifestEntry[];
+}
 
 // ---------------------------------------------------------------------------
 // robots.txt
 // ---------------------------------------------------------------------------
 
-function buildRobots(pages: { pathname: string }[], siteUrl: string): string {
-  const pageSet = new Set(pages.map((p) => `/${p.pathname}`.replace(/\/$/, '') || '/'));
-
-  const disallowed: string[] = [];
-
-  for (const { name, meta, items } of scanCollections()) {
-    for (const { slug, data } of items) {
-      if (!shouldItemHavePage(data, meta)) continue;
-      if (!String(data.seo?.robots ?? '').includes('noindex')) continue;
-
-      const path = shouldItemUseRootPath(data, meta)
-        ? `/${slug}`
-        : `/${name}/${slug}`;
-
-      if (pageSet.has(path)) disallowed.push(`Disallow: ${path}`);
-    }
-  }
+function buildRobots(entries: PageManifestEntry[], siteUrl: string): string {
+  const disallowed = entries
+    .filter((e) => e.robots.includes('noindex'))
+    .map((e) => `Disallow: ${e.path}`);
 
   return [
     'User-agent: *',
@@ -43,9 +51,7 @@ function buildRobots(pages: { pathname: string }[], siteUrl: string): string {
 // llms.txt
 // ---------------------------------------------------------------------------
 
-function buildLlms(pages: { pathname: string }[], siteUrl: string): string {
-  const pageSet = new Set(pages.map((p) => `/${p.pathname}`.replace(/\/$/, '') || '/'));
-
+function buildLlms(entries: PageManifestEntry[], siteUrl: string): string {
   const lines: string[] = [
     `# ${siteData.title}`,
     `> ${siteData.tagline}`,
@@ -55,46 +61,40 @@ function buildLlms(pages: { pathname: string }[], siteUrl: string): string {
     ...(siteData.location ? [`Location: ${siteData.location}`, ''] : []),
   ];
 
-  for (const { name, meta, items } of scanCollections()) {
-    if (meta.llms?.addToLLMs === false) continue;
-    if (meta.llms?.itemsAddToLLMs === false) continue;
-    if (!items.length) continue;
+  const included = entries
+    .filter((e) => e.addToLLMs && !e.robots.includes('noindex'))
+    .sort((a, b) => a.path.localeCompare(b.path));
 
-    const sectionTitle: string = meta.llms?.title ?? meta.title ?? name;
-    const sectionDesc: string | undefined = meta.llms?.description ?? meta.description;
+  // Group by top-level path segment (e.g. /blog/foo → "blog")
+  const sections = new Map<string, PageManifestEntry[]>();
+  for (const entry of included) {
+    const parts = entry.path.split('/').filter(Boolean);
+    const section = parts.length >= 2 ? parts[0] : '__root';
+    if (!sections.has(section)) sections.set(section, []);
+    sections.get(section)!.push(entry);
+  }
 
-    const itemLines: string[] = [];
+  // Root-level pages (no sub-section) go first as a flat list
+  const rootEntries = sections.get('__root') ?? [];
+  for (const entry of rootEntries) {
+    const label = entry.title.replace(/ \| .*$/, '').trim() || entry.path;
+    const desc = entry.description ? `: ${entry.description}` : '';
+    lines.push(`- [${label}](${siteUrl}${entry.path})${desc}`);
+  }
+  if (rootEntries.length) lines.push('');
 
-    for (const { slug, data } of items) {
-      if (!shouldItemHavePage(data, meta)) continue;
-      if (data.llms?.addToLLMs === false) continue;
+  for (const [section, sectionEntries] of sections) {
+    if (section === '__root') continue;
 
-      const titleField: string = data.llms?.titleField ?? meta.llms?.itemsTitleField ?? 'title';
-      const descField: string = data.llms?.descriptionField ?? meta.llms?.itemsDescriptionField ?? 'description';
+    const heading = section.charAt(0).toUpperCase() + section.slice(1).replace(/-/g, ' ');
+    lines.push(`## ${heading}`, '');
 
-      const itemTitle: string | undefined = data.llms?.title ?? data.seo?.metaTitle ?? data[titleField];
-      const itemDesc: string | undefined = data.llms?.description ?? data.seo?.metaDescription ?? data[descField];
-
-      if (!itemTitle) continue;
-
-      const path = shouldItemUseRootPath(data, meta) ? `/${slug}` : `/${name}/${slug}`;
-      const url = pageSet.has(path) ? `${siteUrl}${path}` : undefined;
-
-      itemLines.push(url
-        ? `- [${itemTitle}](${url})${itemDesc ? `: ${itemDesc}` : ''}`
-        : `- ${itemTitle}${itemDesc ? `: ${itemDesc}` : ''}`
-      );
+    for (const entry of sectionEntries) {
+      const label = entry.title.replace(/ \| .*$/, '').trim() || entry.path;
+      const desc = entry.description ? `: ${entry.description}` : '';
+      lines.push(`- [${label}](${siteUrl}${entry.path})${desc}`);
     }
-
-    const indexPath = `/${name}`;
-    const hasIndexPage = pageSet.has(indexPath);
-
-    if (!itemLines.length && !hasIndexPage) continue;
-
-    lines.push(`## ${sectionTitle}`, '');
-    if (sectionDesc) lines.push(sectionDesc, '');
-    if (hasIndexPage) lines.push(`- [${sectionTitle}](${siteUrl}${indexPath})`, '');
-    lines.push(...itemLines, '');
+    lines.push('');
   }
 
   return lines.join('\n');
@@ -108,23 +108,34 @@ export default function robotsLlmsIntegration(): AstroIntegration {
   return {
     name: 'robots-llms',
     hooks: {
-      'astro:build:done': async ({ pages, dir, logger }) => {
+      'astro:build:done': async ({ dir, logger }) => {
         const siteUrl = siteData.url.replace(/\/$/, '');
         const distDir = fileURLToPath(dir);
+        const entries = readManifest(distDir);
+
+        if (!entries.length) {
+          logger.warn('robots-llms: no manifest entries found in dist/__seo/ — robots.txt and llms.txt will be minimal.');
+        }
 
         try {
-          writeFileSync(join(distDir, 'robots.txt'), buildRobots(pages, siteUrl), 'utf8');
+          writeFileSync(join(distDir, 'robots.txt'), buildRobots(entries, siteUrl), 'utf8');
           logger.info('robots.txt generated.');
         } catch (err: any) {
           logger.error(`robots.txt generation failed: ${err.message}`);
         }
 
         try {
-          writeFileSync(join(distDir, 'llms.txt'), buildLlms(pages, siteUrl), 'utf8');
+          writeFileSync(join(distDir, 'llms.txt'), buildLlms(entries, siteUrl), 'utf8');
           logger.info('llms.txt generated.');
         } catch (err: any) {
           logger.error(`llms.txt generation failed: ${err.message}`);
         }
+
+        // Clean up manifest — not needed in final dist
+        try {
+          const seoDir = join(distDir, '__seo');
+          if (existsSync(seoDir)) rmSync(seoDir, { recursive: true, force: true });
+        } catch (_) {}
       },
     },
   };

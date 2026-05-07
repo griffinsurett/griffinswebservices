@@ -264,21 +264,11 @@ export type HeadingContent = z.infer<typeof headingSchema>;
 
 export const llmsItemSchema = z.object({
   addToLLMs: z.boolean().optional(),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  titleField: z.string().optional(),
-  descriptionField: z.string().optional(),
-  urlField: z.string().optional(),
 }).optional();
 
 export const llmsMetaSchema = z.object({
   addToLLMs: z.boolean().optional(),
-  title: z.string().optional(),
-  description: z.string().optional(),
   itemsAddToLLMs: z.boolean().optional(),
-  itemsTitleField: z.string().optional(),
-  itemsDescriptionField: z.string().optional(),
-  itemsUrlField: z.string().optional(),
 }).optional();
 
 export type LLMsItemData = z.infer<typeof llmsItemSchema>;
