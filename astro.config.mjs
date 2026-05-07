@@ -1,6 +1,5 @@
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
-import { loadEnv } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
@@ -11,15 +10,14 @@ import { manualChunks, assetFileNames } from './vite.chunks.js';
 import iconGeneratorIntegration from './src/integrations/icons/icon-generator.integration.mjs';
 import clientDirectivesIntegration from './src/integrations/client-directives/client-directives.integration.mjs';
 import conditionalPartytown from './src/integrations/partytown/partytown.integration.mjs';
+import { SITE_URL } from './src/content/siteDomain.js';
 
-const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 const redirects = await buildRedirectConfig();
-const siteUrl = `https://${env.PUBLIC_SITE_DOMAIN}`;
 
-console.log(`Site URL: ${siteUrl}`);
+console.log(`Site URL: ${SITE_URL}`);
 
 export default defineConfig({
-  site: siteUrl,
+  site: SITE_URL,
   trailingSlash: 'never',
   server: { port: 9999 },
   adapter: vercel(),
