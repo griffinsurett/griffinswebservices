@@ -17,6 +17,7 @@
  * const filter = useFilter(items, { field: 'category', showAll: true, allLabel: 'All Categories' });
  */
 import { useState, useMemo, useCallback } from "react";
+import { humanizeSlug } from "@/utils/string";
 
 // Key for "all" filter option
 export const ALL_FILTER_KEY = "__all__";
@@ -127,10 +128,7 @@ function extractKey(value: any): string | null {
  * Format a key into a human-readable label
  */
 function formatLabel(key: string): string {
-  return key
-    .replace(/-/g, " ")
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+  return humanizeSlug(key);
 }
 
 /**

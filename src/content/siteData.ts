@@ -1,12 +1,13 @@
 // src/siteData.ts - Compatible with both Astro and React
-const siteDomain = import.meta.env.PUBLIC_SITE_DOMAIN;
+import { SITE_DOMAIN, SITE_URL } from "./siteDomain.js";
 
 export const siteData = {
   title: "Greastro",
   legalName: "Greastro LLC",
+  tagline: "Build fast. Stay typesafe. Ship with confidence.",
   description: "Finest Typesafe Static Sites with Astro, dynamically static with content collections.",
-  domain: siteDomain,
-  url: `https://${siteDomain}`,
+  domain: SITE_DOMAIN,
+  url: SITE_URL,
   location: "New Jersey, USA",
   address: "123 Main St, Springfield, NJ 07081",
 };

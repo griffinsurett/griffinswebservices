@@ -19,7 +19,7 @@
  *   <PartytownLoader forward={['dataLayer.push']} />
  */
 
-import { copyLibFiles } from '@builder.io/partytown/utils';
+import { copyLibFiles } from '@qwik.dev/partytown/utils';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 

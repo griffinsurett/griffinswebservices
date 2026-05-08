@@ -19,6 +19,7 @@ import backgroundSvg from "@/assets/background.svg";
 
 export interface Props {
   title: string;
+  eyebrow?: string;
   description?: string;
   image?: any; // Astro image asset or public path
   publishDate?: Date | string;
@@ -30,6 +31,7 @@ export interface Props {
 
 const {
   title,
+  eyebrow,
   description,
   image,
   publishDate,
@@ -61,6 +63,14 @@ const backgroundMedia = {
     {/* Hero content */}
     <div class="relative container mx-auto px-4 py-16 md:py-24 z-10">
       <div class="max-w-4xl mx-auto text-center text-bg">
+        {
+          eyebrow && (
+            <p class="inline-flex items-center justify-center px-5 py-2 mb-6 rounded-full border border-bg/60 text-sm md:text-base font-semibold tracking-[0.28em] uppercase text-bg/95">
+              {eyebrow}
+            </p>
+          )
+        }
+
         <h1
           class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg"
         >

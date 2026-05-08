@@ -13,7 +13,7 @@ import SecondaryHero from "@/layouts/SecondaryHero.astro";
 import QueryParamPagination from "@/components/Pagination/QueryParamPagination.astro";
 import { prepareCollectionEntries } from "@/utils/collections";
 import { find, query, sortByDate } from "@/utils/query";
-import { normalizeRef } from "@/utils/string";
+import { humanizeSlug, normalizeRef } from "@/utils/string";
 import { getImageSrc } from "./helpers/layoutHelpers";
 
 export interface Props {
@@ -99,6 +99,7 @@ const totalPosts = feedPosts.length;
 <BaseLayout {...seoProps}>
   <main class="flex-1">
     <SecondaryHero
+      eyebrow={humanizeSlug(collectionName)}
       title={pageTitle}
       description={pageDescription}
       image={heroImage}
