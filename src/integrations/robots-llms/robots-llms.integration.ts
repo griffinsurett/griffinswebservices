@@ -44,9 +44,6 @@ export interface RobotsLlmsConfig {
 // Paths that should always be disallowed regardless of config
 const DEFAULT_DISALLOWED_PATHS = ['/404'];
 
-// Collections whose content is purely structural/navigational — never useful for LLMs
-const EXCLUDED_COLLECTIONS = new Set(['menu-items', 'menus', 'social-media', 'authors', 'stats']);
-
 // ---------------------------------------------------------------------------
 // Manifest reader
 // ---------------------------------------------------------------------------
@@ -99,10 +96,10 @@ function buildRobots(siteUrl: string, config: RobotsLlmsConfig): string {
 // llms.txt
 // ---------------------------------------------------------------------------
 
-function buildLlms(entries: PageManifestEntry[], siteUrl: string): string {
+function buildLlms(entries: PageManifestEntry[], siteUrl: string, srcDir: string): string {
   const lines: string[] = [
     `# ${siteData.title}`,
-    `> ${siteData.tagline}`,
+    ...(siteData.tagline ? [`> ${siteData.tagline}`] : []),
     '',
     siteData.description,
     '',
@@ -121,10 +118,25 @@ function buildLlms(entries: PageManifestEntry[], siteUrl: string): string {
     sections.get(section)!.push(entry);
   }
 
+  const resolveDesc = (entry: PageManifestEntry): string => {
+    const descIsFallback = !entry.description || entry.description === siteData.description;
+    if (descIsFallback) {
+      const mdxPath = resolveEntrySourcePath(entry.path, srcDir);
+      if (mdxPath && existsSync(mdxPath)) {
+        const body = extractMdxBody(mdxPath);
+        if (body) {
+          const short = bodyToShortDescription(body);
+          if (short) return `: ${short}`;
+        }
+      }
+    }
+    return entry.description ? `: ${entry.description}` : '';
+  };
+
   const rootEntries = sections.get('__root') ?? [];
   for (const entry of rootEntries) {
     const label = entry.title.replace(/ \| .*$/, '').trim() || entry.path;
-    const desc = entry.description ? `: ${entry.description}` : '';
+    const desc = resolveDesc(entry);
     lines.push(`- [${label}](${siteUrl}${entry.path})${desc}`);
   }
   if (rootEntries.length) lines.push('');
@@ -135,7 +147,7 @@ function buildLlms(entries: PageManifestEntry[], siteUrl: string): string {
     lines.push(`## ${heading}`, '');
     for (const entry of sectionEntries) {
       const label = entry.title.replace(/ \| .*$/, '').trim() || entry.path;
-      const desc = entry.description ? `: ${entry.description}` : '';
+      const desc = resolveDesc(entry);
       lines.push(`- [${label}](${siteUrl}${entry.path})${desc}`);
     }
     lines.push('');
@@ -189,7 +201,7 @@ function parseFrontmatter(src: string): FrontmatterData {
       .filter(Boolean);
   }
 
-  // llms.addToLLMs / llms.itemsAddToLLMs
+  // llms.addToLLMs / llms.itemsAddToLLMs / llms.useBodyAsDescription
   const llmsBlock = yaml.match(/^llms:\s*\n((?:\s+[^\n]+\n?)+)/m);
   if (llmsBlock) {
     const block = llmsBlock[1];
@@ -202,6 +214,14 @@ function parseFrontmatter(src: string): FrontmatterData {
   }
 
   return data;
+}
+
+/** Extract first sentence from body text for use as a short description */
+function bodyToShortDescription(body: string): string | undefined {
+  const first = body.split('\n').map((l) => l.trim()).find((l) => l.length > 20 && !/^[#\-*>]/.test(l));
+  if (!first) return undefined;
+  const sentence = first.split(/(?<=[.!?])\s/)[0];
+  return sentence.length > 200 ? sentence.slice(0, 197) + '...' : sentence;
 }
 
 /** Strip frontmatter and return the body text */
@@ -413,7 +433,7 @@ function resolveEntrySourcePath(entryPath: string, srcDir: string): string | und
 function buildLlmsFull(entries: PageManifestEntry[], siteUrl: string, srcDir: string): string {
   const blocks: string[] = [
     `# ${siteData.title}`,
-    `> ${siteData.tagline}`,
+    ...(siteData.tagline ? [`> ${siteData.tagline}`] : []),
     '',
     siteData.description,
     '',
@@ -474,7 +494,6 @@ function buildLlmsFull(entries: PageManifestEntry[], siteUrl: string, srcDir: st
   }
 
   const allCollections = readdirSync(contentDir).filter((name) => {
-    if (EXCLUDED_COLLECTIONS.has(name)) return false;
     return existsSync(join(contentDir, name, '_meta.mdx'));
   });
 
@@ -551,7 +570,7 @@ export default function robotsLlmsIntegration(config: RobotsLlmsConfig = {}): As
         }
 
         try {
-          writeFileSync(join(distDir, 'llms.txt'), buildLlms(entries, siteUrl), 'utf8');
+          writeFileSync(join(distDir, 'llms.txt'), buildLlms(entries, siteUrl, srcDir), 'utf8');
           logger.info('llms.txt generated.');
         } catch (err: any) {
           logger.error(`llms.txt generation failed: ${err.message}`);

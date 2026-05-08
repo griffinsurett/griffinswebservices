@@ -22,8 +22,8 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { siteData } from "@/content/siteData";
-
-const fallbackImage = "/og-default.jpg";
+import siteLogo from "@/assets/transparent-word-logo.png";
+import defaultOGImage from "@/assets/transparent-word-logo.png";
 import { getImageUrl } from "@/utils/images";
 import type { ImageInput, SEOData } from "@/content/schema";
 
@@ -54,7 +54,7 @@ const {
 // Base values from props
 const baseTitle = title || "Page";
 const baseDescription = description || siteData.description;
-const baseImageUrl = getImageUrl(image, fallbackImage);
+const baseImageUrl = getImageUrl(image, defaultOGImage.src);
 
 // Meta tag values (with SEO overrides)
 const finalMetaTitle = seo?.metaTitle || `${baseTitle} | ${siteData.title}`;
@@ -116,7 +116,7 @@ const structuredData = {
     "url": siteData.url,
     "logo": {
       "@type": "ImageObject",
-      "url": makeAbsolute(fallbackImage),
+      "url": makeAbsolute(siteLogo.src),
       "width": 60,
       "height": 60
     }
