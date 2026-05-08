@@ -3,6 +3,7 @@ import { writeFileSync, readdirSync, readFileSync, rmSync, existsSync } from 'no
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { siteData } from '../../content/siteData';
+import { shouldItemUseRootPathData } from '../../utils/pages/pageRules';
 import type { AstroIntegration } from 'astro';
 
 interface PageManifestEntry {
@@ -12,6 +13,36 @@ interface PageManifestEntry {
   robots: string;
   addToLLMs: boolean;
 }
+
+// ---------------------------------------------------------------------------
+// Integration config
+// ---------------------------------------------------------------------------
+
+export interface RobotsLlmsConfig {
+  /**
+   * Paths to explicitly disallow for all crawlers (e.g. ['/admin', '/staging']).
+   * These are added to the wildcard User-agent group.
+   */
+  disallow?: string[];
+
+  /**
+   * Named bots to block entirely with their own User-agent group.
+   * Each gets: User-agent: <name> / Disallow: /
+   * Common AI training crawlers: 'GPTBot', 'CCBot', 'Claude-Web', 'Anthropic-AI',
+   * 'Google-Extended', 'FacebookBot', 'Bytespider', 'PetalBot'
+   */
+  blockBots?: string[];
+
+  /**
+   * Whether to disallow URLs with query strings (Disallow: /*?*).
+   * Prevents duplicate content from query param variants.
+   * Default: true
+   */
+  blockQueryUrls?: boolean;
+}
+
+// Paths that should always be disallowed regardless of config
+const DEFAULT_DISALLOWED_PATHS = ['/404'];
 
 // Collections whose content is purely structural/navigational — never useful for LLMs
 const EXCLUDED_COLLECTIONS = new Set(['menu-items', 'menus', 'social-media', 'authors', 'stats']);
@@ -39,19 +70,29 @@ function readManifest(distDir: string): PageManifestEntry[] {
 // robots.txt
 // ---------------------------------------------------------------------------
 
-function buildRobots(entries: PageManifestEntry[], siteUrl: string): string {
-  const disallowed = entries
-    .filter((e) => e.robots.includes('noindex'))
-    .map((e) => `Disallow: ${e.path}`);
+function buildRobots(siteUrl: string, config: RobotsLlmsConfig): string {
+  const blockQueryUrls = config.blockQueryUrls !== false; // default true
 
-  return [
-    'User-agent: *',
-    'Allow: /',
-    'Disallow: /*?*',
-    ...disallowed,
-    `Sitemap: ${siteUrl}/sitemap-index.xml`,
-    `Host: ${siteUrl}`,
-  ].join('\n');
+  // Always-disallowed: /404 + explicit config paths (deduplicated, normalized)
+  const disallowedPaths = [
+    ...DEFAULT_DISALLOWED_PATHS,
+    ...(config.disallow ?? []).map((p) => (p.startsWith('/') ? p : `/${p}`)),
+  ].filter((p, i, arr) => arr.indexOf(p) === i);
+
+  const lines: string[] = [];
+
+  // Per-bot full blocks — must appear before the wildcard group
+  for (const bot of config.blockBots ?? []) {
+    lines.push(`User-agent: ${bot}`, 'Disallow: /', '');
+  }
+
+  // Wildcard group
+  lines.push('User-agent: *', 'Allow: /');
+  if (blockQueryUrls) lines.push('Disallow: /*?*');
+  for (const path of disallowedPaths) lines.push(`Disallow: ${path}`);
+  lines.push(`Sitemap: ${siteUrl}/sitemap-index.xml`);
+
+  return lines.join('\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -111,6 +152,8 @@ interface FrontmatterData {
   title?: string;
   description?: string;
   features?: string[];
+  rootPath?: boolean;
+  itemsRootPath?: boolean;
   addToLLMs?: boolean;
   llms?: { addToLLMs?: boolean; itemsAddToLLMs?: boolean };
   [key: string]: any;
@@ -129,6 +172,12 @@ function parseFrontmatter(src: string): FrontmatterData {
     // Match: field: "value" or field: 'value' or field: value (unquoted)
     const m = yaml.match(new RegExp(`^${field}:\\s*(?:"([^"\\n]*)"|'([^'\\n]*)'|([^\\n#]+))`, 'm'));
     if (m) data[field] = (m[1] ?? m[2] ?? m[3] ?? '').trim();
+  }
+
+  // common boolean fields used by page generation rules
+  for (const field of ['rootPath', 'itemsRootPath']) {
+    const m = yaml.match(new RegExp(`^${field}:\\s*(true|false)`, 'm'));
+    if (m) data[field] = m[1] === 'true';
   }
 
   // features: list of "- item" strings
@@ -208,37 +257,41 @@ function extractMdxBody(filePath: string): string | undefined {
   }
 
   // TrustStatement text="..."
-  for (const m of body.matchAll(/TrustStatement[^/]*?text=["']([^"']+)["']/g)) {
-    lines.push(m[1].trim());
+  for (const m of body.matchAll(/TrustStatement[^/]*?\btext=(["'])([\s\S]*?)\1/g)) {
+    lines.push(m[2].trim());
   }
 
   // JSX prop description="..." single-line
-  for (const m of body.matchAll(/\bdescription=["']([^"']{20,})["']/g)) {
-    lines.push(m[1].trim());
+  for (const m of body.matchAll(/\bdescription=(["'])([\s\S]{20,}?)\1/g)) {
+    lines.push(m[2].trim());
   }
 
   // heading="..." single-line JSX prop
-  for (const m of body.matchAll(/\bheading=["']([^"']{10,})["']/g)) {
-    lines.push(m[1].trim());
+  for (const m of body.matchAll(/\bheading=(["'])([\s\S]{10,}?)\1/g)) {
+    lines.push(m[2].trim());
   }
 
-  // heading={{ before/text/after }} — join into one phrase
-  const hParts = [
-    ...[...body.matchAll(/\bbefore:\s*["']([^"']+)["']/g)].map((m) => m[1]),
-    ...[...body.matchAll(/\btext:\s*["']([^"']+)["']/g)].map((m) => m[1]),
-    ...[...body.matchAll(/\bafter:\s*["']([^"']+)["']/g)].map((m) => m[1]),
-  ];
-  if (hParts.length) lines.push(hParts.join(' ').trim());
+  // heading={{ before/text/after }} — only read from heading prop blocks,
+  // not arbitrary `text:` props used by buttons and other UI controls.
+  for (const match of body.matchAll(/\bheading=\{\{([\s\S]*?)\}\}/g)) {
+    const headingBlock = match[1];
+    const hParts = [
+      headingBlock.match(/\bbefore:\s*(["'])([\s\S]*?)\1/)?.[2],
+      headingBlock.match(/\btext:\s*(["'])([\s\S]*?)\1/)?.[2],
+      headingBlock.match(/\bafter:\s*(["'])([\s\S]*?)\1/)?.[2],
+    ].filter(Boolean);
+    if (hParts.length) lines.push(hParts.join(' ').trim());
+  }
 
   // Card/object description: "..." (single or next-line string)
-  for (const m of body.matchAll(/\bdescription:\s*\n?\s*["']([^"']{20,})["']/g)) {
-    lines.push(`- ${m[1].trim()}`);
+  for (const m of body.matchAll(/\bdescription:\s*\n?\s*(["'])([\s\S]{20,}?)\1/g)) {
+    lines.push(`- ${m[2].trim()}`);
   }
 
   // textContent array strings (used in SolutionsSection etc.)
   for (const m of body.matchAll(/textContent=\{?\[[\s\S]*?\]/g)) {
-    for (const s of m[0].matchAll(/["']([^"']{30,})["']/g)) {
-      lines.push(s[1].trim());
+    for (const s of m[0].matchAll(/(["'])([\s\S]{30,}?)\1/g)) {
+      lines.push(s[2].trim());
     }
   }
 
@@ -248,6 +301,7 @@ function extractMdxBody(filePath: string): string | undefined {
     if (!key || seen.has(key)) return false;
     if (/^[{}\[\]];?$/.test(key)) return false;
     if (/^(icon|title|order|type):\s*["']/.test(key)) return false;
+    if (/^(request a quote|get started now|learn more|view pricing)$/i.test(key)) return false;
     seen.add(key);
     return true;
   });
@@ -284,7 +338,6 @@ function readCollection(collectionDir: string, collectionName: string): Collecti
   const meta = parseFrontmatter(metaRaw);
 
   // Respect llms opt-outs set in _meta.mdx
-  if (meta.llms?.addToLLMs === false && meta.llms?.itemsAddToLLMs === false) return null;
   if (meta.llms?.itemsAddToLLMs === false) return null;
 
   const metaTitle = meta.title ?? collectionName.charAt(0).toUpperCase() + collectionName.slice(1).replace(/-/g, ' ');
@@ -319,6 +372,40 @@ function readCollection(collectionDir: string, collectionName: string): Collecti
   return { name: collectionName, metaTitle, metaDescription, items };
 }
 
+function resolveEntrySourcePath(entryPath: string, srcDir: string): string | undefined {
+  const contentDir = join(srcDir, 'src', 'content');
+  if (!existsSync(contentDir)) return undefined;
+
+  const parts = entryPath.replace(/^\//, '').split('/').filter(Boolean);
+  if (!parts.length) return undefined;
+
+  if (parts.length === 2) {
+    const [collection, slug] = parts;
+    const directPath = join(contentDir, collection, `${slug}.mdx`);
+    return existsSync(directPath) ? directPath : undefined;
+  }
+
+  if (parts.length !== 1) return undefined;
+
+  const slug = parts[0];
+  const collections = readdirSync(contentDir);
+
+  for (const collection of collections) {
+    const collectionDir = join(contentDir, collection);
+    const metaPath = join(collectionDir, '_meta.mdx');
+    const itemPath = join(collectionDir, `${slug}.mdx`);
+    if (!existsSync(metaPath) || !existsSync(itemPath)) continue;
+
+    const meta = parseFrontmatter(readFileSync(metaPath, 'utf8'));
+    const item = parseFrontmatter(readFileSync(itemPath, 'utf8'));
+    if (shouldItemUseRootPathData(item, meta, false)) {
+      return itemPath;
+    }
+  }
+
+  return undefined;
+}
+
 // ---------------------------------------------------------------------------
 // llms-full.txt
 // ---------------------------------------------------------------------------
@@ -350,18 +437,13 @@ function buildLlmsFull(entries: PageManifestEntry[], siteUrl: string, srcDir: st
       const label = entry.title.replace(/ \| .*$/, '').trim() || entry.path;
       const url = `${siteUrl}${entry.path}`;
 
-      // Only try to resolve source for collection item pages (two-segment paths)
-      const parts = entry.path.replace(/^\//, '').split('/');
       let body: string | undefined;
       let features: string[] | undefined;
-      if (parts.length === 2) {
-        const [collection, slug] = parts;
-        const mdxPath = join(srcDir, 'src', 'content', collection, `${slug}.mdx`);
-        if (existsSync(mdxPath)) {
-          const fm = parseFrontmatter(readFileSync(mdxPath, 'utf8'));
-          features = fm.features;
-          body = extractMdxBody(mdxPath);
-        }
+      const mdxPath = resolveEntrySourcePath(entry.path, srcDir);
+      if (mdxPath && existsSync(mdxPath)) {
+        const fm = parseFrontmatter(readFileSync(mdxPath, 'utf8'));
+        features = fm.features;
+        body = extractMdxBody(mdxPath);
       }
 
       const section = [
@@ -447,7 +529,7 @@ function buildLlmsFull(entries: PageManifestEntry[], siteUrl: string, srcDir: st
 // Integration
 // ---------------------------------------------------------------------------
 
-export default function robotsLlmsIntegration(): AstroIntegration {
+export default function robotsLlmsIntegration(config: RobotsLlmsConfig = {}): AstroIntegration {
   return {
     name: 'robots-llms',
     hooks: {
@@ -462,7 +544,7 @@ export default function robotsLlmsIntegration(): AstroIntegration {
         }
 
         try {
-          writeFileSync(join(distDir, 'robots.txt'), buildRobots(entries, siteUrl), 'utf8');
+          writeFileSync(join(distDir, 'robots.txt'), buildRobots(siteUrl, config), 'utf8');
           logger.info('robots.txt generated.');
         } catch (err: any) {
           logger.error(`robots.txt generation failed: ${err.message}`);
