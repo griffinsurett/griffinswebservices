@@ -1,0 +1,555 @@
+/* ============================================================
+   Griffin's Web Services — ChatBot Widget
+   Scoped under .gws-* to avoid any conflicts.
+   Uses site CSS custom properties (--color-accent, --color-bg, etc.)
+   Fully responsive — no fixed px dimensions.
+   ============================================================ */
+
+/* ── FAB ──────────────────────────────────────────────────── */
+.gws-fab {
+  position: fixed;
+  bottom: clamp(1.25rem, 4vw, 1.75rem);
+  right:  clamp(1.25rem, 4vw, 1.75rem);
+  z-index: 99990;
+
+  width:  3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(135deg,
+    var(--color-accent, #5e76f6),
+    color-mix(in srgb, var(--color-accent, #5e76f6) 65%, #000));
+  color: #fff;
+  box-shadow:
+    0 4px 20px color-mix(in srgb, var(--color-accent, #5e76f6) 50%, transparent),
+    0 2px 8px rgba(0,0,0,.35);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+.gws-fab:hover  { transform: scale(1.1); }
+.gws-fab:active { transform: scale(.95); }
+.gws-fab--open  { transform: scale(1.05); }
+
+.gws-fab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.gws-fab-icon--x { transform: rotate(90deg); }
+
+/* Unread badge */
+.gws-fab-dot {
+  position: absolute;
+  top: -.2rem; right: -.2rem;
+  background: #ef4444;
+  color: #fff;
+  font-size: .6rem;
+  font-weight: 700;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-bg, #080808);
+  animation: gwsBadge .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes gwsBadge {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+/* ── Panel ────────────────────────────────────────────────── */
+.gws-panel {
+  position: fixed;
+  z-index: 99989;
+
+  bottom: calc(clamp(1.25rem,4vw,1.75rem) + 3.5rem + .875rem);
+  right:  clamp(1.25rem, 4vw, 1.75rem);
+  width:  min(24rem, calc(100vw - clamp(2.5rem,8vw,3.5rem)));
+
+  /* Cap so the panel never climbs into the site navbar (5.5rem header + 1rem gap) */
+  max-height: calc(100dvh - 5.5rem - 1rem - clamp(1.25rem,4vw,1.75rem) - 3.5rem - .875rem);
+  /* Comfortable default height — short enough to stay clear of hamburger */
+  min-height: min(22rem, calc(100dvh - 14rem));
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  background: var(--color-bg, #080808);
+  border: 1px solid var(--color-border, rgba(255,255,255,.09));
+  border-radius: 1.25rem;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,.6),
+    0 8px 24px rgba(0,0,0,.3),
+    inset 0 1px 0 rgba(255,255,255,.06);
+
+  opacity: 0;
+  transform: translateY(.75rem) scale(.97);
+  pointer-events: none;
+  transform-origin: bottom right;
+  transition: opacity .25s ease, transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.gws-panel--open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.gws-head {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .9rem 1rem;
+  flex-shrink: 0;
+  background: linear-gradient(135deg,
+    var(--color-accent, #5e76f6),
+    color-mix(in srgb, var(--color-accent, #5e76f6) 62%, #000));
+}
+
+.gws-head-text { flex: 1; min-width: 0; }
+
+.gws-head-name {
+  font-size: .9rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gws-head-sub {
+  font-size: .7rem;
+  color: rgba(255,255,255,.78);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  margin-top: .1rem;
+}
+
+.gws-dot {
+  width: .42rem;
+  height: .42rem;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 5px #4ade80;
+  flex-shrink: 0;
+  animation: gwsPulse 2.2s ease-in-out infinite;
+}
+@keyframes gwsPulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: .4; }
+}
+
+.gws-head-x {
+  flex-shrink: 0;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+.gws-head-x:hover { background: rgba(255,255,255,.28); }
+
+/* ── Avatar ───────────────────────────────────────────────── */
+.gws-avatar {
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg,
+    var(--color-accent, #5e76f6),
+    color-mix(in srgb, var(--color-accent, #5e76f6) 60%, #000));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gws-avatar        { width: 1.85rem; height: 1.85rem; }
+.gws-avatar--lg    { width: 2.6rem;  height: 2.6rem;
+  border: 2px solid rgba(255,255,255,.3); }
+
+/* ── Messages area ────────────────────────────────────────── */
+.gws-msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem .875rem .625rem;
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.06) transparent;
+}
+.gws-msgs::-webkit-scrollbar       { width: 3px; }
+.gws-msgs::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 9999px; }
+
+/* ── Message rows ─────────────────────────────────────────── */
+.gws-row {
+  display: flex;
+  flex-direction: column;
+  animation: gwsIn .22s ease;
+}
+@keyframes gwsIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gws-row--bot  { align-items: flex-start; margin-bottom: .5rem; }
+.gws-row--user { align-items: flex-end;   margin-bottom: .65rem; }
+
+.gws-row-footer {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  margin-top: .3rem;
+}
+
+/* ── Bubble group (bot) — position relative for reaction overlay ── */
+.gws-bubble-group {
+  position: relative;
+  max-width: 83%;
+}
+
+/* ── Bubbles ──────────────────────────────────────────────── */
+.gws-bubble {
+  padding: .6rem .85rem;
+  font-size: .845rem;
+  line-height: 1.55;
+  word-break: break-word;
+  border-radius: 1rem;
+}
+
+.gws-bubble--bot {
+  background: var(--color-bg3, #18181b);
+  border: 1px solid var(--color-border, rgba(255,255,255,.08));
+  color: var(--color-text, #e4e4e7);
+  border-radius: .25rem 1rem 1rem 1rem;
+}
+
+.gws-bubble--user {
+  max-width: 83%;
+  background: linear-gradient(135deg,
+    var(--color-accent, #5e76f6),
+    color-mix(in srgb, var(--color-accent, #5e76f6) 68%, #000));
+  color: #fff;
+  border-radius: 1rem 1rem .25rem 1rem;
+}
+
+.gws-bubble--typing {
+  padding: .6rem .9rem;
+}
+
+/* ── Message text + inline links ─────────────────────────── */
+.gws-msg-text {
+  display: block;
+  white-space: pre-line; /* honours \n line breaks from AI */
+  word-break: break-word;
+}
+
+.gws-link {
+  color: var(--color-accent, #5e76f6);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: break-word;
+  transition: opacity .15s;
+}
+.gws-link:hover { opacity: .75; }
+
+/* Internal page links — rendered as a subtle pill/button */
+.gws-link--internal {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  text-decoration: none;
+  background: color-mix(in srgb, var(--color-accent, #5e76f6) 12%, transparent);
+  color: var(--color-accent, #5e76f6);
+  border: 1px solid color-mix(in srgb, var(--color-accent, #5e76f6) 25%, transparent);
+  padding: .2rem .6rem;
+  border-radius: 9999px;
+  font-size: .78rem;
+  font-weight: 500;
+  margin: .1rem .05rem;
+  transition: background .2s, transform .15s;
+}
+.gws-link--internal:hover {
+  opacity: 1;
+  background: color-mix(in srgb, var(--color-accent, #5e76f6) 20%, transparent);
+  transform: translateY(-1px);
+}
+[data-theme="light"] .gws-link { color: var(--color-accent, #4060f0); }
+
+/* ── Timestamps ───────────────────────────────────────────── */
+.gws-ts {
+  font-size: .63rem;
+  color: var(--color-muted, rgba(228,228,231,.38));
+  white-space: nowrap;
+}
+.gws-ts--user {
+  margin-top: .2rem;
+  padding-right: .1rem;
+}
+
+/* ── Typing dots ──────────────────────────────────────────── */
+.gws-typing {
+  display: inline-flex;
+  gap: .28rem;
+  align-items: center;
+  height: 1rem;
+}
+.gws-typing span {
+  width: .38rem; height: .38rem;
+  border-radius: 50%;
+  background: var(--color-muted, rgba(228,228,231,.5));
+  animation: gwsDot 1.2s ease-in-out infinite;
+}
+.gws-typing span:nth-child(1) { animation-delay: 0s; }
+.gws-typing span:nth-child(2) { animation-delay: .18s; }
+.gws-typing span:nth-child(3) { animation-delay: .36s; }
+@keyframes gwsDot {
+  0%,60%,100% { transform: translateY(0);    opacity: .4; }
+  30%          { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ── Reaction row — appears on hover ─────────────────────── */
+.gws-react-row {
+  display: flex;
+  gap: .15rem;
+  margin-top: .3rem;
+
+  /* Hidden by default, shown on group hover */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(2px);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* Show when the bubble-group is hovered */
+.gws-bubble-group:hover .gws-react-row {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Keep visible when a reaction is active */
+.gws-react-row:has(.gws-react--on) {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.gws-react {
+  /* Reset */
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+
+  font-size: .85rem;
+  line-height: 1;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: .45rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  filter: grayscale(50%) opacity(.55);
+  transition:
+    transform .22s cubic-bezier(.34,1.56,.64,1),
+    filter .18s ease,
+    background .15s ease;
+}
+.gws-react:hover {
+  transform: scale(1.25);
+  filter: grayscale(0%) opacity(1);
+  background: color-mix(in srgb, var(--color-accent,#5e76f6) 12%, transparent);
+}
+.gws-react:active { transform: scale(1.05); }
+.gws-react--on {
+  filter: grayscale(0%) opacity(1);
+  transform: scale(1.1);
+  background: color-mix(in srgb, var(--color-accent,#5e76f6) 15%, transparent);
+}
+
+/* ── Emoji picker ─────────────────────────────────────────── */
+.gws-emoji-wrap {
+  flex-shrink: 0;
+  /* Premium spring open animation — grows from the emoji button (bottom-left) */
+  transform-origin: bottom left;
+  animation: gwsEmojiOpen .32s cubic-bezier(.34, 1.56, .64, 1) forwards;
+  overflow: hidden;
+}
+
+@keyframes gwsEmojiOpen {
+  0%   { opacity: 0; transform: scaleY(.6) scaleX(.92) translateY(8px); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: scaleY(1) scaleX(1) translateY(0); }
+}
+
+/* Closing state — added via JS when hiding */
+.gws-emoji-wrap--closing {
+  animation: gwsEmojiClose .22s cubic-bezier(.4, 0, 1, 1) forwards;
+}
+
+@keyframes gwsEmojiClose {
+  0%   { opacity: 1; transform: scaleY(1) scaleX(1) translateY(0); }
+  100% { opacity: 0; transform: scaleY(.6) scaleX(.92) translateY(8px); }
+}
+
+.gws-emoji-wrap .EmojiPickerReact {
+  --epr-bg-color: var(--color-bg, #080808) !important;
+  --epr-category-label-bg-color: var(--color-bg, #080808) !important;
+  --epr-hover-bg-color: color-mix(in srgb, var(--color-accent,#5e76f6) 12%, transparent) !important;
+  --epr-search-input-bg-color: color-mix(in srgb, var(--color-primary-light,#f4f4f5) 5%, transparent) !important;
+  --epr-search-border-color: var(--color-border, rgba(255,255,255,.08)) !important;
+  --epr-text-color: var(--color-text, #e4e4e7) !important;
+  --epr-border-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: 100% !important;
+}
+
+/* ── Input bar ────────────────────────────────────────────── */
+.gws-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: .4rem;
+  padding: .65rem .875rem;
+  border-top: 1px solid var(--color-border, rgba(255,255,255,.07));
+  background: var(--color-bg, #080808);
+  flex-shrink: 0;
+}
+
+.gws-input {
+  flex: 1;
+  resize: none;
+  border: 1px solid var(--color-border, rgba(255,255,255,.08));
+  border-radius: .75rem;
+  padding: .5rem .8rem;
+  font-size: .845rem;
+  font-family: inherit;
+  line-height: 1.5;
+  background: color-mix(in srgb, var(--color-primary-light,#f4f4f5) 4%, transparent);
+  color: var(--color-text, #e4e4e7);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  max-height: 6rem;
+  min-height: 2.4rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.gws-input::-webkit-scrollbar { display: none; }
+.gws-input::placeholder { color: var(--color-muted, rgba(228,228,231,.35)); }
+.gws-input:focus {
+  border-color: color-mix(in srgb, var(--color-accent,#5e76f6) 55%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent,#5e76f6) 9%, transparent);
+}
+
+.gws-icon-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--color-muted, rgba(228,228,231,.45));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color .2s, background .2s;
+}
+.gws-icon-btn:hover,
+.gws-icon-btn--on {
+  color: var(--color-accent, #5e76f6);
+  background: color-mix(in srgb, var(--color-accent,#5e76f6) 10%, transparent);
+}
+
+.gws-send {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,
+    var(--color-accent, #5e76f6),
+    color-mix(in srgb, var(--color-accent,#5e76f6) 65%, #000));
+  color: #fff;
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--color-accent,#5e76f6) 35%, transparent);
+  transition: transform .2s, opacity .2s;
+}
+.gws-send:hover:not(:disabled)  { transform: scale(1.1); }
+.gws-send:active:not(:disabled) { transform: scale(.92); }
+.gws-send:disabled { opacity: .3; cursor: not-allowed; }
+
+/* ── Light theme ──────────────────────────────────────────── */
+[data-theme="light"] .gws-panel {
+  background: #fafafa;
+  border-color: rgba(0,0,0,.08);
+  box-shadow: 0 16px 56px rgba(0,0,0,.14), 0 4px 16px rgba(0,0,0,.08);
+}
+[data-theme="light"] .gws-bubble--bot {
+  background: #f0f0f2;
+  border-color: rgba(0,0,0,.07);
+  color: #27272a;
+}
+[data-theme="light"] .gws-bar {
+  background: #fafafa;
+  border-color: rgba(0,0,0,.07);
+}
+[data-theme="light"] .gws-input {
+  background: #fff;
+  border-color: rgba(0,0,0,.1);
+  color: #27272a;
+}
+[data-theme="light"] .gws-input::placeholder { color: rgba(39,39,42,.38); }
+[data-theme="light"] .gws-ts { color: rgba(39,39,42,.38); }
+[data-theme="light"] .gws-fab-dot { border-color: #fafafa; }
+[data-theme="light"] .gws-emoji-wrap .EmojiPickerReact {
+  --epr-bg-color: #fff !important;
+  --epr-category-label-bg-color: #f4f4f5 !important;
+  --epr-text-color: #27272a !important;
+  --epr-search-input-bg-color: #f4f4f5 !important;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (min-width: 1200px) {
+  .gws-panel { width: min(26rem, calc(100vw - 4rem)); }
+}
+
+@media (max-width: 520px) {
+  .gws-panel {
+    left: .75rem; right: .75rem;
+    bottom: calc(1.25rem + 3.5rem + .75rem);
+    width: auto;
+    max-height: calc(100dvh - 7.5rem);
+    border-radius: 1rem;
+  }
+  .gws-fab { bottom: 1.25rem; right: 1.25rem; }
+}
+
+@media (max-height: 580px) {
+  .gws-panel { max-height: calc(100dvh - 5.5rem - 5.5rem); min-height: unset; }
+}

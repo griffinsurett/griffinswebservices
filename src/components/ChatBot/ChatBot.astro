@@ -1,0 +1,12 @@
+---
+// src/components/ChatBot/ChatBot.astro
+/**
+ * ChatBot Astro wrapper
+ * Imports the CSS and hydrates the React island client-side only.
+ * Drop this into IntFooterScripts.astro or any layout.
+ */
+import ChatBot from "./ChatBot.tsx";
+import "./chatbot.css";
+---
+
+<ChatBot client:only="react" />
