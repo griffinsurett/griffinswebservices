@@ -56,7 +56,7 @@ export default function FaqAccordion({
   }, [expandedItems, items]);
 
   return (
-    <div className={`border-t border-white/10 ${className}`.trim()}>
+    <div className={`border-t border-border ${className}`.trim()}>
       {items.map((item, index) => {
         const itemId = item.slug || `item-${index}`;
         const isExpanded = expandedItems.has(itemId);
@@ -64,7 +64,7 @@ export default function FaqAccordion({
         return (
           <div
             key={itemId}
-            className="border-b border-white/10"
+            className="border-b border-border"
             {...animationProps("fade-in-up", { once: false })}
           >
             <button
@@ -79,7 +79,7 @@ export default function FaqAccordion({
                 {item.title}
               </span>
               <span
-                className="relative flex h-10 w-10 shrink-0 items-center justify-center text-[2.1rem] font-extralight text-white/70 transition-transform duration-300 group-hover:text-heading"
+                className="relative flex h-10 w-10 shrink-0 items-center justify-center text-[2.1rem] font-extralight text-muted transition-transform duration-300 group-hover:text-heading"
                 aria-hidden="true"
               >
                 <span className="absolute h-px w-7 bg-current" />

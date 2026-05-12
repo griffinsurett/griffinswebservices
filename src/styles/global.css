@@ -490,6 +490,10 @@ body {
 @apply bg-linear-to-r from-accent to-accent-700;
 }
 
+@utility accent-gradient-static {
+  @apply bg-linear-to-r from-accent to-accent-700 text-white;
+}
+
 @utility secondary-gradient {
   @apply bg-linear-to-r from-accent-300 to-accent;
 }
@@ -913,6 +917,56 @@ body {
 /* ============================================================
  * 5. ANIMATIONS
  * ============================================================ */
+
+/* ── Chatbot widget ─────────────────────────────────────── */
+@keyframes chatbot-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes chatbot-dot {
+  0%,60%,100% { transform: translateY(0);    opacity: .4; }
+  30%          { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes chatbot-badge {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+@keyframes chatbot-pulse {
+  0%,100% { opacity: 1; }
+  50%     { opacity: .4; }
+}
+@keyframes chatbot-emoji-open {
+  0%   { opacity: 0; transform: scaleY(.6) scaleX(.92) translateY(8px); }
+  60%  { opacity: 1; }
+  100% { opacity: 1; transform: scaleY(1) scaleX(1) translateY(0); }
+}
+@keyframes chatbot-emoji-close {
+  0%   { opacity: 1; transform: scaleY(1) scaleX(1) translateY(0); }
+  100% { opacity: 0; transform: scaleY(.6) scaleX(.92) translateY(8px); }
+}
+
+@layer utilities {
+  .animate-chatbot-in         { animation: chatbot-in .22s ease; }
+  .animate-chatbot-dot        { animation: chatbot-dot 1.2s ease-in-out infinite; }
+  .animate-chatbot-badge      { animation: chatbot-badge .3s cubic-bezier(.34,1.56,.64,1); }
+  .animate-chatbot-pulse      { animation: chatbot-pulse 2.2s ease-in-out infinite; }
+  .animate-chatbot-emoji-open { animation: chatbot-emoji-open .32s cubic-bezier(.34,1.56,.64,1) forwards; }
+  .animate-chatbot-emoji-close{ animation: chatbot-emoji-close .22s cubic-bezier(.4,0,1,1) forwards; }
+}
+
+  .EmojiPickerReact {
+    --epr-bg-color: var(--color-bg) !important;
+    --epr-category-label-bg-color: var(--color-bg) !important;
+    --epr-hover-bg-color: color-mix(in srgb, var(--color-accent) 12%, transparent) !important;
+    --epr-search-input-bg-color: color-mix(in srgb, var(--color-primary-light) 5%, transparent) !important;
+    --epr-search-border-color: var(--color-border) !important;
+    --epr-text-color: var(--color-text) !important;
+    --epr-border-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    width: 100% !important;
+  }
 @keyframes ab-border-progress {
   0% {
     --ab-progress: 0deg;
