@@ -2,8 +2,11 @@
 import type { APIRoute } from "astro";
 import OpenAI from "openai";
 import { KNOWLEDGE_BASE } from "@/integrations/chatbot/knowledge-base.generated";
+import { SITE_URL } from "@/content/siteData";
 
 export const prerender = false;
+
+const ALLOWED_ORIGIN = SITE_URL.replace(/\/$/, "");
 
 const rateMap = new Map<string, { count: number; ts: number }>();
 const RATE_LIMIT = 20;
@@ -21,16 +24,29 @@ function isRateLimited(ip: string): boolean {
   return false;
 }
 
-const INJECTION_KEYWORDS = [
-  "ignore all", "ignore previous", "system prompt", "forget your rules",
-  "forget previous", "you are no longer", "instructions above", "reveal your instructions",
-];
+function isAllowedOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  if (import.meta.env.DEV) return true;
+  return origin === ALLOWED_ORIGIN;
+}
+
+function corsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get("origin");
+  const allowed = !origin || import.meta.env.DEV || origin === ALLOWED_ORIGIN;
+  return {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": allowed && origin ? origin : ALLOWED_ORIGIN,
+    "Vary": "Origin",
+  };
+}
 
 export const POST: APIRoute = async ({ request }) => {
-  const headers = {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-  };
+  if (!isAllowedOrigin(request)) {
+    return new Response(JSON.stringify({ error: "Forbidden." }), { status: 403 });
+  }
+
+  const headers = corsHeaders(request);
 
   try {
     const ip =
@@ -74,26 +90,12 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    for (const msg of messages) {
-      if (msg.role === "user") {
-        const lower = msg.content.toLowerCase();
-        if (INJECTION_KEYWORDS.some(kw => lower.includes(kw))) {
-          return new Response(
-            JSON.stringify({ reply: "I'm a support assistant for Griffin's Web Services, so I stick to answering questions about our web design and development services. How can I help you today?" }),
-            { status: 200, headers }
-          );
-        }
-      }
-    }
-
-    const kb = KNOWLEDGE_BASE;
-
     const openai = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: kb },
+        { role: "system", content: KNOWLEDGE_BASE },
         ...messages,
       ],
       max_tokens: 150,
@@ -128,12 +130,19 @@ export const POST: APIRoute = async ({ request }) => {
   }
 };
 
-export const OPTIONS: APIRoute = () =>
-  new Response(null, {
+export const OPTIONS: APIRoute = ({ request }) => {
+  if (!isAllowedOrigin(request)) {
+    return new Response(null, { status: 403 });
+  }
+  const origin = request.headers.get("origin") ?? "";
+  const allowed = !origin || import.meta.env.DEV || origin === ALLOWED_ORIGIN;
+  return new Response(null, {
     status: 204,
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": allowed && origin ? origin : ALLOWED_ORIGIN,
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
+      "Vary": "Origin",
     },
   });
+};
