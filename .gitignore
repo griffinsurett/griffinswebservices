@@ -4,6 +4,9 @@ dist/
 # generated types
 .astro/
 
+# build-time generated files
+src/integrations/chatbot/knowledge-base.generated.ts
+
 # vite cache
 .vite/
 

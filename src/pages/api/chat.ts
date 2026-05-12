@@ -1,7 +1,7 @@
 // src/pages/api/chat.ts
 import type { APIRoute } from "astro";
 import OpenAI from "openai";
-import { buildKnowledgeBase } from "@/integrations/chatbot/buildKnowledgeBase";
+import { KNOWLEDGE_BASE } from "@/integrations/chatbot/knowledge-base.generated";
 
 export const prerender = false;
 
@@ -86,7 +86,7 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
-    const kb = await buildKnowledgeBase();
+    const kb = KNOWLEDGE_BASE;
 
     const openai = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });
 

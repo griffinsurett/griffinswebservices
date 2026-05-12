@@ -1,41 +1,30 @@
 // src/integrations/chatbot/buildKnowledgeBase.ts
-import { getPublishedCollection } from "@/utils/collections/core";
-import { siteData } from "@/content/siteData";
+// Fully dynamic — scans every collection, no names hardcoded, no opt-out.
+// Called at build time by chatbot-kb.integration.ts.
 
-export async function buildKnowledgeBase(): Promise<string> {
-  const exclude = (entry: { id: string }) => entry.id !== "_meta.mdx";
+import { scanCollections, DEFAULT_CONTENT_DIR } from "../../utils/filesystem/contentScanner";
+import type { ScannedItem } from "../../utils/filesystem/contentScanner";
+import { siteData } from "../../content/siteData";
 
-  const [
-    faqs,
-    pricings,
-    capabilities,
-    projects,
-    testimonials,
-    processSteps,
-    benefits,
-    technologies,
-    industries,
-    solutions,
-    stats,
-    aboutUs,
-    philosophy,
-    blog,
-  ] = await Promise.all([
-    getPublishedCollection("faq").then(r => r.filter(exclude)),
-    getPublishedCollection("pricing").then(r => r.filter(exclude)),
-    getPublishedCollection("capabilities").then(r => r.filter(exclude)),
-    getPublishedCollection("projects").then(r => r.filter(exclude)),
-    getPublishedCollection("testimonials").then(r => r.filter(exclude)),
-    getPublishedCollection("process").then(r => r.filter(exclude)),
-    getPublishedCollection("benefits").then(r => r.filter(exclude)),
-    getPublishedCollection("technologies").then(r => r.filter(exclude)),
-    getPublishedCollection("industries").then(r => r.filter(exclude)),
-    getPublishedCollection("solutions").then(r => r.filter(exclude)),
-    getPublishedCollection("stats").then(r => r.filter(exclude)),
-    getPublishedCollection("about-us").then(r => r.filter(exclude)),
-    getPublishedCollection("philosophy").then(r => r.filter(exclude)),
-    getPublishedCollection("blog").then(r => r.filter(exclude)),
-  ]);
+const str = (v: unknown) => (v != null ? String(v).trim() : "");
+const num = (v: unknown) => Number(v) || 0;
+const arr = (v: unknown): string[] => (Array.isArray(v) ? v.map(String) : []);
+
+const byOrder = (a: ScannedItem, b: ScannedItem) => num(a.data.order) - num(b.data.order);
+
+const sectionHeading = (name: string, meta: Record<string, any>) =>
+  str(meta.title) || name.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+function formatItem(i: ScannedItem): string {
+  let out = `- ${str(i.data.title)}`;
+  if (i.data.description) out += `: ${str(i.data.description)}`;
+  const features = arr(i.data.features);
+  if (features.length) out += `\n  Features: ${features.join(", ")}`;
+  return out + "\n";
+}
+
+export function buildKnowledgeBase(contentDir: string = DEFAULT_CONTENT_DIR): string {
+  const collections = scanCollections(contentDir);
 
   let kb = `You are the official chat support assistant for ${siteData.legalName}, a professional web design and development agency based in ${siteData.location}.
 
@@ -58,162 +47,16 @@ STRICT FORMATTING RULES (follow these every single reply, no exceptions):
 - Write plain conversational text only. Imagine you are texting a friendly reply to a customer.
 - Keep it natural: a short intro sentence, then the list if needed, then a brief closing sentence.
 
----
-## About ${siteData.title}
-- Business Name: ${siteData.legalName}
-- Location: ${siteData.location}
-- Website: ${siteData.domain}
-- Tagline: "${siteData.tagline}"
-- Key Pages (always use full URLs when linking):
-  - Pricing: ${siteData.url}/pricing
-  - Portfolio: ${siteData.url}/projects
-  - Blog: ${siteData.url}/blog
-  - FAQ: ${siteData.url}/faq
-  - Contact / Get a Quote: ${siteData.url}/contact-us
-
 `;
 
-  if (aboutUs.length > 0) {
-    kb += `---\n## About Us\n`;
-    aboutUs.sort((a, b) => a.data.order - b.data.order).forEach(a => {
-      kb += `### ${a.data.title}\n`;
-      if (a.data.description) kb += `${a.data.description}\n`;
-      if (a.data.heroIntro) kb += `${a.data.heroIntro}\n`;
-      if (a.data.heroChecklist?.length) kb += `Key points: ${a.data.heroChecklist.join(", ")}\n`;
-      if (a.data.featureItems?.length) kb += `Features: ${a.data.featureItems.map((f: { text: string }) => f.text).join(", ")}\n`;
-      kb += `\n`;
-    });
-  }
+  for (const collection of collections) {
+    const items = collection.items.filter((i) => !i.data.draft).sort(byOrder);
+    if (!items.length) continue;
 
-  if (philosophy.length > 0) {
-    kb += `---\n## Our Philosophy\n`;
-    philosophy.sort((a, b) => a.data.order - b.data.order).forEach(p => {
-      kb += `- ${p.data.title}: ${p.data.description || ""}\n`;
-    });
-    kb += `\n`;
-  }
-
-  if (stats.length > 0) {
-    kb += `---\n## Key Stats & Numbers\n`;
-    stats.sort((a, b) => a.data.order - b.data.order).forEach(s => {
-      const val = s.data.statValue !== undefined
-        ? `${s.data.statPrefix || ""}${s.data.statValue}${s.data.statSuffix || ""}`
-        : s.data.stat || "";
-      kb += `- ${s.data.title}: ${val}${s.data.description ? ` - ${s.data.description}` : ""}\n`;
-    });
-    kb += `\n`;
-  }
-
-  if (pricings.length > 0) {
-    kb += `---\n## Services & Pricing\n`;
-    pricings.sort((a, b) => a.data.order - b.data.order).forEach(p => {
-      const price = p.data.price
-        ? `${p.data.pricePrefix || ""}${p.data.price}${p.data.priceSuffix || ""}`
-        : "Contact us for pricing";
-      kb += `### ${p.data.title} - ${price}\n`;
-      if (p.data.description) kb += `${p.data.description}\n`;
-      if (p.data.features?.length) kb += `Includes: ${p.data.features.join(", ")}\n`;
-      if (p.data.note) kb += `Note: ${p.data.note}\n`;
-      kb += `\n`;
-    });
-  }
-
-  if (capabilities.length > 0) {
-    kb += `---\n## What We Build (Capabilities)\n`;
-    capabilities.sort((a, b) => a.data.order - b.data.order).forEach(c => {
-      kb += `- ${c.data.title}: ${c.data.description || ""}\n`;
-      if (c.data.features?.length) kb += `  Features: ${c.data.features.join(", ")}\n`;
-    });
-    kb += `\n`;
-  }
-
-  if (solutions.length > 0) {
-    kb += `---\n## Solutions We Offer\n`;
-    solutions.sort((a, b) => a.data.order - b.data.order).forEach(s => {
-      kb += `- ${s.data.title}: ${s.data.description || ""}${s.data.price ? ` (${s.data.price})` : ""}\n`;
-    });
-    kb += `\n`;
-  }
-
-  if (processSteps.length > 0) {
-    kb += `---\n## How We Work (Our Process)\n`;
-    processSteps.sort((a, b) => a.data.order - b.data.order).forEach((step, i) => {
-      kb += `${i + 1}. ${step.data.title}: ${step.data.description || ""}\n`;
-    });
-    kb += `\n`;
-  }
-
-  if (benefits.length > 0) {
-    kb += `---\n## Benefits of Working With Us\n`;
-    benefits.sort((a, b) => a.data.order - b.data.order).forEach(b => {
-      kb += `- ${b.data.title}: ${b.data.description || ""}\n`;
-    });
-    kb += `\n`;
-  }
-
-  if (industries.length > 0) {
-    kb += `---\n## Industries We Serve\n`;
-    industries.sort((a, b) => a.data.order - b.data.order).forEach(i => {
-      kb += `- ${i.data.title}: ${i.data.description || ""}\n`;
-    });
-    kb += `\n`;
-  }
-
-  if (technologies.length > 0) {
-    kb += `---\n## Technologies We Use\n`;
-    technologies.sort((a, b) => a.data.order - b.data.order).forEach(t => {
-      kb += `- ${t.data.title}: ${t.data.description || ""}\n`;
-    });
-    kb += `\n`;
-  }
-
-  if (projects.length > 0) {
-    kb += `---\n## Our Portfolio (Recent Projects)\n`;
-    projects
-      .sort((a, b) => a.data.order - b.data.order)
-      .slice(0, 10)
-      .forEach(p => {
-        kb += `- ${p.data.title}${p.data.client ? ` (Client: ${p.data.client})` : ""}: ${p.data.description || ""}`;
-        if (p.data.technologies?.length) kb += ` | Built with: ${p.data.technologies.join(", ")}`;
-        if (p.data.projectUrl) kb += ` | Live at: ${p.data.projectUrl}`;
-        kb += `\n`;
-      });
-    kb += `Full portfolio at ${siteData.url}/projects\n\n`;
-  }
-
-  if (testimonials.length > 0) {
-    kb += `---\n## Client Testimonials\n`;
-    testimonials
-      .filter(t => t.data.rating >= 4)
-      .sort((a, b) => b.data.rating - a.data.rating)
-      .slice(0, 6)
-      .forEach(t => {
-        kb += `- "${t.data.description || t.data.title}" - ${t.data.author}${t.data.company ? `, ${t.data.company}` : ""} (${t.data.rating}/5)\n`;
-      });
-    kb += `\n`;
-  }
-
-  if (blog.length > 0) {
-    kb += `---\n## Recent Blog Articles\n`;
-    blog
-      .filter(b => b.data.publishDate)
-      .sort((a, b) => {
-        const da = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
-        const db = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
-        return db - da;
-      })
-      .slice(0, 5)
-      .forEach(b => {
-        kb += `- ${b.data.title}: ${b.data.description || ""}\n`;
-      });
-    kb += `Read all articles at ${siteData.url}/blog\n\n`;
-  }
-
-  if (faqs.length > 0) {
-    kb += `---\n## Frequently Asked Questions\n`;
-    faqs.sort((a, b) => a.data.order - b.data.order).forEach(faq => {
-      kb += `Q: ${faq.data.title}\nA: ${faq.data.description || ""}\n\n`;
-    });
+    kb += `---\n## ${sectionHeading(collection.name, collection.meta)}\n`;
+    if (collection.meta.description) kb += `${str(collection.meta.description)}\n`;
+    items.forEach((i) => { kb += formatItem(i); });
+    kb += "\n";
   }
 
   kb += `---\n## Final Instructions
