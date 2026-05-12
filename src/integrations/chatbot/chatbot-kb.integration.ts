@@ -15,26 +15,29 @@ const OUT_FILE = join(
 );
 
 export default function chatbotKbIntegration(): AstroIntegration {
+  const generate = (logger: { info: (s: string) => void; error: (s: string) => void }) => {
+    try {
+      const kb = buildKnowledgeBase(DEFAULT_CONTENT_DIR);
+      const escaped = kb
+        .replace(/\\/g, "\\\\")
+        .replace(/`/g, "\\`")
+        .replace(/\$\{/g, "\\${");
+      writeFileSync(
+        OUT_FILE,
+        `// AUTO-GENERATED — do not edit\nexport const KNOWLEDGE_BASE = \`${escaped}\`;\n`,
+        "utf-8"
+      );
+      logger.info("chatbot-kb: knowledge base generated.");
+    } catch (err: any) {
+      logger.error(`chatbot-kb: failed to generate knowledge base — ${err.message}`);
+    }
+  };
+
   return {
     name: "chatbot-kb-generator",
     hooks: {
-      "astro:build:start": ({ logger }) => {
-        try {
-          const kb = buildKnowledgeBase(DEFAULT_CONTENT_DIR);
-          const escaped = kb
-            .replace(/\\/g, "\\\\")
-            .replace(/`/g, "\\`")
-            .replace(/\$\{/g, "\\${");
-          writeFileSync(
-            OUT_FILE,
-            `// AUTO-GENERATED at build time — do not edit\nexport const KNOWLEDGE_BASE = \`${escaped}\`;\n`,
-            "utf-8"
-          );
-          logger.info("chatbot-kb: knowledge base generated.");
-        } catch (err: any) {
-          logger.error(`chatbot-kb: failed to generate knowledge base — ${err.message}`);
-        }
-      },
+      "astro:build:start": ({ logger }) => generate(logger),
+      "astro:server:start": ({ logger }) => generate(logger),
     },
   };
 }
