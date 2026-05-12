@@ -260,7 +260,7 @@ function ChatBot() {
   }, [msgs, typing]);
 
   useEffect(() => {
-    if (open) { setUnread(0); setTimeout(() => inputRef.current?.focus(), 120); }
+    if (open) { setUnread(0); if (!/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) setTimeout(() => inputRef.current?.focus(), 120); }
     else { if (emoji) closeEmoji(); else setEmoji(false); }
   }, [open]);
 
