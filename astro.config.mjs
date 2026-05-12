@@ -55,8 +55,8 @@ export default defineConfig({
     }),
     sitemap(),
     conditionalPartytown(),
-    chatbotKbIntegration(),
     robotsLlmsIntegration(),
+    chatbotKbIntegration(),
   ],
   
   build: {
