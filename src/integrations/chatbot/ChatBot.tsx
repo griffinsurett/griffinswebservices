@@ -256,8 +256,9 @@ function ChatBot() {
   }, []);
 
   useEffect(() => {
+    if (!open) return;
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [msgs, typing]);
+  }, [msgs, typing, open]);
 
   useEffect(() => {
     if (open) { setUnread(0); }
@@ -423,6 +424,7 @@ function ChatBot() {
               onBlur={() => setInputFocused(false)}
               placeholder="Ask anything…"
               rows={1}
+              tabIndex={open ? 0 : -1}
               aria-label="Message"
               className="w-full resize-none form-field text-[.845rem] font-[inherit] leading-normal max-h-24 min-h-[2.4rem] overflow-y-auto scrollbar-hide block"
             />
