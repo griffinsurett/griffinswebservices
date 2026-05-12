@@ -17,7 +17,8 @@
  * - seo: SEO overrides
  */
 import { file } from "astro/loaders";
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro:schema";
 import { baseSchema, MenuSchema, MenuItemFields, refSchema } from "./schema";
 import { MenuItemsLoader } from "@/utils/loaders/MenuItemsLoader";
 
