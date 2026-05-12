@@ -75,8 +75,7 @@ export default function chatbotKbIntegration(): AstroIntegration {
       // Dev: no dist folder exists, use frontmatter scanner as fallback
       "astro:server:start": ({ logger }) => {
         try {
-          const kb = buildKnowledgeBase();
-          write(kb, logger);
+          write(buildKnowledgeBase(), logger);
         } catch (err: any) {
           logger.error(`chatbot-kb: dev generation failed — ${err.message}`);
         }
