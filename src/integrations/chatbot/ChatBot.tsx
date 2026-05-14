@@ -378,7 +378,7 @@ function ChatBot() {
           bg-bg border border-border rounded-[1.25rem]
           shadow-[0_24px_64px_rgba(0,0,0,.6),0_8px_24px_rgba(0,0,0,.3),inset_0_1px_0_rgba(255,255,255,.06)]
           transition-[opacity,transform] duration-250 ease-[cubic-bezier(.34,1.56,.64,1)]
-          max-sm:inset-0 max-sm:w-auto max-sm:max-h-none max-sm:min-h-0 max-sm:bottom-0 max-sm:rounded-none
+          max-sm:left-0 max-sm:right-0 max-sm:top-0 max-sm:bottom-[calc(1.25rem+3.5rem+.75rem)] max-sm:w-auto max-sm:max-h-none max-sm:min-h-0 max-sm:rounded-none
           ${open
             ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
             : "opacity-0 translate-y-3 scale-[.97] pointer-events-none"
