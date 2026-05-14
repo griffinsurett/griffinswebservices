@@ -75,6 +75,19 @@ function SmileIcon() {
   );
 }
 
+function MicIcon({ recording }: { recording: boolean }) {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="9" y="2" width="6" height="11" rx="3"
+        fill={recording ? "currentColor" : "none"}
+        stroke="currentColor" strokeWidth="1.8" />
+      <path d="M5 11a7 7 0 0014 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <line x1="9" y1="22" x2="15" y2="22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function TypingDots() {
   return (
     <span className="inline-flex items-center gap-1.5 h-4" aria-label="Typing">
@@ -200,7 +213,7 @@ function Fab({ open, unread, onClick }: { open: boolean; unread: number; onClick
       type="button"
       aria-label={open ? "Close chat" : "Chat with Griffin's Assistant"}
       aria-expanded={open}
-      className={`fixed bottom-[clamp(1.25rem,4vw,1.75rem)] right-[clamp(1.25rem,4vw,1.75rem)] z-99990
+      className={`fixed bottom-[clamp(1.25rem,4vw,1.75rem)] right-[clamp(1.25rem,4vw,1.75rem)] z-[100003]
         w-14 h-14 rounded-full cursor-pointer
         card-icon-color text-bg
         shadow-[0_4px_20px_color-mix(in_srgb,var(--color-accent)_50%,transparent),0_2px_8px_rgba(0,0,0,.35)]
@@ -235,6 +248,9 @@ function ChatBot() {
   const [emojiClosing, setEmojiClosing] = useState(false);
   const [dark, setDark]     = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [recording, setRecording] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const recognitionRef = useRef<any>(null);
 
   const closeEmoji = useCallback(() => {
     setEmojiClosing(true);
@@ -252,6 +268,7 @@ function ChatBot() {
     check();
     const obs = new MutationObserver(check);
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    setSpeechSupported(!!(window.SpeechRecognition || (window as any).webkitSpeechRecognition));
     return () => obs.disconnect();
   }, []);
 
@@ -320,6 +337,26 @@ function ChatBot() {
     }
   }, [input, msgs, open]);
 
+  const toggleRecording = useCallback(() => {
+    if (recording) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const rec = new SR();
+    rec.lang = "en-US";
+    rec.interimResults = false;
+    rec.onresult = (e: any) => {
+      const transcript = e.results[0]?.[0]?.transcript ?? "";
+      if (transcript) setInput(p => (p ? p + " " + transcript : transcript));
+    };
+    rec.onend = () => setRecording(false);
+    rec.onerror = () => setRecording(false);
+    recognitionRef.current = rec;
+    rec.start();
+    setRecording(true);
+  }, [recording]);
+
   const onKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
   };
@@ -331,7 +368,7 @@ function ChatBot() {
       {/* Panel */}
       <div
         role="dialog" aria-modal="true" aria-label="Chat with Griffin's Web Services"
-        className={`fixed z-99989
+        className={`fixed z-[100002]
           bottom-[calc(clamp(1.25rem,4vw,1.75rem)+3.5rem+.875rem)]
           right-[clamp(1.25rem,4vw,1.75rem)]
           w-[min(24rem,calc(100vw-clamp(2.5rem,8vw,3.5rem)))]
@@ -341,7 +378,7 @@ function ChatBot() {
           bg-bg border border-border rounded-[1.25rem]
           shadow-[0_24px_64px_rgba(0,0,0,.6),0_8px_24px_rgba(0,0,0,.3),inset_0_1px_0_rgba(255,255,255,.06)]
           transition-[opacity,transform] duration-250 ease-[cubic-bezier(.34,1.56,.64,1)]
-          max-sm:left-3 max-sm:right-3 max-sm:w-auto max-sm:rounded-2xl
+          max-sm:inset-0 max-sm:w-auto max-sm:max-h-none max-sm:min-h-0 max-sm:bottom-0 max-sm:rounded-none
           ${open
             ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
             : "opacity-0 translate-y-3 scale-[.97] pointer-events-none"
@@ -411,27 +448,37 @@ function ChatBot() {
             innerClassName="!bg-transparent !border-transparent p-0 rounded-xl flex-1"
             className="flex-1"
           >
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={e => {
-                setInput(e.target.value);
-                e.target.style.height = "auto";
-                e.target.style.height = Math.min(e.target.scrollHeight, 96) + "px";
-              }}
-              onKeyDown={onKey}
-              onFocus={() => setInputFocused(true)}
-              onBlur={() => setInputFocused(false)}
-              placeholder="Ask anything…"
-              rows={1}
-              tabIndex={open ? 0 : -1}
-              aria-label="Message"
-              className="w-full resize-none form-field text-[.845rem] font-[inherit] leading-normal max-h-24 min-h-[2.4rem] overflow-y-auto scrollbar-hide block"
-            />
+            <div className="relative flex items-end">
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={e => {
+                  setInput(e.target.value);
+                  e.target.style.height = "auto";
+                  e.target.style.height = Math.min(e.target.scrollHeight, 96) + "px";
+                }}
+                onKeyDown={onKey}
+                onFocus={() => setInputFocused(true)}
+                onBlur={() => setInputFocused(false)}
+                placeholder="Ask anything…"
+                rows={1}
+                tabIndex={open ? 0 : -1}
+                aria-label="Message"
+                className={`w-full resize-none form-field text-[.845rem] font-[inherit] leading-normal max-h-24 min-h-[2.4rem] overflow-y-auto scrollbar-hide block ${speechSupported ? "sm:pr-8" : ""}`}
+              />
+              {speechSupported && (
+                <button type="button" aria-label={recording ? "Stop recording" : "Speak your message"}
+                  onClick={toggleRecording}
+                  className={`hidden sm:flex absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-0 bg-transparent cursor-pointer items-center justify-center transition-[color] duration-200
+                    ${recording ? "text-red-500 animate-chatbot-pulse" : "text-muted hover:text-accent"}`}>
+                  <MicIcon recording={recording} />
+                </button>
+              )}
+            </div>
           </AnimatedBorder>
           <button ref={emojiBtnRef} type="button" aria-label="Emoji"
             onClick={() => emoji ? closeEmoji() : setEmoji(true)}
-            className={`w-9 h-9 rounded-full border-0 bg-transparent cursor-pointer flex items-center justify-center shrink-0 transition-[color,background] duration-200
+            className={`hidden sm:flex w-9 h-9 rounded-full border-0 bg-transparent cursor-pointer items-center justify-center shrink-0 transition-[color,background] duration-200
               ${emoji ? "text-accent bg-accent/10" : "text-muted hover:text-accent hover:bg-accent/10"}`}>
             <SmileIcon />
           </button>

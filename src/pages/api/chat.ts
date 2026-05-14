@@ -122,9 +122,8 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(JSON.stringify({ reply }), { status: 200, headers });
   } catch (err) {
     console.error("[ChatBot API Error]", err);
-    const message = err instanceof Error ? err.message : "Something went wrong.";
     return new Response(
-      JSON.stringify({ error: message }),
+      JSON.stringify({ error: "Something went wrong." }),
       { status: 500, headers }
     );
   }
