@@ -1,6 +1,19 @@
 // src/content/schema.ts
 import { reference, type CollectionKey } from "astro:content";
 import { z } from "astro:schema";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const srcDir = path.resolve(fileURLToPath(import.meta.url), "..");
+
+// Resolves "@/assets/foo.jpg" → absolute path so Astro's image() can process
+// it even in file() loader collections where Vite has no per-entry file context.
+const resolveAlias = (val: unknown): unknown => {
+  if (typeof val === "string" && val.startsWith("@/")) {
+    return path.join(srcDir, val.slice(2));
+  }
+  return val;
+};
 
 // ============================================================================
 // REFERENCE SCHEMA
@@ -204,12 +217,12 @@ export type RedirectFrom = z.infer<typeof redirectFromSchema>;
 // ============================================================================
 export const imageInputSchema = ({ image }: { image: Function }) =>
   z.union([
-    // Direct Astro image (most common)
-    image(),
-    
+    // Direct Astro image — preprocess resolves "@/" aliases before image() sees them
+    z.preprocess(resolveAlias, image()),
+
     // Image object with alt text
     z.object({
-      src: image(),
+      src: z.preprocess(resolveAlias, image()),
       alt: z.string().optional(),
     }),
   ]).optional();
