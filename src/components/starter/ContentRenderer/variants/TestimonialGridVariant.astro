@@ -1,13 +1,9 @@
 ---
 // src/components/starter/ContentRenderer/variants/TestimonialGridVariant.astro
-/**
- * Testimonial Grid Variant - Static 2-column grid layout for testimonials
- * Uses the same TestimonialCard component as the carousel but renders statically
- */
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import SectionHeader from "@/components/project/SectionHeader.astro";
 import Section from "@/components/project/Section.astro";
-import TestimonialCard from "@/components/LoopComponents/TestimonialCard";
+import TestimonialQuoteCarousel from "@/components/LoopTemplates/TestimonialQuoteCarousel";
 import { toArray } from "@/utils/array";
 
 interface Props extends BaseVariantProps {
@@ -23,56 +19,30 @@ const {
   className = "",
   collectionTitle,
   id,
-  columns = 2,
-  gap = "lg",
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
-
-const gapClasses = {
-  sm: "gap-4",
-  md: "gap-6",
-  lg: "gap-8",
-  xl: "gap-10",
-};
-
-const columnClasses = {
-  1: "grid-cols-1",
-  2: "grid-cols-1 lg:grid-cols-2",
-};
-
-const getRingDuration = (item: Record<string, any>) =>
-  typeof item?.ringDuration === "number" ? item.ringDuration : 800;
 ---
 
 <Section id={id} class={`outer-section relative ${className}`.trim()}>
   <div class="inner-section">
-    {
-      (title || collectionTitle || description || heading) && (
-        <SectionHeader
-          className="text-section"
-          headingClassName="mb-6"
-          descriptionClassName="large-text"
-        />
-      )
-    }
+    {(title || collectionTitle || description || heading) && (
+      <SectionHeader
+        title={title ?? collectionTitle}
+        heading={heading ?? title ?? collectionTitle}
+        description={description}
+        className="text-section"
+        headingClassName="mb-6"
+        descriptionClassName="large-text"
+      />
+    )}
 
-    {
-      safeItems.length > 0 && (
-        <ul
-          class={`grid ${columnClasses[columns]} ${gapClasses[gap]} list-none`}
-        >
-          {safeItems.map((item) => (
-            <li>
-              <TestimonialCard
-                item={item}
-                ringDuration={getRingDuration(item)}
-                className="h-full"
-              />
-            </li>
-          ))}
-        </ul>
-      )
-    }
+    {safeItems.length > 0 && (
+      <TestimonialQuoteCarousel
+        client:visible
+        items={safeItems}
+        quoteClassName="text-[clamp(1.2rem,2vw,1.6rem)] tracking-[-0.03em]"
+      />
+    )}
   </div>
 </Section>

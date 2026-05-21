@@ -65,7 +65,7 @@ const heroDescription =
     />
 
     <!-- PROCESS -->
-    <ContentRenderer
+    <!-- <ContentRenderer
       query={query("process").orderBy(sortByOrder())}
       variant="NumberCardVariant"
       id="process"
@@ -74,7 +74,7 @@ const heroDescription =
       description="Good websites do not come from guessing. They come from a clear plan, careful work, and support after launch."
       gap="lg"
       showButtonSection={false}
-    />
+    /> -->
 
     <!-- <HomeProblemSolutionIntro /> -->
 
@@ -91,14 +91,11 @@ const heroDescription =
       gap="lg"
     />
 
-       <HomeSolutionBridge />
+       <!-- <HomeSolutionBridge /> -->
+
+    <TrustPanel />
 
     <div class="bottom-content-section">
-      <ContentRenderer
-        query={query("testimonials").where((entry: any) => entry.data.rating >= 4)}
-        variant="TestimonialCarouselVariant"
-      />
-
       <ContentRenderer
         query={query("projects")
           .where((entry: any) => !!entry.data.featuredVideo)
@@ -111,7 +108,6 @@ const heroDescription =
         ctaHref="/projects"
         ctaText="See Portfolio"
       />
-      <TrustPanel />
 
       <ContentRenderer
         query={byTag("technologies", "featured").orderBy(sortByOrder()).limit(8)}

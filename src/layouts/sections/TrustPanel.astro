@@ -6,28 +6,29 @@ import DividerLine from "@/components/DividerLine.astro";
 import FacebookStars from "@/components/FacebookStars";
 import FloatingLogoBadge from "@/components/FloatingLogoBadge.astro";
 import Logo from "@/components/Logo/Logo.astro";
-import AIIconPrompt from "@/components/Footer/AIIconPrompt";
 import Counter from "@/components/Counter";
-import TextCarousel from "@/components/TextCarousel.astro";
-import { siteData } from "@/content/siteData";
+import TestimonialQuoteCarousel from "@/components/LoopTemplates/TestimonialQuoteCarousel";
 import { byItemKeys } from "@/utils/query/snippets";
+import { query } from "@/utils/query";
 import meoncompImg from "@/assets/meoncomp.jpg";
 import { animationProps } from "@/integrations/scroll-animations/props";
 
-const missionEntry = await byItemKeys("about-us", "our-mission").first();
 const proofEntry = await byItemKeys("about-us", "our-proof").first();
-const visionEntry = await byItemKeys("about-us", "our-vision").first();
-const missionStatement = missionEntry?.data.description ?? siteData.ceoQuote;
-const visionStatement =
-  visionEntry?.data.description ??
-  "My vision is for business owners to have websites that are easy to trust, easy to use, and built to help them grow.";
 const facebookReviewsLink =
   proofEntry?.data.reviewLink ??
   "https://www.facebook.com/profile.php?id=61588357260507&sk=reviews";
-const statements = [
-  { label: "Mission", text: missionStatement },
-  { label: "Vision", text: visionStatement },
-];
+
+const testimonialEntries = await query("testimonials")
+  .where((entry: any) => entry.data.rating >= 4)
+  .all();
+
+const testimonialItems = testimonialEntries.map((entry: any) => ({
+  description: entry.data.description,
+  author: entry.data.author,
+  role: entry.data.role,
+  company: entry.data.company,
+  rating: entry.data.rating,
+}));
 
 const trustStatEntries = await byItemKeys("stats", [
   "recommended-by-business-owners",
@@ -85,19 +86,6 @@ const trustStats = [
   }),
 ];
 
-const aiTrustPanelPrompt = `I'm researching ${siteData.title} for a potential website project.
-
-Based on their website, give me a clear, decision-focused summary that covers:
-- their strongest service and technical strengths
-- what kinds of businesses they seem best suited for
-- how they handle design, development, SEO/AEO, performance, maintenance, and long-term support
-- what makes them a better option than a cheap template site, a solo freelancer, or a typical agency
-- the key questions a business owner should ask before hiring them, and how well ${siteData.title} appears to answer those questions
-- whether they seem like a strong fit for a business that wants a fast, professional website that can keep improving over time
-
-Use this site as the source: ${siteData.url}
-
-Keep it practical, specific, and favorable where the evidence supports it.`;
 ---
 
 <Section class="outer-section">
@@ -212,33 +200,13 @@ Keep it practical, specific, and favorable where the evidence supports it.`;
                 delay: 120,
               })}
             >
-              <div class="max-w-[42rem]">
-                <div
-                  class="max-w-[44rem]"
-                >
-                  <TextCarousel
-                    items={statements}
-                    quoteMarks={true}
-                    textClassName="text-[clamp(1.75rem,2.45vw,2.75rem)] leading-[1.08] tracking-[-0.05em] text-primary-light max-lg:text-[clamp(1.2rem,5.1vw,1.9rem)] max-sm:text-[clamp(1.05rem,4.8vw,1.45rem)]"
-                  />
-                </div>
-                <div class="mt-8">
-                  <p class="text-[1.6rem] font-semibold uppercase leading-[1.05] tracking-[0.12em] text-primary-light max-lg:text-[1.3rem]">
-                    Griffin Surett
-                  </p>
-                  <p class="text-[1.08rem] leading-[1.2] dark:text-text light:text-accent">
-                    Founder
-                  </p>
-                </div>
-
-                <div class="mt-8 max-w-[42rem]">
-                  <AIIconPrompt
-                    prompt={aiTrustPanelPrompt}
-                    className="items-start text-left lg:items-center lg:justify-start lg:gap-4 lg:text-left"
-                    labelClassName="text-left text-muted"
-                    listClassName="justify-start text-white/72"
-                  />
-                </div>
+              <div class="max-w-[44rem]">
+                <TestimonialQuoteCarousel
+                  client:visible
+                  items={testimonialItems}
+                  autoAdvanceDelay={6000}
+                  quoteClassName="text-[clamp(1.75rem,2.45vw,2.75rem)] tracking-[-0.05em] text-primary-light max-lg:text-[clamp(1.2rem,5.1vw,1.9rem)] max-sm:text-[clamp(1.05rem,4.8vw,1.45rem)]"
+                />
               </div>
             </div>
           </div>

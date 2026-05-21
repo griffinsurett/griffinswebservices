@@ -5,7 +5,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import Section from "@/components/Section.astro";
 import Button from "@/components/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
-import TestimonialCarousel from "@/components/LoopTemplates/TestimonialCarousel";
+import TestimonialQuoteCarousel from "@/components/LoopTemplates/TestimonialQuoteCarousel";
 import { toArray } from "@/utils/array";
 
 interface Props extends BaseVariantProps {
@@ -47,10 +47,10 @@ const safeItems = toArray(items);
     )}
 
     {safeItems.length > 0 && (
-      <TestimonialCarousel
+      <TestimonialQuoteCarousel
         client:visible
         items={safeItems}
-        slidesPerView={{ base: 1, lg: 2 }}
+        quoteClassName="text-[clamp(1.2rem,2vw,1.6rem)] tracking-[-0.03em]"
       />
     )}
 

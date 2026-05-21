@@ -19,9 +19,9 @@ import CollectionBodyLayout from "@/layouts/collections/CollectionBodyLayout.ast
 >
   <ContentRenderer
     query={query("testimonials")}
-    variant="TestimonialGridVariant"
-    columns={2}
-    gap="lg"
+    variant="TestimonialCarouselVariant"
+    heading={frontmatter.heading}
+    description={frontmatter.description}
   />
 
   <HomeSolutionBridge />
