@@ -57,6 +57,7 @@ function ComputerScreen({
 
   // Reset + play/pause video when slide activates/deactivates
   useEffect(() => {
+    if (!isHydrated) return;
     const video = videoRef.current;
     if (!video) return;
     if (isActive && !isTransitioning) {
@@ -65,7 +66,7 @@ function ComputerScreen({
     } else {
       video.pause();
     }
-  }, [isActive, isTransitioning]);
+  }, [isActive, isTransitioning, isHydrated]);
 
   const isVideo = typeof item.featuredVideo === "string" && item.featuredVideo.length > 0;
   const fallbackSrc = getPortfolioImageSrc(item);
