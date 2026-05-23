@@ -10,6 +10,7 @@
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import { children, query, related, safeGetEntry, sortByDate, sortByOrder } from "@/utils/query";
+import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 import { capitalizeWords } from "@/utils/string";
 import { parseUrlPath } from "@/utils/paths";
 
@@ -149,10 +150,7 @@ const title = entry?.data?.title || capitalizeWords(slug?.replace(/-/g, " ") || 
 )}
 
 <div class="bottom-content-section">
-  <ContentRenderer
-    query={query("testimonials")}
-    variant="TestimonialCarouselVariant"
-  />
+  <TrustPanel />
 
   {slug && (
     <ContentRenderer

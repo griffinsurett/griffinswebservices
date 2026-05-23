@@ -48,11 +48,6 @@ import { related, byTag } from '@/utils/query/snippets';
 
 <div class="bottom-content-section">
   <ContentRenderer
-    query={query("testimonials")}
-    variant="TestimonialCarouselVariant"
-  />
-
-  <ContentRenderer
     query={related("faq", "industries", "professional-services").orderBy(sortByOrder())}
     variant="AccordionVariant"
     allowMultiple={false}

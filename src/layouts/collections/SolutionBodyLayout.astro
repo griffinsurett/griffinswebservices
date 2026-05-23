@@ -16,6 +16,7 @@ import { getCollectionMeta } from "@/utils/collections";
 import { shouldCollectionHavePage } from "@/utils/pages";
 import { getBreadcrumbs, query, sortByOrder } from "@/utils/query";
 import { related } from "@/utils/query/snippets";
+import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 
 interface GrandparentContent {
   introText?: string;
@@ -225,13 +226,7 @@ const quoteCardDescription = usesWebsiteQuoteForm
       <slot name="topic-sections" />
 
       <div class="bottom-content-section">
-        <ContentRenderer
-          query={query("testimonials").where((entry) => entry.data.rating >= 4)}
-          variant="TestimonialCarouselVariant"
-          title={resolvedGrandparentContent.testimonialsTitle}
-          heading={resolvedGrandparentContent.testimonialsHeading}
-          description={resolvedGrandparentContent.testimonialsDescription}
-        />
+        <TrustPanel />
 
         <Section id={solutionQuoteSectionId} class="outer-section">
           <div class="inner-section">

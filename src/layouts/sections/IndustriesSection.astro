@@ -11,6 +11,7 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import { query, related, safeGetEntry, sortByOrder } from "@/utils/query";
+import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 import { capitalizeWords } from "@/utils/string";
 import { parseUrlPath } from "@/utils/paths";
 
@@ -73,10 +74,7 @@ const defaultTrustStatement = `We've helped ${title.toLowerCase()} businesses la
 <slot />
 
 <div class="bottom-content-section">
-  <ContentRenderer
-    query={query("testimonials")}
-    variant="TestimonialCarouselVariant"
-  />
+  <TrustPanel />
 
   <ContentRenderer
     query={slug ? related("faq", "industries", slug).orderBy(sortByOrder()) : query("faq").orderBy(sortByOrder())}

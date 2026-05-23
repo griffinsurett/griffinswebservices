@@ -60,11 +60,6 @@ import { roots, related, children } from '@/utils/query/snippets';
 
 <div class="bottom-content-section">
   <ContentRenderer
-    query={query("testimonials").where((entry) => entry.data.rating >= 4)}
-    variant="TestimonialCarouselVariant"
-  />
-
-  <ContentRenderer
     query={query('industries').orderBy(sortByOrder())}
     variant="FilteredPortfolioVariant"
     relatedCollection="projects"

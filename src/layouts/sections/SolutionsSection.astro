@@ -11,6 +11,7 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import ContentSection from "@/layouts/sections/ContentSection.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import { query, sortByOrder, related, safeGetEntry } from "@/utils/query";
+import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 import { capitalizeWords } from "@/utils/string";
 import { parseUrlPath } from "@/utils/paths";
 
@@ -180,10 +181,7 @@ const fullSidebar = sidebar ? {
 )}
 
 <div class="bottom-content-section">
-  <ContentRenderer
-    query={query("testimonials")}
-    variant="TestimonialCarouselVariant"
-  />
+  <TrustPanel />
 
   <ContentRenderer
     query={slug ? related("faq", "solutions", slug).orderBy(sortByOrder()) : query("faq").orderBy(sortByOrder())}
