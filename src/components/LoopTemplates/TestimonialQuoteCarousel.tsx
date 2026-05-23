@@ -109,21 +109,6 @@ export default function TestimonialQuoteCarousel({
         </div>
       </div>
 
-      {count > 1 && (
-        <nav className="mt-6 flex gap-3" aria-label="Testimonial pagination">
-          {Array.from({ length: count }).map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setActiveIndex(i)}
-              className={`h-3 w-3 rounded-full transition-all duration-300 ${
-                i === activeIndex ? "bg-primary scale-[1.30]" : "faded-bg"
-              }`}
-              aria-label={`Go to testimonial ${i + 1}`}
-            />
-          ))}
-        </nav>
-      )}
     </div>
   );
 }
