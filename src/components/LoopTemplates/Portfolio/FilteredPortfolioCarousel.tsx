@@ -29,7 +29,6 @@ import { animationProps } from "@/integrations/scroll-animations";
 import {
   type PortfolioItemData,
   type PortfolioMediaEntry,
-  getPortfolioImageSrc,
 } from "@/components/LoopComponents/Portfolio/types";
 
 // Extended portfolio item
@@ -155,7 +154,6 @@ function GroupSlide({
   const currentMediaEntry = group.mediaEntries[imageIndex];
 
   const renderMedia = (item: FilteredPortfolioItem, mediaEntry?: PortfolioMediaEntry) => {
-    const fallbackSrc = getPortfolioImageSrc(item);
     const altText = mediaEntry?.alt || item.alt || item.title || "Project preview";
 
     if (mediaEntry?.sources?.length) {
@@ -185,10 +183,10 @@ function GroupSlide({
       );
     }
 
-    if (mediaEntry?.src || fallbackSrc) {
+    if (mediaEntry?.src) {
       return (
         <ClientImage
-          src={mediaEntry?.src || fallbackSrc}
+          src={mediaEntry.src}
           srcSet={mediaEntry?.srcSet}
           sizes={mediaEntry?.sizes}
           alt={altText}

@@ -1,8 +1,6 @@
 // src/components/LoopComponents/Portfolio/types.ts
 // Shared types for portfolio components
 
-import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
-
 /**
  * Image source configuration for responsive images
  */
@@ -50,23 +48,6 @@ export interface PortfolioItemData {
   technologies?: string[];
   projectUrl?: string;
   url?: string;
-}
-
-/**
- * Get the primary image source from a portfolio item
- * Checks fullSiteImage, bannerImage, then image in order
- */
-export function getPortfolioImageSrc(item: PortfolioItemData): string {
-  if (typeof item.featuredVideo === "string" && item.featuredVideo.length > 0) {
-    return "";
-  }
-
-  return (
-    getImageSrc(item.fullSiteImage) ||
-    getImageSrc(item.bannerImage) ||
-    getImageSrc(item.image) ||
-    ""
-  );
 }
 
 /**

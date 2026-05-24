@@ -5,7 +5,6 @@ import ScrollableViewport from "@/components/LoopComponents/Portfolio/Scrollable
 import {
   type PortfolioItemData,
   type PortfolioMediaEntry,
-  getPortfolioImageSrc,
 } from "./types";
 
 // Re-export types for consumers
@@ -91,16 +90,13 @@ export default function PortfolioItemComponent({
   }
 
   const getImageSrcForPosition = () => {
-    const fallback = getPortfolioImageSrc(item);
-
     if (item.imageSources) {
       if (isActive && item.imageSources.center) return item.imageSources.center;
       if ((position === "left" || position === "right") && item.imageSources.side)
         return item.imageSources.side;
       if (item.imageSources.mobile) return item.imageSources.mobile;
     }
-
-    return fallback;
+    return undefined;
   };
 
   const imageSrc = getImageSrcForPosition();

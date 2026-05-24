@@ -13,7 +13,6 @@ import KeyboardNavigableContainer from "./KeyboardNavigableContainer";
 import {
   type PortfolioItemData,
   type PortfolioMediaEntry,
-  getPortfolioImageSrc,
   normalizeItems,
 } from "@/components/LoopComponents/Portfolio/types";
 
@@ -69,7 +68,6 @@ function ComputerScreen({
   }, [isActive, isTransitioning, isHydrated]);
 
   const isVideo = typeof item.featuredVideo === "string" && item.featuredVideo.length > 0;
-  const fallbackSrc = getPortfolioImageSrc(item);
   const handleCycleComplete = totalSlides > 1 ? onCycleComplete : undefined;
 
   if (!isHydrated) {
@@ -96,7 +94,7 @@ function ComputerScreen({
   }
 
   // Image slide: scroll to end via ScrollableViewport, then advance
-  if (!mediaEntry?.src && !fallbackSrc) {
+  if (!mediaEntry?.src) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-linear-to-b from-bg2 via-bg to-bg/80 text-white/30">
         Preview coming soon
@@ -113,7 +111,7 @@ function ComputerScreen({
       showDevOverlay={showDevOverlay}
     >
       <ClientImage
-        src={mediaEntry?.src || fallbackSrc}
+        src={mediaEntry?.src}
         srcSet={mediaEntry?.srcSet}
         sizes={mediaEntry?.sizes}
         sources={mediaEntry?.sources}

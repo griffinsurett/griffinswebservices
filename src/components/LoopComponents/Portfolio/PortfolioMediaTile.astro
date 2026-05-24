@@ -2,7 +2,6 @@
 import HoverScrollImage from "@/components/LoopComponents/Portfolio/HoverScrollImage";
 import HoverPlayVideo from "@/components/Video/HoverPlayVideo/HoverPlayVideo.astro";
 import Button from "@/components/Button/Button";
-import { getImageSrc } from "@/layouts/collections/helpers/layoutHelpers";
 import {
   generateResponsiveCroppedImage,
   generateResponsiveImage,
@@ -39,8 +38,7 @@ const featuredVideo = entry?.featuredVideo;
 const imageSource =
   entry?.fullSiteImage ?? entry?.bannerImage ?? entry?.image ?? entry?.featuredImage;
 const imageMetadata = resolveImageMetadata(imageSource);
-const imageSrc = getImageSrc(imageSource);
-const imageAlt = featuredVideo
+const imageAlt =featuredVideo
   ? `${title} website preview`
   : getImageAlt(imageSource, `${title} website preview`);
 const mediaFrameClass = "block w-full overflow-hidden aspect-[20/13]";
@@ -94,7 +92,7 @@ const fullImage = imageMetadata
             clientWrapperClass="h-full w-full overflow-hidden items-start"
           />
         </div>
-      ) : imageSrc ? (
+      ) : imageMetadata ? (
         <div class={`${mediaFrameClass} relative`} data-hover-scroll-tile>
           {
             croppedImage && (
@@ -131,7 +129,7 @@ const fullImage = imageMetadata
           <div class="relative z-10 h-full">
             <HoverScrollImage
               client:visible
-              src={fullImage?.src ?? imageSrc}
+              src={fullImage?.src ?? imageMetadata?.src}
               srcSet={fullImage?.srcSet}
               sizes={fullImage?.sizes}
               sources={fullImage?.sources}
