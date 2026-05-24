@@ -14,7 +14,7 @@
 import type { CollectionKey } from "astro:content";
 import SiteLayout from "@/layouts/SiteLayout.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
+import SecondaryHero from "@/layouts/heroes/SecondaryHero.astro";
 import { query, sortByDate } from "@/utils/query";
 import DoubleCard from "../sections/DoubleCard.astro";
 
@@ -43,13 +43,11 @@ const pageHeading = collectionMeta?.heading || pageTitle;
 ---
 
 <SiteLayout {...seoProps}>
-	    {/* Header - BreadcrumbHeroCenter with title and description */}
-	    <BreadcrumbHeroCenter
-	      title={pageTitle}
-	      heading={pageHeading}
-	      description={pageDescription}
-	      minHeight="60vh"
-	    />
+    <SecondaryHero
+      title={pageTitle}
+      heading={pageHeading}
+      description={pageDescription}
+    />
 
     {/* Content - Either custom MDX or default grid */}
     <div>
