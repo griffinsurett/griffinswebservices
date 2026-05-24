@@ -4,7 +4,9 @@ import SiteLayout from "@/layouts/SiteLayout.astro";
 import ArticleShareActions from "@/components/ArticleShareActions";
 import TableOfContents from "@/components/TableOfContents/TableOfContents";
 import AIIconPrompt from "@/components/Footer/AIIconPrompt";
-import { getAuthorName, getImageSrc } from "./helpers/layoutHelpers";
+import { getAuthorName } from "./helpers/layoutHelpers";
+import { resolveImageMetadata } from "@/utils/images";
+import { getImage } from "astro:assets";
 import type { CollectionLayoutProps } from "./types";
 import { find, isCollectionReference } from "@/utils/query";
 
@@ -15,7 +17,10 @@ const {
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
-const featuredImageSrc = getImageSrc(data.featuredImage);
+const featuredMeta = resolveImageMetadata(data.featuredImage);
+const featuredImageSrc = featuredMeta
+  ? (await getImage({ src: featuredMeta, width: 1200, format: "webp" })).src
+  : undefined;
 const contentId = `blog-article-${entry?.id ?? "content"}`;
 const breadcrumbs = [
   { label: "Home", href: "/" },
@@ -33,7 +38,10 @@ if (isCollectionReference(data.author)) {
     const authorData = authorEntry.data as Record<string, any>;
     authorName = authorData.title || authorData.name || authorName;
     authorRole = authorData.role || "";
-    authorImageSrc = getImageSrc(authorData.featuredImage);
+    const authorMeta = resolveImageMetadata(authorData.featuredImage);
+    authorImageSrc = authorMeta
+      ? (await getImage({ src: authorMeta, width: 80, height: 80, format: "webp" })).src
+      : "";
   }
 }
 

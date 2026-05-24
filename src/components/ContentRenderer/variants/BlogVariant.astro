@@ -13,6 +13,8 @@ import Button from "@/components/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import { toArray } from "@/utils/array";
 import { find, isCollectionReference } from "@/utils/query";
+import { resolveImageMetadata, getImageAlt } from "@/utils/images";
+import { getImage } from "astro:assets";
 
 interface Props extends BaseVariantProps {
   columns?: 1 | 2 | 3;
@@ -49,33 +51,23 @@ const resolvedItems = await Promise.all(
       const authorEntry = await find(item.author.collection, item.author.id);
       if (authorEntry) {
         const data = authorEntry.data as Record<string, any>;
-        // Get author image - handle both direct image and object with src
-        let authorImage: string | undefined;
-        if (data.featuredImage) {
-          authorImage = typeof data.featuredImage === 'string'
-            ? data.featuredImage
-            : data.featuredImage?.src?.src || data.featuredImage?.src;
-        }
+        const authorMeta = resolveImageMetadata(data.featuredImage);
+        const authorImg = authorMeta
+          ? await getImage({ src: authorMeta, width: 80, height: 80, format: "webp" })
+          : undefined;
         authorData = {
           name: data.title || data.name || "",
-          image: authorImage,
+          image: authorImg?.src,
         };
       }
     }
 
-    // Get featured image - handle both direct image and object with src
-    let featuredImage: string | undefined;
-    let featuredImageAlt: string | undefined;
-    if (item.featuredImage) {
-      if (typeof item.featuredImage === 'string') {
-        featuredImage = item.featuredImage;
-      } else if (item.featuredImage?.src) {
-        featuredImage = typeof item.featuredImage.src === 'string'
-          ? item.featuredImage.src
-          : item.featuredImage.src?.src;
-        featuredImageAlt = item.featuredImage.alt;
-      }
-    }
+    const featuredMeta = resolveImageMetadata(item.featuredImage);
+    const featuredImg = featuredMeta
+      ? await getImage({ src: featuredMeta, width: 800, format: "webp" })
+      : undefined;
+    const featuredImage = featuredImg?.src;
+    const featuredImageAlt = getImageAlt(item.featuredImage, item.title ?? "");
 
     return {
       title: item.title,
