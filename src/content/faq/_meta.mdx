@@ -4,6 +4,9 @@ description: "Questions about timelines, content, SEO campaigns, support, and wh
 heading: "Common Questions Before We Build"
 hasPage: true
 itemsHasPage: false
+addToMenu:
+  - menu: "main-menu"
+    order: 5
 ---
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query, sortByOrder } from "@/utils/query";
@@ -11,6 +14,9 @@ import { query, sortByOrder } from "@/utils/query";
 <ContentRenderer
   query={query("faq").orderBy(sortByOrder())}
   variant="AccordionVariant"
+  title={frontmatter.title}
+  heading={frontmatter.heading}
+  description={frontmatter.description}
   allowMultiple={false}
   showButtonSection={false}
 />
