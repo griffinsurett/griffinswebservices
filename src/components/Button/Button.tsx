@@ -19,6 +19,7 @@ import LogoLinkButton from './variants/LogoLinkButton';
 import LinkPageButton from './variants/LinkPageButton';
 import FilterTabButton from './variants/FilterTabButton';
 import FilterIconButton from './variants/FilterIconButton';
+import FormButton from './variants/FormButton';
 
 /**
  * Extracts text content from React children for aria-label generation
@@ -235,6 +236,7 @@ const VARIANT_MAP = {
   linkPage: LinkPageButton,
   filterTab: FilterTabButton,
   filterIcon: FilterIconButton,
+  form: FormButton,
 };
 
 export type ButtonVariant = keyof typeof VARIANT_MAP;

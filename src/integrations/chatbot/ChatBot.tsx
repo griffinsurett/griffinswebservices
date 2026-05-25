@@ -6,7 +6,6 @@ import {
 import { createPortal } from "react-dom";
 import EmojiPicker, { Theme, EmojiStyle } from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
-import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
 
 interface Message {
   id: string;
@@ -235,7 +234,6 @@ function Fab({ open, unread, onClick }: { open: boolean; unread: number; onClick
 
 function ChatBot() {
   const [open, setOpen]       = useState(false);
-  const [inputFocused, setInputFocused] = useState(false);
   const [msgs, setMsgs]     = useState<Message[]>([{
     id: "w0", role: "assistant",
     text: "Hi! 👋 How can I help you today?",
@@ -437,45 +435,31 @@ function ChatBot() {
         {/* Input bar */}
         <form className="flex items-end gap-1.5 px-3.5 py-2.5 border-t border-border bg-bg shrink-0"
           onSubmit={(e: FormEvent) => { e.preventDefault(); send(); }}>
-          <AnimatedBorder
-            variant="progress-b-f"
-            triggers="controlled"
-            active={inputFocused}
-            duration={900}
-            borderWidth={2}
-            borderRadius="rounded-xl"
-            color="var(--color-accent)"
-            innerClassName="!bg-transparent !border-transparent p-0 rounded-xl flex-1"
-            className="flex-1"
-          >
-            <div className="relative flex items-end">
-              <textarea
-                ref={inputRef}
-                value={input}
-                onChange={e => {
-                  setInput(e.target.value);
-                  e.target.style.height = "auto";
-                  e.target.style.height = Math.min(e.target.scrollHeight, 96) + "px";
-                }}
-                onKeyDown={onKey}
-                onFocus={() => setInputFocused(true)}
-                onBlur={() => setInputFocused(false)}
-                placeholder="Ask anything…"
-                rows={1}
-                tabIndex={open ? 0 : -1}
-                aria-label="Message"
-                className={`w-full resize-none form-field text-[.845rem] font-[inherit] leading-normal max-h-24 min-h-[2.4rem] overflow-y-auto scrollbar-hide block ${speechSupported ? "sm:pr-8" : ""}`}
-              />
-              {speechSupported && (
-                <button type="button" aria-label={recording ? "Stop recording" : "Speak your message"}
-                  onClick={toggleRecording}
-                  className={`hidden sm:flex absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-0 bg-transparent cursor-pointer items-center justify-center transition-[color] duration-200
-                    ${recording ? "text-red-500 animate-chatbot-pulse" : "text-muted hover:text-accent"}`}>
-                  <MicIcon recording={recording} />
-                </button>
-              )}
-            </div>
-          </AnimatedBorder>
+          <div className="relative flex items-end flex-1">
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={e => {
+                setInput(e.target.value);
+                e.target.style.height = "auto";
+                e.target.style.height = Math.min(e.target.scrollHeight, 96) + "px";
+              }}
+              onKeyDown={onKey}
+              placeholder="Ask anything…"
+              rows={1}
+              tabIndex={open ? 0 : -1}
+              aria-label="Message"
+              className={`w-full resize-none form-field text-[.845rem] font-[inherit] leading-normal max-h-24 min-h-[2.4rem] overflow-y-auto scrollbar-hide block ${speechSupported ? "sm:pr-8" : ""}`}
+            />
+            {speechSupported && (
+              <button type="button" aria-label={recording ? "Stop recording" : "Speak your message"}
+                onClick={toggleRecording}
+                className={`hidden sm:flex absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-0 bg-transparent cursor-pointer items-center justify-center transition-[color] duration-200
+                  ${recording ? "text-red-500 animate-chatbot-pulse" : "text-muted hover:text-accent"}`}>
+                <MicIcon recording={recording} />
+              </button>
+            )}
+          </div>
           <button ref={emojiBtnRef} type="button" aria-label="Emoji"
             onClick={() => emoji ? closeEmoji() : setEmoji(true)}
             className={`hidden sm:flex w-9 h-9 rounded-full border-0 bg-transparent cursor-pointer items-center justify-center shrink-0 transition-[color,background] duration-200

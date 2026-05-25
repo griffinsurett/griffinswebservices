@@ -25,9 +25,9 @@ function isRateLimited(ip: string): boolean {
 }
 
 function isAllowedOrigin(request: Request): boolean {
-  const origin = request.headers.get("origin");
-  if (!origin) return true;
   if (import.meta.env.DEV) return true;
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
   return origin === ALLOWED_ORIGIN;
 }
 
@@ -88,6 +88,11 @@ export const POST: APIRoute = async ({ request }) => {
         JSON.stringify({ error: "No valid user message found." }),
         { status: 400, headers }
       );
+    }
+
+    if (!import.meta.env.OPENAI_API_KEY) {
+      console.error("[Chat API] OPENAI_API_KEY is not set");
+      return new Response(JSON.stringify({ error: "Service unavailable." }), { status: 503, headers });
     }
 
     const openai = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });

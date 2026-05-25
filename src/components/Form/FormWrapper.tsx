@@ -20,13 +20,13 @@ import ErrorMessage from "./messages/ErrorMessage";
 import LoadingMessage from "./messages/LoadingMessage";
 import { FormContext } from "./FormContext";
 import Checkbox from "./inputs/Checkbox";
-import Button from "@/components/Button/Button";
+import Button, { type ButtonVariant } from "@/components/Button/Button";
 import { submitToFormspree } from "@/utils/formspree";
 
 export interface SubmitButtonConfig {
   text?: string;
   className?: string;
-  variant?: "primary" | "secondary" | "tertiary" | "ghost" | "link";
+  variant?: ButtonVariant;
   disabled?: boolean;
   loadingText?: string;
 }

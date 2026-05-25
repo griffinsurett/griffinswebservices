@@ -460,6 +460,10 @@ body {
   border-color: var(--color-border);
   @apply text-muted;
 
+  &:focus {
+    border-color: var(--color-accent);
+  }
+
   &::placeholder {
     @apply text-muted;
   }
