@@ -168,21 +168,6 @@ export const collections = {
       }),
   }),
 
-  "pricing": defineCollection({
-    schema: ({ image }) =>
-      baseSchema({ image }).extend({
-        link: z.string().url().optional(),
-        price: z.string().optional(),
-        pricePrefix: z.string().optional(),
-        priceSuffix: z.string().optional(),
-        featured: z.boolean().optional(),
-        features: z.array(z.string()).default([]),
-        note: z.string().optional(),
-        solutions: refSchema("solutions"),
-        capabilities: refSchema("capabilities"),
-      }),
-  }),
-
   // ── features ──────────────────────────────────────────────
   "features": defineCollection({
     schema: ({ image }) =>

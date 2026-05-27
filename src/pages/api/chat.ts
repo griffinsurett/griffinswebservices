@@ -3,6 +3,13 @@ import type { APIRoute } from "astro";
 import OpenAI from "openai";
 import { KNOWLEDGE_BASE } from "@/integrations/chatbot/knowledge-base.generated";
 import { SITE_URL } from "@/content/siteData";
+import {
+  buildRateKey,
+  checkRateLimit,
+  isContentLengthTooLarge,
+  isAllowedRequestOrigin,
+  isTrustedBrowserRequest,
+} from "@/lib/apiSecurity";
 
 export const prerender = false;
 
@@ -11,25 +18,7 @@ const ALLOWED_ORIGIN = SITE_URL.replace(/\/$/, "");
 const rateMap = new Map<string, { count: number; ts: number }>();
 const RATE_LIMIT = 20;
 const RATE_WINDOW_MS = 60_000;
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateMap.get(ip);
-  if (!entry || now - entry.ts > RATE_WINDOW_MS) {
-    rateMap.set(ip, { count: 1, ts: now });
-    return false;
-  }
-  if (entry.count >= RATE_LIMIT) return true;
-  entry.count++;
-  return false;
-}
-
-function isAllowedOrigin(request: Request): boolean {
-  if (import.meta.env.DEV) return true;
-  const origin = request.headers.get("origin");
-  if (!origin) return false;
-  return origin === ALLOWED_ORIGIN;
-}
+const MAX_BODY_BYTES = 32 * 1024;
 
 function corsHeaders(request: Request): Record<string, string> {
   const origin = request.headers.get("origin");
@@ -42,17 +31,24 @@ function corsHeaders(request: Request): Record<string, string> {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  if (!isAllowedOrigin(request)) {
+  if (
+    !isAllowedRequestOrigin(request, ALLOWED_ORIGIN, import.meta.env.DEV) ||
+    !isTrustedBrowserRequest(request, import.meta.env.DEV)
+  ) {
     return new Response(JSON.stringify({ error: "Forbidden." }), { status: 403 });
   }
 
   const headers = corsHeaders(request);
 
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    if (isContentLengthTooLarge(request, MAX_BODY_BYTES)) {
+      return new Response(
+        JSON.stringify({ error: "Payload too large." }),
+        { status: 413, headers }
+      );
+    }
 
-    if (isRateLimited(ip)) {
+    if (checkRateLimit(rateMap, buildRateKey(request), RATE_LIMIT, RATE_WINDOW_MS)) {
       return new Response(
         JSON.stringify({ error: "Too many requests. Please slow down." }),
         { status: 429, headers }
@@ -135,7 +131,10 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 export const OPTIONS: APIRoute = ({ request }) => {
-  if (!isAllowedOrigin(request)) {
+  if (
+    !isAllowedRequestOrigin(request, ALLOWED_ORIGIN, import.meta.env.DEV) ||
+    !isTrustedBrowserRequest(request, import.meta.env.DEV)
+  ) {
     return new Response(null, { status: 403 });
   }
   const origin = request.headers.get("origin") ?? "";

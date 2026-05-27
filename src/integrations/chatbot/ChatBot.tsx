@@ -1,11 +1,9 @@
 // src/integrations/chatbot/ChatBot.tsx
 import {
   useState, useRef, useEffect, useCallback, memo,
-  type FormEvent, type KeyboardEvent,
 } from "react";
 import { createPortal } from "react-dom";
-import EmojiPicker, { Theme, EmojiStyle } from "emoji-picker-react";
-import type { EmojiClickData } from "emoji-picker-react";
+import ChatInputBar from "@/components/Form/ChatInputBar";
 
 interface Message {
   id: string;
@@ -54,38 +52,6 @@ function CloseIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-function SendIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"
-        stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function SmileIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <circle cx="9" cy="10" r="1" fill="currentColor" />
-      <circle cx="15" cy="10" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
-function MicIcon({ recording }: { recording: boolean }) {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="9" y="2" width="6" height="11" rx="3"
-        fill={recording ? "currentColor" : "none"}
-        stroke="currentColor" strokeWidth="1.8" />
-      <path d="M5 11a7 7 0 0014 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <line x1="9" y1="22" x2="15" y2="22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function TypingDots() {
   return (
@@ -233,42 +199,20 @@ function Fab({ open, unread, onClick }: { open: boolean; unread: number; onClick
 }
 
 function ChatBot() {
-  const [open, setOpen]       = useState(false);
-  const [msgs, setMsgs]     = useState<Message[]>([{
+  const [open, setOpen]   = useState(false);
+  const [msgs, setMsgs]   = useState<Message[]>([{
     id: "w0", role: "assistant",
     text: "Hi! 👋 How can I help you today?",
     time: getTime(),
   }]);
-  const [input, setInput]   = useState("");
+  const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [unread, setUnread] = useState(0);
-  const [emoji, setEmoji]   = useState(false);
-  const [emojiClosing, setEmojiClosing] = useState(false);
-  const [dark, setDark]     = useState(true);
   const [mounted, setMounted] = useState(false);
-  const [recording, setRecording] = useState(false);
-  const [speechSupported, setSpeechSupported] = useState(false);
-  const recognitionRef = useRef<any>(null);
 
-  const closeEmoji = useCallback(() => {
-    setEmojiClosing(true);
-    setTimeout(() => { setEmoji(false); setEmojiClosing(false); }, 200);
-  }, []);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  const bottomRef   = useRef<HTMLDivElement>(null);
-  const inputRef    = useRef<HTMLTextAreaElement>(null);
-  const emojiRef    = useRef<HTMLDivElement>(null);
-  const emojiBtnRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-    const check = () => setDark(document.documentElement.getAttribute("data-theme") !== "light");
-    check();
-    const obs = new MutationObserver(check);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-    setSpeechSupported(!!(window.SpeechRecognition || (window as any).webkitSpeechRecognition));
-    return () => obs.disconnect();
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -276,40 +220,19 @@ function ChatBot() {
   }, [msgs, typing, open]);
 
   useEffect(() => {
-    if (open) { setUnread(0); }
-    else { if (emoji) closeEmoji(); else setEmoji(false); }
+    if (open) setUnread(0);
   }, [open]);
 
   useEffect(() => {
     if (!open) return;
-    const h = (e: globalThis.KeyboardEvent) => {
-      if (e.key === "Escape") { if (emoji) closeEmoji(); else setOpen(false); }
-    };
+    const h = (e: globalThis.KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     document.addEventListener("keydown", h);
     return () => document.removeEventListener("keydown", h);
-  }, [open, emoji]);
-
-  useEffect(() => {
-    if (!emoji) return;
-    const h = (e: MouseEvent) => {
-      if (
-        emojiRef.current && !emojiRef.current.contains(e.target as Node) &&
-        emojiBtnRef.current && !emojiBtnRef.current.contains(e.target as Node)
-      ) closeEmoji();
-    };
-    document.addEventListener("mousedown", h);
-    return () => document.removeEventListener("mousedown", h);
-  }, [emoji]);
+  }, [open]);
 
   const react = useCallback((id: string, r: "up" | "down") => {
     setMsgs(prev => prev.map(m => m.id === id ? { ...m, reaction: m.reaction === r ? null : r } : m));
   }, []);
-
-  const onEmoji = useCallback((data: EmojiClickData) => {
-    setInput(p => p + data.emoji);
-    closeEmoji();
-    inputRef.current?.focus();
-  }, [closeEmoji]);
 
   const send = useCallback(async () => {
     const text = input.trim();
@@ -317,7 +240,6 @@ function ChatBot() {
     const userMsg: Message = { id: `u${Date.now()}`, role: "user", text, time: getTime() };
     setMsgs(prev => [...prev, userMsg]);
     setInput("");
-    if (inputRef.current) inputRef.current.style.height = "auto";
     setTyping(true);
     const history = [...msgs, userMsg].slice(-10).map(m => ({ role: m.role as "user" | "assistant", content: m.text }));
     try {
@@ -334,30 +256,6 @@ function ChatBot() {
       if (!open) setUnread(n => n + 1);
     }
   }, [input, msgs, open]);
-
-  const toggleRecording = useCallback(() => {
-    if (recording) {
-      recognitionRef.current?.stop();
-      return;
-    }
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const rec = new SR();
-    rec.lang = "en-US";
-    rec.interimResults = false;
-    rec.onresult = (e: any) => {
-      const transcript = e.results[0]?.[0]?.transcript ?? "";
-      if (transcript) setInput(p => (p ? p + " " + transcript : transcript));
-    };
-    rec.onend = () => setRecording(false);
-    rec.onerror = () => setRecording(false);
-    recognitionRef.current = rec;
-    rec.start();
-    setRecording(true);
-  }, [recording]);
-
-  const onKey = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
-  };
 
   if (!mounted) return null;
 
@@ -416,61 +314,15 @@ function ChatBot() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Emoji picker */}
-        {(emoji || emojiClosing) && (
-          <div ref={emojiRef}
-            className={`shrink-0 overflow-hidden origin-bottom-left ${emojiClosing ? "animate-chatbot-emoji-close" : "animate-chatbot-emoji-open"}`}>
-            <EmojiPicker
-              onEmojiClick={onEmoji}
-              theme={dark ? Theme.DARK : Theme.LIGHT}
-              emojiStyle={EmojiStyle.NATIVE}
-              width="100%" height={300}
-              previewConfig={{ showPreview: false }}
-              searchPlaceholder="Search…"
-              lazyLoadEmojis
-            />
-          </div>
-        )}
-
         {/* Input bar */}
-        <form className="flex items-end gap-1.5 px-3.5 py-2.5 border-t border-border bg-bg shrink-0"
-          onSubmit={(e: FormEvent) => { e.preventDefault(); send(); }}>
-          <div className="relative flex items-end flex-1">
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={e => {
-                setInput(e.target.value);
-                e.target.style.height = "auto";
-                e.target.style.height = Math.min(e.target.scrollHeight, 96) + "px";
-              }}
-              onKeyDown={onKey}
-              placeholder="Ask anything…"
-              rows={1}
-              tabIndex={open ? 0 : -1}
-              aria-label="Message"
-              className={`w-full resize-none form-field text-[.845rem] font-[inherit] leading-normal max-h-24 min-h-[2.4rem] overflow-y-auto scrollbar-hide block ${speechSupported ? "sm:pr-8" : ""}`}
-            />
-            {speechSupported && (
-              <button type="button" aria-label={recording ? "Stop recording" : "Speak your message"}
-                onClick={toggleRecording}
-                className={`hidden sm:flex absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-0 bg-transparent cursor-pointer items-center justify-center transition-[color] duration-200
-                  ${recording ? "text-red-500 animate-chatbot-pulse" : "text-muted hover:text-accent"}`}>
-                <MicIcon recording={recording} />
-              </button>
-            )}
-          </div>
-          <button ref={emojiBtnRef} type="button" aria-label="Emoji"
-            onClick={() => emoji ? closeEmoji() : setEmoji(true)}
-            className={`hidden sm:flex w-9 h-9 rounded-full border-0 bg-transparent cursor-pointer items-center justify-center shrink-0 transition-[color,background] duration-200
-              ${emoji ? "text-accent bg-accent/10" : "text-muted hover:text-accent hover:bg-accent/10"}`}>
-            <SmileIcon />
-          </button>
-          <button type="submit" aria-label="Send" disabled={!input.trim()}
-            className="w-9 h-9 rounded-full border-0 cursor-pointer shrink-0 flex items-center justify-center card-icon-color text-bg transition-[transform,opacity] duration-200 hover:enabled:scale-110 active:enabled:scale-[.92] disabled:opacity-30 disabled:cursor-not-allowed">
-            <SendIcon />
-          </button>
-        </form>
+        <ChatInputBar
+          value={input}
+          onChange={setInput}
+          onSend={send}
+          disabled={typing}
+          inactive={!open}
+          placeholder="Ask anything…"
+        />
       </div>
 
       <Fab open={open} unread={unread} onClick={() => setOpen(o => !o)} />
