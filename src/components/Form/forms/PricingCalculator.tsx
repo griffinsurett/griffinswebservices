@@ -1,11 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import Icon from "@/components/Icon";
 import Input from "@/components/Form/inputs/Input";
-import FormWrapper from "@/components/Form/FormWrapper";
 import ChatInputBar from "@/components/Form/ChatInputBar";
-import { submitToFormspree } from "@/utils/formspree";
 import AIIconPrompt from "@/components/Footer/AIIconPrompt";
-import { useForm } from "@formspree/react";
+import { MarkdownText } from "@/components/MarkdownText";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -23,6 +21,18 @@ type ChatMessage = {
   role: "user" | "assistant";
   content: string;
 };
+
+type SubmittedQuoteSnapshot = {
+  bizName: string;
+  bizLoc: string;
+  niches: string[];
+  price: PriceResult;
+  pages: any[];
+  answers: Record<string, any>;
+  report: string;
+};
+
+const PRICING_SUBMITTED_KEY = "pricing_calculator_submitted_quote";
 
 type Patch = {
   goal?: string;
@@ -898,7 +908,7 @@ function ChatBubble({ msg }: { msg: ChatMessage }) {
             <span className="text-[11px] text-accent leading-none">✦</span>
           </div>
           <div className="text-[13.5px] leading-[1.7] text-text/90 pt-[3px]">
-            {msg.content}
+            <MarkdownText text={msg.content} />
           </div>
         </div>
       )}
@@ -1023,6 +1033,16 @@ function buildEstimateMarkdown({
       lines.push(m.content);
     });
   }
+
+  lines.push(`\n## What's Included`);
+  lines.push(`- Mobile-responsive design — every page built and tested for phones, tablets, and desktops`);
+  lines.push(`- Structured revision rounds — wireframe review, design pass, and final tweaks before launch`);
+  lines.push(`- Launch support — the team stays available through and immediately after go-live`);
+  lines.push(`- Ongoing hosting and maintenance available after launch`);
+
+  const supportMonths = price.total >= 5000 ? 2 : 1;
+  lines.push(`\n## Internal Notes (not shared with client)`);
+  lines.push(`- **Post-launch support included:** ${supportMonths} month${supportMonths > 1 ? "s" : ""} free (project total $${price.total.toLocaleString()} — ${price.total >= 5000 ? "≥$5k tier" : "<$5k tier"})`);
 
   lines.push(`\n---`);
   lines.push(`*This is a project estimate — not a final invoice. Confirmed price provided after scoping call.*`);
@@ -1213,31 +1233,46 @@ function QuoteForm({ bizName, bizLoc, bizDesc, bizServes, niches, implNotes, ans
   formspreeId?: string;
   onBack: () => void; onReset: () => void;
 }) {
-  const [state, handleSubmit] = useForm(formspreeId);
-  const [report, setReport] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState("/pricing?pricing_submitted=1");
 
-  // Build report once on first successful submission
   useEffect(() => {
-    if (state.succeeded && !report) {
-      setReport(buildEstimateMarkdown({
-        bizName, bizLoc, bizDesc, bizServes, niches, implNotes,
-        answers, price, pages, scoped, extrasDetail, messages,
-      }));
+    if (typeof window === "undefined") return;
+    setRedirectUrl(`${window.location.origin}/pricing?pricing_submitted=1`);
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!e.currentTarget.checkValidity()) {
+      e.preventDefault();
+      e.currentTarget.reportValidity();
+      return;
     }
-  }, [state.succeeded]);
 
-  if (state.succeeded && report) {
-    return (
-      <ThankYouPanel
-        bizName={bizName} bizLoc={bizLoc} niches={niches}
-        price={price} pages={pages} answers={answers}
-        report={report} onReset={onReset}
-      />
-    );
-  }
+    setErrorMsg("");
+    if (!formspreeId) {
+      e.preventDefault();
+      setErrorMsg("Form configuration missing. Add PUBLIC_FORMSPREE_PRICING_ID.");
+      return;
+    }
 
-  const errorMsg = state.errors && (state.errors as any)[0]?.message;
+    const md = buildEstimateMarkdown({ bizName, bizLoc, bizDesc, bizServes, niches, implNotes, answers, price, pages, scoped, extrasDetail, messages });
+    try {
+      const snapshot: SubmittedQuoteSnapshot = {
+        bizName,
+        bizLoc,
+        niches,
+        price,
+        pages,
+        answers,
+        report: md,
+      };
+      sessionStorage.setItem(PRICING_SUBMITTED_KEY, JSON.stringify(snapshot));
+    } catch (err) {
+      e.preventDefault();
+      setErrorMsg(err instanceof Error ? err.message : "Submission failed. Please try again.");
+    }
+  };
 
   return (
     <div className="border border-border rounded-xl p-[0.875rem_1rem]" style={{ background: "var(--color-bg2, #18181c)" }}>
@@ -1270,14 +1305,11 @@ function QuoteForm({ bizName, bizLoc, bizDesc, bizServes, niches, implNotes, ans
           ℹ This is a project estimate — not a final invoice. Your confirmed price will be provided after we review your submission and scope the project together.
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        {/* Hidden fields carrying the estimate data */}
+      <form onSubmit={handleSubmit} action={`https://formspree.io/f/${formspreeId}`} method="POST" className="flex flex-col gap-3">
+        <input type="hidden" name="_next" value={redirectUrl} />
         <input type="hidden" name="business_name" value={bizName} />
         <input type="hidden" name="estimate_total" value={`$${price.total.toLocaleString()}`} />
-        <input type="hidden" name="estimate_report" value={buildEstimateMarkdown({
-          bizName, bizLoc, bizDesc, bizServes, niches, implNotes,
-          answers, price, pages, scoped, extrasDetail, messages,
-        })} />
+        <input type="hidden" name="estimate_report" value={buildEstimateMarkdown({ bizName, bizLoc, bizDesc, bizServes, niches, implNotes, answers, price, pages, scoped, extrasDetail, messages })} />
         <input type="hidden" name="formName" value="Pricing Estimate" />
         <div className="flex gap-[10px]">
           <Input name="first_name" label="First name" placeholder="Jane" required containerClassName="flex-1 space-y-1" labelClassName="block text-xs text-zinc-400" />
@@ -1298,11 +1330,11 @@ function QuoteForm({ bizName, bizLoc, bizDesc, bizServes, niches, implNotes, ans
         )}
         <button
           type="submit"
-          disabled={state.submitting || !termsAccepted}
+          disabled={!termsAccepted}
           className="w-full py-[10px] rounded-full border-none text-[13px] font-bold cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
           style={{ background: "var(--color-accent)", color: "var(--color-bg)" }}
         >
-          {state.submitting ? "Sending…" : "Let's talk about this build →"}
+          {"Let's talk about this build →"}
         </button>
       </form>
       <button onClick={onBack} className="w-full mt-2 py-2 rounded-lg border border-border bg-transparent text-muted text-[12px] cursor-pointer">← Back to chat</button>
@@ -1348,6 +1380,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
   const [hasNeedsScoping, setHasNeedsScoping] = useState(false);
   const [productCount, setProductCount] = useState(10);
   const [price, setPrice] = useState<PriceResult>({ base: 0, ep: 0, addons: 0, total: 0, items: [], u: 0 });
+  const [submittedQuote, setSubmittedQuote] = useState<SubmittedQuoteSnapshot | null>(null);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const repriceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1507,16 +1540,69 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
   }, [bizName, bizLoc, bizServes, bizDesc, implNotes, selectedNiches, productCount, applyPatch]);
 
   const resetAll = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem(PRICING_SUBMITTED_KEY);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("pricing_submitted");
+      window.history.replaceState({}, "", url.toString());
+    }
+
     setPhase("gate"); setGateSlide(0);
     setBizName(""); setBizLoc(""); setBizDesc(""); setBizServes(""); setImplNotes(""); setSelectedNiches([]);
     setMessages([]); setInputVal(""); setIsTyping(false); setChatError(""); setIsDone(false);
     setPages([]); setCustomPages([]); setAnswers({}); setExtrasDetail([]);
     setScoped([]); setHasNeedsScoping(false); setProductCount(10);
     setPrice({ base: 0, ep: 0, addons: 0, total: 0, items: [], u: 0 });
+    setSubmittedQuote(null);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("pricing_submitted") !== "1") return;
+
+    const raw = sessionStorage.getItem(PRICING_SUBMITTED_KEY);
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw) as SubmittedQuoteSnapshot;
+      if (parsed?.report && parsed?.bizName) {
+        setSubmittedQuote(parsed);
+      }
+    } catch {
+      // Ignore malformed cache
+    }
+  }, []);
 
   const pct = phase === "gate" ? (gateSlide === 0 ? 10 : 20) : isDone ? 100 : 60;
   const stepLbl = phase === "gate" ? (gateSlide === 0 ? "About your business" : "Your reach") : isDone ? "Ready to submit" : "Building your estimate";
+
+  if (submittedQuote) {
+    return (
+      <div className="text-text font-['DM_Sans','Helvetica_Neue',sans-serif]">
+        <div className="border-b border-b-border px-6 pt-4 pb-[0.875rem]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-text/25 tracking-[0.1em] uppercase">Griffin Web Services — Pricing</span>
+            <span className="text-[11px] text-muted">Submission received</span>
+          </div>
+          <div className="h-[2px] bg-border rounded-[2px] overflow-hidden">
+            <div className="h-full bg-accent rounded-[2px]" style={{ width: "100%" }} />
+          </div>
+        </div>
+        <div className="px-4 lg:px-6 py-4 lg:py-5">
+          <ThankYouPanel
+            bizName={submittedQuote.bizName}
+            bizLoc={submittedQuote.bizLoc}
+            niches={submittedQuote.niches}
+            price={submittedQuote.price}
+            pages={submittedQuote.pages}
+            answers={submittedQuote.answers}
+            report={submittedQuote.report}
+            onReset={resetAll}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="text-text font-['DM_Sans','Helvetica_Neue',sans-serif]">

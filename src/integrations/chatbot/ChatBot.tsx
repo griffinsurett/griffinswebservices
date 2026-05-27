@@ -4,6 +4,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import ChatInputBar from "@/components/Form/ChatInputBar";
+import { MarkdownText } from "@/components/MarkdownText";
 
 interface Message {
   id: string;
@@ -75,12 +76,6 @@ function BotAvatar({ lg }: { lg?: boolean }) {
   );
 }
 
-const URL_RE = /(https?:\/\/[^\s]+)/g;
-
-function cleanUrl(raw: string): string {
-  return raw.replace(/[.,!?;:)"']+$/, "");
-}
-
 const OWN_DOMAIN = "griffinswebservices.com";
 
 const PAGE_LABELS: Record<string, string> = {
@@ -93,45 +88,34 @@ const PAGE_LABELS: Record<string, string> = {
   "/links":      "Link Page",
 };
 
-function renderLink(url: string, key: number) {
-  const href = cleanUrl(url);
-  try {
-    const parsed = new URL(href);
-    const isInternal = parsed.hostname === OWN_DOMAIN;
-    const path = parsed.pathname.replace(/\/$/, "") || "/";
-    const label = PAGE_LABELS[path] ?? parsed.hostname + path;
-    if (isInternal) {
-      return (
-        <a key={key} href={path}
-          className="inline-flex items-center gap-1 text-accent bg-accent/10 border border-accent/25 px-2.5 py-0.5 rounded-full text-xs font-medium mx-0.5 hover:bg-accent/20 hover:-translate-y-px transition-all duration-200">
-          {label} →
-        </a>
-      );
-    }
-    return (
-      <a key={key} href={href} target="_blank" rel="noopener noreferrer"
-        className="text-accent underline underline-offset-2 hover:opacity-75 transition-opacity">
-        {label}
-      </a>
-    );
-  } catch {
-    return <span key={key}>{url}</span>;
-  }
-}
-
 function MessageText({ text }: { text: string }) {
   return (
-    <span className="block whitespace-pre-line wrap-break-word text-[.845rem] leading-[1.55]">
-      {text.split("\n").map((line, li) => {
-        const parts = line.split(URL_RE);
+    <MarkdownText
+      text={text}
+      className="text-[.845rem] leading-[1.55]"
+      linkRenderer={(href, key) => {
+        try {
+          const parsed = new URL(href);
+          const isInternal = parsed.hostname === OWN_DOMAIN;
+          const path = parsed.pathname.replace(/\/$/, "") || "/";
+          const label = PAGE_LABELS[path] ?? parsed.hostname + path;
+          if (isInternal) {
+            return (
+              <a key={key} href={path}
+                className="inline-flex items-center gap-1 text-accent bg-accent/10 border border-accent/25 px-2.5 py-0.5 rounded-full text-xs font-medium mx-0.5 hover:bg-accent/20 hover:-translate-y-px transition-all duration-200">
+                {label} →
+              </a>
+            );
+          }
+        } catch {}
         return (
-          <span key={li}>
-            {li > 0 && <br />}
-            {parts.map((part, pi) => URL_RE.test(part) ? renderLink(part, pi) : part)}
-          </span>
+          <a key={key} href={href} target="_blank" rel="noopener noreferrer"
+            className="text-accent underline underline-offset-2 hover:opacity-75 transition-opacity">
+            {href}
+          </a>
         );
-      })}
-    </span>
+      }}
+    />
   );
 }
 

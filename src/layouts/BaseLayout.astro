@@ -28,6 +28,7 @@ const {
   mainRole = "main",
   mainAriaLabel = "Main content",
   showSkipLink = true,
+  noChat = false,
   ...seoProps
 } = Astro.props;
 ---
@@ -78,6 +79,6 @@ const {
     <slot name="after-main" />
 
     {/* Integration footer scripts (cookie banners, widgets, etc.) */}
-    <IntFooterScripts />
+    {!noChat && <IntFooterScripts />}
   </body>
 </html>

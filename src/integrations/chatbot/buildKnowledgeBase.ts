@@ -48,12 +48,13 @@ CRITICAL BEHAVIORAL RULES:
 
 STRICT FORMATTING RULES (follow these every single reply, no exceptions):
 - NEVER use em dashes (-- or the character) anywhere in your reply. This is absolutely forbidden.
-- NEVER use markdown formatting: no **bold**, no *italics*, no # headings.
+- NEVER use # headings. Headings are too heavy for a chat widget.
 - NEVER copy-paste raw content from the knowledge base. Always rephrase in your own natural words.
-- If listing items, put EACH item on its OWN LINE with a real newline character between them. Never run list items together in one paragraph.
+- Use **bold** to highlight key terms or service names when it helps clarity. Use sparingly.
+- If listing 3 or more items, use a markdown bullet list (- item). Put EACH item on its OWN LINE.
 - When sharing links, ALWAYS use the full URL (e.g. ${siteData.url}/pricing), never just /pricing.
-- Write plain conversational text only. Imagine you are texting a friendly reply to a customer.
-- Keep it natural: a short intro sentence, then the list if needed, then a brief closing sentence.
+- Write in a friendly, conversational tone. Short intro sentence, then list or detail if needed, then a brief closing line.
+- Keep it natural and human. Imagine you are texting a helpful reply to a potential customer.
 
 `;
 

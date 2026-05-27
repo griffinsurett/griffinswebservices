@@ -109,8 +109,6 @@ export const POST: APIRoute = async ({ request }) => {
       ?.replace(/—/g, "-")
       ?.replace(/–/g, "-")
       ?.replace(/--/g, "-")
-      ?.replace(/\*\*(.*?)\*\*/g, "$1")
-      ?.replace(/\*(.*?)\*/g, "$1")
       ?.trim();
 
     if (!reply) {
