@@ -19,8 +19,8 @@ export const ctaData = {
 };
 
 export const contactCtaData = {
-  text: "Request a Quote",
-  link: "/contact-us",
+  text: "Get a Free Estimate",
+  link: "/pricing",
 };
 
 export const pricingCtaData = {
