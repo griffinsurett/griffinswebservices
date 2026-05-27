@@ -4,6 +4,8 @@ import Input from "@/components/Form/inputs/Input";
 import FormWrapper from "@/components/Form/FormWrapper";
 import ChatInputBar from "@/components/Form/ChatInputBar";
 import { submitToFormspree } from "@/utils/formspree";
+import AIIconPrompt from "@/components/Footer/AIIconPrompt";
+import { useForm } from "@formspree/react";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -658,6 +660,7 @@ function RightPanel({
   phase, pages, setPages, customPages, setCustomPages, answers,
   bizName, bizLoc, price, scoped, hasNeedsScoping,
   productCount, setProductCount, extrasDetail, onToggleAddon,
+  isDone, setIsDone, hasAssistantMessage,
 }: {
   phase: string; pages: any[]; setPages: (p: any[]) => void;
   customPages: string[]; setCustomPages: (cp: string[]) => void;
@@ -665,6 +668,7 @@ function RightPanel({
   price: PriceResult; scoped: any[]; hasNeedsScoping: boolean;
   productCount: number; setProductCount: (n: number) => void;
   extrasDetail: any[]; onToggleAddon: (id: string) => void;
+  isDone: boolean; setIsDone: (v: boolean) => void; hasAssistantMessage: boolean;
 }) {
   const [newPageOpen, setNewPageOpen] = useState(false);
   const [newPageVal, setNewPageVal] = useState("");
@@ -841,7 +845,7 @@ function RightPanel({
 
       </div>{/* end scrollable */}
 
-      {/* Sticky price footer */}
+      {/* Sticky price footer + CTA */}
       <div className="shrink-0 border-t border-t-border pt-[10px] pb-[4px]">
         {price.base > 0 && bizName && (
           <div className="text-[11px] text-muted leading-[1.5] mb-[8px] border-l-2 border-l-border pl-[10px]">
@@ -859,6 +863,15 @@ function RightPanel({
           <span className="text-[26px] font-bold text-accent">${price.total.toLocaleString()}</span>
         </div>
         <div className="text-[10px] text-text/25 mt-[6px] leading-[1.5]">Final price confirmed after scoping call.</div>
+        {hasAssistantMessage && !isDone && (
+          <button
+            onClick={() => setIsDone(true)}
+            className="w-full mt-[10px] py-[10px] rounded-full border-none text-[13px] font-bold cursor-pointer transition-all duration-150"
+            style={{ background: "var(--color-accent)", color: "var(--color-bg)" }}
+          >
+            Get my quote →
+          </button>
+        )}
       </div>
 
     </div>
@@ -913,13 +926,319 @@ function TypingIndicator() {
 }
 
 // ---------------------------------------------------------------------------
+// Markdown report builder
+// ---------------------------------------------------------------------------
+function buildEstimateMarkdown({
+  bizName, bizLoc, bizDesc, bizServes, niches, implNotes,
+  answers, price, pages, scoped, extrasDetail, messages,
+}: {
+  bizName: string; bizLoc: string; bizDesc: string; bizServes: string;
+  niches: string[]; implNotes: string;
+  answers: Record<string, any>; price: PriceResult;
+  pages: any[]; scoped: any[]; extrasDetail: any[];
+  messages: ChatMessage[];
+}): string {
+  const ts = new Date().toLocaleString("en-US", { dateStyle: "long", timeStyle: "short" });
+  const SERVES_LABELS: Record<string, string> = { city: "Local (city/town)", county: "County-wide", state: "State / province", region: "Regional (multi-state)", country: "Nationwide", worldwide: "Online / worldwide" };
+
+  const lines: string[] = [];
+
+  lines.push(`# Pricing Estimate — ${bizName}`);
+  lines.push(`Generated: ${ts}\n`);
+
+  lines.push(`## Business`);
+  lines.push(`- **Name:** ${bizName}`);
+  lines.push(`- **Location:** ${bizLoc}`);
+  lines.push(`- **Service area:** ${SERVES_LABELS[bizServes] ?? bizServes}`);
+  if (niches.length) lines.push(`- **Niches:** ${niches.join(", ")}`);
+  lines.push(`\n**Description:**\n${bizDesc}`);
+  if (implNotes.trim()) lines.push(`\n**Implementation notes:**\n${implNotes}`);
+
+  lines.push(`\n## Site Structure`);
+  lines.push(`- **Type:** ${answers.goal === "ecommerce" ? "E-commerce" : "Business / showcase"}`);
+  if (answers.action) lines.push(`- **Primary action:** ${answers.action}`);
+  lines.push(`- **Total pages:** ${price.u}`);
+
+  if (pages.length) {
+    lines.push(`\n### Pages`);
+    pages.forEach((p: any) => {
+      lines.push(`\n#### ${p.name}`);
+      if (p.desc) lines.push(p.desc);
+      if ((p.list || []).length) {
+        lines.push(`\nContent items:`);
+        (p.list as string[]).forEach((item) => lines.push(`- ${item}`));
+      }
+      if ((p.subpages || []).length) {
+        lines.push(`\nDedicated sub-pages:`);
+        (p.subpages as any[]).forEach((sp) => lines.push(`- ${sp.name}`));
+      }
+      if ((p.collections || []).length) {
+        (p.collections as any[]).forEach((c: any) => {
+          lines.push(`\nCollection: ${c.name}${c.items?.length ? ` (${c.items.length} items)` : ""}`);
+        });
+      }
+    });
+  }
+
+  lines.push(`\n## Pricing Breakdown`);
+  lines.push(`| Line | Amount |`);
+  lines.push(`|------|--------|`);
+  lines.push(`| Base | $${price.base.toLocaleString()} |`);
+  if (price.ep) lines.push(`| Extra pages | +$${price.ep.toLocaleString()} |`);
+  if (price.addons) lines.push(`| Add-ons | +$${price.addons.toLocaleString()} |`);
+  lines.push(`| **Total estimate** | **$${price.total.toLocaleString()}** |`);
+
+  if (price.items.length) {
+    lines.push(`\n### Line items`);
+    price.items.forEach((item) => lines.push(`- ${item}`));
+  }
+
+  const activeAddons = (answers.extras || []) as string[];
+  if (activeAddons.length) {
+    lines.push(`\n## Add-ons`);
+    activeAddons.forEach((id: string) => {
+      const detail = extrasDetail.find((d: any) => d.id === id);
+      const catalog = ADDON_CATALOG.find((a) => a.id === id);
+      const label = catalog?.label ?? id;
+      const priceVal = detail?.price ?? catalog?.defaultPrice ?? 0;
+      lines.push(`\n### ${label} — $${priceVal.toLocaleString()}`);
+      if (detail?.rationale) lines.push(`> ${detail.rationale}`);
+      if (catalog?.desc) lines.push(catalog.desc);
+    });
+  }
+
+  if (scoped.length) {
+    lines.push(`\n## Scoped Items`);
+    scoped.forEach((s: any) => {
+      const priceStr = s.needsScoping ? "Scoped on call" : `$${s.price?.toLocaleString()}`;
+      lines.push(`\n### ${s.label} — ${priceStr}`);
+      if (s.rationale) lines.push(`> ${s.rationale}`);
+    });
+  }
+
+  if (messages.length) {
+    lines.push(`\n## Conversation Transcript`);
+    messages.forEach((m) => {
+      lines.push(`\n**${m.role === "user" ? "Client" : "Griffin Web Services AI"}:**`);
+      lines.push(m.content);
+    });
+  }
+
+  lines.push(`\n---`);
+  lines.push(`*This is a project estimate — not a final invoice. Confirmed price provided after scoping call.*`);
+
+  return lines.join("\n");
+}
+
+// ---------------------------------------------------------------------------
 // Quote form (shown when done=true)
 // ---------------------------------------------------------------------------
-function QuoteForm({ bizName, bizLoc, bizDesc, bizServes, answers, price, pages, scoped, onReset }: {
-  bizName: string; bizLoc: string; bizDesc: string; bizServes: string;
-  answers: Record<string, any>; price: PriceResult; pages: any[]; scoped: any[];
-  onReset: () => void;
+// ---------------------------------------------------------------------------
+// AI platforms for the thank-you panel
+// ---------------------------------------------------------------------------
+
+function buildAiResearchPrompt({ bizName, bizLoc, niches, price, pages, answers }: {
+  bizName: string; bizLoc: string; niches: string[];
+  price: PriceResult; pages: any[]; answers: Record<string, any>;
+}): string {
+  const pageList = pages.map((p: any) => p.name).filter(Boolean).join(", ");
+  const siteType = answers.goal === "ecommerce" ? "e-commerce" : "business";
+  const nicheStr = niches.length ? niches.join(", ") : "general business";
+  return `I just used a pricing calculator from Griffin's Web Services (griffinswebservices.com) and got an estimate for my ${siteType} website.
+
+Here's a summary of what was recommended for my business:
+- Business: ${bizName || "my business"} — ${nicheStr}${bizLoc ? `, based in ${bizLoc}` : ""}
+- Estimated price: $${price.total.toLocaleString()}
+- Recommended pages (${price.u} total): ${pageList || "not specified"}
+- Site type: ${siteType}
+
+I'd like your honest take on a few things:
+1. Is this price range reasonable for a professionally built ${siteType} website with ${price.u} pages in 2025?
+2. What questions should I ask a web design agency before signing anything?
+3. What should I look for to make sure I'm getting a quality result — not just a template with my logo slapped on it?
+4. Based on the site griffinswebservices.com — does this agency seem credible and worth the investment for a small business?
+
+Be direct and practical. I'm trying to make a smart decision.`;
+}
+
+// ---------------------------------------------------------------------------
+// Thank-you / AI research panel shown after successful submission
+// ---------------------------------------------------------------------------
+function ThankYouPanel({ bizName, bizLoc, niches, price, pages, answers, report, onReset }: {
+  bizName: string; bizLoc: string; niches: string[];
+  price: PriceResult; pages: any[]; answers: Record<string, any>;
+  report: string; onReset: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const aiPrompt = buildAiResearchPrompt({ bizName, bizLoc, niches, price, pages, answers });
+
+  const copyReport = async () => {
+    try {
+      await navigator.clipboard.writeText(report);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // fallback: select a hidden textarea
+    }
+  };
+
+  return (
+    <div
+      className="rounded-xl border border-border flex flex-col gap-0 overflow-hidden"
+      style={{ background: "var(--color-bg2, #18181c)" }}
+    >
+      {/* Success header */}
+      <div className="px-[1.1rem] pt-[1.25rem] pb-[1rem] border-b border-border/50">
+        <div className="flex items-center gap-[10px] mb-[6px]">
+          <div
+            className="w-[30px] h-[30px] rounded-full flex items-center justify-center shrink-0"
+            style={{ background: "color-mix(in srgb, var(--color-accent) 15%, transparent)" }}
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2.5 7.5L5.5 10.5L11.5 4" stroke="var(--color-accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <div>
+            <div className="text-[14px] font-semibold text-heading leading-[1.3]">Quote sent successfully</div>
+            <div className="text-[11px] text-muted leading-[1.4]">We'll reach out to discuss your build</div>
+          </div>
+        </div>
+        {/* Price summary chip */}
+        <div
+          className="inline-flex items-center gap-[8px] rounded-lg px-[10px] py-[6px] mt-[6px] border border-accent/30"
+          style={{ background: "color-mix(in srgb, var(--color-accent) 7%, transparent)" }}
+        >
+          <span className="text-[11px] text-muted">{bizName || "Your site"} · {price.u} pages</span>
+          <span className="w-[1px] h-[10px] bg-border/60 inline-block" />
+          <span className="text-[14px] font-bold text-accent">${price.total.toLocaleString()}</span>
+          <span className="text-[10px] font-semibold text-accent/60 tracking-[0.05em] uppercase">est.</span>
+        </div>
+      </div>
+
+      {/* AI research section */}
+      <div className="px-[1.1rem] py-[1rem] border-b border-border/50">
+        <div className="text-[11px] text-muted tracking-[0.07em] uppercase font-medium mb-[10px]">Get a second opinion</div>
+        <p className="text-[12.5px] text-text/75 leading-[1.6] mb-[12px]">
+          Not sure if this is the right move? Paste your full estimate into your AI of choice and ask if this service is worth it — we made a ready prompt for you.
+        </p>
+
+        {/* Copy prompt CTA */}
+        <button
+          onClick={copyReport}
+          className="w-full flex items-center justify-between gap-[8px] rounded-lg border border-border/80 px-[12px] py-[10px] mb-[12px] text-left cursor-pointer transition-colors duration-150 hover:border-accent/40"
+          style={{ background: "var(--color-bg3, #1e1e24)" }}
+        >
+          <div>
+            <div className="text-[12.5px] font-medium text-heading leading-[1.3]">
+              {copied ? "Copied!" : "Copy full estimate report"}
+            </div>
+            <div className="text-[11px] text-muted leading-[1.3] mt-[1px]">
+              {copied ? "Paste it into any AI chat window" : "Markdown doc — paste into any AI for deep analysis"}
+            </div>
+          </div>
+          <div
+            className="shrink-0 w-[28px] h-[28px] rounded-md flex items-center justify-center transition-colors duration-150"
+            style={{ background: copied ? "color-mix(in srgb, var(--color-accent) 20%, transparent)" : "var(--color-bg2, #18181c)" }}
+          >
+            {copied ? (
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <path d="M2 6.5L5 9.5L11 3.5" stroke="var(--color-accent)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                <rect x="1" y="4" width="8" height="8" rx="1.5" stroke="var(--color-text)" strokeOpacity="0.5" strokeWidth="1.2" />
+                <path d="M4 4V2.5C4 1.95 4.45 1.5 5 1.5H10.5C11.05 1.5 11.5 1.95 11.5 2.5V8C11.5 8.55 11.05 9 10.5 9H9" stroke="var(--color-text)" strokeOpacity="0.5" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
+            )}
+          </div>
+        </button>
+
+        {/* AI platform links */}
+        <AIIconPrompt
+          prompt={aiPrompt}
+          label="Or open directly in:"
+          promptSubject="this estimate"
+          className="flex-row-reverse justify-end gap-3"
+          labelClassName="text-[11px] text-muted/70 shrink-0"
+          listClassName="gap-[6px]"
+        />
+      </div>
+
+      {/* Collapsible full report preview */}
+      <div className="px-[1.1rem] py-[0.75rem]">
+        <button
+          onClick={() => setShowReport((v) => !v)}
+          className="flex items-center gap-[6px] text-[11px] text-muted/70 hover:text-muted cursor-pointer transition-colors duration-100 bg-transparent border-none w-full text-left"
+        >
+          <svg
+            width="10" height="10" viewBox="0 0 10 10"
+            style={{ transform: showReport ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.15s" }}
+          >
+            <path d="M3 2L7 5L3 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </svg>
+          {showReport ? "Hide" : "Preview"} estimate document
+        </button>
+        {showReport && (
+          <pre
+            className="mt-[8px] rounded-lg border border-border/50 p-[10px] text-[10.5px] leading-[1.65] text-text/40 overflow-auto max-h-[220px] font-mono whitespace-pre-wrap"
+            style={{ background: "var(--color-bg3, #1e1e24)" }}
+          >
+            {report}
+          </pre>
+        )}
+      </div>
+
+      {/* Reset */}
+      <div className="px-[1.1rem] pb-[1rem]">
+        <button
+          onClick={onReset}
+          className="w-full py-[8px] rounded-lg border border-border bg-transparent text-muted text-[12px] cursor-pointer hover:border-border/80 transition-colors duration-100"
+        >
+          Start a new estimate
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// QuoteForm
+// ---------------------------------------------------------------------------
+function QuoteForm({ bizName, bizLoc, bizDesc, bizServes, niches, implNotes, answers, price, pages, scoped, extrasDetail, messages, formspreeId = "", onBack, onReset }: {
+  bizName: string; bizLoc: string; bizDesc: string; bizServes: string;
+  niches: string[]; implNotes: string;
+  answers: Record<string, any>; price: PriceResult; pages: any[]; scoped: any[];
+  extrasDetail: any[]; messages: ChatMessage[];
+  formspreeId?: string;
+  onBack: () => void; onReset: () => void;
+}) {
+  const [state, handleSubmit] = useForm(formspreeId);
+  const [report, setReport] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
+  // Build report once on first successful submission
+  useEffect(() => {
+    if (state.succeeded && !report) {
+      setReport(buildEstimateMarkdown({
+        bizName, bizLoc, bizDesc, bizServes, niches, implNotes,
+        answers, price, pages, scoped, extrasDetail, messages,
+      }));
+    }
+  }, [state.succeeded]);
+
+  if (state.succeeded && report) {
+    return (
+      <ThankYouPanel
+        bizName={bizName} bizLoc={bizLoc} niches={niches}
+        price={price} pages={pages} answers={answers}
+        report={report} onReset={onReset}
+      />
+    );
+  }
+
+  const errorMsg = state.errors && (state.errors as any)[0]?.message;
+
   return (
     <div className="border border-border rounded-xl p-[0.875rem_1rem]" style={{ background: "var(--color-bg2, #18181c)" }}>
       <div className="text-[10px] text-text/25 tracking-[0.1em] uppercase mb-3">Send me this quote</div>
@@ -951,48 +1270,42 @@ function QuoteForm({ bizName, bizLoc, bizDesc, bizServes, answers, price, pages,
           ℹ This is a project estimate — not a final invoice. Your confirmed price will be provided after we review your submission and scope the project together.
         </div>
       </div>
-      <FormWrapper
-        onSubmit={async (values) => {
-          await submitToFormspree({
-            endpoint: "https://formspree.io/f/mdajdjlb",
-            formName: "pricing-estimate",
-            values: {
-              ...values,
-              business_name: bizName,
-              business_location: bizLoc,
-              business_description: bizDesc,
-              service_area: bizServes,
-              estimate_total: `$${price.total.toLocaleString()}`,
-              estimate_goal: answers.goal,
-              estimate_action: answers.action,
-              estimate_extras: (answers.extras || []).join(", "),
-              estimate_pages: pages.map((p) => p.name).join(", "),
-              estimate_breakdown: price.items.join(" | "),
-            },
-          });
-        }}
-        includeTermsCheckbox
-        termsCheckboxLabel={
-          <span className="text-[12px] text-muted leading-[1.5]">
-            I agree to the{" "}
-            <a href="/legal/privacy-policy" className="text-accent underline">Privacy Policy</a>
-            . Griffin Web Services may contact me to follow up on this estimate.
-          </span>
-        }
-        privacyPolicyUrl="/legal/privacy-policy"
-        successMessage="Got it — we'll be in touch soon to talk through your build."
-        submitButton={{ text: "Let's talk about this build →", loadingText: "Sending…", variant: "form" }}
-        resetOnSuccess
-        className="flex flex-col gap-3"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        {/* Hidden fields carrying the estimate data */}
+        <input type="hidden" name="business_name" value={bizName} />
+        <input type="hidden" name="estimate_total" value={`$${price.total.toLocaleString()}`} />
+        <input type="hidden" name="estimate_report" value={buildEstimateMarkdown({
+          bizName, bizLoc, bizDesc, bizServes, niches, implNotes,
+          answers, price, pages, scoped, extrasDetail, messages,
+        })} />
+        <input type="hidden" name="formName" value="Pricing Estimate" />
         <div className="flex gap-[10px]">
           <Input name="first_name" label="First name" placeholder="Jane" required containerClassName="flex-1 space-y-1" labelClassName="block text-xs text-zinc-400" />
           <Input name="last_name" label="Last name" placeholder="Smith" containerClassName="flex-1 space-y-1" labelClassName="block text-xs text-zinc-400" />
         </div>
         <Input name="email" type="email" label="Email address" placeholder="jane@yourbusiness.com" required containerClassName="space-y-1" labelClassName="block text-xs text-zinc-400" />
         <Input name="phone" type="tel" label="Phone (optional)" placeholder="(555) 000-0000" containerClassName="space-y-1" labelClassName="block text-xs text-zinc-400" />
-      </FormWrapper>
-      <button onClick={onReset} className="w-full mt-2 py-2 rounded-lg border border-border bg-transparent text-muted text-[12px] cursor-pointer">Start over</button>
+        <label className="flex items-start gap-2 mt-1 cursor-pointer">
+          <input type="checkbox" required checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} className="mt-[3px] shrink-0 accent-accent" />
+          <span className="text-[12px] text-muted leading-[1.5]">
+            I agree to the{" "}
+            <a href="/legal/privacy-policy" className="text-accent underline">Privacy Policy</a>
+            . Griffin Web Services may contact me to follow up on this estimate.
+          </span>
+        </label>
+        {errorMsg && (
+          <div className="text-[12px] text-red-400 px-[10px] py-[8px] rounded-lg bg-red-500/[0.08] border border-red-500/20">{errorMsg}</div>
+        )}
+        <button
+          type="submit"
+          disabled={state.submitting || !termsAccepted}
+          className="w-full py-[10px] rounded-full border-none text-[13px] font-bold cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+          style={{ background: "var(--color-accent)", color: "var(--color-bg)" }}
+        >
+          {state.submitting ? "Sending…" : "Let's talk about this build →"}
+        </button>
+      </form>
+      <button onClick={onBack} className="w-full mt-2 py-2 rounded-lg border border-border bg-transparent text-muted text-[12px] cursor-pointer">← Back to chat</button>
     </div>
   );
 }
@@ -1002,9 +1315,10 @@ function QuoteForm({ bizName, bizLoc, bizDesc, bizServes, answers, price, pages,
 // ---------------------------------------------------------------------------
 export interface PricingCalculatorProps {
   industryNames: string[];
+  formspreeId?: string;
 }
 
-export default function PricingCalculator({ industryNames }: PricingCalculatorProps) {
+export default function PricingCalculator({ industryNames, formspreeId = "" }: PricingCalculatorProps) {
   const niches = buildNicheList(industryNames);
 
   // Gate form state
@@ -1023,6 +1337,7 @@ export default function PricingCalculator({ industryNames }: PricingCalculatorPr
   const [isTyping, setIsTyping] = useState(false);
   const [chatError, setChatError] = useState("");
   const [isDone, setIsDone] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Site state (driven by AI patches)
   const [pages, setPages] = useState<any[]>([]);
@@ -1221,9 +1536,11 @@ export default function PricingCalculator({ industryNames }: PricingCalculatorPr
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-5 px-6 py-5 items-stretch" style={{ height: "calc(100vh - var(--site-header-height) - 56px)" }}>
+      {/* ── Two-col on desktop, single-col on mobile ── */}
+      <div className="lg:grid lg:grid-cols-2 lg:gap-5 flex flex-col px-4 lg:px-6 py-4 lg:py-5 items-stretch lg:overflow-hidden"
+        style={{ height: "calc(100vh - var(--site-header-height) - 56px)" }}>
         {/* Left panel */}
-        <div className="flex flex-col gap-3 min-h-0 overflow-y-auto">
+        <div className="flex flex-col gap-3 min-h-0 overflow-y-auto flex-1 lg:flex-none pb-[72px] lg:pb-0">
 
           {/* ── GATE phase ── */}
           {phase === "gate" && (
@@ -1351,27 +1668,36 @@ export default function PricingCalculator({ industryNames }: PricingCalculatorPr
                 <button onClick={resetAll} className="text-[11px] text-text/30 bg-transparent border-none cursor-pointer hover:text-text/60 transition-colors p-0 shrink-0">Start over</button>
               </div>
 
-              {/* Message thread */}
-              <div className="flex-1 overflow-y-auto min-h-0 pb-2">
-                {messages.map((m, i) => <ChatBubble key={i} msg={m} />)}
-                {isTyping && <TypingIndicator />}
-                {chatError && (
-                  <div className="text-[11px] text-amber-500 mb-4 px-[10px] py-[7px] rounded-lg bg-amber-500/[0.039] border border-amber-500/20">
-                    {chatError}
-                    <button onClick={() => setChatError("")} className="ml-2 underline bg-transparent border-none text-amber-500 cursor-pointer text-[11px]">Dismiss</button>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              {/* Input area or quote form */}
+              {/* Message thread or quote form */}
               {isDone ? (
-                <QuoteForm
-                  bizName={bizName} bizLoc={bizLoc} bizDesc={bizDesc} bizServes={bizServes}
-                  answers={answers} price={price} pages={pages} scoped={scoped} onReset={resetAll}
-                />
+                <div className="flex-1 overflow-y-auto min-h-0">
+                  <QuoteForm
+                    bizName={bizName} bizLoc={bizLoc} bizDesc={bizDesc} bizServes={bizServes}
+                    niches={selectedNiches} implNotes={implNotes}
+                    answers={answers} price={price} pages={pages} scoped={scoped}
+                    extrasDetail={extrasDetail} messages={messages}
+                    formspreeId={formspreeId}
+                    onBack={() => setIsDone(false)} onReset={resetAll}
+                  />
+                </div>
               ) : (
-                /* ChatGPT-style single-line pill */
+                <>
+                <div className="flex-1 overflow-y-auto min-h-0 pb-2">
+                  {messages.map((m, i) => <ChatBubble key={i} msg={m} />)}
+                  {isTyping && <TypingIndicator />}
+                  {chatError && (
+                    <div className="text-[11px] text-amber-500 mb-4 px-[10px] py-[7px] rounded-lg bg-amber-500/[0.039] border border-amber-500/20">
+                      {chatError}
+                      <button onClick={() => setChatError("")} className="ml-2 underline bg-transparent border-none text-amber-500 cursor-pointer text-[11px]">Dismiss</button>
+                    </div>
+                  )}
+                  <div ref={chatEndRef} />
+                </div>
+                </>
+              )}
+
+              {/* Input bar — only during chat */}
+              {!isDone && (
                 <div
                   className="shrink-0 rounded-full border border-border/70 px-[10px] py-[6px] flex items-center gap-[6px]"
                   style={{ background: "var(--color-bg2, #18181c)" }}
@@ -1441,8 +1767,8 @@ export default function PricingCalculator({ industryNames }: PricingCalculatorPr
           )}
         </div>
 
-        {/* Right panel — sticky site map + price */}
-        <div className="flex flex-col min-h-0">
+        {/* Right panel — desktop only (inline) */}
+        <div className="hidden lg:flex flex-col min-h-0">
           <RightPanel
             phase={phase}
             pages={pages} setPages={handleSetPages}
@@ -1451,9 +1777,84 @@ export default function PricingCalculator({ industryNames }: PricingCalculatorPr
             price={price} scoped={scoped} hasNeedsScoping={hasNeedsScoping}
             productCount={productCount} setProductCount={handleSetProductCount}
             extrasDetail={extrasDetail} onToggleAddon={handleToggleAddon}
+            isDone={isDone} setIsDone={setIsDone}
+            hasAssistantMessage={messages.some((m) => m.role === "assistant") && !isTyping}
           />
         </div>
       </div>
+
+      {/* ── Mobile sticky price bar ── */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-border px-4 py-3 flex items-center gap-3"
+        style={{ background: "var(--color-bg, #0e0e12)" }}>
+        <div className="flex-1 min-w-0">
+          {price.total > 0 ? (
+            <>
+              <div className="text-[11px] text-muted leading-none mb-[3px]">
+                {price.u > 0 ? `${price.u}-page estimate` : "Estimate"}
+              </div>
+              <div className="text-[22px] font-bold text-accent leading-none">${price.total.toLocaleString()}</div>
+            </>
+          ) : (
+            <div className="text-[13px] text-muted">Your estimate will appear here</div>
+          )}
+        </div>
+        {phase === "chat" && !isDone && messages.some((m) => m.role === "assistant") && !isTyping && (
+          <button
+            onClick={() => setIsDone(true)}
+            className="shrink-0 px-4 py-[9px] rounded-full border-none text-[13px] font-bold cursor-pointer"
+            style={{ background: "var(--color-accent)", color: "var(--color-bg)" }}
+          >
+            Get quote →
+          </button>
+        )}
+        <button
+          onClick={() => setDrawerOpen(true)}
+          className="shrink-0 px-4 py-[9px] rounded-full border border-border text-[13px] font-medium text-text cursor-pointer"
+          style={{ background: "var(--color-bg2, #18181c)" }}
+        >
+          View site map
+        </button>
+      </div>
+
+      {/* ── Mobile drawer ── */}
+      {drawerOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setDrawerOpen(false)}
+          />
+          {/* Sheet */}
+          <div
+            className="relative flex flex-col rounded-t-2xl border-t border-border overflow-hidden"
+            style={{ background: "var(--color-bg, #0e0e12)", maxHeight: "85dvh" }}
+          >
+            {/* Drag handle + close */}
+            <div className="flex items-center justify-between px-4 pt-3 pb-2 shrink-0">
+              <div className="w-10 h-1 rounded-full bg-border mx-auto absolute left-1/2 -translate-x-1/2 top-3" />
+              <span className="text-[13px] font-semibold text-heading">Your site map</span>
+              <button
+                onClick={() => setDrawerOpen(false)}
+                className="w-7 h-7 rounded-full border border-border flex items-center justify-center text-muted bg-transparent cursor-pointer text-[16px] leading-none"
+                style={{ background: "var(--color-bg2, #18181c)" }}
+              >×</button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <RightPanel
+                phase={phase}
+                pages={pages} setPages={handleSetPages}
+                customPages={customPages} setCustomPages={handleSetCustomPages}
+                answers={answers} bizName={bizName} bizLoc={bizLoc}
+                price={price} scoped={scoped} hasNeedsScoping={hasNeedsScoping}
+                productCount={productCount} setProductCount={handleSetProductCount}
+                extrasDetail={extrasDetail} onToggleAddon={handleToggleAddon}
+                isDone={isDone} setIsDone={setIsDone}
+                hasAssistantMessage={messages.some((m) => m.role === "assistant") && !isTyping}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

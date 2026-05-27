@@ -7,7 +7,7 @@ import {
   isContentLengthTooLarge,
   isAllowedRequestOrigin,
   isTrustedBrowserRequest,
-} from "@/lib/apiSecurity";
+} from "@/utils/apiSecurity";
 
 export const prerender = false;
 
