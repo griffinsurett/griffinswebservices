@@ -554,8 +554,16 @@ export default function robotsLlmsIntegration(config: RobotsLlmsConfig = {}): As
     hooks: {
       'astro:build:done': async ({ dir, logger }) => {
         const siteUrl = siteData.url.replace(/\/$/, '');
-        const distDir = fileURLToPath(dir);
-        const srcDir = join(distDir, '..');
+        const clientDir = fileURLToPath(dir);
+        // When the Vercel adapter is used, `dir` points to dist/client/ rather
+        // than dist/. Walk up until we find the __seo manifest directory so the
+        // integration works regardless of adapter-specific output layout.
+        const distDir = existsSync(join(clientDir, '__seo'))
+          ? clientDir
+          : existsSync(join(clientDir, '..', '__seo'))
+            ? join(clientDir, '..')
+            : clientDir;
+        const srcDir = process.cwd();
         const entries = readManifest(distDir);
 
         if (!entries.length) {
@@ -563,21 +571,21 @@ export default function robotsLlmsIntegration(config: RobotsLlmsConfig = {}): As
         }
 
         try {
-          writeFileSync(join(distDir, 'robots.txt'), buildRobots(siteUrl, config), 'utf8');
+          writeFileSync(join(clientDir, 'robots.txt'), buildRobots(siteUrl, config), 'utf8');
           logger.info('robots.txt generated.');
         } catch (err: any) {
           logger.error(`robots.txt generation failed: ${err.message}`);
         }
 
         try {
-          writeFileSync(join(distDir, 'llms.txt'), buildLlms(entries, siteUrl, srcDir), 'utf8');
+          writeFileSync(join(clientDir, 'llms.txt'), buildLlms(entries, siteUrl, srcDir), 'utf8');
           logger.info('llms.txt generated.');
         } catch (err: any) {
           logger.error(`llms.txt generation failed: ${err.message}`);
         }
 
         try {
-          writeFileSync(join(distDir, 'llms-full.txt'), buildLlmsFull(entries, siteUrl, srcDir), 'utf8');
+          writeFileSync(join(clientDir, 'llms-full.txt'), buildLlmsFull(entries, siteUrl, srcDir), 'utf8');
           logger.info('llms-full.txt generated.');
         } catch (err: any) {
           logger.error(`llms-full.txt generation failed: ${err.message}`);
