@@ -103,7 +103,7 @@ function CookiePreferencesModal({
   }, [isOpen]);
 
   const accordionItems = cookieCategories.map((category, idx) => ({
-    slug: category.id,
+    id: category.id,
     title: category.title,
     description: category.description,
     contentSlotId: `cookie-category-${idx}-content`,
@@ -224,7 +224,7 @@ function CookiePreferencesModal({
             items={accordionItems}
             showIndicator={false}
             headerSlot={({ item, id, expanded }) => {
-              const category = cookieCategories.find((c) => c.id === item.slug);
+              const category = cookieCategories.find((c) => c.id === item.id);
               if (!category) return null;
               const toggleId = `${id}-toggle`;
               return (
@@ -272,7 +272,7 @@ function CookiePreferencesModal({
 
           {accordionItems.map((item, idx) => (
             <div
-              key={item.slug}
+              key={item.id}
               id={`cookie-category-${idx}-content`}
               style={{ display: "none" }}
             >

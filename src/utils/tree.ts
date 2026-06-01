@@ -6,7 +6,7 @@
  * Used by MenuVariant and any other component that needs hierarchy.
  */
 
-import { getItemKey } from './collections';
+
 
 /**
  * Build hierarchical tree from flat items with parent references
@@ -45,24 +45,24 @@ export function buildTree<T extends { parent?: any; order?: number }>(
   
   // First pass: create nodes with children arrays
   items.forEach(item => {
-    const id = getItemKey(item as any);
+    const id = (item as any).id || (item as any).slug || "";
     if (id) {
       itemMap.set(id, { ...item, children: [] });
     }
   });
-  
+
   // Second pass: build hierarchy
   items.forEach(item => {
-    const id = getItemKey(item as any);
+    const id = (item as any).id || (item as any).slug || "";
     if (!id) return;
-    
+
     const node = itemMap.get(id)!;
     const parent = item[parentField];
-    
+
     if (parent) {
       // Extract parent ID (handle both string and object references)
-      const parentId = typeof parent === 'string' ? parent : 
-                       getItemKey(parent);
+      const parentId = typeof parent === 'string' ? parent :
+                       ((parent as any).id || (parent as any).slug || "");
       const parentNode = itemMap.get(parentId);
       
       if (parentNode) {
@@ -157,22 +157,21 @@ export function getAncestors<T extends { parent?: any }>(
   const { parentField = 'parent' as keyof T } = options;
   const ancestors: T[] = [];
   
-  // Build lookup map using getItemKey
   const itemMap = new Map<string, T>();
   items.forEach(item => {
-    const id = getItemKey(item as any);
+    const id = (item as any).id || (item as any).slug || "";
     if (id) {
       itemMap.set(id, item);
     }
   });
-  
+
   // Walk up the tree
   let current = itemMap.get(targetId);
   while (current) {
     const parent = current[parentField];
     if (!parent) break;
-    
-    const parentId = typeof parent === 'string' ? parent : getItemKey(parent);
+
+    const parentId = typeof parent === 'string' ? parent : ((parent as any).id || (parent as any).slug || "");
     const parentItem = itemMap.get(parentId);
     
     if (!parentItem) break;

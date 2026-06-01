@@ -1,4 +1,4 @@
-// src/content/config.ts
+// src/content.config.ts
 /**
  * Collection structure:
  *
@@ -16,16 +16,16 @@
  * - featuredImage: Hero image for index page
  * - seo: SEO overrides
  */
-import { file } from "astro/loaders";
 import { defineCollection } from "astro:content";
-import { z } from "astro:schema";
-import { baseSchema, MenuSchema, MenuItemFields, refSchema } from "./schema";
+import { z } from "astro/zod";
+import { baseSchema, MenuSchema, MenuItemFields, refSchema } from "./content/schema";
+import { GlobLoad, FileLoad } from "@/utils/loaders/loaderUtils";
 import { MenuItemsLoader } from "@/utils/loaders/MenuItemsLoader";
 
 export const collections = {
   // ── menus.json ─────────────────────────────────────────
   "menus": defineCollection({
-    loader: file("src/content/menus/menus.json"),
+    loader: FileLoad("menus", "menus.json"),
     schema: MenuSchema,
   }),
 
@@ -36,7 +36,7 @@ export const collections = {
   }),
 
   "contact-us": defineCollection({
-    loader: file("src/content/contact-us/contact-us.json"),
+    loader: FileLoad("contact-us", "contact-us.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         linkPrefix: z.string().optional(),
@@ -44,7 +44,7 @@ export const collections = {
   }),
 
   "social-media": defineCollection({
-    loader: file("src/content/social-media/socialmedia.json"),
+    loader: FileLoad("social-media", "socialmedia.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         link: z.string().optional(),
@@ -53,6 +53,7 @@ export const collections = {
 
   // ── legal ───────────────────────────────────────────────
   "legal": defineCollection({
+    loader: GlobLoad("legal"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         effectiveDate: z
@@ -67,6 +68,7 @@ export const collections = {
   }),
 
   "about-us": defineCollection({
+    loader: GlobLoad("about-us"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         heroIntro: z.string().optional(),
@@ -86,10 +88,11 @@ export const collections = {
             }),
           )
           .default([]),
-      })
+      }),
   }),
 
   "blog": defineCollection({
+    loader: GlobLoad("blog"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         author: refSchema("authors"),
@@ -100,7 +103,7 @@ export const collections = {
   }),
 
   "authors": defineCollection({
-    loader: file("src/content/authors/authors.json"),
+    loader: FileLoad("authors", "authors.json"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         email: z.string().email().optional(),
@@ -117,6 +120,7 @@ export const collections = {
   }),
 
   "testimonials": defineCollection({
+    loader: GlobLoad("testimonials"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         author: z.string(),
@@ -128,6 +132,7 @@ export const collections = {
   }),
 
   "projects": defineCollection({
+    loader: GlobLoad("projects"),
     schema: ({ image }) =>
       baseSchema({ image }).omit({ featuredImage: true }).extend({
         client: z.string().optional(),
@@ -151,6 +156,7 @@ export const collections = {
   }),
 
   "faq": defineCollection({
+    loader: GlobLoad("faq"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         category: z.string().optional(),
@@ -161,6 +167,7 @@ export const collections = {
 
   // ── solutions ─────────────────────────────────────────────
   "solutions": defineCollection({
+    loader: GlobLoad("solutions"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         price: z.string().optional(),
@@ -170,6 +177,7 @@ export const collections = {
 
   // ── features ──────────────────────────────────────────────
   "features": defineCollection({
+    loader: GlobLoad("features"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         solutions: refSchema("solutions"),
@@ -178,6 +186,7 @@ export const collections = {
 
   // ── capabilities ──────────────────────────────────────────
   "capabilities": defineCollection({
+    loader: GlobLoad("capabilities"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         features: z.array(z.string()).default([]),
@@ -188,12 +197,14 @@ export const collections = {
 
   // ── industries ────────────────────────────────────────────
   "industries": defineCollection({
+    loader: GlobLoad("industries"),
     schema: ({ image }) =>
       baseSchema({ image }),
   }),
 
   // ── technologies ──────────────────────────────────────────
   "technologies": defineCollection({
+    loader: GlobLoad("technologies"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         capabilities: refSchema("capabilities"),
@@ -203,6 +214,7 @@ export const collections = {
 
   // ── stats ──────────────────────────────────────────
   "stats": defineCollection({
+    loader: GlobLoad("stats"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         stat: z.string().optional(),
@@ -218,6 +230,7 @@ export const collections = {
 
   // ── benefits ──────────────────────────────────────────
   "benefits": defineCollection({
+    loader: GlobLoad("benefits"),
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         highlight: z.boolean().optional(),
@@ -227,14 +240,15 @@ export const collections = {
 
   // ── process ──────────────────────────────────────────
   "process": defineCollection({
+    loader: GlobLoad("process"),
     schema: ({ image }) =>
       baseSchema({ image }),
   }),
 
   // ── philosophy ──────────────────────────────────────────
   "philosophy": defineCollection({
+    loader: GlobLoad("philosophy"),
     schema: ({ image }) =>
       baseSchema({ image }),
   }),
-
 };

@@ -53,9 +53,9 @@ const fallbackIcon = "fa6-solid:circle-dot";
         // Use displayValue if available (from linkBehavior), fallback to description
         const displayValue = item.displayValue ?? item.description;
         const iconName = item.icon ?? fallbackIcon;
-        const isPhoneItem = item.slug === "phone" || href?.startsWith("tel:");
+        const isPhoneItem = item.id === "phone" || href?.startsWith("tel:");
         return (
-          <li class="py-0" data-contact-id={item.slug}>
+          <li class="py-0" data-contact-id={item.id}>
             {href ? (
               <Button
                 href={href}

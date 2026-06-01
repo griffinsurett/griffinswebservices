@@ -176,7 +176,7 @@ export default function MobileMenuDrawer({
                         <ul className="menu-item-spacing text-left">
                           {level.items.map((item) => (
                             <MobileMenuItem
-                              key={item.slug || item.id}
+                              key={item.id}
                               {...item}
                               currentPath={currentPath}
                               onNavigate={handleNavigate}

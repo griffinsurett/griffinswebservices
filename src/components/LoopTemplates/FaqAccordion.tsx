@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { animationProps } from "@/integrations/scroll-animations";
 
 interface FaqAccordionItemData {
-  slug?: string;
+  id?: string;
   title: string;
   description?: string;
   contentSlotId: string;
@@ -40,7 +40,7 @@ export default function FaqAccordion({
   useEffect(() => {
     expandedItems.forEach((itemId) => {
       const panel = panelRefs.current.get(itemId);
-      const item = items.find((entry, index) => (entry.slug || `item-${index}`) === itemId);
+      const item = items.find((entry, index) => (entry.id || `item-${index}`) === itemId);
 
       if (panel && item?.contentSlotId && panel.children.length === 0) {
         const hiddenContent = document.getElementById(item.contentSlotId);
@@ -58,7 +58,7 @@ export default function FaqAccordion({
   return (
     <div className={`border-t border-border ${className}`.trim()}>
       {items.map((item, index) => {
-        const itemId = item.slug || `item-${index}`;
+        const itemId = item.id || `item-${index}`;
         const isExpanded = expandedItems.has(itemId);
 
         return (

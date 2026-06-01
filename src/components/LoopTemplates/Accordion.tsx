@@ -5,7 +5,7 @@ import type { IconType } from "@/content/schema";
 import { animationProps } from "@/integrations/scroll-animations";
 
 interface AccordionItemData {
-  slug?: string;
+  id?: string;
   title: string;
   description?: string;
   contentSlotId: string; // ID of the hidden div with rendered content
@@ -57,7 +57,7 @@ export default function Accordion({
   useEffect(() => {
     expandedItems.forEach((itemId) => {
       const panel = panelRefs.current.get(itemId);
-      const item = items.find((i, idx) => (i.slug || `item-${idx}`) === itemId);
+      const item = items.find((i, idx) => (i.id || `item-${idx}`) === itemId);
       
       if (panel && item?.contentSlotId && panel.children.length === 0) {
         // Find the hidden content by ID
@@ -81,7 +81,7 @@ export default function Accordion({
   return (
     <div className={`space-y-2 ${className}`}>
       {items.map((item, index) => {
-        const itemId = item.slug || `item-${index}`;
+        const itemId = item.id || `item-${index}`;
 
         return (
           <div

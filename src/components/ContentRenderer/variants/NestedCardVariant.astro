@@ -52,7 +52,7 @@ const targetCollection = childCollection || collectionFromUrl;
 const cardItems: ChildCardData[] = await Promise.all(
   safeItems.map(async (item: any) => {
     // Item has slug from prepareEntry
-    const itemSlug = item.slug || item.id;
+    const itemSlug = item.id;
 
     let childItems: { title: string; icon: any }[] = [];
 

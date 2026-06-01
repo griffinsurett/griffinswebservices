@@ -1,6 +1,6 @@
 // src/content/schema.ts
 import { reference, type CollectionKey } from "astro:content";
-import { z } from "astro:schema";
+import { z } from "astro/zod";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 

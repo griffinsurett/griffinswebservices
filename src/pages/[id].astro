@@ -1,8 +1,8 @@
 ---
-// src/pages/[slug].astro
+// src/pages/[id].astro
 /**
  * Root-Level Item Pages
- * 
+ *
  * Generates pages for items with rootPath: true at the root level.
  * E.g., /about instead of /pages/about
  */
@@ -33,5 +33,5 @@ const {
   collectionMeta={collectionMeta}
   seoProps={seoProps}
   Content={Content}
-  {...collectionMeta}  
+  {...collectionMeta}
 />

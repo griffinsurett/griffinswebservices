@@ -1,10 +1,10 @@
 ---
-// src/pages/[collection]/[slug].astro
+// src/pages/[collection]/[id].astro
 /**
  * Collection-Level Item Pages
- * 
- * Generates pages for items at /collection/slug path.
- * Items with rootPath: true use /[slug].astro instead.
+ *
+ * Generates pages for items at /collection/id path.
+ * Items with rootPath: true use /[id].astro instead.
  */
 
 import {
@@ -33,5 +33,5 @@ const {
   collectionMeta={collectionMeta}
   seoProps={seoProps}
   Content={Content}
-  {...collectionMeta}  
+  {...collectionMeta}
 />

@@ -75,7 +75,7 @@ export default function PortfolioCard({
           <ul className="flex flex-wrap gap-2 text-xs text-accent">
             {technologies.map((tech) => (
               <li
-                key={`${item.slug ?? title}-${tech}`}
+                key={`${item.id ?? title}-${tech}`}
                 className="px-3 py-1 rounded-full border border-accent/30 bg-accent/5"
               >
                 {tech}

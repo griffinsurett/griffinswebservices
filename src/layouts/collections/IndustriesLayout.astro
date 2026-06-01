@@ -16,7 +16,6 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import { query, getBreadcrumbs } from "@/utils/query";
 import { related } from "@/utils/query/snippets";
 import { capitalizeWords } from "@/utils/string";
-import { getItemKey } from "@/utils/collections";
 import type { CollectionLayoutProps } from "./types";
 import { animationProps } from "@/integrations/scroll-animations/props";
 
@@ -39,14 +38,14 @@ const {
 } = data;
 
 // Get the industry slug for filtering projects
-const industrySlug = entry ? getItemKey(entry) : "";
+const industrySlug = entry ? entry.id : "";
 const breadcrumbRelations = industrySlug
   ? await getBreadcrumbs("industries", industrySlug, true)
   : [];
 
 // Capitalize the slug for display
 const displayTitle =
-  title || capitalizeWords(entry?.slug?.replace(/-/g, " ") || "");
+  title || capitalizeWords(entry?.id?.replace(/-/g, " ") || "");
 const industryBreadcrumbs = [
   { label: "Home", href: "/" },
   { label: collectionMeta?.data?.title || "Industries", href: "/industries" },

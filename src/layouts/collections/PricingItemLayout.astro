@@ -27,7 +27,7 @@ const {
   link,
 } = data;
 
-const slug = entry?.slug ?? "";
+const slug = entry?.id ?? "";
 const isPremiumWebsite = slug === "premium-website";
 const safeFeatures = Array.isArray(features)
   ? features.filter((feature) => typeof feature === "string" && feature.trim().length > 0)

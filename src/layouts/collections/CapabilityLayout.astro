@@ -7,7 +7,6 @@ import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
 import CapabilityQuoteSection from "@/layouts/sections/CapabilityQuoteSection.astro";
 import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
 import type { CollectionLayoutProps } from "./types";
-import { getItemKey } from "@/utils/collections";
 import { shouldCollectionHavePage } from "@/utils/pages";
 import { getBreadcrumbs, sortByOrder } from "@/utils/query";
 import { related } from "@/utils/query/snippets";
@@ -21,7 +20,7 @@ const {
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
-const entryKey = entry ? getItemKey(entry) : "";
+const entryKey = entry ? entry.id : "";
 const breadcrumbRelations = entryKey
   ? await getBreadcrumbs("capabilities", entryKey, true)
   : [];

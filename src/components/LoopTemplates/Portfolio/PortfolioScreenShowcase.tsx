@@ -276,7 +276,7 @@ export default function PortfolioScreenShowcase({
 
           return (
             <div
-              key={item.slug ?? item.id ?? slideIndex}
+              key={item.id ?? slideIndex}
               className={`${baseTransitionClass} shadow-2xl ${translateClass} ${
                 isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
               }`}

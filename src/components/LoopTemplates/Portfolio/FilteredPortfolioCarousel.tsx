@@ -263,7 +263,7 @@ function GroupSlide({
 
             return (
               <div
-                key={item.slug ?? item.id ?? idx}
+                key={item.id ?? idx}
                 className={`${baseTransitionClass} ${translateClass} ${
                   isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
                 }`}

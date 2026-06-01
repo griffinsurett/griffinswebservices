@@ -173,7 +173,7 @@ export default function PortfolioCarousel({
           >
             {slides.map((item, slideIndex) => (
               <PortfolioItemComponent
-                key={item.slug ?? item.id ?? slideIndex}
+                key={item.id ?? slideIndex}
                 item={item}
                 i={slideIndex}
                 activeIndex={index}

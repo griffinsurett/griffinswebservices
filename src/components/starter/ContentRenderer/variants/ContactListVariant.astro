@@ -54,7 +54,7 @@ const fallbackIcon = "fa6-solid:circle-dot";
         const displayValue = item.displayValue ?? item.description;
         const iconName = item.icon ?? fallbackIcon;
         return (
-          <li class="py-0" data-contact-id={item.slug}>
+          <li class="py-0" data-contact-id={item.id}>
             {href ? (
               <Button
                 href={href}

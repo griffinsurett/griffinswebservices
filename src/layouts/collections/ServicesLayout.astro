@@ -14,7 +14,6 @@ import WrittenLayout from "@/layouts/sections/WrittenLayout.astro";
 import CapabilityQuoteSection from "@/layouts/sections/CapabilityQuoteSection.astro";
 import { contactCtaData } from "@/content/siteData";
 import type { CollectionLayoutProps } from "./types";
-import { getItemKey } from "@/utils/collections";
 import { shouldCollectionHavePage } from "@/utils/pages";
 import { getBreadcrumbs } from "@/utils/query";
 
@@ -26,7 +25,7 @@ const {
 } = Astro.props as CollectionLayoutProps;
 
 const data = entry?.data || {};
-const entryKey = entry ? getItemKey(entry) : "";
+const entryKey = entry ? entry.id : "";
 const breadcrumbRelations = entryKey
   ? await getBreadcrumbs("solutions", entryKey, true)
   : [];
