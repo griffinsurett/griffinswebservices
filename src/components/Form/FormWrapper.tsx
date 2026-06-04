@@ -227,6 +227,7 @@ export default function FormWrapper({
         target="_blank"
         rel="noopener noreferrer"
         className="text-text hover:underline"
+        aria-label="Terms of Service (opens in new tab)"
       >
         Terms of Service
       </a>{" "}
@@ -236,6 +237,7 @@ export default function FormWrapper({
         target="_blank"
         rel="noopener noreferrer"
         className="text-text hover:underline"
+        aria-label="Privacy Policy (opens in new tab)"
       >
         Privacy Policy
       </a>

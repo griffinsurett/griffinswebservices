@@ -30,7 +30,7 @@ const pricingFormId = import.meta.env.PUBLIC_FORMSPREE_PRICING_ID ?? "";
     </section>
 
     <!-- Interactive pricing calculator. Hidden from screen readers; use the contact link above. -->
-    <div class="rounded-3xl card-bg relative overflow-hidden" aria-hidden="true" inert>
+    <div class="rounded-3xl card-bg relative overflow-hidden" aria-hidden="true">
       <PricingCalculator client:idle industryNames={industryNames} formspreeId={pricingFormId} />
     </div>
   </div>

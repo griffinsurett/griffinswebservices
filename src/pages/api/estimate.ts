@@ -31,8 +31,25 @@ function corsHeaders(request: Request): Record<string, string> {
 // ---------------------------------------------------------------------------
 // Pricing constants
 // ---------------------------------------------------------------------------
-const PRODUCTS_INCLUDED = 10;
-const PRICE_PER_EXTRA_PRODUCT = 25;
+
+// E-commerce tiers (product count determines tier)
+// Research basis: CartCoders, Aureate Labs, GoodFirms, DesignRush 2024-2025
+// Small  (1–25 products):   $3,500 base — theme customization, product loading, payment setup, launch
+// Medium (26–200 products): $8,500 base — collections, filtering, brand-aligned UX, variant structure
+// Large  (201+ products):   $20,000 base — custom UX, advanced navigation, bulk catalog management
+const ECOMMERCE_SMALL_MAX_PRODUCTS = 25;
+const ECOMMERCE_MEDIUM_MAX_PRODUCTS = 200;
+const ECOMMERCE_BASE_SMALL = 3500;
+const ECOMMERCE_BASE_MEDIUM = 8500;
+const ECOMMERCE_BASE_LARGE = 20000;
+
+// Products included per tier before per-unit loading fee kicks in
+const ECOMMERCE_SMALL_INCLUDED_PRODUCTS = 25;
+const ECOMMERCE_MEDIUM_INCLUDED_PRODUCTS = 50;
+const ECOMMERCE_LARGE_INCLUDED_PRODUCTS = 100;
+// Product loading fee per product above included count ($3/product — data entry, image optimization, variant setup)
+const PRICE_PER_EXTRA_PRODUCT = 3;
+
 const SERVICES_INCLUDED = 10;
 const SERVICES_BASE_FEE = 350;
 const PRICE_PER_EXTRA_SERVICE = 50;
@@ -106,16 +123,38 @@ function computePrice(
   let base = 0, ep = 0, addons = 0;
   const items: string[] = [];
 
-  if (u === 1) { base = 499; items.push("1-page site — $499"); }
-  else if (u <= 5) { base = 799; items.push("Up to 5-page site — $799"); }
-  else { base = 799; const ov = u - 5; ep = ov * 100; items.push("5-page base — $799"); items.push(`${ov} extra page${ov > 1 ? "s" : ""} — $${ep}`); }
-
   if (answers.goal === "ecommerce") {
-    addons += 500;
-    const extraProds = Math.max(0, (productCount || 0) - PRODUCTS_INCLUDED);
-    const prodCost = extraProds * PRICE_PER_EXTRA_PRODUCT;
-    items.push(`E-commerce setup — $500 (incl. ${PRODUCTS_INCLUDED} product pages)`);
-    if (extraProds > 0) { addons += prodCost; items.push(`${extraProds} extra product page${extraProds > 1 ? "s" : ""} — $${prodCost}`); }
+    // E-commerce: tiered base by product count — replaces generic page-count pricing
+    const pc = productCount || 1;
+    let ecBase: number;
+    let includedProds: number;
+    let tierLabel: string;
+    if (pc <= ECOMMERCE_SMALL_MAX_PRODUCTS) {
+      ecBase = ECOMMERCE_BASE_SMALL;
+      includedProds = ECOMMERCE_SMALL_INCLUDED_PRODUCTS;
+      tierLabel = `Small e-commerce build — $${ECOMMERCE_BASE_SMALL.toLocaleString()} (up to ${ECOMMERCE_SMALL_MAX_PRODUCTS} products incl.)`;
+    } else if (pc <= ECOMMERCE_MEDIUM_MAX_PRODUCTS) {
+      ecBase = ECOMMERCE_BASE_MEDIUM;
+      includedProds = ECOMMERCE_MEDIUM_INCLUDED_PRODUCTS;
+      tierLabel = `Medium e-commerce build — $${ECOMMERCE_BASE_MEDIUM.toLocaleString()} (up to ${ECOMMERCE_MEDIUM_MAX_PRODUCTS} products incl.)`;
+    } else {
+      ecBase = ECOMMERCE_BASE_LARGE;
+      includedProds = ECOMMERCE_LARGE_INCLUDED_PRODUCTS;
+      tierLabel = `Large e-commerce build — $${ECOMMERCE_BASE_LARGE.toLocaleString()} (${ECOMMERCE_LARGE_INCLUDED_PRODUCTS} products incl.)`;
+    }
+    base = ecBase;
+    items.push(tierLabel);
+    const extraProds = Math.max(0, pc - includedProds);
+    if (extraProds > 0) {
+      const prodCost = extraProds * PRICE_PER_EXTRA_PRODUCT;
+      addons += prodCost;
+      items.push(`${extraProds} extra product${extraProds > 1 ? "s" : ""} loaded — $${prodCost} ($${PRICE_PER_EXTRA_PRODUCT}/product)`);
+    }
+  } else {
+    // Service/showcase: page-count pricing
+    if (u === 1) { base = 499; items.push("1-page site — $499"); }
+    else if (u <= 5) { base = 799; items.push("Up to 5-page site — $799"); }
+    else { base = 799; const ov = u - 5; ep = ov * 100; items.push("5-page base — $799"); items.push(`${ov} extra page${ov > 1 ? "s" : ""} — $${ep}`); }
   }
 
   const totalServicePages = pages.reduce((sum: number, p: any) => sum + (p.subpages || []).length, 0);
@@ -148,13 +187,31 @@ function computePrice(
     }
   }
 
-  const EXTRA_DEFAULTS: Record<string, number> = { forms: 150, seo: 400, ai_chat: 1000, booking_int: 150 };
-  const EXTRA_LABELS: Record<string, string> = { forms: "Forms (up to 5)", seo: "SEO / AEO", ai_chat: "AI Chat Support", booking_int: "Booking integration" };
+  const EXTRA_DEFAULTS: Record<string, number> = {
+    forms: 150,
+    seo: 400,
+    ai_chat: 1000,
+    booking_int: 150,
+    email_marketing: 900,
+    product_copy: 350,
+    custom_filtering: 600,
+    subscriptions: 1000,
+  };
+  const EXTRA_LABELS: Record<string, string> = {
+    forms: "Forms (up to 5)",
+    seo: "SEO / AEO",
+    ai_chat: "AI Chat Support",
+    booking_int: "Booking integration",
+    email_marketing: "Email / Klaviyo setup",
+    product_copy: "Product copywriting",
+    custom_filtering: "Custom product filtering",
+    subscriptions: "Subscription / recurring billing",
+  };
   const hasScopedBooking = (scopedItems || []).some((s: any) =>
     !s.needsScoping && /book|schedul|reserv|appoint|calendar/i.test(s.label)
   );
 
-  ["forms", "seo", "ai_chat", "booking_int"].forEach((id) => {
+  ["forms", "seo", "ai_chat", "booking_int", "email_marketing", "product_copy", "custom_filtering", "subscriptions"].forEach((id) => {
     if (!extras.includes(id)) return;
     if (id === "booking_int" && hasScopedBooking) return;
     const detail = (extrasDetail || []).find((e: any) => e.id === id);
@@ -195,6 +252,16 @@ Read the business name carefully — word order signals importance. "Demolition 
 
 - goal = "ecommerce" if they sell products, courses, memberships, coaching packages, or anything requiring checkout
 - goal = "showcase" for all service businesses that generate leads or bookings without taking payment on the site
+
+## E-commerce pricing tiers (server-computed — do NOT mention prices in chat)
+
+Product count drives the base tier — do not add an "E-commerce setup" scoped item or mention a price; the server handles it:
+- 1–25 products: Small tier ($3,500 base) — standard Shopify/WooCommerce theme build, product loading, payment setup
+- 26–200 products: Medium tier ($8,500 base) — collections, filtering, brand UX, variant structure
+- 201+ products: Large tier ($20,000 base) — custom UX, advanced navigation, bulk catalog management
+Product loading above the included count: $3/product (data entry, image optimization, variant setup).
+
+For fashion/apparel/clothing brands: always flag the variant complexity (size × color matrix) and visual density as a scopedItem for a 15–20% build premium. Label it "Fashion/apparel complexity premium" with needsScoping:false and a price equal to 15–20% of the estimated base tier.
 
 ## Deciding action (REQUIRED — never leave this blank)
 
@@ -444,7 +511,7 @@ Return ONLY valid JSON: {"ok": true} or {"ok": false, "reason": "one sentence pl
     // Validate productCount
     const productCount = (() => {
       const v = Number(body.productCount);
-      if (!Number.isInteger(v) || v < 1) return PRODUCTS_INCLUDED;
+      if (!Number.isInteger(v) || v < 1) return 10;
       return Math.min(v, 500);
     })();
 
@@ -593,10 +660,10 @@ Every page exists to do one of four jobs. Include only pages that earn their pla
 - 8–12 pages, dense metro: $1,200–1,900
 - Regional/multi-city 10+ pages: $1,600–2,800
 - Legal/medical/financial: add $300–500
-- E-commerce: $1,300–2,200
+- E-commerce: $900–2,000 (product schema, collection pages, on-page copy)
 
 **analytics** — base $175 always (server-side). extrasDetail.price = ADDITIONAL above baseline:
-- E-commerce event tracking: +$150–275
+- E-commerce event tracking (add-to-cart, checkout, purchase): +$200–350
 - Call tracking: +$100–175
 - CRM event linkage: +$150–300
 - Heatmap/session replay: +$75–125
@@ -614,6 +681,30 @@ Every page exists to do one of four jobs. Include only pages that earn their pla
 - Deposit/payment capture: $400–650
 - Complex platform (Mindbody, Vagaro, FareHarbor, Tock, OpenTable): $500–950
 If booking complexity goes beyond an embed → scopedItem instead. Don't double-charge.
+
+**email_marketing** — e-commerce only. Klaviyo or equivalent: welcome flow, abandoned cart, post-purchase sequences.
+- Standard 3-flow setup: $750–1,200
+- Advanced segmentation + A/B: $1,200–2,000
+
+**product_copy** — e-commerce only. SEO-optimized product descriptions at $35/product. Return extrasDetail.price = total (count × $35). Recommend when catalog has 10+ products.
+
+**custom_filtering** — e-commerce only. Faceted filtering by size, color, category, price.
+- App-based (Boost Commerce, etc.): $400–800
+- Custom-coded: $1,500–4,000
+
+**subscriptions** — e-commerce only. Recurring billing via ReCharge, Bold, or Skio.
+- App-based setup: $750–1,500
+- Custom recurring logic: $2,000–4,500
+
+## E-commerce base pricing (server-computed — never discuss dollar amounts in chat)
+
+The server prices e-commerce builds by product count tier — do NOT propose an "e-commerce setup" scopedItem or mention a base price. Just set goal:"ecommerce" and the correct productCount in the patch.
+
+- 1–25 products → Small tier
+- 26–200 products → Medium tier
+- 201+ products → Large tier
+
+For fashion/apparel/clothing brands: always add a scopedItem for the variant and visual complexity premium. Label: "Fashion/apparel complexity premium". Price: 15–20% of the tier base (Small: $525–700, Medium: $1,275–1,700, Large: $3,000–4,000). needsScoping:false. Rationale must cite the specific size×color variant matrix and visual/editorial page requirements.
 
 ### Scoped items — where you act like a real strategist
 Whenever the business has unusual signals mapping to a feature, propose a scopedItem with a confident price and a rationale citing the specific signal. Categories:
@@ -782,21 +873,28 @@ fa6:screwdriver-wrench  fa6:shield-halved  fa6:pen-ruler
         }));
       }
 
-      // Compute price from current patch state if we have enough to price
+      // Compute price from merged state: client's persisted state + current patch overrides
       let priceResult = null;
-      if (patch.pages || patch.goal || patch.extras) {
-        // Merge patch with client's current state for pricing
-        const clientAnswers: Record<string, any> = {};
-        if (patch.goal) clientAnswers.goal = patch.goal;
-        if (patch.action) clientAnswers.action = patch.action;
-        if (patch.extras) clientAnswers.extras = patch.extras;
-        if (patch.selling) clientAnswers.selling = patch.selling;
+      if (patch.pages || patch.goal || patch.extras || clientPages?.length) {
+        // Pull persisted answers from client body so goal/action/extras survive across turns
+        const persistedAnswers: Record<string, any> = {};
+        if (rawAnswers.goal && VALID_GOALS.has(rawAnswers.goal)) persistedAnswers.goal = rawAnswers.goal;
+        if (rawAnswers.action && VALID_ACTIONS.has(rawAnswers.action)) persistedAnswers.action = rawAnswers.action;
+        if (Array.isArray(rawAnswers.extras)) persistedAnswers.extras = rawAnswers.extras;
+        if (Array.isArray(rawAnswers.selling)) persistedAnswers.selling = rawAnswers.selling;
+
+        // Patch overrides persisted values
+        const mergedAnswers: Record<string, any> = { ...persistedAnswers };
+        if (patch.goal) mergedAnswers.goal = patch.goal;
+        if (patch.action) mergedAnswers.action = patch.action;
+        if (patch.extras) mergedAnswers.extras = patch.extras;
+        if (patch.selling) mergedAnswers.selling = patch.selling;
 
         const pagesForPrice: any[] = patch.pages ?? (clientPages ?? []);
         const computed = computePrice(
           pagesForPrice,
           customPages,
-          clientAnswers,
+          mergedAnswers,
           productCount,
           patch.scopedItems ?? [],
           patch.extrasDetail ?? []

@@ -103,6 +103,7 @@ const ADDON_CATALOG = [
     desc: "Up to 5 simple forms — contact, quote request, subscribe, intake, feedback, and more.",
     defaultPrice: 150,
     tip: null,
+    ecommOnly: false,
   },
   {
     id: "seo",
@@ -111,6 +112,7 @@ const ADDON_CATALOG = [
     desc: "Get found in search and cited by AI tools like ChatGPT and Google AI Overviews.",
     defaultPrice: 400,
     tip: SEO_AEO_TIP,
+    ecommOnly: false,
   },
   {
     id: "analytics",
@@ -119,6 +121,7 @@ const ADDON_CATALOG = [
     desc: "Track visitors, conversions, and what's actually working on your site.",
     defaultPrice: 175,
     tip: null,
+    ecommOnly: false,
   },
   {
     id: "ai_chat",
@@ -127,6 +130,7 @@ const ADDON_CATALOG = [
     desc: "Answer common questions automatically and capture leads 24/7.",
     defaultPrice: 1000,
     tip: null,
+    ecommOnly: false,
   },
   {
     id: "booking_int",
@@ -135,6 +139,43 @@ const ADDON_CATALOG = [
     desc: "Embed a booking or scheduling widget so customers can book directly from your site.",
     defaultPrice: 150,
     tip: null,
+    ecommOnly: false,
+  },
+  {
+    id: "email_marketing",
+    label: "Email / Klaviyo",
+    icon: "lu:mail",
+    desc: "Welcome flow, abandoned cart, and post-purchase sequences set up and live at launch.",
+    defaultPrice: 900,
+    tip: null,
+    ecommOnly: true,
+  },
+  {
+    id: "product_copy",
+    label: "Product Copy",
+    icon: "fa6:pen-ruler",
+    desc: "SEO-optimized product descriptions written for your catalog — $35 per product.",
+    defaultPrice: 350,
+    tip: null,
+    ecommOnly: true,
+  },
+  {
+    id: "custom_filtering",
+    label: "Custom Filtering",
+    icon: "fa6:magnifying-glass",
+    desc: "Faceted filtering by size, color, category, price, and more — app-based setup.",
+    defaultPrice: 600,
+    tip: null,
+    ecommOnly: true,
+  },
+  {
+    id: "subscriptions",
+    label: "Subscriptions",
+    icon: "fa6:rotate",
+    desc: "Recurring billing setup (ReCharge, Bold, or Skio) for subscription products or memberships.",
+    defaultPrice: 1000,
+    tip: null,
+    ecommOnly: true,
   },
 ] as const;
 
@@ -357,7 +398,7 @@ function PlusMenu({
           style={MENU_STYLE}
         >
           {/* Add-ons submenu */}
-          {sub === "addons" && ADDON_CATALOG.map((addon) => {
+          {sub === "addons" && ADDON_CATALOG.filter((a) => !a.ecommOnly || answers.goal === "ecommerce").map((addon) => {
             const active = (answers.extras || []).includes(addon.id);
             const detail = extrasDetail.find((d: any) => d.id === addon.id);
             const priceVal = detail?.price ?? addon.defaultPrice;
@@ -787,7 +828,7 @@ function RightPanel({
           <div className="border border-border rounded-xl p-[0.875rem_1rem]" style={{ background: "var(--color-bg2, #18181c)" }}>
             <div className="text-[10px] text-text/25 tracking-[0.1em] uppercase mb-[10px]">Add-ons</div>
             <div className="flex flex-col gap-[6px]">
-              {ADDON_CATALOG.map((addon) => {
+              {ADDON_CATALOG.filter((a) => !a.ecommOnly || answers.goal === "ecommerce").map((addon) => {
                 const active = (answers.extras || []).includes(addon.id);
                 const detail = extrasDetail.find((d: any) => d.id === addon.id);
                 const price_val = detail?.price ?? addon.defaultPrice;
@@ -1485,6 +1526,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
           mode: "chat",
           message: content.trim(),
           history,
+          answers,
           pages,
           customPages,
           productCount,
