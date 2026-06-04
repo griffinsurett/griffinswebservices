@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import Icon from "@/components/Icon";
 import Input from "@/components/Form/inputs/Input";
-import ChatInputBar from "@/components/Form/ChatInputBar";
 import AIIconPrompt from "@/components/Footer/AIIconPrompt";
 import { MarkdownText } from "@/components/MarkdownText";
 
@@ -1478,7 +1477,6 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
   const chatEndRef = useRef<HTMLDivElement>(null);
   const repriceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const SERVES_LABELS: Record<string, string> = { city: "Local", county: "County-wide", state: "State / province", region: "Regional", country: "Nationwide", worldwide: "Worldwide" };
   const slide0Ready = bizName.trim() && bizDesc.trim() && bizLoc.trim();
   const gateReady = !!(slide0Ready && bizServes); // goal is optional — empty means let AI decide
 

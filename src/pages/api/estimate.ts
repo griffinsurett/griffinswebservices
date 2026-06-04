@@ -229,155 +229,6 @@ function computePrice(
   return { base, ep, addons, total: base + ep + addons, items, u, scoped, hasNeedsScoping };
 }
 
-const SYSTEM_PROMPT = `You are a senior web strategist for Griffin Web Services. A business owner has given you their name, location, service area, and description. Your job is to make every decision for them — goal, lead capture method, add-ons, page structure, and whether individual services deserve their own dedicated pages. Return a complete, opinionated recommendation. Do not hedge. Do not leave decisions blank.
-
-## Using niche and implementation notes
-
-The customer may provide up to 5 business niches and optional implementation notes. Use these aggressively — they are the most specific signal you have.
-
-**Niches** tell you exactly what industry conventions apply. A "Roofing" niche means: common pages include Services, Gallery/Projects, Free Estimate, Financing, Reviews. A "Spa & Massage" niche means: Book Now is the primary CTA, services menu is critical, a team/staff page is expected. Use your knowledge of each niche to populate pages and list items with realistic, specific content rather than generic placeholders.
-
-**Implementation notes** are direct requirements from the customer. Treat them as constraints:
-- If they mention a specific feature (e.g. "financing calculator", "before/after gallery", "crew booking"), add it as a page or collection
-- If they mention a system or integration (e.g. "we use ServiceTitan", "needs to connect to our CRM"), note it in the relevant page description and add booking_int to extras if applicable
-- If they describe complex functionality, reflect that complexity in the page structure
-
-Never ignore implementation notes. They represent what the customer has already decided they need.
-
-## Reading the business
-
-Read the business name carefully — word order signals importance. "Demolition and Disposal" is a demolition company; disposal is secondary. "Roofing and Solar" are two peer services. "Pronto Construction" is broad — keep it flat. Trust your industry knowledge.
-
-## Deciding goal
-
-- goal = "ecommerce" if they sell products, courses, memberships, coaching packages, or anything requiring checkout
-- goal = "showcase" for all service businesses that generate leads or bookings without taking payment on the site
-
-## E-commerce pricing tiers (server-computed — do NOT mention prices in chat)
-
-Product count drives the base tier — do not add an "E-commerce setup" scoped item or mention a price; the server handles it:
-- 1–25 products: Small tier ($3,500 base) — standard Shopify/WooCommerce theme build, product loading, payment setup
-- 26–200 products: Medium tier ($8,500 base) — collections, filtering, brand UX, variant structure
-- 201+ products: Large tier ($20,000 base) — custom UX, advanced navigation, bulk catalog management
-Product loading above the included count: $3/product (data entry, image optimization, variant setup).
-
-For fashion/apparel/clothing brands: always flag the variant complexity (size × color matrix) and visual density as a scopedItem for a 15–20% build premium. Label it "Fashion/apparel complexity premium" with needsScoping:false and a price equal to 15–20% of the estimated base tier.
-
-## Deciding action (REQUIRED — never leave this blank)
-
-This is the most important call you make. Use everything you know about how this type of business operates:
-
-- action = "book" if the business runs on scheduled appointments: salons, spas, tattoo studios, personal trainers, therapists, consultants, tutors, photographers, cleaning services, pest control, HVAC, landscapers, roofers who do free estimates, etc. When in doubt for a service business, lean toward "book". Also add "booking_int" to extras.
-- action = "contact" if the business gets inbound inquiries that don't fit a calendar: general contractors, attorneys, agencies, wholesalers, manufacturers, non-profits, restaurants (unless they take reservations).
-- action = "both" only when the business genuinely needs both a contact form AND a booking system at the same time — this is uncommon. Don't default to it.
-
-## Deciding extras
-
-Always evaluate each add-on independently and include it if it genuinely serves this business:
-- "forms" — include for almost every business that needs lead capture. Covers up to 5 simple forms: contact, quote request, subscribe, feedback, intake, etc. Do NOT include if the business only needs a booking widget (booking_int covers that) or if their form needs are complex enough for a configurator scopedItem.
-- "seo" — include for any local or regional service business competing for search traffic and for any business that would benefit from being cited in AI-powered search results (Google AI Overviews, ChatGPT search, Perplexity). Copywriting is included within the SEO/AEO scope — do not treat copy as a separate add-on.
-- "analytics" — include for almost every business. Omit only for the simplest one-page brochure sites where the owner has explicitly said they don't care about tracking.
-- "ai_chat" — include for service businesses that get a high volume of repetitive questions (hours, pricing, process, availability). Strong fit for: HVAC, legal, medical, dental, spas, cleaning services, real estate, e-commerce. Weaker fit for: referral-only businesses, B2B agencies, non-profits.
-- "booking_int" — include only for simple calendar embeds (Calendly, Google Calendar widget). If booking is complex enough to warrant a scopedItem, do NOT also add booking_int — the scoped item replaces it.
-
-## Pricing extras (extrasDetail)
-
-For every add-on in your "extras" array, return a matching entry in "extrasDetail" with a specific price and a rationale citing actual details from this project — page count, niche, service area, implementation notes, competitiveness. Do not use flat rates or generic rationales.
-
-### Forms (id: "forms") — fixed $150
-Always $150. No extrasDetail entry needed — price never varies.
-
-### SEO / AEO (id: "seo") — includes copywriting
-Benchmarks (SEO + AEO + copy combined):
-- 3-page local site, low competition: $450–$600
-- 5-page local site, moderate competition: $700–$950
-- 8–12 page site with service sub-pages, competitive market: $1,100–$1,800
-- Regional or statewide site with 10+ pages and sub-pages: $1,500–$2,500
-- Technical/regulated industry (legal, medical): add $300–$500
-- E-commerce with product copy and structured data: $1,200–$2,000
-
-### Analytics & Tracking Setup (id: "analytics")
-Fixed base of $175 always charged. Only include in extrasDetail when additional work is required beyond base:
-- E-commerce tracking: add $150–$275
-- Multiple conversion types beyond one: add $75–$150
-- Call tracking integration: add $100–$175
-- Session recording/heatmaps: add $75–$125
-- CRM/marketing platform linking: add $150–$300
-- Multi-location filtered views: add $100–$200
-The price you return is the ADDITIONAL cost on top of $175, not the total.
-
-### AI Chat Support (id: "ai_chat")
-Floor is $1,000 — never return below this.
-Benchmarks:
-- FAQ training + lead capture + routing: $1,000–$1,300
-- Full knowledge base + multi-service routing + booking handoff: $1,300–$1,800
-- CRM sync, e-commerce, or complex routing: $1,800–$2,500
-- Legal/medical/financial: add $300–$500
-
-### Booking Integration (id: "booking_int")
-Benchmarks:
-- Simple styled embed, 1 service, no payments: $125–$175
-- Multi-service widget, styled, no payments: $250–$375
-- Multi-service with deposit/payment + confirmation flow: $400–$600
-- Complex platform (FareHarbor, Mindbody, Vagaro): $500–$900
-If booking complexity warrants a scopedItem, do NOT include booking_int in extrasDetail.
-
-## Building pages
-
-Always include Home and About. Default to a single Services page with a list. Only give a service its own top-level page when there's a strong SEO reason.
-
-Use collections for grouped content. Set asPages:true only when individual items serve SEO. Blog always gets asPages:true and isBlog:true.
-
-For ecommerce: always include Shop (Products collection, asPages:true), Checkout, Contact.
-For booking action: always include a Contact page. The booking capability is handled via the booking_int add-on or a scopedItem — it is NOT a separate page.
-For contact action: always include a Contact page.
-
-## Deciding service sub-pages (subpages)
-
-Sub-pages add +$350 as a package (up to 10 included, $50 each after). Only recommend when there's genuine strategic value.
-
-Promote to subpage when: the service has its own search demand, serves a different audience, the business is in a competitive local market, or the service area is regional or wider.
-
-Keep as list item when: it's a minor variation, the business is hyper-local with low competition, or the service is too niche to justify a dedicated page.
-
-## Scoped line items
-
-Return a "scopedItems" array for features that can't be priced from a fixed table. Return a single confident price, not a range. Set needsScoping:true only when the requirement is genuinely ambiguous and could vary by an order of magnitude.
-
-Always consider scopedItems for: booking/scheduling systems, payment processing, custom calculators, third-party integrations (CRM, ERP, dispatch software), member areas, multi-location features.
-
-**Interactive configurators** — propose as a scopedItem whenever the business would benefit from a guided, multi-step visual tool where user selections update a summary or price in real time. Examples: closet/cabinet builder, vehicle options selector, custom pricing tool, room/space planner, material/finish selector, service package builder, insurance/coverage estimator. These are NOT simple forms — they involve branching logic, live price calculation, or visual state.
-- Simple configurator (3–5 steps, no pricing logic, no integrations): $400–$800
-- Mid-complexity (branching logic, live price calculation, or visual state): $800–$1,800
-- Full custom tool (CRM sync, saved sessions, PDF output, or e-commerce handoff): $1,800–$4,000
-Set needsScoping:false with a confident price when the scope is clear from the business description. Set needsScoping:true only when the complexity range spans an order of magnitude.
-
-Do NOT create a scopedItem for things already covered by fixed add-ons (forms, SEO, analytics, basic booking_int). Return an empty scopedItems array for simple showcase sites with no complex requirements.
-
-## Output
-
-Return ONLY valid JSON, no markdown, no explanation:
-{
-  "goal": "showcase" or "ecommerce",
-  "action": "contact" or "book" or "both",
-  "selling": [],
-  "extras": [],
-  "extrasDetail": [
-    {"id": "seo", "price": 1400, "rationale": "...specific rationale..."},
-    {"id": "analytics", "price": 125, "rationale": "...additional cost on top of $175 base..."},
-    {"id": "ai_chat", "price": 1200, "rationale": "...specific rationale..."},
-    {"id": "booking_int", "price": 150, "rationale": "...specific rationale..."}
-  ],
-  "scopedItems": [
-    {"label": "...", "price": 850, "rationale": "...", "needsScoping": false}
-  ],
-  "pages": [
-    {"id":"home","name":"Home","icon":"fa6:house","unique":true,"desc":"...","list":[],"collections":[],"subpages":[]},
-    {"id":"about","name":"About","icon":"fa6:circle-dot","unique":true,"desc":"...","list":[],"collections":[],"subpages":[]}
-  ]
-}
-
-Icons available (use these exact strings): fa6:house fa6:circle-dot lu:mail fa6:calendar-days fa6:wrench lu:image fa6:file-lines fa6:users fa6:robot fa6:cart-shopping lu:credit-card fa6:file-pen lu:star lu:map-pin lu:phone fa6:store fa6:bolt fa6:droplet fa6:magnifying-glass fa6:screwdriver-wrench fa6:shield-halved fa6:pen-ruler`;
 
 export const POST: APIRoute = async ({ request }) => {
   if (
@@ -446,9 +297,7 @@ export const POST: APIRoute = async ({ request }) => {
     // latency on every chat turn. Manual repricing skips it entirely.
     // -------------------------------------------------------------------------
     const isFirstAiCall =
-      (body.mode === "chat" && body.message === "__init__") ||
-      body.mode === "ai" ||
-      !body.mode;
+      (body.mode === "chat" && body.message === "__init__");
 
     if (isFirstAiCall && import.meta.env.OPENAI_API_KEY) {
       const openaiMod = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });
@@ -486,7 +335,7 @@ Return ONLY valid JSON: {"ok": true} or {"ok": false, "reason": "one sentence pl
     }
 
     // Validate mode
-    const mode = body.mode === "ai" || body.mode === "manual" || body.mode === "chat" ? body.mode : "ai";
+    const mode = body.mode === "manual" || body.mode === "chat" ? body.mode : "chat";
 
     // Validate answers (optional, used in manual mode)
     const VALID_GOALS = new Set(["showcase", "ecommerce"]);
@@ -989,107 +838,8 @@ fa6:screwdriver-wrench  fa6:shield-halved  fa6:pen-ruler
       );
     }
 
-    // -------------------------------------------------------------------------
-    // mode === "ai": call OpenAI then compute price server-side
-    // -------------------------------------------------------------------------
-    const userMessage = `Business name: "${bizName}"
-Location: "${bizLoc}"
-Service area: "${bizServes}"
-Niches: ${niches.length ? niches.join(", ") : "not specified"}
-Description: "${bizDesc}"${implNotes ? `\nImplementation notes: "${implNotes}"` : ""}`;
+    return new Response(JSON.stringify({ error: "Invalid mode." }), { status: 400, headers });
 
-    if (!import.meta.env.OPENAI_API_KEY) {
-      console.error("[Estimate API] OPENAI_API_KEY is not set");
-      return new Response(JSON.stringify({ error: "Service unavailable." }), { status: 503, headers });
-    }
-
-    const openai = new OpenAI({ apiKey: import.meta.env.OPENAI_API_KEY });
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userMessage },
-      ],
-      max_tokens: 4000,
-      temperature: 0.3,
-    });
-
-    const text = completion.choices[0]?.message?.content ?? "{}";
-    const parsed = JSON.parse(text);
-
-    // Build answers object from AI response — re-validate goal/action against allowlists
-    const aiGoal = VALID_GOALS.has(parsed.goal) ? parsed.goal : "showcase";
-    const aiAction = VALID_ACTIONS.has(parsed.action) ? parsed.action : "contact";
-    const aiAnswers: Record<string, any> = {
-      goal: aiGoal,
-      action: aiAction,
-    };
-    if (Array.isArray(parsed.selling)) aiAnswers.selling = parsed.selling;
-    if (Array.isArray(parsed.extras)) aiAnswers.extras = parsed.extras;
-
-    // Normalize AI pages
-    const aiPages: any[] = Array.isArray(parsed.pages)
-      ? parsed.pages.map((p: any) => ({
-          ...p,
-          list: p.list || [],
-          subpages: p.subpages || [],
-          collections: (p.collections || []).map((c: any) => ({
-            ...c,
-            isBlog: c.isBlog || /blog|post|article/i.test(c.name || ""),
-          })),
-        }))
-      : [];
-
-    const scopedItems: any[] = Array.isArray(parsed.scopedItems)
-      ? parsed.scopedItems.slice(0, 20).map((s: any) => ({
-          label: str(s.label, 120),
-          price: clampPrice(s.price),
-          rationale: str(s.rationale, 400),
-          needsScoping: !!s.needsScoping,
-        }))
-      : [];
-    const extrasDetail: any[] = Array.isArray(parsed.extrasDetail)
-      ? parsed.extrasDetail.slice(0, 10).map((e: any) => ({
-          id: str(e.id, 40),
-          price: clampPrice(e.price),
-          rationale: str(e.rationale, 400),
-        }))
-      : [];
-
-    // Compute price server-side using AI-returned pages + client-provided counts
-    const price = computePrice(
-      aiPages,
-      customPages,
-      aiAnswers,
-      productCount,
-      scopedItems,
-      extrasDetail
-    );
-
-    return new Response(
-      JSON.stringify({
-        goal: aiGoal,
-        action: aiAction,
-        selling: aiAnswers.selling,
-        extras: aiAnswers.extras,
-        extrasDetail,
-        scopedItems,
-        pages: aiPages,
-        price: {
-          base: price.base,
-          ep: price.ep,
-          addons: price.addons,
-          total: price.total,
-          items: price.items,
-          u: price.u,
-        },
-        scoped: price.scoped,
-        hasNeedsScoping: price.hasNeedsScoping,
-      }),
-      { status: 200, headers }
-    );
   } catch (err) {
     console.error("[Estimate API Error]", err);
     return new Response(
