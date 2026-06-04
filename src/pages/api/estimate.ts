@@ -868,8 +868,12 @@ fa6:screwdriver-wrench  fa6:shield-halved  fa6:pen-ruler
         patch.pages = rawPatch.pages.map((p: any) => ({
           ...p,
           list: p.list || [],
-          collections: p.collections || [],
           subpages: p.subpages || [],
+          // Normalize collections: restore isBlog when the AI forgets to include it
+          collections: (p.collections || []).map((c: any) => ({
+            ...c,
+            isBlog: c.isBlog || /blog|post|article/i.test(c.name || ""),
+          })),
         }));
       }
 
@@ -1030,8 +1034,11 @@ Description: "${bizDesc}"${implNotes ? `\nImplementation notes: "${implNotes}"` 
       ? parsed.pages.map((p: any) => ({
           ...p,
           list: p.list || [],
-          collections: p.collections || [],
           subpages: p.subpages || [],
+          collections: (p.collections || []).map((c: any) => ({
+            ...c,
+            isBlog: c.isBlog || /blog|post|article/i.test(c.name || ""),
+          })),
         }))
       : [];
 

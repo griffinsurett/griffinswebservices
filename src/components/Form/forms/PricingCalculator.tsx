@@ -52,6 +52,58 @@ const Ic = ({ name, size = 14 }: { name: string; size?: number }) => (
 );
 
 // ---------------------------------------------------------------------------
+// MicButton — speech-to-text for textarea fields
+// ---------------------------------------------------------------------------
+function MicButton({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [recording, setRecording] = useState(false);
+  const [supported, setSupported] = useState(false);
+  const recRef = useRef<any>(null);
+
+  useEffect(() => {
+    setSupported(!!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition));
+  }, []);
+
+  const toggle = () => {
+    if (recording) { recRef.current?.stop(); return; }
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const rec = new SR();
+    rec.lang = "en-US";
+    rec.interimResults = false;
+    rec.onresult = (e: any) => {
+      const t = e.results[0]?.[0]?.transcript ?? "";
+      if (t) onChange(value ? value + " " + t : t);
+    };
+    rec.onend = () => setRecording(false);
+    rec.onerror = () => setRecording(false);
+    recRef.current = rec;
+    rec.start();
+    setRecording(true);
+  };
+
+  if (!supported) return null;
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={recording ? "Stop recording" : "Speak your description"}
+      className={`absolute right-[10px] bottom-[10px] w-[26px] h-[26px] rounded-full border-0 bg-transparent cursor-pointer flex items-center justify-center transition-colors duration-150
+        ${recording ? "text-red-500" : "text-muted hover:text-accent"}`}
+      style={recording ? { animation: "chatDot 1.2s ease-in-out infinite" } : undefined}
+    >
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="9" y="2" width="6" height="11" rx="3"
+          fill={recording ? "currentColor" : "none"}
+          stroke="currentColor" strokeWidth="1.8" />
+        <path d="M5 11a7 7 0 0014 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <line x1="9" y1="22" x2="15" y2="22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    </button>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Niche list
 // ---------------------------------------------------------------------------
 const STATIC_NICHES = [
@@ -1444,7 +1496,13 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
       if (patch.extras) next.extras = patch.extras;
       return next;
     });
-    if (patch.pages) setPages(patch.pages);
+    if (patch.pages) setPages(patch.pages.map((p: any) => ({
+      ...p,
+      collections: (p.collections || []).map((c: any) => ({
+        ...c,
+        isBlog: c.isBlog || /blog|post|article/i.test(c.name || ""),
+      })),
+    })));
     if (patch.extrasDetail) setExtrasDetail(patch.extrasDetail);
     if (patch.scopedItems) {
       setScoped(patch.scopedItems);
@@ -1691,9 +1749,12 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
                     </div>
                     <div className="mb-2">
                       <Lbl htmlFor="biz-desc" required>Describe your business</Lbl>
-                      <textarea id="biz-desc" value={bizDesc} onChange={(e) => setBizDesc(e.target.value)} rows={5}
-                        placeholder={"What do you do, who do you serve, and what are your main services?\n\ne.g. Family-owned roofing & solar company in NJ. Main services: full roof replacements and solar panel installs (often bundled). Secondary: gutters, skylights, storm damage. Clients are mostly homeowners but we take commercial jobs too. 20-30 jobs/month."}
-                        className="w-full input-bg border border-border rounded-lg px-[12px] py-[9px] text-[13px] text-text font-[inherit] outline-none resize-none box-border" />
+                      <div className="relative">
+                        <textarea id="biz-desc" value={bizDesc} onChange={(e) => setBizDesc(e.target.value)} rows={5}
+                          placeholder={"What do you do, who do you serve, and what are your main services?\n\ne.g. Family-owned roofing & solar company in NJ. Main services: full roof replacements and solar panel installs (often bundled). Secondary: gutters, skylights, storm damage. Clients are mostly homeowners but we take commercial jobs too. 20-30 jobs/month."}
+                          className="w-full input-bg border border-border rounded-lg px-[12px] py-[9px] pr-[38px] text-[13px] text-text font-[inherit] outline-none resize-none box-border" />
+                        <MicButton value={bizDesc} onChange={setBizDesc} />
+                      </div>
                       <p className="text-[10px] text-text/30 mt-[6px] leading-[1.5]">
                         Include your <span className="text-text/50">primary services</span> and any <span className="text-text/50">secondary or add-on services</span> — this shapes how your site gets structured.
                       </p>
@@ -1748,9 +1809,12 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
                     {/* Implementation notes */}
                     <div className="mb-2">
                       <Lbl htmlFor="impl-notes">Anything specific you need? <span className="text-text/25 font-normal">(optional)</span></Lbl>
-                      <textarea id="impl-notes" value={implNotes} onChange={(e) => setImplNotes(e.target.value)} rows={3}
-                        placeholder={"e.g. We use ServiceTitan for scheduling. Need a financing page and before/after gallery. Have 3 locations."}
-                        className="w-full input-bg border border-border rounded-lg px-[12px] py-[9px] text-[13px] text-text font-[inherit] outline-none resize-none box-border" />
+                      <div className="relative">
+                        <textarea id="impl-notes" value={implNotes} onChange={(e) => setImplNotes(e.target.value)} rows={3}
+                          placeholder={"e.g. We use ServiceTitan for scheduling. Need a financing page and before/after gallery. Have 3 locations."}
+                          className="w-full input-bg border border-border rounded-lg px-[12px] py-[9px] pr-[38px] text-[13px] text-text font-[inherit] outline-none resize-none box-border" />
+                        <MicButton value={implNotes} onChange={setImplNotes} />
+                      </div>
                       <p className="text-[10px] text-text/30 mt-[6px] leading-[1.5]">
                         Specific features, integrations, or requirements — the AI will treat these as constraints, not suggestions.
                       </p>
