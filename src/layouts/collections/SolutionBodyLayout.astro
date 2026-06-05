@@ -1,11 +1,6 @@
 ---
 import Logo from "@/components/Logo/Logo.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import WebsiteQuoteForm from "@/components/Form/forms/WebsiteQuoteForm.astro";
-import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
-import Icon from "@/components/Icon";
-import Section from "@/components/Section.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import { contactCtaData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
@@ -96,69 +91,14 @@ const resolvedGrandparentContent: GrandparentContent = {
 };
 
 const resolvedTitle = title ?? "Solution";
-const solutionQuoteSectionId = "solution-quote";
-const solutionQuoteHref = `#${solutionQuoteSectionId}`;
 const primaryCTA = {
   text: contactCtaData.text,
-  link: solutionQuoteHref,
+  link: contactCtaData.link,
+  target: "_blank",
+  rel: "noopener noreferrer",
   ...incomingPrimaryCTA,
 };
 
-const websiteFormSlugs = new Set(["new-websites", "business-websites"]);
-const usesWebsiteQuoteForm = websiteFormSlugs.has(slug);
-
-const quoteHighlights = usesWebsiteQuoteForm
-  ? [
-      {
-        icon: "lucide:scan-search",
-        title: "Clear next step",
-        description:
-          "We look at the real scope first, then tell you whether this is a refresh, a rebuild, or something more custom.",
-      },
-      {
-        icon: "lucide:rocket",
-        title: "Budget alignment",
-        description:
-          "A rough budget range helps us recommend the right path without wasting time on the wrong solution.",
-      },
-      {
-        icon: "lucide:messages-square",
-        title: "Built around your business",
-        description:
-          "The conversation starts with your goals, your pages, and what the website actually needs to handle.",
-      },
-    ]
-  : [
-      {
-        icon: "lucide:scan-search",
-        title: "Simple starting point",
-        description:
-          "Share the basics and we will review what you need before recommending the best next step.",
-      },
-      {
-        icon: "lucide:messages-square",
-        title: "Clearer conversation",
-        description:
-          "A short quote request gives us enough context to make the follow-up more useful and more specific.",
-      },
-      {
-        icon: "lucide:phone",
-        title: "Easy follow-up",
-        description:
-          "We can reach out, clarify the scope, and figure out whether this needs a small fix, a focused project, or a broader plan.",
-      },
-    ];
-
-const quoteHeading = usesWebsiteQuoteForm
-  ? "Thinking about your next move?"
-  : "Want to talk through the project?";
-const quoteDescription = usesWebsiteQuoteForm
-  ? `If you are planning a new website, share the basics here and we will review the scope, the budget range, and the clearest next step.`
-  : `If you are thinking about ${resolvedTitle.toLowerCase()}, send a few details here and we will follow up with the clearest next step.`;
-const quoteCardTitle = usesWebsiteQuoteForm ? "Start your quote" : "Start the conversation";
-const quoteCardDescription = usesWebsiteQuoteForm
-  ? "Send the basics and we will follow up with the right recommendation for your website."
-  : "Send the basics and we will follow up with the right recommendation for this project.";
 ---
 
 <div class={className || undefined}>
@@ -228,61 +168,6 @@ const quoteCardDescription = usesWebsiteQuoteForm
       <div class="bottom-content-section">
         <TrustPanel />
 
-        <Section id={solutionQuoteSectionId} class="outer-section">
-          <div class="inner-section">
-            <div class="solution-quote-layout">
-              <div class="solution-quote-copy sticky-section lg:self-start">
-                <SectionHeader
-                  title="Request a Quote"
-                  heading={quoteHeading}
-                  description={quoteDescription}
-                  className="text-left"
-                  headingClassName="h2 mb-6 text-heading"
-                  emphasisClassName="text-heading"
-                  descriptionClassName="large-text max-w-2xl"
-                />
-
-                <ul class="solution-quote-highlights">
-                  {quoteHighlights.map((item) => (
-                    <li class="solution-quote-highlight">
-                      <span class="solution-quote-icon" aria-hidden="true">
-                        <Icon icon={item.icon} size="sm" />
-                      </span>
-                      <div class="space-y-1">
-                        <p class="solution-quote-highlight-title">{item.title}</p>
-                        <p class="solution-quote-highlight-text">{item.description}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div class="solution-quote-card section-box card-bg">
-                <div class="solution-quote-card__header">
-                  <h3 class="solution-quote-card__title">{quoteCardTitle}</h3>
-                  <p class="solution-quote-card__description">{quoteCardDescription}</p>
-                </div>
-                {usesWebsiteQuoteForm ? (
-                  <WebsiteQuoteForm
-                    capabilityTitle={resolvedTitle}
-                    capabilitySlug={slug}
-                    serviceCategory="solutions"
-                    formType="website"
-                  />
-                ) : (
-                  <QuoteForm
-                    capabilityTitle={resolvedTitle}
-                    capabilitySlug={slug}
-                    serviceCategory="solutions"
-                    formType="generic"
-                    buttonText="Send quote request"
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        </Section>
-
         <ContentRenderer
           query={related("faq", "solutions", slug).orderBy(sortByOrder())}
           variant="AccordionVariant"
@@ -292,9 +177,10 @@ const quoteCardDescription = usesWebsiteQuoteForm
         />
 
         <HomeSolutionBridge
-          primaryCtaLink={solutionQuoteHref}
-          secondaryCtaText="Get Quote"
-          secondaryCtaLink={solutionQuoteHref}
+          primaryCtaText="Book a Free Call"
+          primaryCtaLink="https://calendly.com/griffinswebservices/30min"
+          secondaryCtaText="Get a Free Estimate"
+          secondaryCtaLink="/pricing"
         />
       </div>
     </>

@@ -1309,6 +1309,22 @@ function ThankYouPanel({ bizName, bizLoc, niches, price, pages, answers, report,
         )}
       </div>
 
+      {/* Book a call CTA */}
+      <div className="px-[1.1rem] pb-[0.75rem]">
+        <a
+          href="https://calendly.com/griffinswebservices/30min"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-[8px] rounded-lg px-[12px] py-[11px] text-[13px] font-semibold cursor-pointer transition-colors duration-150 no-underline"
+          style={{ background: "var(--color-accent)", color: "var(--color-bg)" }}
+        >
+          Book a Free Call
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2.5 10.5L10.5 2.5M10.5 2.5H5M10.5 2.5V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
+      </div>
+
       {/* Reset */}
       <div className="px-[1.1rem] pb-[1rem]">
         <button

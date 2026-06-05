@@ -13,14 +13,18 @@ export const siteData = {
   tagline: "Get a website your business can be proud of — fast, secure, and built to last.",
 };
 
+export const CALENDLY_URL = "https://calendly.com/griffinswebservices/30min";
+
 export const ctaData = {
-  text: "Get Started Now!",
-  link: "/pricing",
+  text: "Book a Free Call",
+  link: CALENDLY_URL,
+  external: true,
 };
 
 export const contactCtaData = {
-  text: "Get a Free Estimate",
-  link: "/pricing",
+  text: "Book a Free Call",
+  link: CALENDLY_URL,
+  external: true,
 };
 
 export const pricingCtaData = {

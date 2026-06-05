@@ -71,7 +71,9 @@ const faqCount = entryKey
         breadcrumbs={capabilityBreadcrumbs}
         primaryCTA={{
           text: contactCtaData.text,
-          link: "#capability-quote",
+          link: contactCtaData.link,
+          target: "_blank",
+          rel: "noopener noreferrer",
         }}
         id="capabilities-quote-hero"
       >

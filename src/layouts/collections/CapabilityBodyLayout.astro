@@ -1,11 +1,6 @@
 ---
 import Logo from "@/components/Logo/Logo.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import WebsiteQuoteForm from "@/components/Form/forms/WebsiteQuoteForm.astro";
-import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
-import Icon from "@/components/Icon";
-import Section from "@/components/Section.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
 import { contactCtaData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
@@ -13,7 +8,7 @@ import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 import { getCollectionMeta } from "@/utils/collections";
 import { shouldCollectionHavePage } from "@/utils/pages";
-import { getBreadcrumbs, query, sortByOrder } from "@/utils/query";
+import { getBreadcrumbs, sortByOrder } from "@/utils/query";
 import { related } from "@/utils/query/snippets";
 import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 
@@ -96,70 +91,13 @@ const resolvedGrandparentContent: GrandparentContent = {
 };
 
 const resolvedCapabilityTitle = title ?? "Capability";
-const capabilityQuoteSectionId = "capability-quote";
-const capabilityQuoteHref = `#${capabilityQuoteSectionId}`;
 const primaryCTA = {
   text: contactCtaData.text,
-  link: capabilityQuoteHref,
+  link: contactCtaData.link,
+  target: "_blank",
+  rel: "noopener noreferrer",
   ...incomingPrimaryCTA,
 };
-const websiteFormCapabilities = new Set(["web-design"]);
-const usesWebsiteQuoteForm = websiteFormCapabilities.has(slug);
-
-const capabilityQuoteHighlights = usesWebsiteQuoteForm
-  ? [
-      {
-        icon: "lucide:scan-search",
-        title: "Clear next step",
-        description:
-          "We look at the real scope first, then tell you whether this is a refresh, a rebuild, or something more custom.",
-      },
-      {
-        icon: "lucide:rocket",
-        title: "Budget alignment",
-        description:
-          "A rough budget range helps us recommend the right path without wasting time on the wrong solution.",
-      },
-      {
-        icon: "lucide:messages-square",
-        title: "Built around your business",
-        description:
-          "The conversation starts with your goals, your pages, and what the website actually needs to handle.",
-      },
-    ]
-  : [
-      {
-        icon: "lucide:scan-search",
-        title: "Simple starting point",
-        description:
-          "Share the basics and we will review what you need before recommending the best next step.",
-      },
-      {
-        icon: "lucide:messages-square",
-        title: "Clearer conversation",
-        description:
-          "A short quote request gives us enough context to make the follow-up more useful and more specific.",
-      },
-      {
-        icon: "lucide:phone",
-        title: "Easy follow-up",
-        description:
-          "We can reach out, clarify the scope, and figure out whether this needs a small fix, a focused project, or a broader plan.",
-      },
-    ];
-
-const capabilityQuoteHeading = usesWebsiteQuoteForm
-  ? "Thinking about your next move?"
-  : "Want to talk through the project?";
-const capabilityQuoteDescription = usesWebsiteQuoteForm
-  ? `If you are planning ${resolvedCapabilityTitle.toLowerCase()} work, share the basics here and we will review the scope, the budget range, and the clearest next step for your website.`
-  : `If you are planning ${resolvedCapabilityTitle.toLowerCase()} work, send a few details here and we will follow up with the clearest next step.`;
-const capabilityQuoteCardTitle = usesWebsiteQuoteForm
-  ? "Start your quote"
-  : "Start the conversation";
-const capabilityQuoteCardDescription = usesWebsiteQuoteForm
-  ? "Send the basics and we will follow up with the right recommendation for your website."
-  : "Send the basics and we will follow up with the right recommendation for this project.";
 ---
 
 <div class={className || undefined}>
@@ -221,73 +159,8 @@ const capabilityQuoteCardDescription = usesWebsiteQuoteForm
 
       <slot name="topic-sections" />
 
-      <HomeSolutionBridge
-        primaryCtaLink={capabilityQuoteHref}
-        secondaryCtaText="Get Quote"
-        secondaryCtaLink={capabilityQuoteHref}
-      />
-
       <div class="bottom-content-section">
         <TrustPanel />
-
-        <Section id={capabilityQuoteSectionId} class="outer-section">
-          <div class="inner-section">
-            <div class="capability-quote-layout">
-              <div class="capability-quote-copy sticky-section lg:self-start">
-                <SectionHeader
-                  title="Request a Quote"
-                  heading={capabilityQuoteHeading}
-                  description={capabilityQuoteDescription}
-                  className="text-left"
-                  headingClassName="h2 mb-6 text-heading"
-                  emphasisClassName="text-heading"
-                  descriptionClassName="large-text max-w-2xl"
-                />
-
-                <ul class="capability-quote-highlights">
-                  {capabilityQuoteHighlights.map((item) => (
-                    <li class="capability-quote-highlight">
-                      <span class="capability-quote-icon" aria-hidden="true">
-                        <Icon icon={item.icon} size="sm" />
-                      </span>
-                      <div class="space-y-1">
-                        <p class="capability-quote-highlight-title">{item.title}</p>
-                        <p class="capability-quote-highlight-text">{item.description}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div class="capability-quote-card section-box card-bg">
-                <div class="capability-quote-card__header">
-                  <h3 class="capability-quote-card__title">{capabilityQuoteCardTitle}</h3>
-                  <p class="capability-quote-card__description">
-                    {capabilityQuoteCardDescription}
-                  </p>
-                </div>
-                {
-                  usesWebsiteQuoteForm ? (
-                    <WebsiteQuoteForm
-                      capabilityTitle={resolvedCapabilityTitle}
-                      capabilitySlug={slug}
-                      serviceCategory="capabilities"
-                      formType="website"
-                    />
-                  ) : (
-                    <QuoteForm
-                      capabilityTitle={resolvedCapabilityTitle}
-                      capabilitySlug={slug}
-                      serviceCategory="capabilities"
-                      formType="generic"
-                      buttonText="Send quote request"
-                    />
-                  )
-                }
-              </div>
-            </div>
-          </div>
-        </Section>
 
         <ContentRenderer
           query={related("faq", "capabilities", slug).orderBy(sortByOrder())}
@@ -295,6 +168,13 @@ const capabilityQuoteCardDescription = usesWebsiteQuoteForm
           allowMultiple={false}
           title={resolvedGrandparentContent.faqTitle}
           heading={resolvedGrandparentContent.faqHeading}
+        />
+
+        <HomeSolutionBridge
+          primaryCtaText="Book a Free Call"
+          primaryCtaLink="https://calendly.com/griffinswebservices/30min"
+          secondaryCtaText="Get a Free Estimate"
+          secondaryCtaLink="/pricing"
         />
       </div>
     </>
