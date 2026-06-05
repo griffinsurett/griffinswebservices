@@ -3,6 +3,8 @@ import Icon from "@/components/Icon";
 import Input from "@/components/Form/inputs/Input";
 import AIIconPrompt from "@/components/Footer/AIIconPrompt";
 import { MarkdownText } from "@/components/MarkdownText";
+import klarnaLogo from "@/assets/klarna.png";
+import affirmLogo from "@/assets/affirm.png";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -964,7 +966,13 @@ function RightPanel({
           <span className="text-[13px] font-semibold text-text">Estimate</span>
           <span className="text-[26px] font-bold text-accent">${price.total.toLocaleString()}</span>
         </div>
-        <div className="text-[10px] text-text/25 mt-[6px] leading-[1.5]">Final price confirmed after scoping call.</div>
+        <div className="flex items-center gap-[6px] mt-[8px]">
+          <span className="text-[10px] text-text/30 shrink-0">Financing via</span>
+          <img src={klarnaLogo.src} alt="Klarna" className="h-[14px] w-auto object-contain opacity-60 hover:opacity-100 transition-opacity duration-150" />
+          <span className="text-[10px] text-text/20">&</span>
+          <img src={affirmLogo.src} alt="Affirm" className="h-[14px] w-auto object-contain opacity-60 hover:opacity-100 transition-opacity duration-150" />
+        </div>
+        <div className="text-[10px] text-text/25 mt-[5px] leading-[1.5]">Final price confirmed after scoping call.</div>
         {hasAssistantMessage && !isDone && (
           <button
             onClick={() => setIsDone(true)}
