@@ -1857,7 +1857,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
                     <p className="text-[10px] text-text/30 text-center leading-[1.55] mt-2">
                       By continuing you agree to our{" "}
                       <a href="/legal/privacy-policy" className="underline text-text/40 hover:text-accent transition-colors">Privacy Policy</a>.
-                      {" "}We may use AI tools and publicly available information to research your business and prepare your estimate.
+                      {" "}This estimator is powered by OpenAI (makers of ChatGPT). Your business details will be processed by OpenAI to generate your estimate.
                     </p>
                   </div>
                 </>

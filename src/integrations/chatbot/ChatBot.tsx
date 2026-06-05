@@ -307,6 +307,10 @@ function ChatBot() {
           inactive={!open}
           placeholder="Ask anything…"
         />
+        <p className="text-[9px] text-muted/50 text-center px-3 pb-2 pt-1 leading-[1.4]">
+          Powered by OpenAI (makers of ChatGPT). Messages are processed by OpenAI per our{" "}
+          <a href="/legal/privacy-policy" className="underline hover:text-muted transition-colors">Privacy Policy</a>.
+        </p>
       </div>
 
       <Fab open={open} unread={unread} onClick={() => setOpen(o => !o)} />
