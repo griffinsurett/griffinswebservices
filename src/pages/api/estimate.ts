@@ -33,15 +33,14 @@ function corsHeaders(request: Request): Record<string, string> {
 // ---------------------------------------------------------------------------
 
 // E-commerce tiers (product count determines tier)
-// Research basis: CartCoders, Aureate Labs, GoodFirms, DesignRush 2024-2025
-// Small  (1–25 products):   $3,500 base — theme customization, product loading, payment setup, launch
-// Medium (26–200 products): $8,500 base — collections, filtering, brand-aligned UX, variant structure
-// Large  (201+ products):   $20,000 base — custom UX, advanced navigation, bulk catalog management
+// Small  (1–25 products):   $2,500 base — theme setup, product loading, payment, launch
+// Medium (26–200 products): $4,500 base — collections, filtering, brand-aligned UX, variant structure
+// Large  (201+ products):   $9,500 base — custom UX, advanced navigation, bulk catalog management
 const ECOMMERCE_SMALL_MAX_PRODUCTS = 25;
 const ECOMMERCE_MEDIUM_MAX_PRODUCTS = 200;
-const ECOMMERCE_BASE_SMALL = 3500;
-const ECOMMERCE_BASE_MEDIUM = 8500;
-const ECOMMERCE_BASE_LARGE = 20000;
+const ECOMMERCE_BASE_SMALL = 2500;
+const ECOMMERCE_BASE_MEDIUM = 4500;
+const ECOMMERCE_BASE_LARGE = 9500;
 
 // Products included per tier before per-unit loading fee kicks in
 const ECOMMERCE_SMALL_INCLUDED_PRODUCTS = 25;
@@ -54,8 +53,8 @@ const SERVICES_INCLUDED = 10;
 const SERVICES_BASE_FEE = 350;
 const PRICE_PER_EXTRA_SERVICE = 50;
 const BLOG_POSTS_INCLUDED = 5;
-const BLOG_BASE_FEE = 1000;
-const PRICE_PER_EXTRA_POST = 75;
+const BLOG_BASE_FEE = 500;
+const PRICE_PER_EXTRA_POST = 50;
 
 // ---------------------------------------------------------------------------
 // buildDefaultPages — manual mode page scaffold
@@ -549,11 +548,11 @@ If booking complexity goes beyond an embed → scopedItem instead. Don't double-
 
 The server prices e-commerce builds by product count tier — do NOT propose an "e-commerce setup" scopedItem or mention a base price. Just set goal:"ecommerce" and the correct productCount in the patch.
 
-- 1–25 products → Small tier
-- 26–200 products → Medium tier
-- 201+ products → Large tier
+- 1–25 products → Small tier ($2,500 base)
+- 26–200 products → Medium tier ($4,500 base)
+- 201+ products → Large tier ($9,500 base)
 
-For fashion/apparel/clothing brands: always add a scopedItem for the variant and visual complexity premium. Label: "Fashion/apparel complexity premium". Price: 15–20% of the tier base (Small: $525–700, Medium: $1,275–1,700, Large: $3,000–4,000). needsScoping:false. Rationale must cite the specific size×color variant matrix and visual/editorial page requirements.
+For fashion/apparel/clothing brands: always add a scopedItem for the variant and visual complexity premium. Label: "Fashion/apparel complexity premium". Price: 15–20% of the tier base (Small: $375–500, Medium: $675–900, Large: $1,425–1,900). needsScoping:false. Rationale must cite the specific size×color variant matrix and visual/editorial page requirements.
 
 ### Scoped items — where you act like a real strategist
 Whenever the business has unusual signals mapping to a feature, propose a scopedItem with a confident price and a rationale citing the specific signal. Categories:
