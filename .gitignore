@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # Vercel
 .vercel/output
+
+# Claude Code local tooling
+.claude/
