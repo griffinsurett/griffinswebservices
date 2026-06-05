@@ -671,6 +671,8 @@ fa6:screwdriver-wrench  fa6:shield-halved  fa6:pen-ruler
         { role: "user", content: userMsg },
       ];
 
+      const isInit = userMsg === "__init__";
+
       const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         response_format: { type: "json_object" },
@@ -686,6 +688,52 @@ fa6:screwdriver-wrench  fa6:shield-halved  fa6:pen-ruler
       const aiMessage = str(parsed.message ?? "Got it — let me update your estimate.", 1200);
       const done = !!parsed.done;
       const rawPatch = parsed.patch && typeof parsed.patch === "object" ? parsed.patch : {};
+
+      // On __init__, run an independent reviewer to strip unjustified items before returning
+      if (isInit && (rawPatch.extras?.length || rawPatch.scopedItems?.length)) {
+        const REVIEWER_PROMPT = `You are a senior pricing auditor for a boutique web agency. A strategist has proposed a website estimate. Your ONLY job is to remove anything not genuinely necessary for this specific business — no padding, no upselling, no nice-to-haves added just to inflate the price.
+
+Review each item against ONE test: "Would a reasonable client feel this is obviously needed for their business, based solely on what they described?"
+
+Rules:
+- Remove extras that don't fit the business: "ai_chat" for a referral-only or solo consultant; "booking_int" if no appointments are described; "email_marketing" for non-ecommerce; "custom_filtering" for fewer than 20 products; "subscriptions" if not mentioned.
+- Remove scopedItems that are speculative: keep only if the business description explicitly signals the need. Remove CRM integrations if no CRM was mentioned. Remove multi-location if only one location described. Remove configurators if no complex quoting or builder tool was mentioned.
+- Do NOT add anything new. Only remove or keep.
+- Do NOT change prices — only presence.
+- If everything is justified, return it unchanged.
+
+Return ONLY valid JSON, no markdown:
+{"extras":[...kept ids...],"extrasDetail":[...kept entries...],"scopedItems":[...kept entries...]}`;
+
+        try {
+          const reviewerCompletion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            response_format: { type: "json_object" },
+            messages: [
+              { role: "system", content: REVIEWER_PROMPT },
+              {
+                role: "user",
+                content: JSON.stringify({
+                  business: { name: bizName, location: bizLoc, service_area: bizServes, niches, description: bizDesc, implementation_notes: implNotes || null },
+                  proposed: {
+                    extras: rawPatch.extras || [],
+                    extrasDetail: rawPatch.extrasDetail || [],
+                    scopedItems: rawPatch.scopedItems || [],
+                  },
+                }),
+              },
+            ],
+            max_tokens: 600,
+            temperature: 0,
+          });
+          const reviewText = reviewerCompletion.choices[0]?.message?.content ?? "{}";
+          let reviewed: any = {};
+          try { reviewed = JSON.parse(reviewText); } catch { /* keep original on parse failure */ }
+          if (Array.isArray(reviewed.extras)) rawPatch.extras = reviewed.extras;
+          if (Array.isArray(reviewed.extrasDetail)) rawPatch.extrasDetail = reviewed.extrasDetail;
+          if (Array.isArray(reviewed.scopedItems)) rawPatch.scopedItems = reviewed.scopedItems;
+        } catch { /* reviewer failure is non-fatal — proceed with original patch */ }
+      }
 
       // Sanitize patch using same validators as ai mode
       const patch: Record<string, any> = {};
