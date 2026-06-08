@@ -37,16 +37,32 @@ export function scanCollections(contentDir: string = DEFAULT_CONTENT_DIR): Scann
     const files = fs.readdirSync(collectionDir);
     const contentFiles = files.filter(
       (file) =>
-        (file.endsWith('.mdx') || file.endsWith('.md')) &&
+        (file.endsWith('.mdx') || file.endsWith('.md') || file.endsWith('.json')) &&
         !file.startsWith('_')
     );
 
-    const items: ScannedItem[] = contentFiles.map((file) => {
+    const items: ScannedItem[] = [];
+    for (const file of contentFiles) {
       const filePath = path.join(collectionDir, file);
-      const data = parseFrontmatter(filePath);
-      const slug = file.replace(/\.(mdx|md)$/, '');
-      return { slug, data, filePath };
-    });
+      if (file.endsWith('.json')) {
+        try {
+          const raw = fs.readFileSync(filePath, 'utf-8');
+          const json = JSON.parse(raw);
+          const rawItems = Array.isArray(json) ? json : [json];
+          rawItems.forEach((item: any, idx: number) => {
+            const slug = item.id || `${file.replace(/\.json$/, '')}-${idx}`;
+            const { id, ...data } = item;
+            items.push({ slug, data, filePath });
+          });
+        } catch (e) {
+          console.error(`[Content Scanner] Failed to parse JSON file ${filePath}:`, e);
+        }
+      } else {
+        const data = parseFrontmatter(filePath);
+        const slug = file.replace(/\.(mdx|md)$/, '');
+        items.push({ slug, data, filePath });
+      }
+    }
 
     collections.push({ name: collectionName, meta, items });
   }

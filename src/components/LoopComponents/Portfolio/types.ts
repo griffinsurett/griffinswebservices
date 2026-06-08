@@ -57,3 +57,15 @@ export function normalizeItems<T>(items: T | T[] | undefined): T[] {
   if (!items) return [];
   return Array.isArray(items) ? items : [];
 }
+
+/**
+ * Resolves the image source for a portfolio item
+ */
+export function getPortfolioImageSrc(item: PortfolioItemData): string | undefined {
+  if (item.image) return item.image;
+  if (item.imageSources) {
+    return item.imageSources.center || item.imageSources.mobile || item.imageSources.side;
+  }
+  return undefined;
+}
+

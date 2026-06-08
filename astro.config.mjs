@@ -26,7 +26,19 @@ export default defineConfig({
   output: 'static',
 
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      {
+        name: 'windows-path-fix',
+        enforce: 'pre',
+        resolveId(id) {
+          if (id && id.match(/^\.[/\\][A-Za-z]:[/\\]/)) {
+            return id.replace(/^\.[/\\]/, '').replace(/\\/g, '/');
+          }
+          return null;
+        }
+      }
+    ],
     build: {
       assetsInlineLimit: 10240, // 10KB - will inline your 7.3KB CSS automatically
       cssCodeSplit: true,

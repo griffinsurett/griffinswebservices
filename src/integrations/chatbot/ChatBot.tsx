@@ -15,12 +15,13 @@ interface Message {
 }
 
 async function callChatAPI(
-  messages: { role: "user" | "assistant"; content: string }[]
+  messages: { role: "user" | "assistant"; content: string }[],
+  sessionId: string
 ): Promise<string> {
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages, sessionId }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -193,10 +194,21 @@ function ChatBot() {
   const [typing, setTyping] = useState(false);
   const [unread, setUnread] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [sessionId, setSessionId] = useState("");
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    let sid = sessionStorage.getItem("chatbot_session_id");
+    if (!sid) {
+      sid = typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : Math.random().toString(36).substring(2) + Date.now().toString(36);
+      sessionStorage.setItem("chatbot_session_id", sid);
+    }
+    setSessionId(sid);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -227,7 +239,7 @@ function ChatBot() {
     setTyping(true);
     const history = [...msgs, userMsg].slice(-10).map(m => ({ role: m.role as "user" | "assistant", content: m.text }));
     try {
-      const reply = await callChatAPI(history);
+      const reply = await callChatAPI(history, sessionId);
       setMsgs(prev => [...prev, { id: `b${Date.now()}`, role: "assistant", text: reply, time: getTime() }]);
     } catch {
       setMsgs(prev => [...prev, {
@@ -239,7 +251,7 @@ function ChatBot() {
       setTyping(false);
       if (!open) setUnread(n => n + 1);
     }
-  }, [input, msgs, open]);
+  }, [input, msgs, open, sessionId]);
 
   if (!mounted) return null;
 
