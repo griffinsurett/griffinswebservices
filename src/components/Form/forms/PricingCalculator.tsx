@@ -37,31 +37,45 @@ const PRICING_SUBMITTED_KEY = "pricing_calculator_submitted_quote";
 const PRICING_SESSION_KEY = "pricing_calculator_session";
 
 // ---------------------------------------------------------------------------
-// Static intake questions — shown before any API call is made
+// Static intake — 2 questions to give the AI enough context to take over
 // ---------------------------------------------------------------------------
 type IntakeQuestion = {
   id: string;
   question: string;
-  choices?: string[]; // optional quick-pick chips; user can also type freely
+  placeholder?: string; // shown in the textarea when no chips
+  choices?: string[];   // if present, show tap-to-answer chips (user can still type)
 };
 
-const INTAKE_QUESTIONS: IntakeQuestion[] = [
-  {
-    id: "customer_action",
-    question: "How do customers typically reach you?",
-    choices: ["They call me", "They request a quote", "They book an appointment", "They buy online", "They walk in"],
-  },
-  {
-    id: "geography",
-    question: "Where do you serve customers?",
-    choices: ["My local area", "A few cities or counties", "Statewide", "Nationwide", "Online only"],
-  },
-  {
-    id: "goal",
-    question: "What's the #1 goal for your website?",
-    choices: ["Get more leads / calls", "Let people book online", "Sell products", "Look more professional / build trust"],
-  },
-];
+function nextIntakeQuestion(answers: Record<string, string>): IntakeQuestion | null {
+  // Q1 — what they do, free text
+  if (!answers["description"]) {
+    return {
+      id: "description",
+      question: "In one sentence, what does your business do?",
+      placeholder: "e.g. We install roofs and solar panels for homeowners in Central NJ.",
+    };
+  }
+
+  // Q2 — local or online/global?
+  if (!answers["reach"]) {
+    return {
+      id: "reach",
+      question: "Do you serve a specific area, or is your business online / global?",
+      choices: ["I serve a specific area", "Online or global"],
+    };
+  }
+
+  // Q3 — only if local: how wide is that area?
+  if (answers["reach"] === "I serve a specific area" && !answers["service_area"]) {
+    return {
+      id: "service_area",
+      question: "How wide is your service area?",
+      choices: ["Just my city or town", "A few nearby towns", "My whole state", "Multiple states"],
+    };
+  }
+
+  return null; // done — AI takes over
+}
 
 type Patch = {
   goal?: string;
@@ -1527,10 +1541,10 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
   const [price, setPrice] = useState<PriceResult>({ base: 0, ep: 0, addons: 0, total: 0, items: [], u: 0 });
   const [submittedQuote, setSubmittedQuote] = useState<SubmittedQuoteSnapshot | null>(null);
 
-  // Intake tracking — static questions before first real AI call
-  const [intakeStep, setIntakeStep] = useState(0); // 0..INTAKE_QUESTIONS.length = done
+  // Intake tracking — static branching Q&A before first real AI call
   const [intakeAnswers, setIntakeAnswers] = useState<Record<string, string>>({});
-  const intakeDone = intakeStep >= INTAKE_QUESTIONS.length;
+  const currentIntakeQ = nextIntakeQuestion(intakeAnswers);
+  const intakeDone = currentIntakeQ === null;
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const repriceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1553,6 +1567,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
       if (s.bizServes)      setBizServes(s.bizServes);
       if (s.implNotes)      setImplNotes(s.implNotes);
       if (Array.isArray(s.selectedNiches)) setSelectedNiches(s.selectedNiches);
+      if (s.intakeAnswers && typeof s.intakeAnswers === "object") setIntakeAnswers(s.intakeAnswers);
       if (s.phase === "chat" && Array.isArray(s.messages) && s.messages.length > 0) {
         setPhase("chat");
         setMessages(s.messages);
@@ -1576,12 +1591,12 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
       sessionStorage.setItem(PRICING_SESSION_KEY, JSON.stringify({
         bizName, bizLoc, bizDesc, bizServes, implNotes, selectedNiches,
         phase, messages, pages, customPages, answers, extrasDetail,
-        scoped, hasNeedsScoping, productCount, price, isDone,
+        scoped, hasNeedsScoping, productCount, price, isDone, intakeAnswers,
       }));
     } catch { /* quota exceeded or private browsing — silent */ }
   }, [bizName, bizLoc, bizDesc, bizServes, implNotes, selectedNiches,
       phase, messages, pages, customPages, answers, extrasDetail,
-      scoped, hasNeedsScoping, productCount, price, isDone]);
+      scoped, hasNeedsScoping, productCount, price, isDone, intakeAnswers]);
 
   // Auto-scroll chat to bottom
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, isTyping]);
@@ -1666,19 +1681,14 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
     setIsTyping(true);
     setChatError("");
 
-    const intakeSummary = INTAKE_QUESTIONS
-      .map((q) => collectedAnswers[q.id] ? `${q.id}: ${collectedAnswers[q.id]}` : null)
-      .filter(Boolean)
-      .join("\n");
-
     try {
       const res = await fetch("/api/estimate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           bizName, bizLoc,
-          bizDesc: intakeSummary,
-          bizServes: collectedAnswers["geography"] || "",
+          bizDesc: collectedAnswers["description"] || "",
+          bizServes: collectedAnswers["service_area"] || collectedAnswers["reach"] || "",
           implNotes: "",
           niches: selectedNiches,
           mode: "chat",
@@ -1710,18 +1720,13 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
     setMessages((prev) => [...prev, userMsg]);
     setInputVal("");
 
-    // ── Intake phase: still collecting static questions ──
+    // ── Intake phase: still collecting branching questions ──
     if (!intakeDone) {
-      const currentQ = INTAKE_QUESTIONS[intakeStep];
-      const nextAnswers = { ...intakeAnswers, [currentQ.id]: content.trim() };
+      const nextAnswers = { ...intakeAnswers, [currentIntakeQ!.id]: content.trim() };
       setIntakeAnswers(nextAnswers);
-      const nextStep = intakeStep + 1;
-      setIntakeStep(nextStep);
-
-      if (nextStep < INTAKE_QUESTIONS.length) {
-        const nextQ = INTAKE_QUESTIONS[nextStep];
-        const nextMsg: ChatMessage = { role: "assistant", content: nextQ.question };
-        setMessages((prev) => [...prev, nextMsg]);
+      const nextQ = nextIntakeQuestion(nextAnswers);
+      if (nextQ) {
+        setMessages((prev) => [...prev, { role: "assistant", content: nextQ.question }]);
       } else {
         await fireInitChat(nextAnswers);
       }
@@ -1732,19 +1737,14 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
     setIsTyping(true);
     const history = messages.map((m) => ({ role: m.role, content: m.content }));
 
-    const intakeSummary = INTAKE_QUESTIONS
-      .map((q) => intakeAnswers[q.id] ? `${q.id}: ${intakeAnswers[q.id]}` : null)
-      .filter(Boolean)
-      .join("\n");
-
     try {
       const res = await fetch("/api/estimate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           bizName, bizLoc,
-          bizDesc: intakeSummary || bizDesc,
-          bizServes: intakeAnswers["geography"] || bizServes,
+          bizDesc: intakeAnswers["description"] || bizDesc,
+          bizServes: intakeAnswers["service_area"] || intakeAnswers["reach"] || bizServes,
           implNotes,
           niches: selectedNiches,
           mode: "chat",
@@ -1771,21 +1771,20 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
       setChatError(err.message || "Something went wrong. Please try again.");
     }
     setIsTyping(false);
-  }, [messages, isTyping, intakeDone, intakeStep, intakeAnswers, bizName, bizLoc, bizServes, bizDesc, implNotes, selectedNiches, pages, customPages, productCount, applyPatch, fireInitChat]);
+  }, [messages, isTyping, intakeDone, currentIntakeQ, intakeAnswers, bizName, bizLoc, bizServes, bizDesc, implNotes, selectedNiches, pages, customPages, productCount, applyPatch, fireInitChat]);
 
   // Start chat: show first static intake question — no API call yet
   const startChat = useCallback(() => {
     setPhase("chat");
     setChatError("");
-    setIntakeStep(0);
     setIntakeAnswers({});
-    const first = INTAKE_QUESTIONS[0];
+    const first = nextIntakeQuestion({});
     const greeting: ChatMessage = {
       role: "assistant",
-      content: `Hi! A few quick questions before I build your estimate for **${bizName}**.\n\n${first.question}`,
+      content: `Hi! A few quick questions before I build your estimate for **${bizName}**.\n\n${first!.question}`,
     };
     setMessages([greeting]);
-  }, [bizName, bizLoc]);
+  }, [bizName]);
 
   const resetAll = () => {
     if (typeof window !== "undefined") {
@@ -1799,7 +1798,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
     setPhase("gate");
     setBizName(""); setBizLoc(""); setBizDesc(""); setBizServes(""); setImplNotes(""); setSelectedNiches([]);
     setMessages([]); setInputVal(""); setIsTyping(false); setChatError(""); setIsDone(false);
-    setIntakeStep(0); setIntakeAnswers({});
+    setIntakeAnswers({});
     setPages([]); setCustomPages([]); setAnswers({}); setExtrasDetail([]);
     setScoped([]); setHasNeedsScoping(false); setProductCount(10);
     setPrice({ base: 0, ep: 0, addons: 0, total: 0, items: [], u: 0 });
@@ -1967,9 +1966,9 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
                 </>
               )}
 
-              {/* Quick-pick chips — intake phase only, when current question has choices */}
+              {/* Quick-pick chips — intake phase only */}
               {!isDone && !intakeDone && !isTyping && (() => {
-                const q = INTAKE_QUESTIONS[intakeStep];
+                const q = currentIntakeQ;
                 return q?.choices ? (
                   <div className="shrink-0 flex flex-wrap gap-[6px] pb-[8px] pt-[2px]">
                     {q.choices.map((choice) => (
@@ -1992,18 +1991,20 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
                   className="shrink-0 rounded-full border border-border/70 px-[10px] py-[6px] flex items-center gap-[6px]"
                   style={{ background: "var(--color-bg2, #18181c)" }}
                 >
-                  <PlusMenu
-                    onPrompt={(text) => { setInputVal(text); }}
-                    answers={answers}
-                    extrasDetail={extrasDetail}
-                    onToggleAddon={handleToggleAddon}
-                    bizName={bizName}
-                    bizDesc={bizDesc}
-                    bizLoc={bizLoc}
-                    bizServes={bizServes}
-                    niches={selectedNiches}
-                    pages={pages}
-                  />
+                  {intakeDone && (
+                    <PlusMenu
+                      onPrompt={(text) => { setInputVal(text); }}
+                      answers={answers}
+                      extrasDetail={extrasDetail}
+                      onToggleAddon={handleToggleAddon}
+                      bizName={bizName}
+                      bizDesc={bizDesc}
+                      bizLoc={bizLoc}
+                      bizServes={bizServes}
+                      niches={selectedNiches}
+                      pages={pages}
+                    />
+                  )}
                   <textarea
                     value={inputVal}
                     onChange={(e) => {
@@ -2014,7 +2015,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); if (inputVal.trim() && !isTyping) sendMessage(inputVal); }
                     }}
-                    placeholder="Ask anything…"
+                    placeholder={!intakeDone && currentIntakeQ?.placeholder ? currentIntakeQ.placeholder : "Ask anything…"}
                     rows={1}
                     disabled={isTyping}
                     className="flex-1 bg-transparent border-none outline-none resize-none text-[13.5px] text-text placeholder:text-text/30 font-[inherit] leading-normal py-[2px] overflow-hidden scrollbar-hide disabled:opacity-40"
