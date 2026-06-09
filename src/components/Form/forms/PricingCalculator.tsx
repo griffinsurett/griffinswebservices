@@ -47,26 +47,17 @@ type IntakeQuestion = {
 };
 
 function nextIntakeQuestion(answers: Record<string, string>): IntakeQuestion | null {
-  // Q1 — what they do, free text
-  if (!answers["description"]) {
-    return {
-      id: "description",
-      question: "In one sentence, what does your business do?",
-      placeholder: "e.g. We install roofs and solar panels for homeowners in Central NJ.",
-    };
-  }
-
-  // Q2 — local or online/global?
+  // Q1 — local or online/global?
   if (!answers["reach"]) {
     return {
       id: "reach",
-      question: "Do you serve a specific area, or is your business online / global?",
-      choices: ["I serve a specific area", "Online or global"],
+      question: "Do you serve customers in a specific area, or are you online / global?",
+      choices: ["Specific area", "Online or global"],
     };
   }
 
-  // Q3 — only if local: how wide is that area?
-  if (answers["reach"] === "I serve a specific area" && !answers["service_area"]) {
+  // Q2 — only if local: how wide?
+  if (answers["reach"] === "Specific area" && !answers["service_area"]) {
     return {
       id: "service_area",
       question: "How wide is your service area?",
@@ -1687,7 +1678,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           bizName, bizLoc,
-          bizDesc: collectedAnswers["description"] || "",
+          bizDesc: "",
           bizServes: collectedAnswers["service_area"] || collectedAnswers["reach"] || "",
           implNotes: "",
           niches: selectedNiches,
@@ -1743,7 +1734,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           bizName, bizLoc,
-          bizDesc: intakeAnswers["description"] || bizDesc,
+          bizDesc: bizDesc,
           bizServes: intakeAnswers["service_area"] || intakeAnswers["reach"] || bizServes,
           implNotes,
           niches: selectedNiches,
@@ -1781,7 +1772,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
     const first = nextIntakeQuestion({});
     const greeting: ChatMessage = {
       role: "assistant",
-      content: `Hi! A few quick questions before I build your estimate for **${bizName}**.\n\n${first!.question}`,
+      content: `Hi! One quick question before I build your estimate for **${bizName}**.\n\n${first!.question}`,
     };
     setMessages([greeting]);
   }, [bizName]);
