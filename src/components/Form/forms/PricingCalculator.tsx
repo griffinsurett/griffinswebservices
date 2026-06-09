@@ -34,6 +34,34 @@ type SubmittedQuoteSnapshot = {
 };
 
 const PRICING_SUBMITTED_KEY = "pricing_calculator_submitted_quote";
+const PRICING_SESSION_KEY = "pricing_calculator_session";
+
+// ---------------------------------------------------------------------------
+// Static intake questions — shown before any API call is made
+// ---------------------------------------------------------------------------
+type IntakeQuestion = {
+  id: string;
+  question: string;
+  choices?: string[]; // optional quick-pick chips; user can also type freely
+};
+
+const INTAKE_QUESTIONS: IntakeQuestion[] = [
+  {
+    id: "customer_action",
+    question: "How do customers typically reach you?",
+    choices: ["They call me", "They request a quote", "They book an appointment", "They buy online", "They walk in"],
+  },
+  {
+    id: "geography",
+    question: "Where do you serve customers?",
+    choices: ["My local area", "A few cities or counties", "Statewide", "Nationwide", "Online only"],
+  },
+  {
+    id: "goal",
+    question: "What's the #1 goal for your website?",
+    choices: ["Get more leads / calls", "Let people book online", "Sell products", "Look more professional / build trust"],
+  },
+];
 
 type Patch = {
   goal?: string;
@@ -246,7 +274,7 @@ function getPromptStarters(
   const pageNames = pages.map((p: any) => p.name?.toLowerCase() ?? "");
   const hasGallery = pageNames.some((n) => n.includes("gallery") || n.includes("portfolio"));
   const hasBlog = pageNames.some((n) => n.includes("blog"));
-  const hasServices = pageNames.some((n) => n.includes("service"));
+
   const hasLocation = pageNames.some((n) => n.includes("location") || n.includes("area") || n.includes("map"));
   const isVisual = niches.some((n) => /roofing|landscap|paint|photo|tattoo|interior|salon|wedding|food|remodel/i.test(n));
   const isLocal = answers.bizServes === "city" || answers.bizServes === "county";
@@ -1384,6 +1412,7 @@ function QuoteForm({ bizName, bizLoc, bizDesc, bizServes, niches, implNotes, ans
         report: md,
       };
       sessionStorage.setItem(PRICING_SUBMITTED_KEY, JSON.stringify(snapshot));
+      sessionStorage.removeItem(PRICING_SESSION_KEY);
     } catch (err) {
       e.preventDefault();
       setErrorMsg(err instanceof Error ? err.message : "Submission failed. Please try again.");
@@ -1471,7 +1500,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
 
   // Gate form state
   const [phase, setPhase] = useState<"gate" | "chat">("gate");
-  const [gateSlide, setGateSlide] = useState(0);
+
   const [bizName, setBizName] = useState("");
   const [bizLoc, setBizLoc] = useState("");
   const [bizDesc, setBizDesc] = useState("");
@@ -1498,11 +1527,61 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
   const [price, setPrice] = useState<PriceResult>({ base: 0, ep: 0, addons: 0, total: 0, items: [], u: 0 });
   const [submittedQuote, setSubmittedQuote] = useState<SubmittedQuoteSnapshot | null>(null);
 
+  // Intake tracking — static questions before first real AI call
+  const [intakeStep, setIntakeStep] = useState(0); // 0..INTAKE_QUESTIONS.length = done
+  const [intakeAnswers, setIntakeAnswers] = useState<Record<string, string>>({});
+  const intakeDone = intakeStep >= INTAKE_QUESTIONS.length;
+
   const chatEndRef = useRef<HTMLDivElement>(null);
   const repriceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sessionRestoredRef = useRef(false);
 
-  const slide0Ready = bizName.trim() && bizDesc.trim() && bizLoc.trim();
-  const gateReady = !!(slide0Ready && bizServes); // goal is optional — empty means let AI decide
+  const slide0Ready = bizName.trim() && bizLoc.trim();
+  const gateReady = !!slide0Ready; // description, service area, goal all collected by AI in chat
+
+  // Restore session on mount (runs once, before user sees the gate)
+  useEffect(() => {
+    if (typeof window === "undefined" || sessionRestoredRef.current) return;
+    sessionRestoredRef.current = true;
+    try {
+      const raw = sessionStorage.getItem(PRICING_SESSION_KEY);
+      if (!raw) return;
+      const s = JSON.parse(raw);
+      if (s.bizName)        setBizName(s.bizName);
+      if (s.bizLoc)         setBizLoc(s.bizLoc);
+      if (s.bizDesc)        setBizDesc(s.bizDesc);
+      if (s.bizServes)      setBizServes(s.bizServes);
+      if (s.implNotes)      setImplNotes(s.implNotes);
+      if (Array.isArray(s.selectedNiches)) setSelectedNiches(s.selectedNiches);
+      if (s.phase === "chat" && Array.isArray(s.messages) && s.messages.length > 0) {
+        setPhase("chat");
+        setMessages(s.messages);
+        if (Array.isArray(s.pages))       setPages(s.pages);
+        if (Array.isArray(s.customPages)) setCustomPages(s.customPages);
+        if (s.answers)                    setAnswers(s.answers);
+        if (Array.isArray(s.extrasDetail)) setExtrasDetail(s.extrasDetail);
+        if (Array.isArray(s.scoped))      setScoped(s.scoped);
+        if (typeof s.hasNeedsScoping === "boolean") setHasNeedsScoping(s.hasNeedsScoping);
+        if (typeof s.productCount === "number")     setProductCount(s.productCount);
+        if (s.price)                      setPrice(s.price);
+        if (typeof s.isDone === "boolean") setIsDone(s.isDone);
+      }
+    } catch { /* ignore corrupt session */ }
+  }, []);
+
+  // Persist session whenever relevant state changes
+  useEffect(() => {
+    if (typeof window === "undefined" || !sessionRestoredRef.current) return;
+    try {
+      sessionStorage.setItem(PRICING_SESSION_KEY, JSON.stringify({
+        bizName, bizLoc, bizDesc, bizServes, implNotes, selectedNiches,
+        phase, messages, pages, customPages, answers, extrasDetail,
+        scoped, hasNeedsScoping, productCount, price, isDone,
+      }));
+    } catch { /* quota exceeded or private browsing — silent */ }
+  }, [bizName, bizLoc, bizDesc, bizServes, implNotes, selectedNiches,
+      phase, messages, pages, customPages, answers, extrasDetail,
+      scoped, hasNeedsScoping, productCount, price, isDone]);
 
   // Auto-scroll chat to bottom
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, isTyping]);
@@ -1544,7 +1623,7 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
   ) => {
     if (repriceTimerRef.current) clearTimeout(repriceTimerRef.current);
     repriceTimerRef.current = setTimeout(async () => {
-      if (!bizName.trim() || !bizLoc.trim() || !bizDesc.trim() || !bizServes) return;
+      if (!bizName.trim() || !bizLoc.trim()) return;
       try {
         const res = await fetch("/api/estimate", {
           method: "POST",
@@ -1582,26 +1661,91 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
     debouncedReprice(nextAnswers, pages, customPages, productCount, extrasDetail, 0);
   };
 
-  // Send a message to the chat API
-  const sendMessage = useCallback(async (content: string) => {
-    if (!content.trim() || isTyping) return;
+  // Fire the real AI once all intake answers are collected
+  const fireInitChat = useCallback(async (collectedAnswers: Record<string, string>) => {
+    setIsTyping(true);
     setChatError("");
 
-    const userMsg: ChatMessage = { role: "user", content: content.trim() };
-    const nextMessages = [...messages, userMsg];
-    setMessages(nextMessages);
-    setInputVal("");
-    setIsTyping(true);
-
-    // History for the API = all prior messages (not including the one we just added as `message`)
-    const history = messages.map((m) => ({ role: m.role, content: m.content }));
+    const intakeSummary = INTAKE_QUESTIONS
+      .map((q) => collectedAnswers[q.id] ? `${q.id}: ${collectedAnswers[q.id]}` : null)
+      .filter(Boolean)
+      .join("\n");
 
     try {
       const res = await fetch("/api/estimate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          bizName, bizLoc, bizServes, bizDesc, implNotes,
+          bizName, bizLoc,
+          bizDesc: intakeSummary,
+          bizServes: collectedAnswers["geography"] || "",
+          implNotes: "",
+          niches: selectedNiches,
+          mode: "chat",
+          message: "__init__",
+          history: [],
+          pages: [],
+          customPages: [],
+          productCount,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error((data as any)?.error || `Error ${res.status}`);
+      const aiMsg: ChatMessage = { role: "assistant", content: data.message || "Got it — let me put your estimate together." };
+      setMessages((prev) => [...prev, aiMsg]);
+      applyPatch(data.patch || {}, data.price || null);
+      if (data.done) setIsDone(true);
+    } catch (err: any) {
+      setChatError(err.message || "Could not connect. Please try again.");
+    }
+    setIsTyping(false);
+  }, [bizName, bizLoc, selectedNiches, productCount, applyPatch]);
+
+  // Send a message — handles static intake phase before firing the real AI
+  const sendMessage = useCallback(async (content: string) => {
+    if (!content.trim() || isTyping) return;
+    setChatError("");
+
+    const userMsg: ChatMessage = { role: "user", content: content.trim() };
+    setMessages((prev) => [...prev, userMsg]);
+    setInputVal("");
+
+    // ── Intake phase: still collecting static questions ──
+    if (!intakeDone) {
+      const currentQ = INTAKE_QUESTIONS[intakeStep];
+      const nextAnswers = { ...intakeAnswers, [currentQ.id]: content.trim() };
+      setIntakeAnswers(nextAnswers);
+      const nextStep = intakeStep + 1;
+      setIntakeStep(nextStep);
+
+      if (nextStep < INTAKE_QUESTIONS.length) {
+        const nextQ = INTAKE_QUESTIONS[nextStep];
+        const nextMsg: ChatMessage = { role: "assistant", content: nextQ.question };
+        setMessages((prev) => [...prev, nextMsg]);
+      } else {
+        await fireInitChat(nextAnswers);
+      }
+      return;
+    }
+
+    // ── Normal chat: forward to API ──
+    setIsTyping(true);
+    const history = messages.map((m) => ({ role: m.role, content: m.content }));
+
+    const intakeSummary = INTAKE_QUESTIONS
+      .map((q) => intakeAnswers[q.id] ? `${q.id}: ${intakeAnswers[q.id]}` : null)
+      .filter(Boolean)
+      .join("\n");
+
+    try {
+      const res = await fetch("/api/estimate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bizName, bizLoc,
+          bizDesc: intakeSummary || bizDesc,
+          bizServes: intakeAnswers["geography"] || bizServes,
+          implNotes,
           niches: selectedNiches,
           mode: "chat",
           message: content.trim(),
@@ -1627,51 +1771,35 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
       setChatError(err.message || "Something went wrong. Please try again.");
     }
     setIsTyping(false);
-  }, [messages, isTyping, bizName, bizLoc, bizServes, bizDesc, implNotes, selectedNiches, pages, customPages, productCount, applyPatch]);
+  }, [messages, isTyping, intakeDone, intakeStep, intakeAnswers, bizName, bizLoc, bizServes, bizDesc, implNotes, selectedNiches, pages, customPages, productCount, applyPatch, fireInitChat]);
 
-  // Start chat: submit gate, send initial greeting trigger
-  const startChat = useCallback(async () => {
+  // Start chat: show first static intake question — no API call yet
+  const startChat = useCallback(() => {
     setPhase("chat");
-    setIsTyping(true);
     setChatError("");
-    try {
-      const res = await fetch("/api/estimate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          bizName, bizLoc, bizServes, bizDesc, implNotes,
-          niches: selectedNiches,
-          mode: "chat",
-          message: "__init__",
-          history: [],
-          pages: [],
-          customPages: [],
-          productCount,
-        }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error((data as any)?.error || `Error ${res.status}`);
-      const greeting: ChatMessage = { role: "assistant", content: data.message || "Hi! Let's build your estimate." };
-      setMessages([greeting]);
-      applyPatch(data.patch || {}, data.price || null);
-    } catch (err: any) {
-      setChatError(err.message || "Could not connect. Please try again.");
-      setPhase("gate");
-    }
-    setIsTyping(false);
-  }, [bizName, bizLoc, bizServes, bizDesc, implNotes, selectedNiches, productCount, applyPatch]);
+    setIntakeStep(0);
+    setIntakeAnswers({});
+    const first = INTAKE_QUESTIONS[0];
+    const greeting: ChatMessage = {
+      role: "assistant",
+      content: `Hi! A few quick questions before I build your estimate for **${bizName}**.\n\n${first.question}`,
+    };
+    setMessages([greeting]);
+  }, [bizName, bizLoc]);
 
   const resetAll = () => {
     if (typeof window !== "undefined") {
       sessionStorage.removeItem(PRICING_SUBMITTED_KEY);
+      sessionStorage.removeItem(PRICING_SESSION_KEY);
       const url = new URL(window.location.href);
       url.searchParams.delete("pricing_submitted");
       window.history.replaceState({}, "", url.toString());
     }
 
-    setPhase("gate"); setGateSlide(0);
+    setPhase("gate");
     setBizName(""); setBizLoc(""); setBizDesc(""); setBizServes(""); setImplNotes(""); setSelectedNiches([]);
     setMessages([]); setInputVal(""); setIsTyping(false); setChatError(""); setIsDone(false);
+    setIntakeStep(0); setIntakeAnswers({});
     setPages([]); setCustomPages([]); setAnswers({}); setExtrasDetail([]);
     setScoped([]); setHasNeedsScoping(false); setProductCount(10);
     setPrice({ base: 0, ep: 0, addons: 0, total: 0, items: [], u: 0 });
@@ -1695,8 +1823,8 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
     }
   }, []);
 
-  const pct = phase === "gate" ? (gateSlide === 0 ? 10 : 20) : isDone ? 100 : 60;
-  const stepLbl = phase === "gate" ? (gateSlide === 0 ? "About your business" : "Your reach") : isDone ? "Ready to submit" : "Building your estimate";
+  const pct = phase === "gate" ? 10 : isDone ? 100 : 60;
+  const stepLbl = phase === "gate" ? "About your business" : isDone ? "Ready to submit" : "Building your estimate";
 
   if (submittedQuote) {
     return (
@@ -1753,115 +1881,44 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
           {/* ── GATE phase ── */}
           {phase === "gate" && (
             <div className="flex flex-col h-full min-h-0">
-              {gateSlide === 0 ? (
-                <>
-                  {/* Scrollable fields */}
-                  <div className="flex-1 overflow-y-auto pb-3">
-                    <div className="text-[20px] font-bold text-text mb-1">Build your estimate</div>
-                    <div className="text-[13px] text-muted mb-5">Tell us about your business — we'll build a real roadmap together.</div>
-                    <div className="mb-3">
-                      <Input name="biz-name" label="Business name" required placeholder="e.g. Koi Roofing and Solar" value={bizName} onChange={(e) => setBizName(e.target.value)} labelClassName="block text-xs text-zinc-400" containerClassName="space-y-1" />
-                    </div>
-                    <div className="mb-3">
-                      <Input name="biz-loc" label="Where are you located?" required placeholder="e.g. Freehold, NJ" value={bizLoc} onChange={(e) => setBizLoc(e.target.value)} labelClassName="block text-xs text-zinc-400" containerClassName="space-y-1" />
-                    </div>
-                    <div className="mb-3">
-                      <Lbl htmlFor="biz-niche">Business niche <span className="text-text/25 font-normal">(up to 5)</span></Lbl>
-                      <NicheSelector selected={selectedNiches} onChange={setSelectedNiches} niches={niches} />
-                    </div>
-                    <div className="mb-2">
-                      <Lbl htmlFor="biz-desc" required>Describe your business</Lbl>
-                      <div className="relative">
-                        <textarea id="biz-desc" value={bizDesc} onChange={(e) => setBizDesc(e.target.value)} rows={5}
-                          placeholder={"What do you do, who do you serve, and what are your main services?\n\ne.g. Family-owned roofing & solar company in NJ. Main services: full roof replacements and solar panel installs (often bundled). Secondary: gutters, skylights, storm damage. Clients are mostly homeowners but we take commercial jobs too. 20-30 jobs/month."}
-                          className="w-full input-bg border border-border rounded-lg px-[12px] py-[9px] pr-[38px] text-[13px] text-text font-[inherit] outline-none resize-none box-border" />
-                        <MicButton value={bizDesc} onChange={setBizDesc} />
-                      </div>
-                      <p className="text-[10px] text-text/30 mt-[6px] leading-[1.5]">
-                        Include your <span className="text-text/50">primary services</span> and any <span className="text-text/50">secondary or add-on services</span> — this shapes how your site gets structured.
-                      </p>
-                    </div>
+              <>
+                {/* Scrollable fields */}
+                <div className="flex-1 overflow-y-auto pb-3">
+                  <div className="text-[20px] font-bold text-text mb-1">Build your estimate</div>
+                  <div className="text-[13px] text-muted mb-5">Tell us your business name and location — our AI will take it from there.</div>
+                  <div className="mb-3">
+                    <Input name="biz-name" label="Business name" required placeholder="e.g. Koi Roofing and Solar" value={bizName} onChange={(e) => setBizName(e.target.value)} labelClassName="block text-xs text-zinc-400" containerClassName="space-y-1" />
                   </div>
-                  {/* Sticky footer */}
-                  <div className="shrink-0 border-t border-t-border pt-[10px] pb-[4px]">
-                    <button onClick={slide0Ready ? () => setGateSlide(1) : undefined} disabled={!slide0Ready}
-                      className={`w-full py-[11px] rounded-full border-none text-[13px] font-bold ${slide0Ready ? "bg-accent text-bg cursor-pointer" : "bg-border text-text/25 cursor-not-allowed"}`}>
-                      Continue →
-                    </button>
+                  <div className="mb-4">
+                    <Input name="biz-loc" label="Where are you located?" required placeholder="e.g. Freehold, NJ" value={bizLoc} onChange={(e) => setBizLoc(e.target.value)} labelClassName="block text-xs text-zinc-400" containerClassName="space-y-1" />
                   </div>
-                </>
-              ) : (
-                <>
-                  {/* Scrollable fields */}
-                  <div className="flex-1 overflow-y-auto pb-3">
-                    <button onClick={() => setGateSlide(0)} className="bg-transparent border-none text-muted text-[12px] cursor-pointer pb-4 flex items-center gap-1">← Back</button>
-                    <div className="text-[20px] font-bold text-text mb-1">A couple quick questions</div>
-                    <div className="text-[13px] text-muted mb-5">This helps our AI build the right starting structure for you.</div>
+                  <div className="mb-3">
+                    <Lbl htmlFor="biz-niche">Business niche <span className="text-text/25 font-normal">(optional — up to 5)</span></Lbl>
+                    <NicheSelector selected={selectedNiches} onChange={setSelectedNiches} niches={niches} />
+                  </div>
+                </div>
 
-                    {/* Service area picker */}
-                    <div className="mb-5">
-                      <div className="text-[12px] font-semibold text-text mb-[10px]">Who do you serve?</div>
-                      <fieldset className="border-none p-0 m-0">
-                        <legend className="sr-only">Service area</legend>
-                        {[
-                          { id: "city", label: "My city / town", sub: "Strictly local customers" },
-                          { id: "county", label: "My county / district", sub: "Local area and surroundings" },
-                          { id: "state", label: "My state / province", sub: "Statewide or provincial reach" },
-                          { id: "region", label: "My region", sub: "Multiple states or provinces" },
-                          { id: "country", label: "My country", sub: "Nationwide customers" },
-                          { id: "worldwide", label: "Online / worldwide", sub: "Location doesn't limit me" },
-                        ].map((opt) => {
-                          const on = bizServes === opt.id;
-                          return (
-                            <button type="button" key={opt.id} onClick={() => setBizServes(opt.id)} role="radio" aria-checked={on}
-                              className={`w-full flex items-center gap-3 px-[14px] py-[10px] rounded-xl mb-2 cursor-pointer text-left ${on ? "border-[1.5px] border-accent bg-accent/[0.063]" : "border border-border bg-transparent"}`}>
-                              <span aria-hidden="true" className={`w-4 h-4 rounded-full border-[1.5px] shrink-0 flex items-center justify-center ${on ? "border-accent bg-accent" : "border-border bg-transparent"}`}>
-                                {on && <span className="w-[6px] h-[6px] rounded-full bg-bg block" />}
-                              </span>
-                              <span>
-                                <span className="text-[13px] font-medium text-text block">{opt.label}</span>
-                                <span className="text-[11px] text-muted mt-[1px] block">{opt.sub}</span>
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </fieldset>
+                {/* Sticky footer */}
+                <div className="shrink-0 border-t border-t-border pt-[10px] pb-[4px]">
+                  {chatError && (
+                    <div className="mb-3 text-[12px] text-red-400 px-[10px] py-[8px] rounded-lg bg-red-500/[0.08] border border-red-500/20 leading-[1.5]">
+                      {chatError}
                     </div>
-
-                    {/* Implementation notes */}
-                    <div className="mb-2">
-                      <Lbl htmlFor="impl-notes">Anything specific you need? <span className="text-text/25 font-normal">(optional)</span></Lbl>
-                      <div className="relative">
-                        <textarea id="impl-notes" value={implNotes} onChange={(e) => setImplNotes(e.target.value)} rows={3}
-                          placeholder={"e.g. We use ServiceTitan for scheduling. Need a financing page and before/after gallery. Have 3 locations."}
-                          className="w-full input-bg border border-border rounded-lg px-[12px] py-[9px] pr-[38px] text-[13px] text-text font-[inherit] outline-none resize-none box-border" />
-                        <MicButton value={implNotes} onChange={setImplNotes} />
-                      </div>
-                      <p className="text-[10px] text-text/30 mt-[6px] leading-[1.5]">
-                        Specific features, integrations, or requirements — the AI will treat these as constraints, not suggestions.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Sticky footer */}
-                  <div className="shrink-0 border-t border-t-border pt-[10px] pb-[4px]">
-                    {chatError && (
-                      <div className="mb-3 text-[12px] text-red-400 px-[10px] py-[8px] rounded-lg bg-red-500/[0.08] border border-red-500/20 leading-[1.5]">
-                        {chatError}
-                      </div>
-                    )}
-                    <button onClick={gateReady ? startChat : undefined} disabled={!gateReady}
-                      className={`w-full py-[11px] rounded-full border-none text-[13px] font-bold ${gateReady ? "bg-accent text-bg cursor-pointer" : "bg-border text-text/25 cursor-not-allowed"}`}>
-                      ✦ Start building my estimate →
-                    </button>
-                    <p className="text-[10px] text-text/30 text-center leading-[1.55] mt-2">
-                      By continuing you agree to our{" "}
-                      <a href="/legal/privacy-policy" className="underline text-text/40 hover:text-accent transition-colors">Privacy Policy</a>.
-                      {" "}This estimator is powered by OpenAI (makers of ChatGPT). Your business details will be processed by OpenAI to generate your estimate.
-                    </p>
-                  </div>
-                </>
-              )}
+                  )}
+                  <button
+                    onClick={gateReady ? startChat : undefined}
+                    disabled={!gateReady}
+                    className={`w-full py-[11px] rounded-full border-none text-[13px] font-bold ${gateReady ? "bg-accent text-bg cursor-pointer" : "bg-border text-text/25 cursor-not-allowed"}`}
+                  >
+                    ✦ Start building my estimate →
+                  </button>
+                  <p className="text-[10px] text-text/30 text-center leading-[1.55] mt-2">
+                    By continuing you agree to our{" "}
+                    <a href="/legal/privacy-policy" className="underline text-text/40 hover:text-accent transition-colors">Privacy Policy</a>.
+                    {" "}This estimator is powered by OpenAI (makers of ChatGPT). Your business details will be processed by OpenAI to generate your estimate.
+                  </p>
+                </div>
+              </>
             </div>
           )}
 
@@ -1909,6 +1966,25 @@ export default function PricingCalculator({ industryNames, formspreeId = "" }: P
                 </div>
                 </>
               )}
+
+              {/* Quick-pick chips — intake phase only, when current question has choices */}
+              {!isDone && !intakeDone && !isTyping && (() => {
+                const q = INTAKE_QUESTIONS[intakeStep];
+                return q?.choices ? (
+                  <div className="shrink-0 flex flex-wrap gap-[6px] pb-[8px] pt-[2px]">
+                    {q.choices.map((choice) => (
+                      <button
+                        key={choice}
+                        type="button"
+                        onClick={() => sendMessage(choice)}
+                        className="text-[11.5px] px-[10px] py-[5px] rounded-full border border-border/60 bg-transparent text-text/70 hover:border-accent/60 hover:text-accent cursor-pointer transition-colors duration-150"
+                      >
+                        {choice}
+                      </button>
+                    ))}
+                  </div>
+                ) : null;
+              })()}
 
               {/* Input bar — only during chat */}
               {!isDone && (
