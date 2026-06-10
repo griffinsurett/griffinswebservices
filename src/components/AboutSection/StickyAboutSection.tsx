@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 interface StickyAboutSectionProps {
   children: React.ReactNode;
@@ -6,8 +6,7 @@ interface StickyAboutSectionProps {
 
 export default function StickyAboutSection({ children }: StickyAboutSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isActive, setIsActive] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const scrollYRef = useRef(0);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -17,47 +16,57 @@ export default function StickyAboutSection({ children }: StickyAboutSectionProps
       const rect = container.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
 
-      // Check if section is in view
-      const isInView = rect.top < viewportHeight && rect.bottom > 0;
+      // Calculate animation progress (0 to 1) based on scroll position
+      const scrollStart = viewportHeight;
+      const scrollEnd = -container.offsetHeight;
+      const distance = scrollStart - rect.top;
+      const totalDistance = scrollStart - scrollEnd;
+      const progress = Math.max(0, Math.min(1, distance / totalDistance));
 
-      if (isInView && rect.top < viewportHeight / 2) {
-        setIsActive(true);
-
-        // Calculate animation progress (0 to 1)
-        const scrollStart = viewportHeight;
-        const scrollEnd = -container.offsetHeight;
-        const distance = scrollStart - rect.top;
-        const totalDistance = scrollStart - scrollEnd;
-        const p = Math.max(0, Math.min(1, distance / totalDistance));
-        setProgress(p);
-
-        // Lock scroll while animating (progress < 1)
-        if (p < 1) {
-          document.body.style.overflow = "hidden";
-        } else {
-          document.body.style.overflow = "auto";
-          setIsActive(false);
-        }
-      } else if (isActive) {
+      // Lock scroll while animating (progress < 0.95)
+      if (progress < 0.95 && rect.top < viewportHeight) {
+        // Scroll is locked - restore previous scroll position
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
+        window.scrollY !== scrollYRef.current && window.scrollTo(0, scrollYRef.current);
+      } else {
+        // Unlock scroll
         document.body.style.overflow = "auto";
-        setIsActive(false);
+        document.documentElement.style.overflow = "auto";
+        scrollYRef.current = window.scrollY;
+      }
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      const rect = container.current?.getBoundingClientRect();
+      if (!rect) return;
+
+      const viewportHeight = window.innerHeight;
+      const scrollStart = viewportHeight;
+      const scrollEnd = -container.current!.offsetHeight;
+      const distance = scrollStart - rect.top;
+      const totalDistance = scrollStart - scrollEnd;
+      const progress = Math.max(0, Math.min(1, distance / totalDistance));
+
+      if (progress < 0.95 && rect.top < viewportHeight) {
+        e.preventDefault();
       }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial check
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("wheel", handleWheel);
       document.body.style.overflow = "auto";
+      document.documentElement.style.overflow = "auto";
     };
-  }, [isActive]);
+  }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className={isActive ? "fixed inset-0 w-screen h-screen flex items-center justify-center z-50 bg-black" : "relative w-full"}
-    >
+    <div ref={containerRef} className="relative w-full">
       {children}
     </div>
   );
