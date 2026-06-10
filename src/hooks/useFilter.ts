@@ -119,7 +119,7 @@ function extractKey(value: any): string | null {
   if (typeof value === "string") return value;
   if (typeof value === "object") {
     // Reference object - extract id or slug
-    return value.id || value.slug || null;
+    return value.id || null;
   }
   return String(value);
 }

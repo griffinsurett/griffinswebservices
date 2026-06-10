@@ -1,147 +1,121 @@
 ---
 // src/layouts/FrontPageHero.astro
-/**
- * Front Page Hero Layout
- *
- * Full-width hero section with optimized background media for homepage.
- *
- * Features:
- * - Responsive background images with LCP optimization
- * - Optional video background with poster image
- * - Large centered text with gradient overlay
- * - Primary and secondary CTAs
- * - Configurable minimum height (default 95vh)
- * - Supports both static images and video backgrounds
- *
- * This is a layout component for landing pages.
- * Use directly in your homepage or marketing pages.
- */
-
-import Button from "@/components/Button/Button";
-import BackgroundMedia from "@/components/BackgroundMedia.astro";
 import { ctaData } from "@/content/siteData";
-import DefaultImg from "@/assets/background.svg";
+import ScrollIndicator from "@/components/ScrollIndicator.astro";
 
 export interface Props {
-  title?: string;
-  description?: string;
-  image?: any; // Astro image asset or public path
-  video?: {
-    src: string;
-    autoPlay?: boolean;
-    muted?: boolean;
-    loop?: boolean;
-    playsInline?: boolean;
-    controls?: boolean;
-    preload?: string;
-  };
-  primaryCTA?: {
-    text: string;
-    link: string;
-  };
-  secondaryCTA?: {
-    text: string;
-    link: string;
-  };
-  className?: string;
+  headline?: string;
+  headlineLine2?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  statLabel?: string;
+  statValue?: string;
+  statDescription?: string;
+  bodyText?: string;
   id?: string;
-  minHeight?: string;
 }
 
 const {
-  title = "Welcome",
-  description,
-  image,
-  video,
-  primaryCTA = {
-    text: ctaData.text,
-    link: ctaData.link,
-  },
-  secondaryCTA,
-  className = "",
+  headline = "Built to",
+  headlineLine2 = "grow your business.",
+  ctaText = ctaData.text ?? "Start a project",
+  ctaLink = ctaData.link ?? "/contact-us",
+  statLabel = "EST. 2020",
+  statValue = "Web design",
+  statDescription = "Websites, AI products, and systems built for clarity and growth.",
+  bodyText,
   id = "hero",
-  minHeight = "95vh",
 } = Astro.props;
-
-// Prepare optimized background media
-const backgroundMedia = {
-  image: {
-    src: image || DefaultImg,
-    imageClass: "bg-cover bg-center",
-    aboveTheFold: true, // Front page hero is always LCP
-  },
-  video: video
-    ? {
-        src: video.src,
-        autoPlay: video.autoPlay ?? true,
-        muted: video.muted ?? true,
-        loop: video.loop ?? true,
-        playsInline: video.playsInline ?? true,
-        controls: video.controls ?? false,
-        preload: video.preload ?? "metadata",
-        videoClass: "object-cover",
-      }
-    : undefined,
-  overlayClass: "bg-gradient-to-b from-black/30 to-black/60",
-};
 ---
 
-<section id={id} class={`relative ${className}`}>
-  <div
-    class="relative flex items-center justify-center overflow-hidden"
-    style={`min-height: ${minHeight}`}
-  >
-    {/* Optimized background media with overlay */}
-    <BackgroundMedia backgroundMedia={backgroundMedia} />
+<section
+  id={id}
+  class="relative w-full min-h-screen flex flex-col hero-gap-py"
+>
 
-    {/* Hero Content */}
-    <div class="relative text-center text-bg px-8 max-w-4xl mx-auto z-10">
-      <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-        {title}
-      </h1>
+  <!-- Hero body — fills remaining space, stat pinned to bottom-right, headline top-left -->
+  <div class="relative z-10 flex-1 flex flex-col justify-between w-full px-6 md:px-[80px] py-0 pb-12 lg:pb-16">
 
-      {
-        description && (
-          <p class="text-xl md:text-2xl mb-10 opacity-95 leading-relaxed max-w-3xl mx-auto">
-            {description}
-          </p>
-        )
-      }
+    <!-- Top row: headline left, (empty right) -->
+    <div class="flex items-start justify-between gap-8 w-full">
 
-      {/* CTA Buttons */}
-      <div class="flex gap-4 justify-center flex-wrap">
-        {
-          primaryCTA && (
-            <Button
-              href={primaryCTA.link}
-              variant="primary"
-              size="lg"
-              className="shadow-xl hover:shadow-2xl transition-shadow"
-            >
-              {primaryCTA.text}
-            </Button>
-          )
-        }
+      <!-- Left: headline + CTA -->
+      <div class="max-w-3xl">
+        <h1 class="text-[clamp(2.8rem,6.5vw,6rem)] font-light leading-[0.9] tracking-tight text-heading hero-gap-pb">
+          {headline}<br />{headlineLine2}
+        </h1>
 
-        {
-          secondaryCTA && (
-            <Button href={secondaryCTA.link} variant="ghost" size="lg">
-              {secondaryCTA.text}
-            </Button>
-          )
-        }
+        <a
+          href={ctaLink}
+          class="group inline-flex items-center justify-between gap-8 mt-7 text-[11px] font-medium tracking-[0.18em] uppercase text-zinc-400 border-b border-zinc-400 pb-[6px] hover:text-white hover:border-white transition-colors duration-200"
+        >
+          {ctaText}
+          <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Bottom row: scroll indicator centered, stat box pinned right -->
+    <div class="flex items-end justify-between w-full">
+      <!-- Left spacer (mirrors stat box width) -->
+      <div class="hidden lg:block shrink-0 w-[340px]"></div>
+
+      <!-- Scroll indicator centered -->
+      <ScrollIndicator className="relative bottom-auto left-auto translate-x-0 static-in-row" />
+
+      <!-- Right: stat box + body text -->
+      <div class="hidden lg:flex flex-col items-start gap-4 shrink-0 w-[340px] text-left">
+        <!-- Stat box -->
+        <div class="border border-zinc-700 rounded-sm flex items-stretch overflow-hidden">
+          <div class="flex flex-col items-center justify-center px-5 py-5 border-r border-zinc-700 min-w-[90px]">
+            <!-- Globe icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-zinc-400">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
+            </svg>
+            <span class="text-[10px] text-zinc-400 font-medium mt-2 tracking-widest">{statLabel}</span>
+          </div>
+          <div class="flex items-center justify-center px-6 py-5">
+            <span class="text-[13px] font-semibold tracking-widest text-white uppercase leading-snug max-w-[180px]">{statValue}</span>
+          </div>
+        </div>
+
+        <!-- Body text -->
+        {bodyText && (
+          <p class="text-base text-zinc-300 leading-relaxed">{bodyText}</p>
+        )}
+        {!bodyText && (
+          <p class="text-lg text-zinc-300 leading-relaxed">{statDescription}</p>
+        )}
       </div>
     </div>
   </div>
 
-  {/* Optional slot for additional content below hero */}
   <slot />
 </section>
 
 <style>
-  /* Ensure text is readable on all backgrounds */
-  h1,
-  p {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  :root {
+    --hero-gap: 1.5rem; /* 24px — matches py-6 / pb-6 */
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --hero-gap: 2rem; /* 32px — matches lg:py-8 / lg:pb-8 */
+    }
+  }
+  .hero-gap-py {
+    padding-top: var(--hero-gap);
+    padding-bottom: var(--hero-gap);
+  }
+  .hero-gap-pb {
+    padding-bottom: var(--hero-gap);
+  }
+  /* Override ScrollIndicator's default absolute positioning when inline in the row */
+  :global(.static-in-row) {
+    position: static !important;
+    transform: none !important;
+    bottom: auto !important;
+    left: auto !important;
   }
 </style>
+

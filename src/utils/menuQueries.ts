@@ -7,7 +7,6 @@
 
 import type { CollectionEntry } from 'astro:content';
 import { query, sortBy } from '@/utils/query';
-import { getItemKey } from '@/utils/collections';
 
 /**
  * Build hierarchical menu tree from flat items
@@ -32,7 +31,7 @@ const registerLookupKeys = (node: MenuNode, lookup: Map<string, MenuNode>) => {
   };
 
   // Primary identifiers
-  const primaryKey = getItemKey(node as any);
+  const primaryKey = node.id || node.slug || "";
   addKey(primaryKey);
   addKey(node.id);
   addKey(node.slug);

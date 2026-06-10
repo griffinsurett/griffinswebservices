@@ -1,5 +1,6 @@
 /* src/styles/global.css */
 @import "tailwindcss";
+@import "@/styles/fonts.css";
 
 /* Tell Tailwind to scan integration components for class usage */
 @source "../integrations";
@@ -11,17 +12,39 @@
 @import "@/styles/system.css";
 @import "@/styles/menu.css";
 
+/* ============================================================
+ * 1. COLOR MODES & TOKENS
+ * ============================================================ */
+@custom-variant light  (&:where([data-theme="light"], [data-theme="light"] *));
+@custom-variant dark   (&:where([data-theme="dark"],  [data-theme="dark"]  *));
+
 @theme {
-  /* ───── PRIMARY – change ONLY this one line for the brand ───── */
-  --color-primary: var(--color-blue-500);   /* your main brand color */
+  /* Base palette */
+  --color-primary-dark: #080808;
+  --color-secondary-dark: #030303;
+  --color-tertiary-dark: var(--color-zinc-900);
+  --color-primary-light: var(--color-zinc-50);
+  --color-secondary-light: var(--color-zinc-100);
+  --color-tertiary-light: var(--color-zinc-200);
+  --main-accent: #5e76f6;
+
   /* ───── ACCENT – secondary / interactive ───── */
-  --color-accent: var(--color-purple-700);  /* complementary accent color */
+  --color-accent: #5e76f6;
+
+  /* ───── PRIMARY – change ONLY this one line for the brand ───── */
+  --color-primary: var(--color-accent);
+  --color-primary-secondary: color-mix(in srgb, var(--color-primary) 85%, var(--primary-dark));
 
   /* ───── Neutrals ───── */
-  --color-text:         oklch(18% 0.03 260);   /* almost black */
-  --color-heading:      oklch(14% 0.03 260);   /* slightly darker */
-  --color-bg:           oklch(99.5% 0.004 260); /* off-white */
-  --color-surface:      oklch(97.5% 0.006 260); /* cards, nav, modals */
+  --color-heading: var(--color-tertiary-dark);
+  --color-text: var(--color-zinc-200);
+  --color-muted: color-mix(in srgb, var(--color-text) 55%, transparent);
+
+  /* Background surfaces */
+  --color-bg: var(--color-primary-dark);
+  --color-bg2: var(--color-secondary-dark);
+  --color-bg3: var(--color-tertiary-dark);
+  --color-surface: oklch(97.5% 0.006 260);
 
   /* color helpers */
   --color-primary-50:   oklch(from var(--color-primary) calc(l + 0.40) c h);
@@ -47,15 +70,112 @@
   --color-accent-800:  oklch(from var(--color-accent) calc(l - 0.25) c h);
   --color-accent-900:  oklch(from var(--color-accent) calc(l - 0.35) c h);
   --color-accent-950:  oklch(from var(--color-accent) calc(l - 0.45) c h);
+
+  /* Borders */
+  --color-border: color-mix(in srgb, var(--color-heading) 10%, transparent);
+  --color-border-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
+  --color-border-soft: var(--color-border);
+  --color-border-soft-strong: var(--color-border-strong);
+  --color-border-dim: var(--color-border-strong);
+
+  /* Fonts */
+  --font-header: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
+  --font-body: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================================
+ * 2. BASE LAYER & THEME SWITCHING
+ * ============================================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background: transparent;
+  }
+
+  body {
+    font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
+    background-color: transparent;
+    @apply overflow-x-hidden;
+  }
+
+  *:focus { outline: none; }
+
+  ::selection {
+    color: var(--color-accent);
+    transition: all 0.3s ease-in-out;
+  }
+
+  [data-theme="light"] {
+    --color-primary: var(--color-zinc-900);
+    --color-heading: var(--color-tertiary-dark);
+    --color-text: var(--color-zinc-600);
+    --color-muted: var(--text-gray-500);
+    --color-bg: var(--color-primary-light);
+    --color-bg2: var(--color-secondary-light);
+    --color-bg3: var(--color-tertiary-light);
+    --color-border: color-mix(in srgb, var(--color-heading) 10%, transparent);
+    --color-border-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
+    --color-border-soft: var(--color-border);
+    --color-border-soft-strong: var(--color-border-strong);
+    --color-border-dim: var(--color-border-strong);
+  }
+
+  [data-theme="dark"] {
+    --color-primary: var(--color-accent);
+    --color-heading: var(--color-primary-light);
+    --color-text: var(--color-zinc-200);
+    --color-muted: color-mix(in srgb, var(--color-text) 55%, transparent);
+    --color-bg: var(--color-primary-dark);
+    --color-bg2: var(--color-secondary-dark);
+    --color-bg3: var(--color-tertiary-dark);
+  }
 }
 
 body {
   @apply overflow-x-hidden;
 }
 
+@utility head-foot-section {
+  @apply w-19/20 mx-auto;
+}
+
+@utility page-container {
+  @apply w-8/10 lg:w-17/20 mx-auto;
+}
+
 @layer components {
   button, a {
     @apply cursor-pointer;
+  }
+
+  /* ── Animated border ── */
+  .animated-border-overlay {
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    padding: var(--ab-border-width, 2px);
+    background: conic-gradient(
+      from 0deg,
+      var(--ab-color, var(--color-accent)) 0deg,
+      var(--ab-color, var(--color-accent)) var(--ab-progress, 0deg),
+      transparent var(--ab-progress, 0deg),
+      transparent 360deg
+    );
+  }
+  .animated-border-overlay.is-solid {
+    background: var(--ab-color, var(--color-accent));
+  }
+  .animated-border-overlay.progress {
+    transition:
+      opacity var(--ab-fade-duration, 220ms) cubic-bezier(.2, 0, 0, 1),
+      --ab-progress var(--ab-duration, 2000ms) linear;
+  }
+  .animated-border-overlay.progress-b-f {
+    transition: --ab-progress var(--ab-duration, 2000ms) cubic-bezier(.45, 0, .25, 1);
+  }
+  .animated-border-overlay.progress-infinite {
+    animation: ab-border-progress var(--ab-duration, 2000ms) linear infinite;
   }
 
   /* Base button styles */
@@ -105,6 +225,25 @@ body {
   .link-lg {
     @apply text-lg;
   }
+}
+
+@property --ab-progress {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes ab-border-progress {
+  0%   { --ab-progress: 0deg; }
+  100% { --ab-progress: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-border-overlay { display: none !important; }
+}
+
+[data-a11y-motion="reduced"] .animated-border-overlay {
+  display: none !important;
 }
 
 @layer utilities {

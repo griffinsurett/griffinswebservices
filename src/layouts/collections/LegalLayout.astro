@@ -48,7 +48,7 @@ const effectiveDate = formatDate(data.effectiveDate);
 <BaseLayout {...seoProps}>
   <main class="flex-1">
     <SecondaryHero
-      eyebrow={humanizeSlug(entry?.slug ?? entry?.id ?? "")}
+      eyebrow={humanizeSlug(entry?.id ?? "")}
       title={data.title}
       description={data.description}
       image={data.bannerImage}

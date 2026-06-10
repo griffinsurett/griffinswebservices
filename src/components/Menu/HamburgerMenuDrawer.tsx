@@ -58,7 +58,7 @@ export default function MobileMenuDrawer({
           <ul className="space-y-1">
             {items.map((item) => (
               <MobileMenuItem
-                key={item.slug || item.id}
+                key={item.id}
                 {...item}
                 onNavigate={handleNavigate}
               />

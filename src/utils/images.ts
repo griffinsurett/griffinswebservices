@@ -22,6 +22,7 @@ export function isImageMetadata(img: unknown): img is ImageMetadata {
   );
 }
 
+
 /**
  * Extract ImageMetadata from various image input formats.
  * Handles: direct ImageMetadata, { src: ImageMetadata, alt? }, or undefined

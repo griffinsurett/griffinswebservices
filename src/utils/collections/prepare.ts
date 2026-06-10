@@ -4,15 +4,14 @@
  */
 
 import type { CollectionKey, CollectionEntry } from "astro:content";
+import { render as renderEntry } from "astro:content";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import type { MetaData, BaseData } from "@/content/schema";
-import { getItemKey } from "./core";
-
 // ❌ NO imports that touch pages/filesystem during module load
 // ✅ Import inside functions
 
 export interface PreparedFields {
-  slug: string;
+  id: string;
   url?: string;
   displayValue?: string;
   /** Lazy render function - call to get Content component when needed */
@@ -22,8 +21,8 @@ export interface PreparedFields {
 
 export type PreparedItem = BaseData & PreparedFields;
 
-/** Normalize parent reference to first parent slug (handles array or string) */
-function getFirstParentSlug(parent: string | string[] | undefined): string | undefined {
+/** Normalize parent reference to first parent id (handles array or string) */
+function getFirstParentId(parent: string | string[] | undefined): string | undefined {
   if (!parent) return undefined;
   if (Array.isArray(parent)) return parent[0];
   return parent;
@@ -43,12 +42,12 @@ export async function prepareEntry<T extends CollectionKey>(
     "@/utils/links/linkBehavior"
   );
 
-  const identifier = getItemKey(entry);
+  const identifier = entry.id;
   const data = entry.data as Record<string, any>;
 
   // Resolve parent entry if item has a parent and we have entries map
-  const parentSlug = getFirstParentSlug(data.parent);
-  const parentEntry = parentSlug && entriesMap ? entriesMap.get(parentSlug) : undefined;
+  const parentId = getFirstParentId(data.parent);
+  const parentEntry = parentId && entriesMap ? entriesMap.get(parentId) : undefined;
 
   // Check for link behavior config (item-level overrides collection-level)
   const linkBehavior = mergeLinkBehavior(
@@ -77,18 +76,20 @@ export async function prepareEntry<T extends CollectionKey>(
 
   // Store raw body for variants that need it - don't render Content here
   // Rendering MDX Content is expensive and should only happen when actually displayed
-  // Variants that need full content (like AccordionVariant) can call entry.render() themselves
   let content: string | undefined;
   if ("body" in entry) {
     content = (entry as any).body;
   }
 
-  // Store render function for lazy rendering - only called when Content is actually needed
-  const renderFn = (entry as any).render;
+  // Store lazy render closure using standalone render() — entry.render() removed in Astro 6
+  const hasBody = "body" in entry;
+  const renderFn = hasBody
+    ? () => renderEntry(entry as any)
+    : undefined;
 
   return {
     ...data,
-    slug: identifier,
+    id: identifier,
     ...(itemUrl && { url: itemUrl }),
     ...(displayValue && { displayValue }),
     ...(renderFn && { render: renderFn }),
@@ -101,11 +102,9 @@ export async function prepareCollectionEntries<T extends CollectionKey>(
   collection: T,
   meta: MetaData
 ): Promise<PreparedItem[]> {
-  // Build a map of entries by slug for efficient parent lookup
   const entriesMap = new Map<string, CollectionEntry<T>>();
   for (const entry of entries) {
-    const key = getItemKey(entry);
-    if (key) entriesMap.set(key, entry);
+    if (entry.id) entriesMap.set(entry.id, entry);
   }
 
   return Promise.all(

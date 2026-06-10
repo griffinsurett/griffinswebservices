@@ -52,44 +52,25 @@ let responsiveImages = null;
 
 if (backgroundMedia?.image?.src) {
   const rawSrc = backgroundMedia.image.src;
-  const isProcessedImage = 
-    typeof rawSrc === 'object' && 
+  const isProcessedImage =
+    typeof rawSrc === 'object' &&
     rawSrc !== null &&
     typeof rawSrc.src === 'string';
-  
+
   if (!isProcessedImage && typeof rawSrc !== 'string') {
     try {
       const [mobile, tablet, desktop] = await Promise.all([
-        getImage({
-          src: rawSrc,
-          format: "webp",
-          quality: customQuality ?? qualitySettings.mobile,
-          width: 640,
-        }),
-        getImage({
-          src: rawSrc,
-          format: "webp",
-          quality: customQuality ?? qualitySettings.tablet,
-          width: 1024,
-        }),
-        getImage({
-          src: rawSrc,
-          format: "webp",
-          quality: customQuality ?? qualitySettings.desktop,
-          width: 1920,
-        }),
+        getImage({ src: rawSrc, format: "webp", quality: customQuality ?? qualitySettings.mobile, width: 640 }),
+        getImage({ src: rawSrc, format: "webp", quality: customQuality ?? qualitySettings.tablet, width: 1024 }),
+        getImage({ src: rawSrc, format: "webp", quality: customQuality ?? qualitySettings.desktop, width: 1920 }),
       ]);
-      
       responsiveImages = { mobile, tablet, desktop };
     } catch (error) {
       console.error('Failed to optimize background image:', error);
     }
   } else {
-    responsiveImages = {
-      mobile: { src: isProcessedImage ? rawSrc.src : rawSrc },
-      tablet: { src: isProcessedImage ? rawSrc.src : rawSrc },
-      desktop: { src: isProcessedImage ? rawSrc.src : rawSrc },
-    };
+    const src = isProcessedImage ? rawSrc.src : rawSrc;
+    responsiveImages = { mobile: { src }, tablet: { src }, desktop: { src } };
   }
 }
 ---

@@ -8,7 +8,7 @@
 
 import type { CollectionKey, CollectionEntry } from "astro:content";
 import { getCollection, render as renderEntry } from "astro:content";
-import { getCollectionMeta, getItemKey } from "@/utils/collections";
+import { getCollectionMeta } from "@/utils/collections";
 import {
   shouldItemHavePage,
   shouldItemUseRootPath,
@@ -34,7 +34,7 @@ export type ItemFilter = (
  * Path parameters for root-level items
  */
 export interface RootLevelPathParams {
-  slug: string;
+  id: string;
 }
 
 /**
@@ -42,7 +42,7 @@ export interface RootLevelPathParams {
  */
 export interface CollectionLevelPathParams {
   collection: string;
-  slug: string;
+  id: string;
 }
 
 /**
@@ -87,7 +87,7 @@ export interface PreparedPageData {
 
 export async function generateItemPaths<TParams>(
   filter: ItemFilter,
-  buildParams: (collection: string, slug: string) => TParams
+  buildParams: (collection: string, id: string) => TParams
 ): Promise<StaticPath<TParams>[]> {
   const collections = getPageCollections();
   const paths: StaticPath<TParams>[] = [];
@@ -106,9 +106,9 @@ export async function generateItemPaths<TParams>(
     entries
       .filter((entry) => filter(entry as CollectionEntry<CollectionKey>, meta))
       .forEach((entry) => {
-        const slug = getItemKey(entry);
+        const id = entry.id;
         paths.push({
-          params: buildParams(collectionKey, slug),
+          params: buildParams(collectionKey, id),
           props: {
             entry: entry as CollectionEntry<CollectionKey>,
             collectionMeta: meta,
@@ -143,17 +143,11 @@ export async function prepareItemPageData(
   // Get the actual layout component
   const LayoutComponent = await getLayoutComponent(layoutPath);
 
-  // Prepare content if MDX - safe type assertion since we know it might have render
+  // Prepare content if MDX
   let Content = null;
-  const entryWithRender = entry as any;
   try {
-    if (entryWithRender && typeof entryWithRender.render === "function") {
-      const rendered = await entryWithRender.render();
-      Content = rendered?.Content ?? null;
-    } else {
-      const rendered = await renderEntry(entry as any);
-      Content = rendered?.Content ?? null;
-    }
+    const rendered = await renderEntry(entry as any);
+    Content = rendered?.Content ?? null;
   } catch {
     Content = null;
   }
@@ -192,9 +186,9 @@ export const collectionLevelFilter: ItemFilter = (entry, meta) => {
  */
 export function buildRootLevelParams(
   _collection: string,
-  slug: string
+  id: string
 ): RootLevelPathParams {
-  return { slug };
+  return { id };
 }
 
 /**
@@ -202,7 +196,7 @@ export function buildRootLevelParams(
  */
 export function buildCollectionLevelParams(
   collection: string,
-  slug: string
+  id: string
 ): CollectionLevelPathParams {
-  return { collection, slug };
+  return { collection, id };
 }

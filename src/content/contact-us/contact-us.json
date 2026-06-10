@@ -10,7 +10,7 @@
   {
     "id": "email",
     "title": "Email Us",
-    "description": "griffinswebservices@gmail.com",
+    "description": "hello@webmaxers.com",
     "icon": "lu:mail",
     "tags": ["email"],
     "linkPrefix": "mailto:"

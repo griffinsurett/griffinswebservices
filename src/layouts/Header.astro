@@ -1,32 +1,46 @@
 ---
 // src/layouts/Header.astro
-/**
- * Site Header with Navigation
- */
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import Logo from "@/components/Logo/Logo.astro";
+import Button from "@/components/Button/Button";
 import { related } from "@/utils/query";
-import { siteData } from "@/content/siteData";
+
+const ctaLink = "/contact-us";
 ---
 
-<header class="sticky top-0 z-[40] bg-bg shadow-sm">
-  <div class="">
+<header class="sticky top-0 z-[40]">
+  <div class="head-foot-section">
     <div class="flex items-center justify-between h-16 w-full">
-      <!-- Logo -->
-      <a
-        href="/"
-        class="text-2xl font-bold text-heading hover:text-primary transition-colors"
-      >
-        {siteData.title}
-      </a>
 
-      <!-- Navigation Menu using query -->
-      <ContentRenderer
-        query={related("menu-items", "menu", "main-menu")}
-        variant="MenuVariant"
-        mode="responsive"
-        className="header-navigation"
-        hamburgerTransform={true}
+      <!-- Logo -->
+      <Logo
+        loading="eager"
+        trigger="scroll"
+        animateOutText={true}
+        altContext="Home"
+        titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-none no-translate font-semibold lowercase"
+        titleRestClass="text-[1.8rem] sm:text-3xl text-heading leading-none no-translate font-semibold lowercase"
+        colorMode="light"
       />
+
+      <!-- Right: CTA pill + hamburger -->
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:block">
+          <Button variant="secondary" href={ctaLink} size="sm" client:load>
+            Let's Talk
+          </Button>
+        </div>
+
+        <ContentRenderer
+          query={related("menu-items", "menu", "main-menu")}
+          variant="MenuVariant"
+          mode="hamburger-only"
+          className="header-navigation"
+          hamburgerTransform={true}
+          closeButton={false}
+        />
+      </div>
+
     </div>
   </div>
 </header>

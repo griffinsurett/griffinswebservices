@@ -36,7 +36,7 @@ export function buildUrl(
   item: Record<string, any>,
   config: LinkBehaviorConfigType,
   collection: string,
-  slug: string
+  id: string
 ): string | undefined {
   if (!config) return undefined;
 
@@ -44,7 +44,6 @@ export function buildUrl(
 
   switch (mode) {
     case "prefixed": {
-      // URL = prefix + description value
       const prefix = config.prefix ?? item[config.linkPrefix ?? "linkPrefix"] ?? "";
       const value = item.description ?? "";
       if (!prefix || !value) return undefined;
@@ -52,23 +51,19 @@ export function buildUrl(
     }
 
     case "field": {
-      // URL = item.link (or configured field)
       const linkField = config.link ?? "url";
       return item[linkField] ?? undefined;
     }
 
     case "root":
-      // URL = /slug
-      return `/${slug}`;
+      return `/${id}`;
 
     case "none":
-      // No URL
       return undefined;
 
     case "standard":
     default:
-      // URL = /collection/slug
-      return `/${collection}/${slug}`;
+      return `/${collection}/${id}`;
   }
 }
 
@@ -79,13 +74,13 @@ export function applyLinkBehavior(
   item: Record<string, any>,
   config: LinkBehaviorConfigType,
   collection: string,
-  slug: string
+  id: string
 ): { url?: string; displayValue?: string } {
   if (!config) {
     return {};
   }
 
-  const url = buildUrl(item, config, collection, slug);
+  const url = buildUrl(item, config, collection, id);
   const displayValue = formatValue(
     item.description,
     config.valueFormatter ?? "none"

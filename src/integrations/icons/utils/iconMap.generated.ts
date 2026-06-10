@@ -2,12 +2,13 @@
 // Do not edit manually. Run "npm run generate:icons" (or node src/integrations/icons/utils/generate-icon-map.mjs) to regenerate.
 
 import type { IconType } from 'react-icons';
-import { LuArrowRight, LuBookOpen, LuChevronRight, LuContact, LuGithub, LuGlobe, LuImage, LuLinkedin, LuMail, LuPhone, LuSettings, LuTwitter } from 'react-icons/lu';
+import { LuArrowRight, LuArrowUpRight, LuBookOpen, LuChevronRight, LuContact, LuGithub, LuGlobe, LuImage, LuLinkedin, LuMail, LuPhone, LuSettings, LuTwitter } from 'react-icons/lu';
+import { FaArrowRight, FaArrowsUpDownLeftRight, FaBullseye, FaClockRotateLeft, FaCompass, FaEye, FaFeather, FaFileLines, FaHeadset, FaLayerGroup, FaLifeRing, FaLink, FaPalette, FaRobot, FaRotateLeft, FaScaleBalanced, FaShieldHalved, FaUniversalAccess, FaWandMagicSparkles, FaXmark } from 'react-icons/fa6';
 import { FaBullhorn, FaCode } from 'react-icons/fa';
 import { SiFacebook } from 'react-icons/si';
-import { FaArrowsUpDownLeftRight, FaBullseye, FaClockRotateLeft, FaCompass, FaEye, FaFeather, FaFileLines, FaHeadset, FaLayerGroup, FaLifeRing, FaLink, FaPalette, FaRobot, FaRotateLeft, FaScaleBalanced, FaShieldHalved, FaUniversalAccess, FaWandMagicSparkles, FaXmark } from 'react-icons/fa6';
 
 export const iconMap = {
+  'fa6:arrow-right': FaArrowRight,
   'fa6:arrows-up-down-left-right': FaArrowsUpDownLeftRight,
   'fa6:bullseye': FaBullseye,
   'fa6:clock-rotate-left': FaClockRotateLeft,
@@ -30,6 +31,7 @@ export const iconMap = {
   'fa:bullhorn': FaBullhorn,
   'fa:code': FaCode,
   'lu:arrow-right': LuArrowRight,
+  'lu:arrow-up-right': LuArrowUpRight,
   'lu:book-open': LuBookOpen,
   'lu:chevron-right': LuChevronRight,
   'lu:contact': LuContact,

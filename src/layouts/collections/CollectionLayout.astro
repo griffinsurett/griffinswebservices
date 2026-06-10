@@ -30,7 +30,7 @@ const data = entry?.data || {};
   <main class="flex-1">
     {/* Hero section - always displayed */}
     <SecondaryHero
-      eyebrow={humanizeSlug(entry?.slug ?? entry?.id ?? "")}
+      eyebrow={humanizeSlug(entry?.id ?? "")}
       title={data.title}
       description={data.description}
       image={data.bannerImage}

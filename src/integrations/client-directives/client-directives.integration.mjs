@@ -24,7 +24,7 @@ const customClientDirectives = [
 
 export default function clientDirectivesIntegration() {
   return {
-    name: 'greastro-client-directives',
+    name: 'webmaxers-client-directives',
     hooks: {
       'astro:config:setup'({ addClientDirective }) {
         for (const directive of customClientDirectives) {

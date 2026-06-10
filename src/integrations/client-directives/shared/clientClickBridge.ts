@@ -1,5 +1,5 @@
-export const CLIENT_CLICK_HANDLER_STORE_KEY = "__GREASTRO_CLIENT_CLICK_HANDLERS__";
-export const CLIENT_CLICK_HANDLER_EVENT = "greastro-custom-hydrations";
+export const CLIENT_CLICK_HANDLER_STORE_KEY = "__WEBMAXERS_CLIENT_CLICK_HANDLERS__";
+export const CLIENT_CLICK_HANDLER_EVENT = "webmaxers-custom-hydrations";
 
 type HandlerEntry = {
   handler: ClientClickHandler;
@@ -7,7 +7,7 @@ type HandlerEntry = {
 
 type HandlerStoreTarget = typeof globalThis & {
   [CLIENT_CLICK_HANDLER_STORE_KEY]?: Map<string, HandlerEntry>;
-  __GREASTRO_CLIENT_CLICK_PENDING__?: Map<
+  __WEBMAXERS_CLIENT_CLICK_PENDING__?: Map<
     string,
     Array<(handler: ClientClickHandler | null) => void>
   >;
@@ -37,10 +37,10 @@ const getPendingStore = (): Map<
   Array<(handler: ClientClickHandler | null) => void>
 > => {
   const target = globalThis as HandlerStoreTarget;
-  if (!target.__GREASTRO_CLIENT_CLICK_PENDING__) {
-    target.__GREASTRO_CLIENT_CLICK_PENDING__ = new Map();
+  if (!target.__WEBMAXERS_CLIENT_CLICK_PENDING__) {
+    target.__WEBMAXERS_CLIENT_CLICK_PENDING__ = new Map();
   }
-  return target.__GREASTRO_CLIENT_CLICK_PENDING__!;
+  return target.__WEBMAXERS_CLIENT_CLICK_PENDING__!;
 };
 
 const flushPendingInvocations = (

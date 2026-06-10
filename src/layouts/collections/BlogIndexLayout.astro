@@ -77,8 +77,8 @@ const feedPosts = await Promise.all(
     ).filter((authorName): authorName is string => Boolean(authorName));
 
     return {
-      slug: item.slug,
-      url: item.url || `/blog/${item.slug}`,
+      id: item.id,
+      url: item.url || `/blog/${item.id}`,
       title: String(item.title ?? ""),
       description: item.description ? String(item.description) : "",
       publishDate: item.publishDate as Date | string | undefined,

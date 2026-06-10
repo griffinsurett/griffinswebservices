@@ -7,7 +7,6 @@
  */
 
 import { query, whereEquals, whereArrayContains, whereNoParent, sortByDate, sortByOrder, getLeaves, normalizeId, and, or } from '@/utils/query';
-import { getItemKey } from '@/utils/collections';
 import type { CollectionKey } from 'astro:content';
 
 // ============================================================================
@@ -64,13 +63,13 @@ export const byItemKeys = (collection: CollectionKey, keys: string | string[]) =
 
   return query(collection)
     .where((entry) => {
-      const entryKey = normalizeId(getItemKey(entry));
+      const entryKey = normalizeId(entry.id);
       return keySet.has(entryKey);
     })
     .orderBy((a, b) => {
       // Preserve the order from the keys array
-      const aKey = normalizeId(getItemKey(a));
-      const bKey = normalizeId(getItemKey(b));
+      const aKey = normalizeId(a.id);
+      const bKey = normalizeId(b.id);
       return normalizedKeys.indexOf(aKey) - normalizedKeys.indexOf(bKey);
     });
 };
@@ -115,7 +114,7 @@ export const children = (collection: CollectionKey, parentId: string) => {
 
       if (Array.isArray(parent)) {
         return parent.some((p) => {
-          const id = typeof p === "string" ? p : p?.id || p?.slug || "";
+          const id = typeof p === "string" ? p : p?.id || "";
           return normalizeId(id) === targetId;
         });
       }
@@ -148,7 +147,7 @@ export const parent = (
     : [];
 
   const targetIds = parentRefs
-    .map((p) => (typeof p === "string" ? p : p?.id || p?.slug || ""))
+    .map((p) => (typeof p === "string" ? p : p?.id || ""))
     .filter(Boolean)
     .map(normalizeId);
 
@@ -159,7 +158,7 @@ export const parent = (
 
   return query(collection)
     .where((entry) => {
-      const id = normalizeId(getItemKey(entry));
+      const id = normalizeId(entry.id);
       return targetIds.includes(id);
     })
     .orderBy(sortByOrder());
@@ -184,7 +183,7 @@ export const siblings = (
     : [];
 
   const targetParentIds = parentRefs
-    .map((p) => (typeof p === "string" ? p : p?.id || p?.slug || ""))
+    .map((p) => (typeof p === "string" ? p : p?.id || ""))
     .filter(Boolean)
     .map(normalizeId);
 
@@ -198,7 +197,7 @@ export const siblings = (
   return query(collection)
     .where((entry) => {
       // Exclude the target item itself when possible
-      if (targetId && normalizeId(getItemKey(entry)) === targetId) {
+      if (targetId && normalizeId(entry.id) === targetId) {
         return false;
       }
 
@@ -207,7 +206,7 @@ export const siblings = (
 
       if (Array.isArray(parent)) {
         return parent.some((p) => {
-          const id = typeof p === "string" ? p : p?.id || p?.slug || "";
+          const id = typeof p === "string" ? p : p?.id || "";
           return id && parentIdSet.has(normalizeId(id));
         });
       }

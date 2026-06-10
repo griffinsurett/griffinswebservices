@@ -14,6 +14,7 @@ import SecondaryButton from './variants/SecondaryButton';
 import GhostButton from './variants/GhostButton';
 import LinkButton from './variants/LinkButton';
 import TertiaryButton from './variants/TertiaryButton';
+import UnderlineButton from './variants/UnderlineButton';
 
 /**
  * Base props shared by all button variants
@@ -21,11 +22,13 @@ import TertiaryButton from './variants/TertiaryButton';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface BaseButtonProps {
-  leftIcon?: string | ReactNode;   // Icon before text
-  rightIcon?: string | ReactNode;  // Icon after text
-  size?: ButtonSize;       // Button size
-  children: ReactNode;              // Button text/content
-  className?: string;               // Additional CSS classes
+  leftIcon?: string | ReactNode;
+  rightIcon?: string | ReactNode;
+  size?: ButtonSize;
+  children: ReactNode;
+  className?: string;
+  buttonWrapperClasses?: string;
+  fullWidth?: boolean;
 }
 
 /**
@@ -107,6 +110,7 @@ const VARIANT_MAP = {
   ghost: GhostButton,
   link: LinkButton,
   tertiary: TertiaryButton,
+  underline: UnderlineButton,
 };
 
 export type ButtonVariant = keyof typeof VARIANT_MAP;

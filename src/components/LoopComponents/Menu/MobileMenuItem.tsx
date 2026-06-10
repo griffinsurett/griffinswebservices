@@ -102,7 +102,7 @@ export default function MobileMenuItem({
           <ul id={`mobile-submenu-${slug}`} className="mt-1 space-y-1">
             {children.map((child) => (
               <MobileMenuItem
-                key={child.slug || child.id}
+                key={child.id}
                 {...child}
                 onNavigate={onNavigate}
                 level={level + 1}
