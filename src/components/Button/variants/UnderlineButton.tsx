@@ -15,10 +15,10 @@ export default function UnderlineButton({
       size={size}
       className={[
         'group inline-flex items-center justify-between gap-8',
-        'text-[11px] font-medium tracking-[0.18em] uppercase text-zinc-400',
-        'border-b border-zinc-400 pb-[6px]',
-        'hover:text-white hover:border-white',
-        'transition-colors duration-200',
+        'text-[11px] font-medium tracking-[0.18em] uppercase text-text',
+        'border-b border-text pb-[6px]',
+        'hover:text-primary hover:border-primary',
+        'transition-colors duration-500',
         'p-0 rounded-none focus:ring-0 focus:ring-offset-0',
         className,
       ].join(' ')}

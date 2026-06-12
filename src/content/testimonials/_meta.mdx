@@ -1,6 +1,19 @@
 ---
 title: "Testimonials"
-description: "What our clients say"
+description: "Real feedback from real clients. See why businesses trust us to deliver websites that work."
+heading: "Hear it from our clients themselves."
 hasPage: true
-itemsHasPage: false  
+itemsHasPage: false
+addToMenu:
+  - menu: "main-menu"
+  - menu: "footer-menu"
 ---
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
+
+<ContentRenderer
+  query={query("testimonials")}
+  variant="GridVariant"
+  columns={2}
+  gap="lg"
+/>

@@ -2,6 +2,9 @@
 // src/layouts/FrontPageHero.astro
 import { ctaData } from "@/content/siteData";
 import ScrollIndicator from "@/components/ScrollIndicator.astro";
+import Button from "@/components/Button/Button";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { query } from "@/utils/query";
 
 export interface Props {
   headline?: string;
@@ -30,7 +33,7 @@ const {
 
 <section
   id={id}
-  class="relative w-full min-h-screen flex flex-col hero-gap-py"
+  class="relative w-full section-container min-h-screen flex flex-col hero-gap-py"
 >
 
   <!-- Hero body — fills remaining space, stat pinned to bottom-right, headline top-left -->
@@ -45,13 +48,22 @@ const {
           {headline}<br />{headlineLine2}
         </h1>
 
-        <a
-          href={ctaLink}
-          class="group inline-flex items-center justify-between gap-8 mt-7 text-[11px] font-medium tracking-[0.18em] uppercase text-zinc-400 border-b border-zinc-400 pb-[6px] hover:text-white hover:border-white transition-colors duration-200"
-        >
+        <Button variant="underline" href={ctaLink} className="mt-7" client:load>
           {ctaText}
-          <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
-        </a>
+        </Button>
+
+        <ContentRenderer
+          query={query("testimonials")
+            .where((entry) => entry.data.featured === true)
+            .limit(3)}
+          variant="TestimonialCirclesVariant"
+          className="mt-6"
+          counterStart={10}
+          counterEnd={100}
+          counterDuration={1800}
+          counterSuffix="+"
+          counterLabel="Happy Clients"
+        />
       </div>
     </div>
 
@@ -66,26 +78,26 @@ const {
       <!-- Right: stat box + body text -->
       <div class="hidden lg:flex flex-col items-start gap-4 shrink-0 w-[340px] text-left">
         <!-- Stat box -->
-        <div class="border border-zinc-700 rounded-sm flex items-stretch overflow-hidden">
-          <div class="flex flex-col items-center justify-center px-5 py-5 border-r border-zinc-700 min-w-[90px]">
+        <div class="border border-text/20 rounded-sm flex items-stretch overflow-hidden">
+          <div class="flex flex-col items-center justify-center px-5 py-5 border-r border-text/20 min-w-[90px]">
             <!-- Globe icon -->
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-zinc-400">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-text">
               <circle cx="12" cy="12" r="10"/>
               <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
             </svg>
-            <span class="text-[10px] text-zinc-400 font-medium mt-2 tracking-widest">{statLabel}</span>
+            <span class="text-[10px] text-text font-medium mt-2 tracking-widest">{statLabel}</span>
           </div>
           <div class="flex items-center justify-center px-6 py-5">
-            <span class="text-[13px] font-semibold tracking-widest text-white uppercase leading-snug max-w-[180px]">{statValue}</span>
+            <span class="text-[13px] font-semibold tracking-widest text-heading uppercase leading-snug max-w-[180px]">{statValue}</span>
           </div>
         </div>
 
         <!-- Body text -->
         {bodyText && (
-          <p class="text-base text-zinc-300 leading-relaxed">{bodyText}</p>
+          <p class="text-base text-text leading-relaxed">{bodyText}</p>
         )}
         {!bodyText && (
-          <p class="text-lg text-zinc-300 leading-relaxed">{statDescription}</p>
+          <p class="text-lg text-text leading-relaxed">{statDescription}</p>
         )}
       </div>
     </div>

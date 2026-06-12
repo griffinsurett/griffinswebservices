@@ -12,7 +12,6 @@ interface Props {
   animateOutText?: boolean;
   asHeading?: boolean;
   headingLevel?: number;
-  colorMode?: "invert" | "dark" | "light";
 }
 
 const {
@@ -24,18 +23,10 @@ const {
   animateOutText = false,
   asHeading = true,
   headingLevel = 2,
-  colorMode = "invert",
 } = Astro.props;
 
-// invert: theme-aware — light text on dark, dark text on light
-// dark:  always dark text (for use on light backgrounds)
-// light: always light text (for use on dark backgrounds)
-const textColorClass =
-  colorMode === "dark"
-    ? "text-primary-dark"
-    : colorMode === "light"
-      ? "text-primary-light"
-      : "dark:text-primary-light light:text-primary-dark";
+// Always theme-aware: light text on dark bg, dark text on light bg
+const textColorClass = "dark:text-primary-light light:text-primary-dark";
 
 const words = title.split(" ");
 const firstWord = words[0] || "";

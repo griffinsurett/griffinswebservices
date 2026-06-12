@@ -1,8 +1,7 @@
 ---
 import LottieLogo from "./LottieLogo";
+import LogoMark from "./LogoMark.astro";
 import TextLogoStatic from "./TextLogoStatic.astro";
-import { Image } from "astro:assets";
-import POSTER_SRC from "@/assets/GWS-animated.png";
 import { siteData } from "@/content/siteData";
 
 export interface Props {
@@ -14,15 +13,12 @@ export interface Props {
   class?: string;
   useLottie?: boolean;
   showText?: boolean;
-  logoMediaClass?: string;
-  logoWidths?: number[];
-  logoSizes?: string;
+  size?: number;
   titleFirstClass?: string;
   titleRestClass?: string;
   loop?: boolean;
   autoplay?: boolean;
   altContext?: string;
-  colorMode?: "invert" | "dark" | "light";
 }
 
 const {
@@ -34,56 +30,25 @@ const {
   class: className = "",
   useLottie = true,
   showText = true,
-  logoMediaClass,
-  logoWidths,
-  logoSizes,
+  size = 40,
   titleFirstClass,
   titleRestClass,
   loop = true,
   autoplay = false,
   altContext,
-  colorMode = "invert",
 } = Astro.props;
 
-const alt = altContext
-  ? `Web Maxers Logo - ${altContext}`
-  : "Web Maxers Logo";
+const alt = altContext ? `Web Maxers Logo - ${altContext}` : "Web Maxers Logo";
 
 const shouldUseLottie =
-  useLottie &&
-  (trigger === "scroll" ||
-    trigger === "visible" ||
-    trigger === "load");
+  useLottie && (trigger === "scroll" || trigger === "visible" || trigger === "load");
 
-const DEFAULT_LOGO_WIDTHS = [42, 48, 54];
-const DEFAULT_LOGO_SIZES = "(min-width: 1024px) 42px, 38px";
-const DEFAULT_LOGO_CLASSES =
-  "block w-[38px] h-[38px] lg:w-[42px] lg:h-[42px] object-contain animate-spin-once";
-
-const LOGO_WIDTHS = logoWidths ?? DEFAULT_LOGO_WIDTHS;
-const LOGO_SIZES = logoSizes ?? DEFAULT_LOGO_SIZES;
-// Filter strategy: wrap the entire logo image (Lottie or static) in a <span>
-// with the filter class. This means the filter is on a parent of both the
-// Lottie SVG and the fallback <Image>, so they always match.
-// logo-class stays on the Lottie container for the a11y selector only —
-// we neutralize its baked-in light:invert with [filter:none] so it never
-// interferes; all filter logic lives solely on the wrapper span.
-//
-// Logo is naturally light (white), so:
-//   "invert": light:invert  — dark on light theme, natural on dark theme
-//   "light":  no filter     — always natural/light
-//   "dark":   invert        — always dark in both themes
-const logoWrapperFilter =
-  colorMode === "dark"
-    ? "invert"
-    : colorMode === "light"
-      ? ""
-      : "light:invert"; // "invert" default
-
-const lottieClassName = "logo-class [filter:none]"; // a11y selector; filter neutralized here
-const logoClasses = logoMediaClass ?? DEFAULT_LOGO_CLASSES;
 const hydrationMode =
   hydrate ?? (trigger === "scroll" ? "scroll" : trigger === "visible" ? "visible" : "load");
+
+// Lottie container gets [filter:none] — the parent span carries the invert via logo-class
+const lottieClassName = "[filter:none]";
+const mediaClasses = `block w-[${size}px] h-[${size}px] object-contain animate-spin-once`;
 ---
 
 <a
@@ -91,112 +56,28 @@ const hydrationMode =
   translate="no"
   class={`notranslate flex justify-center items-center gap-1.5 ${className}`}
 >
-  <span class={logoWrapperFilter || undefined}>
+  {/* logo-class wrapper: invert(1) in light mode only, via @custom-variant light */}
+  <span class="logo-class">
     {shouldUseLottie ? (
       hydrationMode === "scroll" ? (
-        <LottieLogo
-          alt={alt}
-          loading={loading}
-          trigger={trigger}
-          className={lottieClassName}
-          mediaClasses={logoClasses}
-          loop={loop}
-          autoplay={autoplay}
-          client:scroll
-        >
-          <Image
-            src={POSTER_SRC}
-            alt=""
-            loading={loading}
-            decoding="async"
-            class={logoClasses}
-            widths={LOGO_WIDTHS}
-            sizes={LOGO_SIZES}
-            fetchpriority={loading === "eager" ? "high" : "low"}
-            aria-hidden="true"
-          />
+        <LottieLogo alt={alt} loading={loading} trigger={trigger} className={lottieClassName} mediaClasses={mediaClasses} loop={loop} autoplay={autoplay} client:scroll>
+          <LogoMark size={size} loading={loading} invert={false} imgClass={mediaClasses} />
         </LottieLogo>
       ) : hydrationMode === "visible" ? (
-        <LottieLogo
-          alt={alt}
-          loading={loading}
-          trigger={trigger}
-          className={lottieClassName}
-          mediaClasses={logoClasses}
-          loop={loop}
-          autoplay={autoplay}
-          client:visible
-        >
-          <Image
-            src={POSTER_SRC}
-            alt=""
-            loading={loading}
-            decoding="async"
-            class={logoClasses}
-            widths={LOGO_WIDTHS}
-            sizes={LOGO_SIZES}
-            fetchpriority={loading === "eager" ? "high" : "low"}
-            aria-hidden="true"
-          />
+        <LottieLogo alt={alt} loading={loading} trigger={trigger} className={lottieClassName} mediaClasses={mediaClasses} loop={loop} autoplay={autoplay} client:visible>
+          <LogoMark size={size} loading={loading} invert={false} imgClass={mediaClasses} />
         </LottieLogo>
       ) : hydrationMode === "idle" ? (
-        <LottieLogo
-          alt={alt}
-          loading={loading}
-          trigger={trigger}
-          className={lottieClassName}
-          mediaClasses={logoClasses}
-          loop={loop}
-          autoplay={autoplay}
-          client:idle
-        >
-          <Image
-            src={POSTER_SRC}
-            alt=""
-            loading={loading}
-            decoding="async"
-            class={logoClasses}
-            widths={LOGO_WIDTHS}
-            sizes={LOGO_SIZES}
-            fetchpriority={loading === "eager" ? "high" : "low"}
-            aria-hidden="true"
-          />
+        <LottieLogo alt={alt} loading={loading} trigger={trigger} className={lottieClassName} mediaClasses={mediaClasses} loop={loop} autoplay={autoplay} client:idle>
+          <LogoMark size={size} loading={loading} invert={false} imgClass={mediaClasses} />
         </LottieLogo>
       ) : (
-        <LottieLogo
-          alt={alt}
-          loading={loading}
-          trigger={trigger}
-          className={lottieClassName}
-          mediaClasses={logoClasses}
-          loop={loop}
-          autoplay={autoplay}
-          client:load
-        >
-          <Image
-            src={POSTER_SRC}
-            alt=""
-            loading={loading}
-            decoding="async"
-            class={logoClasses}
-            widths={LOGO_WIDTHS}
-            sizes={LOGO_SIZES}
-            fetchpriority={loading === "eager" ? "high" : "low"}
-            aria-hidden="true"
-          />
+        <LottieLogo alt={alt} loading={loading} trigger={trigger} className={lottieClassName} mediaClasses={mediaClasses} loop={loop} autoplay={autoplay} client:load>
+          <LogoMark size={size} loading={loading} invert={false} imgClass={mediaClasses} />
         </LottieLogo>
       )
     ) : (
-      <Image
-        src={POSTER_SRC}
-        alt={alt}
-        loading={loading}
-        decoding="async"
-        class={logoClasses}
-        widths={LOGO_WIDTHS}
-        sizes={LOGO_SIZES}
-        fetchpriority={loading === "eager" ? "high" : undefined}
-      />
+      <LogoMark size={size} loading={loading} invert={false} imgClass={mediaClasses} />
     )}
   </span>
 
@@ -209,7 +90,6 @@ const hydrationMode =
         animateOutText={animateOutText}
         firstClass={titleFirstClass}
         restClass={titleRestClass}
-        colorMode={colorMode}
       />
     </div>
   )}

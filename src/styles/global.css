@@ -13,88 +13,86 @@
 @import "@/styles/menu.css";
 
 /* ============================================================
- * 1. COLOR MODES & TOKENS
+ * 1. CUSTOM VARIANTS FOR LIGHT + DARK
  * ============================================================ */
-@custom-variant light  (&:where([data-theme="light"], [data-theme="light"] *));
-@custom-variant dark   (&:where([data-theme="dark"],  [data-theme="dark"]  *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+@custom-variant dark  (&:where([data-theme="dark"],  [data-theme="dark"]  *));
 
+/* ============================================================
+ * 2. STATIC DESIGN TOKENS
+ * ============================================================ */
 @theme {
-  /* Base palette */
-  --color-primary-dark: #080808;
-  --color-secondary-dark: #030303;
-  --color-tertiary-dark: var(--color-zinc-900);
-  --color-primary-light: var(--color-zinc-50);
+  /* Raw palette */
+  --color-primary-dark:    #080808;
+  --color-secondary-dark:  #030303;
+  --color-tertiary-dark:   var(--color-zinc-900);
+  --color-primary-light:   var(--color-zinc-50);
   --color-secondary-light: var(--color-zinc-100);
-  --color-tertiary-light: var(--color-zinc-200);
-  --main-accent: #5e76f6;
+  --color-tertiary-light:  var(--color-zinc-200);
+  --main-accent:           #5e76f6;
+  --color-accent:          #5e76f6;
+  --color-primary:         var(--color-accent);
 
-  /* ───── ACCENT – secondary / interactive ───── */
-  --color-accent: #5e76f6;
-
-  /* ───── PRIMARY – change ONLY this one line for the brand ───── */
-  --color-primary: var(--color-accent);
-  --color-primary-secondary: color-mix(in srgb, var(--color-primary) 85%, var(--primary-dark));
-
-  /* ───── Neutrals ───── */
+  /* Neutrals */
   --color-heading: var(--color-tertiary-dark);
-  --color-text: var(--color-zinc-200);
-  --color-muted: color-mix(in srgb, var(--color-text) 55%, transparent);
+  --color-text:    var(--color-zinc-200);
+  --color-muted:   color-mix(in srgb, var(--color-text) 55%, transparent);
+  --color-bg:      var(--color-primary-dark);
+  --color-bg2:     var(--color-secondary-dark);
+  --color-bg3:     var(--color-tertiary-dark);
 
-  /* Background surfaces */
-  --color-bg: var(--color-primary-dark);
-  --color-bg2: var(--color-secondary-dark);
-  --color-bg3: var(--color-tertiary-dark);
-  --color-surface: oklch(97.5% 0.006 260);
+  /* OKLCH shade scales — recompute live when base token changes */
+  --color-primary-50:  oklch(from var(--color-primary) calc(l + 0.40) c h);
+  --color-primary-100: oklch(from var(--color-primary) calc(l + 0.35) c h);
+  --color-primary-200: oklch(from var(--color-primary) calc(l + 0.25) c h);
+  --color-primary-300: oklch(from var(--color-primary) calc(l + 0.15) c h);
+  --color-primary-400: oklch(from var(--color-primary) calc(l + 0.08) c h);
+  --color-primary-500: var(--color-primary);
+  --color-primary-600: oklch(from var(--color-primary) calc(l - 0.08) c h);
+  --color-primary-700: oklch(from var(--color-primary) calc(l - 0.15) c h);
+  --color-primary-800: oklch(from var(--color-primary) calc(l - 0.25) c h);
+  --color-primary-900: oklch(from var(--color-primary) calc(l - 0.35) c h);
+  --color-primary-950: oklch(from var(--color-primary) calc(l - 0.45) c h);
 
-  /* color helpers */
-  --color-primary-50:   oklch(from var(--color-primary) calc(l + 0.40) c h);
-  --color-primary-100:  oklch(from var(--color-primary) calc(l + 0.35) c h);
-  --color-primary-200:  oklch(from var(--color-primary) calc(l + 0.25) c h);
-  --color-primary-300:  oklch(from var(--color-primary) calc(l + 0.15) c h);
-  --color-primary-400:  oklch(from var(--color-primary) calc(l + 0.08) c h);
-  --color-primary-500:  var(--color-primary);
-  --color-primary-600:  oklch(from var(--color-primary) calc(l - 0.08) c h);
-  --color-primary-700:  oklch(from var(--color-primary) calc(l - 0.15) c h);
-  --color-primary-800:  oklch(from var(--color-primary) calc(l - 0.25) c h);
-  --color-primary-900:  oklch(from var(--color-primary) calc(l - 0.35) c h);
-  --color-primary-950:  oklch(from var(--color-primary) calc(l - 0.45) c h);
+  --color-accent-50:  oklch(from var(--color-accent) calc(l + 0.40) c h);
+  --color-accent-100: oklch(from var(--color-accent) calc(l + 0.35) c h);
+  --color-accent-200: oklch(from var(--color-accent) calc(l + 0.25) c h);
+  --color-accent-300: oklch(from var(--color-accent) calc(l + 0.15) c h);
+  --color-accent-400: oklch(from var(--color-accent) calc(l + 0.08) c h);
+  --color-accent-500: var(--color-accent);
+  --color-accent-600: oklch(from var(--color-accent) calc(l - 0.08) c h);
+  --color-accent-700: oklch(from var(--color-accent) calc(l - 0.15) c h);
+  --color-accent-800: oklch(from var(--color-accent) calc(l - 0.25) c h);
+  --color-accent-900: oklch(from var(--color-accent) calc(l - 0.35) c h);
+  --color-accent-950: oklch(from var(--color-accent) calc(l - 0.45) c h);
 
-  --color-accent-50:   oklch(from var(--color-accent) calc(l + 0.40) c h);
-  --color-accent-100:  oklch(from var(--color-accent) calc(l + 0.35) c h);
-  --color-accent-200:  oklch(from var(--color-accent) calc(l + 0.25) c h);
-  --color-accent-300:  oklch(from var(--color-accent) calc(l + 0.15) c h);
-  --color-accent-400:  oklch(from var(--color-accent) calc(l + 0.08) c h);
-  --color-accent-500:  var(--color-accent);
-  --color-accent-600:  oklch(from var(--color-accent) calc(l - 0.08) c h);
-  --color-accent-700:  oklch(from var(--color-accent) calc(l - 0.15) c h);
-  --color-accent-800:  oklch(from var(--color-accent) calc(l - 0.25) c h);
-  --color-accent-900:  oklch(from var(--color-accent) calc(l - 0.35) c h);
-  --color-accent-950:  oklch(from var(--color-accent) calc(l - 0.45) c h);
+  /* Surface (cards, modals, nav) */
+  --color-surface: var(--color-tertiary-dark);
 
   /* Borders */
-  --color-border: color-mix(in srgb, var(--color-heading) 10%, transparent);
-  --color-border-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
-  --color-border-soft: var(--color-border);
+  --color-border:             color-mix(in srgb, var(--color-heading) 10%, transparent);
+  --color-border-strong:      color-mix(in srgb, var(--color-heading) 16%, transparent);
+  --color-border-soft:        var(--color-border);
   --color-border-soft-strong: var(--color-border-strong);
-  --color-border-dim: var(--color-border-strong);
+  --color-border-dim:         var(--color-border-strong);
 
   /* Fonts */
   --font-header: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
-  --font-body: "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
+  --font-body:   "TikTok Sans", "TikTok Sans Fallback", system-ui, -apple-system, sans-serif;
 }
 
 /* ============================================================
- * 2. BASE LAYER & THEME SWITCHING
+ * 3. BASE LAYER + THEME SWITCHING
  * ============================================================ */
 @layer base {
   html {
     scroll-behavior: smooth;
-    background: transparent;
   }
 
   body {
     font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
-    background-color: transparent;
+    background-color: var(--color-bg);
+    color: var(--color-text);
     @apply overflow-x-hidden;
   }
 
@@ -105,34 +103,53 @@
     transition: all 0.3s ease-in-out;
   }
 
-  [data-theme="light"] {
-    --color-primary: var(--color-zinc-900);
-    --color-heading: var(--color-tertiary-dark);
-    --color-text: var(--color-zinc-600);
-    --color-muted: var(--text-gray-500);
-    --color-bg: var(--color-primary-light);
-    --color-bg2: var(--color-secondary-light);
-    --color-bg3: var(--color-tertiary-light);
-    --color-border: color-mix(in srgb, var(--color-heading) 10%, transparent);
-    --color-border-strong: color-mix(in srgb, var(--color-heading) 16%, transparent);
-    --color-border-soft: var(--color-border);
-    --color-border-soft-strong: var(--color-border-strong);
-    --color-border-dim: var(--color-border-strong);
-  }
-
+  /* Dark mode: accent IS primary */
   [data-theme="dark"] {
     --color-primary: var(--color-accent);
     --color-heading: var(--color-primary-light);
-    --color-text: var(--color-zinc-200);
-    --color-muted: color-mix(in srgb, var(--color-text) 55%, transparent);
-    --color-bg: var(--color-primary-dark);
-    --color-bg2: var(--color-secondary-dark);
-    --color-bg3: var(--color-tertiary-dark);
+    --color-text:    var(--color-zinc-200);
+    --color-muted:   color-mix(in srgb, var(--color-text) 55%, transparent);
+    --color-bg:      var(--color-primary-dark);
+    --color-bg2:     var(--color-secondary-dark);
+    --color-bg3:     var(--color-tertiary-dark);
+  }
+
+  /* Light mode: primary flips to near-black */
+  [data-theme="light"] {
+    --color-primary: var(--color-zinc-900);
+    --color-heading: var(--color-tertiary-dark);
+    --color-text:    var(--color-zinc-600);
+    --color-muted:   color-mix(in srgb, var(--color-text) 55%, transparent);
+    --color-bg:      var(--color-primary-light);
+    --color-bg2:     var(--color-secondary-light);
+    --color-bg3:     var(--color-tertiary-light);
+    --color-border:             color-mix(in srgb, var(--color-heading) 10%, transparent);
+    --color-border-strong:      color-mix(in srgb, var(--color-heading) 16%, transparent);
+    --color-border-soft:        var(--color-border);
+    --color-border-soft-strong: var(--color-border-strong);
+    --color-border-dim:         var(--color-border-strong);
   }
 }
 
-body {
-  @apply overflow-x-hidden;
+/* ============================================================
+ * 4. UTILITIES
+ * ============================================================ */
+@utility section-container {
+  @apply px-6 md:px-[80px];
+}
+
+@utility logo-class {
+  @apply light:invert;
+}
+
+@utility hide-scrollbar {
+  & {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @utility head-foot-section {
@@ -143,9 +160,50 @@ body {
   @apply w-8/10 lg:w-17/20 mx-auto;
 }
 
+@utility main-duration {
+  @apply duration-300;
+}
+
+@utility faded-bg {
+  @apply dark:bg-white/5 dark:hover:bg-white/8;
+  @apply light:bg-black/5 light:hover:bg-black/8;
+  @apply transition-all main-duration;
+}
+
+@utility faded-accent-border {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-border);
+}
+
+@utility card-bg {
+  @apply dark:bg-primary-light/3 light:bg-primary-dark/3 faded-accent-border transition-all main-duration;
+}
+
+@utility card-bg-2 {
+  @apply bg-bg3 faded-accent-border transition-all main-duration;
+}
+
+@utility input-bg {
+  @apply dark:bg-primary-light/3 light:bg-primary-dark/3 transition-all main-duration;
+}
+
+/* ============================================================
+ * 5. COMPONENTS
+ * ============================================================ */
 @layer components {
   button, a {
     @apply cursor-pointer;
+  }
+
+  /* Circle toggle — default class for CircleCheckbox */
+  .circle-box {
+    @apply faded-bg rounded-full;
+  }
+
+  .circle-checkbox-input:focus-visible + .circle-checkbox-visual {
+    outline: 2px solid color-mix(in srgb, var(--color-primary) 85%, #ffffff00);
+    outline-offset: 3px;
   }
 
   /* ── Animated border ── */
@@ -182,26 +240,20 @@ body {
   .btn-base {
     @apply inline-flex items-center justify-center gap-2;
     @apply font-semibold rounded-lg transition-all duration-200;
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply focus:outline-none;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
-
-  /* Size variants */
-  .btn-none {
-    @apply p-0 text-sm;
+  .btn-base:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--color-bg, #0f0f0f) 75%, transparent),
+      0 0 0 4px color-mix(in srgb, var(--color-primary) 80%, transparent);
   }
 
-  .btn-sm {
-    @apply px-3 py-1.5 text-sm;
-  }
-
-  .btn-md {
-    @apply px-4 py-2 text-base;
-  }
-
-  .btn-lg {
-    @apply px-6 py-3 text-lg;
-  }
+  .btn-none { @apply p-0 text-sm; }
+  .btn-sm   { @apply px-3 py-1.5 text-sm; }
+  .btn-md   { @apply px-4 py-2 text-base; }
+  .btn-lg   { @apply px-6 py-3 text-lg; }
 
   /* Link base styles */
   .link-base {
@@ -213,18 +265,9 @@ body {
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  /* Link sizes (no padding) */
-  .link-sm {
-    @apply text-sm;
-  }
-
-  .link-md {
-    @apply text-base;
-  }
-
-  .link-lg {
-    @apply text-lg;
-  }
+  .link-sm { @apply text-sm; }
+  .link-md { @apply text-base; }
+  .link-lg { @apply text-lg; }
 }
 
 @property --ab-progress {
@@ -248,14 +291,8 @@ body {
 
 @layer utilities {
   @keyframes slide-up {
-    from {
-      opacity: 0;
-      transform: translateY(1rem);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(1rem); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .animate-slide-up {

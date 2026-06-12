@@ -1,0 +1,50 @@
+---
+// src/components/Logo/LogoMark.astro
+// Single source-of-truth for the 2D logo mark image.
+// Astro's <Image> handles resize, format conversion (WebP/AVIF), and lazy loading.
+// Filter (invert on light mode) is opt-in via the `invert` prop.
+
+import { Image } from "astro:assets";
+import LOGO_MARK from "@/assets/logo-mark.png";
+
+interface Props {
+  size?: number;
+  widths?: number[];
+  sizes?: string;
+  class?: string;
+  loading?: "lazy" | "eager";
+  /** Apply logo-class (invert in light mode). Default true — matches every standard use case. */
+  invert?: boolean;
+  /** Extra classes forwarded to the <img> element itself */
+  imgClass?: string;
+}
+
+const {
+  size = 40,
+  widths,
+  sizes,
+  class: className = "",
+  loading = "lazy",
+  invert = true,
+  imgClass = "block",
+} = Astro.props;
+
+// Generate sensible srcset widths if not provided: 1×, 1.5×, 2× the display size
+const resolvedWidths = widths ?? [size, Math.round(size * 1.5), size * 2];
+const resolvedSizes = sizes ?? `${size}px`;
+---
+
+<span class:list={["inline-flex items-center justify-center shrink-0", invert && "logo-class", className]}>
+  <Image
+    src={LOGO_MARK}
+    alt=""
+    width={size}
+    height={size}
+    widths={resolvedWidths}
+    sizes={resolvedSizes}
+    class={imgClass}
+    loading={loading}
+    decoding="async"
+    aria-hidden="true"
+  />
+</span>

@@ -109,16 +109,6 @@ export const collections = {
       }),
   }),
 
-  "testimonials": defineCollection({
-    loader: GlobLoad("testimonials"),
-    schema: ({ image }) =>
-      baseSchema({ image }).extend({
-        role: z.string(),
-        company: z.string().optional(),
-        rating: z.number().min(1).max(5).default(5),
-      }),
-  }),
-
   "projects": defineCollection({
     loader: GlobLoad("projects"),
     schema: ({ image }) =>
@@ -145,6 +135,18 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         category: z.string().optional(),
+      }),
+  }),
+
+  "testimonials": defineCollection({
+    loader: GlobLoad("testimonials"),
+    schema: ({ image }) =>
+      baseSchema({ image }).extend({
+        author: z.string(),
+        role: z.string(),
+        company: z.string().optional(),
+        rating: z.number().min(1).max(5).default(5),
+        featured: z.boolean().default(false),
       }),
   }),
 };

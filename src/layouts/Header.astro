@@ -3,6 +3,7 @@
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import Logo from "@/components/Logo/Logo.astro";
 import Button from "@/components/Button/Button";
+import ThemeControls from "@/components/ThemeControls/ThemeControls";
 import { related } from "@/utils/query";
 
 const ctaLink = "/contact-us";
@@ -18,13 +19,14 @@ const ctaLink = "/contact-us";
         trigger="scroll"
         animateOutText={true}
         altContext="Home"
-        titleFirstClass="text-[1.8rem] sm:text-3xl text-heading -ml-[0.1rem] leading-none no-translate font-semibold lowercase"
-        titleRestClass="text-[1.8rem] sm:text-3xl text-heading leading-none no-translate font-semibold lowercase"
-        colorMode="light"
+        titleFirstClass="text-[1.8rem] sm:text-3xl -ml-[0.1rem] leading-none no-translate font-semibold lowercase"
+        titleRestClass="text-[1.8rem] sm:text-3xl leading-none no-translate font-semibold lowercase"
       />
 
-      <!-- Right: CTA pill + hamburger -->
+      <!-- Right: ThemeControls + CTA + hamburger -->
       <div class="flex items-center gap-3">
+        <ThemeControls client:load />
+
         <div class="hidden sm:block">
           <Button variant="secondary" href={ctaLink} size="sm" client:load>
             Let's Talk

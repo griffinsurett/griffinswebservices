@@ -3,7 +3,7 @@
 
 import type { IconType } from 'react-icons';
 import { LuArrowRight, LuArrowUpRight, LuBookOpen, LuChevronRight, LuContact, LuGithub, LuGlobe, LuImage, LuLinkedin, LuMail, LuPhone, LuSettings, LuTwitter } from 'react-icons/lu';
-import { FaArrowRight, FaArrowsUpDownLeftRight, FaBullseye, FaClockRotateLeft, FaCompass, FaEye, FaFeather, FaFileLines, FaHeadset, FaLayerGroup, FaLifeRing, FaLink, FaPalette, FaRobot, FaRotateLeft, FaScaleBalanced, FaShieldHalved, FaUniversalAccess, FaWandMagicSparkles, FaXmark } from 'react-icons/fa6';
+import { FaArrowRight, FaArrowsUpDownLeftRight, FaBullseye, FaClockRotateLeft, FaCompass, FaDroplet, FaEye, FaFeather, FaFileLines, FaHeadset, FaLayerGroup, FaLifeRing, FaLink, FaMoon, FaPalette, FaRobot, FaRotateLeft, FaScaleBalanced, FaShieldHalved, FaSun, FaUniversalAccess, FaWandMagicSparkles, FaXmark } from 'react-icons/fa6';
 import { FaBullhorn, FaCode } from 'react-icons/fa';
 import { SiFacebook } from 'react-icons/si';
 
@@ -13,6 +13,7 @@ export const iconMap = {
   'fa6:bullseye': FaBullseye,
   'fa6:clock-rotate-left': FaClockRotateLeft,
   'fa6:compass': FaCompass,
+  'fa6:droplet': FaDroplet,
   'fa6:eye': FaEye,
   'fa6:feather': FaFeather,
   'fa6:file-lines': FaFileLines,
@@ -20,11 +21,13 @@ export const iconMap = {
   'fa6:layer-group': FaLayerGroup,
   'fa6:life-ring': FaLifeRing,
   'fa6:link': FaLink,
+  'fa6:moon': FaMoon,
   'fa6:palette': FaPalette,
   'fa6:robot': FaRobot,
   'fa6:rotate-left': FaRotateLeft,
   'fa6:scale-balanced': FaScaleBalanced,
   'fa6:shield-halved': FaShieldHalved,
+  'fa6:sun': FaSun,
   'fa6:universal-access': FaUniversalAccess,
   'fa6:wand-magic-sparkles': FaWandMagicSparkles,
   'fa6:xmark': FaXmark,

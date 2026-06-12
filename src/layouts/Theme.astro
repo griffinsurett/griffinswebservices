@@ -1,18 +1,5 @@
 ---
 // src/layouts/Theme.astro
-/**
- * Theme Component - Site Branding and Icons
- * 
- * Handles:
- * - Favicon configuration (multiple sizes and formats)
- * - Apple touch icons
- * - Theme color for mobile browsers
- * - PWA manifest (commented out)
- * 
- * All favicons point to favicon.svg for simplicity.
- * Can be customized to use different images per size.
- */
-
 import "../styles/global.css";
 import "../integrations/scroll-animations/styles/animations.css";
 ---
@@ -31,8 +18,46 @@ import "../integrations/scroll-animations/styles/animations.css";
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
+<!-- FOUC prevention — runs sync/blocking before first paint -->
+<script is:inline>
+  (function() {
+    var d = document.documentElement;
+    var storedTheme = null;
+    try { storedTheme = localStorage.getItem('theme'); } catch (_) {}
+    var prefersLight =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-color-scheme: light)').matches;
+    var t =
+      storedTheme === 'light' || storedTheme === 'dark'
+        ? storedTheme
+        : (prefersLight ? 'light' : 'dark');
+    d.setAttribute('data-theme', t);
+    d.style.colorScheme = t;
+    var a = null;
+    try { a = localStorage.getItem('accent'); } catch (_) {}
+    if (a) d.style.setProperty('--color-accent', a);
+  })();
+</script>
+
+<!-- Deferred: update PWA/browser-chrome theme-color after paint -->
+<script>
+  (function() {
+    function updateThemeColor() {
+      var computed = getComputedStyle(document.documentElement).getPropertyValue('--color-bg3').trim();
+      if (computed) {
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', computed);
+      }
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(updateThemeColor);
+    } else {
+      setTimeout(updateThemeColor, 0);
+    }
+  })();
+</script>
+
 <!-- Scroll animations (deferred to avoid blocking initial render) -->
 <script>
-  // Import observer directly to avoid pulling in React via index barrel exports
   import "@/integrations/scroll-animations/observer";
 </script>

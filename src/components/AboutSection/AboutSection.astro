@@ -1,7 +1,7 @@
 ---
 import { splitTextIntoAnimatedWords } from "@/utils/animatedText";
-import { Image } from "astro:assets";
-import LOGO_MARK from "@/assets/logo-mark.png";
+import LogoMark from "@/components/Logo/LogoMark.astro";
+import Button from "@/components/Button/Button";
 
 interface Props {
   statement?: string;
@@ -30,7 +30,7 @@ const words = splitTextIntoAnimatedWords(statement);
 
   <!-- Sticky scroll statement -->
   <aside
-    class="about-sticky-section"
+    class="about-sticky-section section-container"
     aria-label="About statement"
     data-about-sticky="true"
     style={`--about-section-height:${stickyHeight};`}
@@ -73,25 +73,20 @@ const words = splitTextIntoAnimatedWords(statement);
 
   <!-- Rolling logo divider -->
   <div class="about-roll-shell relative overflow-visible" aria-hidden="true">
-    <div class="border-t border-zinc-700 w-full"></div>
+    <div class="border-t border-text/20 w-full"></div>
     <div class="about-roll-track pointer-events-none absolute top-0 left-0 w-full overflow-visible">
-      <!-- Bounce wrapper handles the entry drop; inner img handles the roll -->
+      <!-- about-roll-bounce: travel + entry drop -->
+      <!-- about-roll-spin: scroll-linked rotation wrapper around LogoMark -->
       <span class="about-roll-bounce">
-        <Image
-          src={LOGO_MARK}
-          alt=""
-          width={logoSize}
-          height={logoSize}
-          class="about-roll-logo block"
-          loading="lazy"
-          decoding="async"
-        />
+        <span class="about-roll-spin">
+          <LogoMark size={logoSize} loading="lazy" />
+        </span>
       </span>
     </div>
   </div>
 
   <!-- About Bottom Section -->
-  <section class="about-bottom">
+  <section class="about-bottom section-container">
     <div style="display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 0;">
       <p class="text-base font-light leading-relaxed text-text">
         {leftText}
@@ -101,13 +96,9 @@ const words = splitTextIntoAnimatedWords(statement);
         <p class="text-base font-light leading-relaxed text-text">
           {rightText}
         </p>
-        <a
-          href={ctaLink}
-          class="group inline-flex items-center justify-between gap-4 w-fit text-[11px] font-medium tracking-[0.18em] uppercase text-text border-b border-text pb-[6px] hover:text-heading hover:border-heading transition-colors duration-200"
-        >
+        <Button variant="underline" href={ctaLink} client:load>
           {ctaText}
-          <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
-        </a>
+        </Button>
       </div>
     </div>
   </section>
@@ -192,11 +183,10 @@ const words = splitTextIntoAnimatedWords(statement);
     /* Entry bounce — fires once on first paint */
     animation: about-logo-bounce 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-delay: 0.1s;
-    will-change: transform;
   }
 
-  /* Logo itself: only rotates, scroll-linked */
-  .about-roll-logo {
+  /* Spin wrapper: only rotates, scroll-linked */
+  .about-roll-spin {
     display: block;
     transform: rotate(0deg);
     will-change: transform;
@@ -211,7 +201,7 @@ const words = splitTextIntoAnimatedWords(statement);
       animation-range: auto, entry 0% cover 100%;
     }
 
-    .about-roll-logo {
+    .about-roll-spin {
       animation: about-logo-spin linear both;
       animation-timeline: --about-roll;
       animation-range: entry 0% cover 100%;
@@ -238,8 +228,7 @@ const words = splitTextIntoAnimatedWords(statement);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .about-roll-bounce,
-    .about-roll-logo {
+    .about-roll-bounce {
       display: none;
     }
   }
@@ -319,4 +308,3 @@ const words = splitTextIntoAnimatedWords(statement);
     sections.forEach((s) => obs.observe(s));
   })();
 </script>
-

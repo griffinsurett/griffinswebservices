@@ -1,7 +1,6 @@
 ---
 // src/components/Marquee.astro
-import { Image } from "astro:assets";
-import LOGO_MARK from "@/assets/logo-mark.png";
+import LogoMark from "@/components/Logo/LogoMark.astro";
 
 interface Props {
   items?: string[];
@@ -43,17 +42,7 @@ const repeated = [...items, ...items];
         <span class="text-heading font-light text-[clamp(4rem,9vw,8rem)] tracking-tight uppercase leading-none">
           {item}
         </span>
-        <span class="inline-flex items-center justify-center self-center shrink-0">
-          <Image
-            src={LOGO_MARK}
-            alt=""
-            width={logoSize}
-            height={logoSize}
-            class="block"
-            loading="lazy"
-            decoding="async"
-          />
-        </span>
+        <LogoMark size={logoSize} loading="lazy" />
       </span>
     ))}
   </div>

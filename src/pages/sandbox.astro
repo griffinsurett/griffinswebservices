@@ -1,0 +1,93 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Button from "@/components/Button/Button";
+
+// Sandbox page for testing components and features
+---
+
+<BaseLayout title="Sandbox - Component Testing" description="Testing ground for components and styles">
+  <div class="flex flex-col gap-16 py-20">
+    <!-- Theme & Colors Section -->
+    <section>
+      <h1 class="text-4xl font-bold mb-8 text-heading">Sandbox</h1>
+
+      <div class="space-y-8">
+        <!-- Color Swatches -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 text-heading">Colors & Theme</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="p-4 rounded bg-primary text-primary-contrast">
+              <div class="text-sm font-medium">Primary</div>
+              <div class="text-xs opacity-80">Accent</div>
+            </div>
+            <div class="p-4 rounded bg-secondary text-secondary-contrast">
+              <div class="text-sm font-medium">Secondary</div>
+            </div>
+            <div class="p-4 rounded bg-tertiary text-tertiary-contrast">
+              <div class="text-sm font-medium">Tertiary</div>
+            </div>
+            <div class="p-4 rounded bg-surface text-text">
+              <div class="text-sm font-medium">Surface</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Button Variants -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 text-heading">Button Variants</h2>
+          <div class="flex flex-wrap gap-4">
+            <Button variant="primary">Primary Button</Button>
+            <Button variant="secondary">Secondary Button</Button>
+            <Button variant="tertiary">Tertiary Button</Button>
+            <Button variant="underline" href="/sandbox">Underline Button</Button>
+            <Button variant="ghost">Ghost Button</Button>
+          </div>
+        </div>
+
+        <!-- Underline Button Hover Test -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 text-heading">Underline Button Hover Test</h2>
+          <p class="text-text mb-4">Hover over the button below — it should smoothly fade to the accent color over 500ms:</p>
+          <Button variant="underline" href="/sandbox">Hover me slowly</Button>
+        </div>
+
+        <!-- Typography -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 text-heading">Typography</h2>
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-3xl font-light">Light Heading</h3>
+              <p class="text-text text-sm">Heading text color: text-heading</p>
+            </div>
+            <div>
+              <p class="text-lg text-text">Regular paragraph text with text token</p>
+            </div>
+            <div>
+              <p class="text-sm text-text/70">Muted text with opacity</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dark/Light Mode Test -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 text-heading">Dark/Light Mode</h2>
+          <p class="text-text mb-4">Switch theme using the toggle in the header. Colors should adapt automatically.</p>
+          <div class="grid grid-cols-2 gap-4 p-4 rounded bg-card-bg">
+            <div>
+              <p class="text-xs text-text/70 mb-2">Current Mode</p>
+              <p class="text-heading font-semibold">Check header theme toggle</p>
+            </div>
+            <div>
+              <p class="text-xs text-text/70 mb-2">Accent Color</p>
+              <div class="w-12 h-12 rounded bg-primary"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Sandbox-specific styles if needed */
+</style>
