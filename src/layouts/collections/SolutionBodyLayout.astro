@@ -2,7 +2,7 @@
 import Logo from "@/components/Logo/Logo.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import TrustStatement from "@/components/TrustStatement.astro";
-import { contactCtaData } from "@/content/siteData";
+import { contactCtaData, pricingCtaData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
 import BreadcrumbHeroStart from "@/layouts/heroes/BreadcrumbHeroStart.astro";
 import BreadcrumbHeroCenter from "@/layouts/heroes/BreadcrumbHeroCenter.astro";
@@ -180,7 +180,7 @@ const primaryCTA = {
           primaryCtaText="Book a Free Call"
           primaryCtaLink="https://calendly.com/griffinswebservices/30min"
           secondaryCtaText="Get a Free Estimate"
-          secondaryCtaLink="/pricing"
+          secondaryCtaLink={pricingCtaData.link}
         />
       </div>
     </>

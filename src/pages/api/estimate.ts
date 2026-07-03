@@ -230,6 +230,13 @@ function computePrice(
 
 
 export const POST: APIRoute = async ({ request }) => {
+  // TEMPORARILY DISABLED — this endpoint is switched off. It short-circuits before
+  // touching OpenAI. Remove this block to restore the original behavior below.
+  return new Response(
+    JSON.stringify({ error: "Estimates are temporarily unavailable." }),
+    { status: 503, headers: { "Content-Type": "application/json" } }
+  );
+
   if (
     !isAllowedRequestOrigin(request, ALLOWED_ORIGIN, import.meta.env.DEV) ||
     !isTrustedBrowserRequest(request, import.meta.env.DEV)

@@ -29,5 +29,5 @@ export const contactCtaData = {
 
 export const pricingCtaData = {
   text: "View Pricing",
-  link: "/pricing",
+  link: "/contact-us",
 };
