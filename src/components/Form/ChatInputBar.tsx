@@ -1,4 +1,4 @@
-// Shared chat input bar — used by both ChatBot widget and PricingCalculator.
+// Shared chat input bar — used by the (now unmounted) ChatBot widget.
 // Callers own their send logic and disabled state; this component handles
 // the textarea, auto-grow, emoji picker, mic, and send button.
 import {

@@ -1,12 +1,27 @@
 // src/components/AskAi/AskAi.tsx
-// "Ask AI" UI — modeled on Adobe Firefly's "Ask a question" pattern: a compact
-// centered trigger bar that opens a centered modal with a title, suggestion
-// chips, and the same input bar. UI ONLY — no backend / chat functionality yet
-// (submitting/clicking a chip just opens the modal and fills the field).
-//
-// Visual styling adapted from griffinswebservices' ChatInputBar.
+// "Ask AI" UI — Adobe-Firefly-style "Ask a question" trigger bar that opens a
+// centered modal. Empty state shows the title + suggestion chips; once you ask,
+// it becomes a live chat thread backed by /api/chat (RAG over the site's
+// knowledge base). Submitting a question / clicking a chip sends it.
 import { useEffect, useRef, useState } from "react";
 import Modal from "@/components/Modal";
+
+type ChatMessage = { role: "user" | "assistant"; content: string };
+
+/** POST the conversation to the live /api/chat route and return the reply. */
+async function callChatAPI(messages: ChatMessage[], sessionId: string): Promise<string> {
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages, sessionId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: string }).error ?? `HTTP ${res.status}`);
+  }
+  const data = (await res.json()) as { reply: string };
+  return data.reply;
+}
 
 /** Window event that opens the Ask-AI modal. Dispatch it from anywhere
  *  (any island or inline script) to open the same modal — see openAskAi(). */
@@ -78,6 +93,7 @@ function AskBar({
   autoFocus = false,
   big = false,
   asButton = false,
+  disabled = false,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -87,6 +103,7 @@ function AskBar({
   autoFocus?: boolean;
   big?: boolean;
   asButton?: boolean;
+  disabled?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -131,7 +148,8 @@ function AskBar({
         type="submit"
         aria-label="Send"
         tabIndex={asButton ? -1 : undefined}
-        className="shrink-0 rounded-full p-1.5 text-text/55 transition-colors hover:bg-heading/8 hover:text-heading"
+        disabled={disabled}
+        className="shrink-0 rounded-full p-1.5 text-text/55 transition-colors hover:bg-heading/8 hover:text-heading disabled:opacity-40"
       >
         <SendIcon />
       </button>
@@ -147,6 +165,45 @@ export default function AskAi({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
+  // Live chat state: the conversation thread, in-flight flag, and a stable
+  // per-visit session id (used by /api/chat to persist the conversation).
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const sessionIdRef = useRef<string>("");
+  const threadRef = useRef<HTMLDivElement>(null);
+  if (!sessionIdRef.current && typeof crypto !== "undefined") {
+    sessionIdRef.current = crypto.randomUUID?.() ?? `sess-${Date.now()}`;
+  }
+
+  const hasConversation = messages.length > 0;
+
+  // Send a message to /api/chat and append the reply.
+  const send = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || sending) return;
+    setError(null);
+    setValue("");
+    const next: ChatMessage[] = [...messages, { role: "user", content: trimmed }];
+    setMessages(next);
+    setSending(true);
+    try {
+      const reply = await callChatAPI(next, sessionIdRef.current);
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+    } catch {
+      setError("Sorry, something went wrong. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  // Keep the thread scrolled to the newest message.
+  useEffect(() => {
+    if (threadRef.current) {
+      threadRef.current.scrollTop = threadRef.current.scrollHeight;
+    }
+  }, [messages, sending]);
+
   // The bar is `position: fixed`, so it floats relative to the VIEWPORT no
   // matter where it lives in the DOM — placement alone can't keep it off the
   // hero/footer. We drive visibility off the hero + footer directly: shown only
@@ -247,7 +304,7 @@ export default function AskAi({
         closeButtonClass="absolute right-4 top-4 text-text/60 hover:text-heading"
         closeButton
       >
-        <div className="flex min-h-full flex-col items-center justify-center gap-8 sm:min-h-0">
+        <div className="flex min-h-full flex-col gap-6 sm:min-h-0">
           <div className="flex items-center gap-2 self-start text-sm font-semibold text-heading">
             <span className="text-primary"><SparkleIcon /></span>
             <span>Ask</span>
@@ -256,34 +313,80 @@ export default function AskAi({
             </span>
           </div>
 
-          <h2 className="max-w-md text-center text-2xl font-medium leading-tight tracking-tight text-heading sm:text-3xl">
-            {title}
-          </h2>
+          {hasConversation ? (
+            /* ── Conversation thread ── */
+            <div
+              ref={threadRef}
+              className="flex max-h-[52vh] flex-1 flex-col gap-4 overflow-y-auto pr-1 sm:max-h-[46vh]"
+              aria-live="polite"
+            >
+              {messages.map((m, i) => (
+                <div
+                  key={i}
+                  className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
+                >
+                  <div
+                    className={[
+                      "max-w-[85%] whitespace-pre-line rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+                      m.role === "user"
+                        ? "bg-primary text-white"
+                        : "bg-bg text-text",
+                    ].join(" ")}
+                  >
+                    {m.content}
+                  </div>
+                </div>
+              ))}
+              {sending && (
+                <div className="flex justify-start">
+                  <div className="rounded-2xl bg-bg px-4 py-3 text-text/60">
+                    <span className="inline-flex gap-1">
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-text/50 [animation-delay:0ms]" />
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-text/50 [animation-delay:150ms]" />
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-text/50 [animation-delay:300ms]" />
+                    </span>
+                  </div>
+                </div>
+              )}
+              {error && (
+                <p className="text-center text-sm text-red-400">{error}</p>
+              )}
+            </div>
+          ) : (
+            /* ── Empty state: title + suggestion chips ── */
+            <div className="flex flex-1 flex-col items-center justify-center gap-8">
+              <h2 className="max-w-md text-center text-2xl font-medium leading-tight tracking-tight text-heading sm:text-3xl">
+                {title}
+              </h2>
 
-          {/* Suggestion chips */}
-          <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {suggestions.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setValue(s)}
-                className="flex flex-col gap-3 rounded-xl border border-heading/12 bg-bg p-4 text-left text-sm text-text/80 transition-colors hover:border-primary/40 hover:text-heading"
-              >
-                <span className="text-primary"><SparkleIcon /></span>
-                <span>{s}</span>
-              </button>
-            ))}
-          </div>
+              <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    // Clicking a chip only fills the input — the user decides
+                    // whether to send. It never auto-submits.
+                    onClick={() => setValue(s)}
+                    className="flex flex-col gap-3 rounded-xl border border-heading/12 bg-bg p-4 text-left text-sm text-text/80 transition-colors hover:border-primary/40 hover:text-heading"
+                  >
+                    <span className="text-primary"><SparkleIcon /></span>
+                    <span>{s}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Input bar */}
           <div className="w-full">
             <AskBar
               value={value}
               onChange={setValue}
-              onSubmit={() => { /* UI only — no send yet */ }}
+              onSubmit={() => send(value)}
               placeholder={placeholder}
               autoFocus
               big
+              disabled={sending}
             />
           </div>
 
