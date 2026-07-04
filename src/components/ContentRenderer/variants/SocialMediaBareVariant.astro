@@ -1,0 +1,65 @@
+---
+// src/components/ContentRenderer/variants/SocialMediaBareVariant.astro
+/**
+ * Social Media — bare-glyph variant (webmaxers footer style). Renders each
+ * social link as a plain icon glyph in a horizontal row — NO circular background,
+ * NO padding pill — muted by default, brightening to the heading color on hover.
+ * Use this where you want clean inline glyphs (e.g. the footer); the original
+ * SocialMediaVariant keeps the circular-badge treatment for other placements.
+ */
+
+import Icon from "@/components/Icon";
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import { toArray } from "@/utils/array";
+
+interface Props extends BaseVariantProps {
+  size?: "sm" | "md" | "lg";
+  alignment?: "left" | "center" | "right";
+}
+
+const {
+  items = [],
+  className = "",
+  size = "lg",
+  alignment = "left",
+  id,
+} = Astro.props as Props;
+
+const safeItems = toArray(items) as Array<{
+  title?: string;
+  link?: string;
+  icon?: any;
+}>;
+
+const alignmentClasses = {
+  left: "justify-start",
+  center: "justify-center",
+  right: "justify-end",
+};
+---
+
+{safeItems.length > 0 && (
+  <ul
+    id={id}
+    class:list={[
+      "flex flex-wrap items-center gap-6 list-none text-muted",
+      alignmentClasses[alignment],
+      className,
+    ]}
+  >
+    {safeItems.map((item) => (
+      <li>
+        <a
+          href={item.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center text-current transition-colors duration-200 hover:text-heading focus-visible:text-heading"
+          aria-label={item.title ? `Visit our ${item.title} page` : "Social link"}
+          title={item.title}
+        >
+          <Icon icon={item.icon ?? "lu:globe"} size={size} />
+        </a>
+      </li>
+    ))}
+  </ul>
+)}

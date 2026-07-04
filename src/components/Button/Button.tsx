@@ -14,6 +14,7 @@ import SecondaryButton from './variants/SecondaryButton';
 import LinkButton from './variants/LinkButton';
 import TertiaryButton from './variants/TertiaryButton';
 import ArrowLinkButton from './variants/ArrowLinkButton';
+import UnderlineButton from './variants/UnderlineButton';
 import MenuItemButton from './variants/MenuItemButton';
 import LogoLinkButton from './variants/LogoLinkButton';
 import LinkPageButton from './variants/LinkPageButton';
@@ -232,6 +233,7 @@ const VARIANT_MAP = {
   menuItemButton: MenuItemButton,
   tertiary: TertiaryButton,
   arrowLink: ArrowLinkButton,
+  underline: UnderlineButton,
   logoLink: LogoLinkButton,
   linkPage: LinkPageButton,
   filterTab: FilterTabButton,

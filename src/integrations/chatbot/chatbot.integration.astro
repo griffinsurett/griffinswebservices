@@ -1,9 +1,9 @@
 ---
 // src/integrations/chatbot/chatbot.integration.astro
+// UI-only mode: the KB generator is disabled, so we no longer gate on
+// KNOWLEDGE_BASE. The widget renders purely for its UI; its send handler returns
+// a canned reply and makes NO /api/chat call.
 import ChatBot from "./ChatBot.tsx";
-import { KNOWLEDGE_BASE } from "./knowledge-base.generated";
-
-const kbReady = KNOWLEDGE_BASE.trim().length > 0;
 ---
 
-{kbReady && <ChatBot client:firstInteraction />}
+<ChatBot client:firstInteraction />

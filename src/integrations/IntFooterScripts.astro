@@ -19,11 +19,14 @@
  */
 
 // Import footer-level integration components here as needed
-// TEMPORARILY DISABLED — API-connected ChatBot (calls /api/chat). Re-enable by uncommenting.
-// import ChatBot from "@/integrations/chatbot/chatbot.integration.astro";
+// Chat widget: the webmaxers "Ask AI" UI — a fixed bottom-centre "Ask a question"
+// bar that opens a centered modal with suggestion chips + input. UI-ONLY (no
+// backend; submitting/chips just fill the field). Replaces the old ChatBot widget.
+// The previous ChatBot lives at @/integrations/chatbot/chatbot.integration.astro
+// if it's ever needed again.
+import AskAi from "@/components/AskAi/AskAi";
 ---
 
 <!-- Footer-level integration components -->
-{/* TEMPORARILY DISABLED — API-connected ChatBot widget. Re-enable with the import above. */}
-{/* <ChatBot /> */}
+<AskAi client:visible />
 <slot />

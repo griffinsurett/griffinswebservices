@@ -48,10 +48,15 @@ const {
   card,
   ctaInlineOnDesktop = false,
   showBody = false,
+  showHeadingSection = true,
 } = Astro.props as Props;
 
 const safeItems = toArray(items) as FeatureCardData[];
-const showHeader = Boolean(title || heading || description);
+// Heading block shows only when there's content AND it isn't explicitly disabled.
+// Pass showHeadingSection={false} to hide the whole title/heading/description
+// block even when those props are set (e.g. the homepage capabilities grid).
+const showHeader =
+  showHeadingSection !== false && Boolean(title || heading || description);
 const shouldAutoSplit =
   showHeader &&
   sectionLayout === "auto" &&

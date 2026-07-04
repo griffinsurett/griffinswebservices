@@ -18,6 +18,12 @@
 @custom-variant dark   (&:where([data-theme="dark"],  [data-theme="dark"]  *));
 
 @theme {
+  /* Underline wipe for the ported UnderlineButton. Defined as a theme token so
+     Tailwind generates a composable `animate-underline-sweep` utility that the
+     button's `hover:after:animate-underline-sweep` variant can target on the
+     ::after pseudo-element. */
+  --animate-underline-sweep: underline-sweep 600ms ease;
+
     /* Base palette */
   --color-primary-dark: #080808;
   --color-secondary-dark: #030303;
@@ -1016,4 +1022,39 @@ body {
   .masonry-grid {
     flex-direction: column;
   }
+}
+
+/* ============================================================
+ * AboutSection port (from webmaxers) — shared utilities the ported
+ * AboutSection / EyebrowSection / Marquee / UnderlineButton rely on.
+ * ============================================================ */
+
+/* Horizontal section inset, matching the ported components' expectations. */
+@utility section-container {
+  @apply px-6 md:px-[80px];
+}
+
+/* Large display heading — the footer "Ready to build…" scale (ported from
+   webmaxers). Single source of truth for the footer-top heading. */
+@utility heading-display {
+  @apply text-[clamp(2.8rem,6.5vw,6rem)] font-light leading-[0.9] tracking-tight text-heading;
+}
+
+/* Eyebrow / label text — matches the logo's "WEB SERVICES" typography exactly:
+   size text-xs lg:text-sm, uppercase, tracking-[0.2em]. Font-weight/color are set
+   by the caller (the eyebrow label uses font-light + emphasized-text to fully
+   mirror the logo). */
+@utility eyebrow-text {
+  @apply text-xs lg:text-sm leading-tight uppercase tracking-[0.2em];
+}
+
+/* Underline wipe used by the ported UnderlineButton: collapses out to the right,
+   then re-enters from the left — one continuous sweep on hover. The composable
+   `animate-underline-sweep` utility comes from the --animate-underline-sweep
+   theme token above (so it works under the button's hover:after: variant). */
+@keyframes underline-sweep {
+  0%   { transform: scaleX(1); transform-origin: right; }
+  50%  { transform: scaleX(0); transform-origin: right; }
+  51%  { transform: scaleX(0); transform-origin: left; }
+  100% { transform: scaleX(1); transform-origin: left; }
 }

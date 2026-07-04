@@ -1,0 +1,445 @@
+---
+// src/components/ContentRenderer/variants/FilmstripVariant.astro
+/**
+ * Filmstrip Variant — pinned horizontal-scroll portfolio section.
+ *
+ * Scroll mechanics: GSAP ScrollTrigger. The section owns its own pin (no shared
+ * curtain primitive). On scroll it runs two phases on a single scrubbed
+ * timeline:
+ *   1. track scrub — the horizontal row translates left by its full overflow.
+ *   2. curtain slide — the whole pinned section slides off-left over ~1vh,
+ *      revealing whatever section follows it in the document (e.g. ServicesScene).
+ * Each project card rises in / out as its panel crosses the viewport.
+ *
+ * Fallbacks:
+ *   - <768px: flex-direction:column, normal vertical scroll
+ *   - prefers-reduced-motion: same vertical fallback, no pinning
+ * GSAP's matchMedia skips all setup in those cases; the CSS below flattens.
+ *
+ * Tokens exposed on [data-filmstrip] let you override per-section
+ * without touching this file.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import FilmstripCard from "@/components/LoopComponents/FilmstripCard.astro";
+import { shouldShowCollectionCTA } from "../utils/helpers";
+import Button from "@/components/Button/Button";
+import { find } from "@/utils/query";
+import { normalizeRef } from "@/utils/string";
+
+type Props = BaseVariantProps;
+
+const {
+  items = [],
+  title = "Selected work\n& explorations",
+  description,
+  collectionUrl,
+  collectionTitle,
+  id,
+} = Astro.props as Props;
+
+// Resolve each project's `industries` reference(s) → industry title(s) (the
+// niche shown on the card, in place of the tech list). Accepts a single ref or
+// an array (refSchema). Cached so repeated industries resolve once.
+const industryTitleCache = new Map<string, string>();
+async function industryTitle(ref: any): Promise<string | null> {
+  const idStr = normalizeRef(ref);
+  if (!idStr || idStr === "[object Object]") return null;
+  if (industryTitleCache.has(idStr)) return industryTitleCache.get(idStr)!;
+  let label = idStr;
+  try {
+    const entry = await find("industries", idStr);
+    if (entry?.data?.title) label = String(entry.data.title);
+  } catch {}
+  industryTitleCache.set(idStr, label);
+  return label;
+}
+async function industryLabel(industries: any): Promise<string | undefined> {
+  if (!industries) return undefined;
+  const refs = Array.isArray(industries) ? industries : [industries];
+  const titles = (await Promise.all(refs.map(industryTitle))).filter(Boolean);
+  return titles.length ? titles.join(" · ") : undefined;
+}
+
+// Pre-resolve the industry label for each item (Astro frontmatter is async).
+// GWS projects use a singular `industry` ref; fall back to `industries` (the
+// plural field the webmaxers schema used) so the same variant works in both.
+const itemsWithIndustry = await Promise.all(
+  items.map(async (item: any) => ({
+    ...item,
+    industryLabel: await industryLabel(item.industry ?? item.industries),
+  })),
+);
+
+// intro + project panels + outro
+const totalPanels = items.length + 2;
+---
+
+{/*
+  Horizontal filmstrip. The section pins itself and is scrubbed by GSAP (see the
+  script below): the inner track slides left, then the whole section slides off
+  to reveal the next section in flow. Drop it directly into the page — no wrapper.
+*/}
+<section
+  id={id}
+  class="fs-section bg-gradient"
+  style={`--fs-total-panels: ${totalPanels};`}
+  data-filmstrip
+  aria-label={title?.replace?.("\n", " ") ?? "Selected work"}
+>
+    <div class="fs-track" data-filmstrip-track>
+
+      <!-- Panel 0: Intro -->
+      <div class="fs-panel fs-panel--intro">
+        <div class="fs-rule" aria-hidden="true"></div>
+        <div class="fs-panel-inner">
+          {/* Matches the logo's "WEB SERVICES" text: eyebrow-text size/tracking
+              + font-light + the accent gradient (emphasized-text). fs-eyebrow
+              only carries the bottom spacing now. */}
+          <p class="fs-eyebrow eyebrow-text font-light emphasized-text">Work</p>
+          <h2 class="fs-heading">
+            {title.split("\n").map((line: string, i: number) => (
+              <span class:list={["fs-heading-line", i > 0 && "fs-heading-line--indent"]}>{line}</span>
+            ))}
+          </h2>
+          {collectionUrl && (
+            <Button variant="underline" href={collectionUrl} size="sm" className="self-start! md:self-center!" client:load>
+              View all {collectionTitle?.toLowerCase() ?? "projects"}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <!-- Project panels -->
+      {itemsWithIndustry.map((item, i) => (
+        <div class="fs-panel fs-panel--project" data-slide-index={i + 1} data-filmstrip-card>
+          <div class="fs-rule" aria-hidden="true"></div>
+          <div class="fs-panel-inner fs-panel-inner--project">
+            <div class="fs-card-rise" style="transform:translateY(100%)">
+              <FilmstripCard
+                title={item.title}
+                description={item.description}
+                url={item.url}
+                featuredVideo={item.featuredVideo}
+                fullSiteImage={item.fullSiteImage}
+                bannerImage={item.bannerImage}
+                featuredImage={item.featuredImage}
+                industry={item.industryLabel}
+                client={item.client}
+                link={item.link}
+                projectUrl={item.projectUrl}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <!-- Outro panel — participates in the track scroll like all others -->
+      {shouldShowCollectionCTA(collectionUrl, items.length) && (
+        <div class="fs-panel fs-panel--outro" data-filmstrip-outro>
+          <div class="fs-rule" aria-hidden="true"></div>
+          <div class="fs-panel-inner">
+            <p class="fs-outro-text">
+              {description ?? "Discover our complete collection of digital experiences, brands, and platforms."}
+            </p>
+            <Button variant="underline" href={collectionUrl} size="sm" className="self-start! md:self-center!" client:load>
+              View all {collectionTitle?.toLowerCase() ?? "projects"}
+            </Button>
+          </div>
+        </div>
+      )}
+
+    </div>
+</section>
+
+<style>
+  /* ── Design tokens ────────────────────────────────────────────── */
+  [data-filmstrip] {
+    --fs-heading-col: currentColor;
+    --fs-text-col:    currentColor;
+    --fs-muted-col:   color-mix(in srgb, currentColor 45%, transparent);
+    --fs-rule-col:    color-mix(in srgb, currentColor 10%, transparent);
+    --fs-border-col:  color-mix(in srgb, currentColor 12%, transparent);
+    --fs-link-col:    currentColor;
+    --fs-panel-w:     50vw;
+    --fs-pad-x:       clamp(2.5rem, 5vw, 6rem);
+    --fs-pad-y:       clamp(2.5rem, 5vh, 5rem);
+  }
+
+  /* On small screens each panel is full-viewport-width, so one project fills the
+     screen at a time as the track scrubs (50vw is too cramped on a phone). The
+     track width + scrub distance derive from this token, so they auto-adjust. */
+  @media (max-width: 767px) {
+    [data-filmstrip] {
+      --fs-panel-w: 100vw;
+      --fs-pad-x: clamp(1.5rem, 6vw, 2.5rem);
+    }
+  }
+
+  /* ── Filmstrip surface ───────────────────────────────────────────
+     Fills the viewport while pinned. GSAP pins this element and scrubs the
+     inner track left, then slides this whole element off-left to reveal the
+     section behind it. Opaque background = it acts as a curtain. */
+  .fs-section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    border-top: 1px solid var(--fs-border-col);
+    border-bottom: 1px solid var(--fs-border-col);
+    /* bg-gradient (in markup) keeps this opaque so it curtains the section
+       behind it during the slide-off. */
+    will-change: transform;
+  }
+
+  /* ── Horizontal track ────────────────────────────────────────── */
+  .fs-track {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    width: calc(var(--fs-total-panels) * var(--fs-panel-w));
+    will-change: transform;
+  }
+
+  /* ── Panel ───────────────────────────────────────────────────── */
+  .fs-panel {
+    position: relative;
+    width: var(--fs-panel-w);
+    flex-shrink: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Hairline vertical rule + crosshair at right edge of each panel */
+  .fs-rule {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--fs-rule-col);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* ── Panel inner ─────────────────────────────────────────────── */
+  .fs-panel-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: var(--fs-pad-y) var(--fs-pad-x);
+  }
+
+  /* Project panels keep their card left-aligned. */
+  .fs-panel-inner--project {
+    align-items: stretch;
+    text-align: left;
+    padding: var(--fs-pad-y) calc(var(--fs-pad-x) * 0.85);
+    overflow: hidden;
+  }
+
+
+  /* ── Intro text ──────────────────────────────────────────────── */
+  /* Typography (size, weight, tracking, gradient color) comes from the shared
+     eyebrow-text + emphasized-text utilities on the element — matching the logo's
+     "WEB SERVICES" text. This rule only owns the spacing below it. */
+  .fs-eyebrow {
+    margin-bottom: 1.25rem;
+  }
+
+  .fs-heading {
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(2.4rem, 5.5vw, 4.25rem);
+    font-weight: 300;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: var(--fs-heading-col);
+    margin-bottom: 2.5rem;
+  }
+
+  .fs-heading-line        { display: block; }
+  .fs-heading-line--indent { margin-left: 0.04em; }
+
+  /* ── Outro text ──────────────────────────────────────────────── */
+  .fs-outro-text {
+    font-size: clamp(1.5rem, 3.2vw, 2.6rem);
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--fs-heading-col);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ── Card rise animation ─────────────────────────────────────── */
+  /* transform and opacity are set directly via JS style — no custom property needed */
+  .fs-card-rise {
+    will-change: transform, opacity;
+  }
+
+  /* The horizontal filmstrip scrub runs on DESKTOP (≥768px). Below that — and
+     for reduced-motion users at any width — it flattens to a static vertical
+     stack (no pin, no horizontal scrub), one project per row. The JS skips the
+     pin in those same cases so the two never disagree. */
+
+  /* ── Mobile (<768px) OR reduced motion: vertical stack, no pinning ──── */
+  @media (max-width: 767px), (prefers-reduced-motion: reduce) {
+    .fs-section  { height: auto; overflow: visible; }
+    .fs-track    { flex-direction: column; width: 100%; transform: none !important; transition: none !important; }
+    .fs-panel    { width: 100%; height: auto; }
+    .fs-panel-inner { height: auto; }
+    .fs-panel--intro .fs-panel-inner,
+    .fs-panel--outro .fs-panel-inner { align-items: flex-start; text-align: left; }
+    .fs-arrow    { transition: none; }
+    /* Cards fully visible, no rise animation */
+    .fs-card-rise { --_rise: 1 !important; transform: none !important; opacity: 1 !important; }
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3); }
+  function clamp(v: number, lo: number, hi: number) {
+    return v < lo ? lo : v > hi ? hi : v;
+  }
+
+  // Drive every project card's rise/fall from the track's current X. Mirrors
+  // the original math exactly: a card rises in from below as its panel sweeps
+  // toward centre (ease-out), and exits upward as the panel clears the left
+  // edge (ease-in via the exit term). Panel clips the card so it's never
+  // visible outside the panel.
+  //
+  // PERF: a card's panel geometry (width / height / offsetLeft) is STABLE during
+  // a scrub — only `currentX` changes. Reading offset* here every frame forced a
+  // synchronous reflow per card per frame (a major layout-thrash cost once the
+  // logo + curtain all animate together). So we measure the geometry ONCE (in
+  // measure()) into `geom` and this hot path does pure math, no DOM reads.
+  type CardGeom = { rise: HTMLElement; w: number; h: number; left: number };
+  function applyCardRise(geom: CardGeom[], currentX: number, vw: number) {
+    for (const g of geom) {
+      const panelLeft = g.left - currentX; // panel's left edge in viewport space
+      // Entry: 0→1 as the panel travels from 1vw right to ~0.1vw right.
+      const entry = easeOutCubic(clamp((vw - panelLeft) / (vw * 0.9), 0, 1));
+      // Exit: 1→0 as the panel's left edge travels from 0 to -30% of its width.
+      const exit = 1 - clamp(panelLeft / (-g.w * 0.3), 0, 1);
+      const v = Math.min(entry, exit);
+      g.rise.style.transform = `translateY(${((1 - v) * g.h).toFixed(2)}px)`;
+      g.rise.style.opacity = v.toFixed(3);
+    }
+  }
+
+  // Phase 1 driver: translate the track to a given scrub progress (0→1) and
+  // update the card rises. Shared by both the standalone pin and the
+  // CurtainStack orchestrator so the horizontal motion is identical either way.
+  function makeTrackDriver(section: HTMLElement) {
+    const track = section.querySelector<HTMLElement>("[data-filmstrip-track]");
+    const cards = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-filmstrip-card] .fs-card-rise"),
+    );
+    let maxX = 0;
+    let geom: CardGeom[] = [];
+
+    // On small screens we skip the per-card rise/fall ("sling") and just scrub
+    // the track straight off the page — cards sit statically in place.
+    const noRise = () => window.innerWidth < 768;
+
+    return {
+      // Horizontal travel = full track overflow, landing exactly on the last
+      // panel. Also snapshot each card's panel geometry here (one layout pass)
+      // so the per-frame setProgress never reads the DOM. Re-runs on resize via
+      // ScrollTrigger's invalidateOnRefresh.
+      measure() {
+        if (!track) return 0;
+        maxX = Math.max(0, track.scrollWidth - window.innerWidth);
+        geom = cards.map((rise) => {
+          const panel = rise.closest<HTMLElement>("[data-filmstrip-card]");
+          return {
+            rise,
+            w: panel?.offsetWidth ?? 0,
+            h: panel?.offsetHeight ?? 0,
+            left: panel?.offsetLeft ?? 0,
+          };
+        });
+        return maxX;
+      },
+      setProgress(p: number) {
+        if (!track) return;
+        const x = clamp(p, 0, 1) * maxX;
+        track.style.transform = `translateX(${(-x).toFixed(2)}px)`;
+        if (noRise()) {
+          // Cards visible and in place — no rise animation on mobile.
+          for (const g of geom) {
+            g.rise.style.transform = "translateY(0)";
+            g.rise.style.opacity = "1";
+          }
+        } else {
+          applyCardRise(geom, x, window.innerWidth);
+        }
+      },
+    };
+  }
+
+  // Standalone (not inside a CurtainStack): the filmstrip self-pins and runs
+  // its own track-scrub → peel timeline, revealing whatever follows it in flow.
+  function buildStandalone(section: HTMLElement) {
+    const driver = makeTrackDriver(section);
+    const maxX = driver.measure();
+    // Pin lasts ONLY for the horizontal track scrub. When it finishes, the last
+    // panel is on screen and the pin releases in place — no peel/slide-off. The
+    // page then scrolls normally into the next section beneath it.
+    const total = Math.max(1, maxX);
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: "+=" + total,
+      pin: true,
+      scrub: 1,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        driver.setProgress(self.progress);
+      },
+    });
+  }
+
+  function init() {
+    const sections = document.querySelectorAll<HTMLElement>("[data-filmstrip]");
+    if (!sections.length) return;
+
+    sections.forEach((section) => {
+      // Inside a CurtainStack: that orchestrator owns the pin and drives this
+      // filmstrip's track scrub as one leg of its shared timeline (then slides
+      // the whole layer off). Expose the uniform layer contract it reads;
+      // register no ScrollTrigger of our own.
+      const stack = section.closest("[data-curtain-stack]");
+      if (stack) {
+        const driver = makeTrackDriver(section);
+        (section as any).__curtainLayer = {
+          // Internal scrub px = the track's horizontal travel. The stack adds
+          // its own move-off budget on top.
+          getScrubPx: () => driver.measure(),
+          setProgress: (p: number) => driver.setProgress(p),
+        };
+        return;
+      }
+
+      // Standalone — the horizontal pin runs on DESKTOP only (≥768px). Below
+      // that, and for reduced-motion, no ScrollTrigger is registered and the CSS
+      // above flattens it to a static vertical stack.
+      ScrollTrigger.matchMedia({
+        "(min-width: 768px) and (prefers-reduced-motion: no-preference)": () => {
+          buildStandalone(section);
+        },
+      });
+    });
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

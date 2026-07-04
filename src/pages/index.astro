@@ -8,7 +8,13 @@ import { roots, related } from "@/utils/query/snippets";
 import FrontPageHero from "@/layouts/heroes/FrontPageHero.astro";
 import HomeProblemSolutionIntro from "@/layouts/sections/HomeProblemSolutionIntro.astro";
 import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
-import TrustPanel from "@/layouts/sections/TrustPanel.astro";
+// TrustPanel removed from the homepage — see the commented render below.
+// import TrustPanel from "@/layouts/sections/TrustPanel.astro";
+import AboutSection from "@/components/AboutSection/AboutSection.astro";
+import TestimonialCarousel from "@/components/TestimonialCarousel/TestimonialCarousel.astro";
+// CurtainStack available if a multi-layer curtain is wanted later; the filmstrip
+// now peels off on its own (standalone mode) to reveal normal-flow content.
+// import CurtainStack from "@/components/CurtainStack/CurtainStack.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
 
 const heroHeading = {
@@ -21,7 +27,10 @@ const heroDescription =
   "We build websites for businesses that want it done right the first time. Our sites load fast, look trustworthy, and make it easy for people to understand what you do and reach out.";
 ---
 
-<SiteLayout title="Fast, Secure Websites Built to Grow Your Business" description={siteData.description}>
+<SiteLayout
+  title="Fast, Secure Websites Built to Grow Your Business"
+  description={siteData.description}
+>
   <!-- HERO -->
   <FrontPageHero
     heading={heroHeading}
@@ -33,8 +42,7 @@ const heroDescription =
     scrollToSection="#under-hero"
   />
 
-  <div id="under-hero">
-    <!-- Portfolio Showcase -->
+  <!-- <div id="under-hero">
     <div
       class="block lg:min-h-screen inner-section"
       {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
@@ -44,92 +52,109 @@ const heroDescription =
         variant="PortfolioScreenVariant"
         clientLoadPlaceholder={true}
       />
+    </div> -->
+
+  <ContentRenderer
+    query={byTag("capabilities", "featured").orderBy(sortByOrder())}
+    variant="CardVariant"
+    id="capabilities"
+    title="What We Do"
+    columns={3}
+    gap="md"
+    showHeadingSection={false}
+    showButtonSection={false}
+    card={{
+      hoverOverlayClassName: "inset-0 bg-transparent",
+    }}
+  />
+
+  {
+    /* ABOUT — ported from webmaxers. Animated statement reveal → rolling logo
+        divider → single image that expands to a full-bleed background with a
+        marquee scrolling over it. The testimonials carousel is revealed over the
+        full-bleed image via the `expand-content` slot — same as the webmaxers
+        homepage. (No `withBackground` here: the AboutSection's own expanding
+        image is already the backdrop.) */
+  }
+  <AboutSection
+    statement={`${siteData.title} builds fast, trustworthy websites that help local businesses get found, look credible, and win more work.`}
+    leftText="We design for clarity first, build it right the first time, and keep it fast long after launch."
+    rightText="Our goal is simple: a website that makes your business easier to trust, easier to find, and easier to contact."
+    ctaText="See What We Do"
+    ctaLink="/capabilities"
+    showStats
+  >
+    <div slot="expand-content" class="w-full">
+      <TestimonialCarousel />
     </div>
+  </AboutSection>
 
+  {
+    /* PROJECTS — ported from webmaxers' filmstrip. In standalone mode it
+        self-pins: the project row scrubs left, then the whole section peels
+        off-LEFT to reveal whatever follows it in normal document flow (here,
+        the Benefits section). This is the same "curtain" peel as webmaxers, but
+        the revealed content below scrolls NATURALLY — it isn't trapped in a
+        fixed-height stacked layer, so tall sections are never clipped.
+        Below 768px / reduced-motion the filmstrip flattens to a vertical stack. */
+  }
+  <ContentRenderer
+    query={byTag("projects", "screen").orderBy(sortByOrder())}
+    variant="FilmstripVariant"
+    title={"Selected work\n& explorations"}
+    collectionUrl="/projects"
+  />
+
+  <!-- PROCESS (disabled) -->
+  <!-- <HomeProblemSolutionIntro /> -->
+  <!-- <HomeSolutionBridge /> -->
+
+  {
+    /* BENEFITS — revealed as the filmstrip peels off-left, then scrolls
+        naturally as normal-flow content (no fixed-height clipping). */
+  }
+  <ContentRenderer
+    query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
+    variant="BenefitsVariant"
+    id="benefits"
+    heading="Your website should help with things like this."
+    description="A good website should make your business easier to trust, easier to find, and easier to contact."
+    columns={2}
+    gap="lg"
+  />
+
+  <!-- PROCESS (disabled) -->
+  <!-- <HomeProblemSolutionIntro /> -->
+  <!-- <HomeSolutionBridge /> -->
+
+  {
+    /* TrustPanel removed — its trust stats + testimonial quote are now covered
+        by the ported About section above. Re-enable by uncommenting. */
+  }
+  {/* <TrustPanel /> */}
+
+  <div class="bottom-content-section">
     <ContentRenderer
-      query={byTag("capabilities", "featured").orderBy(sortByOrder())}
-      variant="CardVariant"
-      id="capabilities"
-      title="What We Do"
-      heading={{
-        before: "What we build to help your business look trustworthy, get found, and",
-        text: "win more leads.",
-      }}
-      description="We design, build, improve, and support websites so they stay fast, easy to use, and ready to bring in more calls, forms, and sales."
-      columns={3}
-      gap="md"
-      showButtonSection={false}
-      card={{
-        hoverOverlayClassName: "inset-0 bg-transparent",
-      }}
+      query={byTag("technologies", "featured").orderBy(sortByOrder()).limit(8)}
+      variant="TechnologiesVariant"
+      title="Featured Technologies"
+      description="These are some of the tools and platforms we use to build and support websites."
     />
 
-    <!-- PROCESS -->
-    <!-- <ContentRenderer
-      query={query("process").orderBy(sortByOrder())}
-      variant="NumberCardVariant"
-      id="process"
-      title="How We Work"
-      heading="A Clear Plan From Start To Launch And Support"
-      description="Good websites do not come from guessing. They come from a clear plan, careful work, and support after launch."
-      gap="lg"
-      showButtonSection={false}
-    /> -->
-
-    <!-- <HomeProblemSolutionIntro /> -->
-
-    <!-- <HomeSolutionBridge /> -->
-
-        <!-- BENEFITS -->
-    <ContentRenderer
-      query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
-      variant="BenefitsVariant"
-      id="benefits"
-      heading="Your website should help with things like this."
-      description="A good website should make your business easier to trust, easier to find, and easier to contact."
-      columns={2}
-      gap="lg"
-    />
-
-       <!-- <HomeSolutionBridge /> -->
-
-    <TrustPanel />
-
-    <div class="bottom-content-section">
-      <ContentRenderer
-        query={query("projects")
-          .where((entry: any) => !!entry.data.featuredVideo)
-          .orderBy(sortByOrder())}
-        variant="PortfolioVideoShowcaseVariant"
-        heading="Websites Built to Get Attention"
-        description="Fast, sharp websites that help people trust what they see."
-        primaryCtaHref={contactCtaData.link}
-        primaryCtaText={contactCtaData.text}
-        ctaHref="/projects"
-        ctaText="See Portfolio"
-      />
-
-      <ContentRenderer
-        query={byTag("technologies", "featured").orderBy(sortByOrder()).limit(8)}
-        variant="TechnologiesVariant"
-        title="Featured Technologies"
-        description="These are some of the tools and platforms we use to build and support websites."
-      />
-
-      {/* FAQs moved to /faq */}
-    </div>
-
-    <!-- BLOG -->
-    <ContentRenderer
-      query={query("blog").orderBy(sortByDate("publishDate", "desc")).limit(4)}
-      variant="BlogVariant"
-      columns={2}
-      title="Latest Articles"
-      heading={{
-        before: "Stay informed.",
-        text: "Read our latest insights.",
-      }}
-    />
-
+    {/* FAQs moved to /faq */}
   </div>
+
+  <!-- BLOG — editorial cards (webmaxers style) under a GWS SectionHeader. -->
+  <ContentRenderer
+    query={query("blog").orderBy(sortByDate("publishDate", "desc")).limit(4)}
+    variant="BlogVariant"
+    columns={2}
+    showButtonSection={false}
+    eyebrow="Latest Articles"
+    title="Latest Articles"
+    heading={{
+      before: "Stay Informed.",
+      text: "Read Our Latest Insights.",
+    }}
+  />
 </SiteLayout>

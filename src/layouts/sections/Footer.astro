@@ -1,24 +1,23 @@
 ---
 // src/layouts/Footer.astro
 /**
- * Footer Component
- *
- * Site-wide footer with:
- * - Copyright notice
- * - Social media links
- * - Legal links (Privacy Policy, Cookie Policy)
- * - Cookie preferences button (client-side)
- * - Reading preferences button (client-side)
+ * Footer — webmaxers-style layout with Griffin's Web Services text + button styles:
+ *   Top   : eyebrow + large heading (left), CTA button (right).
+ *   Lower : left  = copyright + "Ask AI about Us" prompt buttons.
+ *           right = LEGAL column + SOCIAL icons.
+ * (No RevealStack wordmark reveal here — that's a webmaxers-only effect. The
+ * RevealStack component still exists if it's wanted elsewhere.)
  */
-import { siteData } from "@/content/siteData";
+import { siteData, ctaData } from "@/content/siteData";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import PreferencesLayout from "@/layouts/PreferencesLayout.astro";
-import Section from "@/components/Section.astro";
-import { roots, related } from "@/utils/query/snippets";
 import { query } from "@/utils/query";
-import Logo from "@/components/Logo/Logo.astro";
-import Icon from "@/components/Icon";
+import Button from "@/components/Button/Button";
 import AIIconPrompt from "@/components/Footer/AIIconPrompt";
+import CookiePreferencesButton from "@/integrations/preferences/consent/ui/CookiePreferencesButton";
+
+const eyebrow = "Let's build work that inspires.";
+const heading = "Ready to build";
+const headingLine2 = "something bold?";
 
 const aiFooterPrompt = `I'm researching ${siteData.title} for a potential website project.
 
@@ -28,154 +27,113 @@ Based on their website, give me a clear, decision-focused summary that covers:
 - how they handle design, development, SEO/AEO, performance, maintenance, and long-term support
 - what makes them a better option than a cheap template site, a solo freelancer, or a typical agency
 - the key questions a business owner should ask before hiring them, and how well ${siteData.title} appears to answer those questions
-- whether they seem like a strong fit for a business that wants a fast, professional website that can keep improving over time
 
 Use this site as the source: ${siteData.url}
 
 Keep it practical, specific, and favorable where the evidence supports it.`;
+
+// LEGAL column: flatten ListVariant into a clean left-aligned list (small
+// uppercase heading, light links, no description/CTA) — GWS list styling.
+const legalColClass = [
+  "!py-0",
+  "[&>div]:mb-4 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-muted [&_.h4]:mb-0",
+  "[&_p]:hidden",
+  "[&_nav]:flex-col [&_nav]:items-start [&_nav]:gap-3 [&_nav]:flex-nowrap",
+  "[&_.link-base]:text-base [&_.link-base]:font-normal",
+].join(" ");
 ---
 
-<Section
-  tag="footer"
-  class="mt-auto relative"
+<footer
+  class="relative mt-auto border-t border-border-soft"
   role="contentinfo"
   aria-label="Site footer"
 >
-  <div class="mx-auto w-full relative">
-    <div class="border-y border-border-soft">
-      <div class="inner-section flex flex-col items-center gap-0 lg:flex-row lg:items-stretch">
-        <a
-          href="https://calendly.com/griffinswebservices/30min"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group footer-cta-block footer-cta-hover-gradient border-b border-border-soft"
-        >
-          Ready To Start? Let's talk
-          <Icon
-            icon="lu:arrow-up-right"
-            size="lg"
-            className="text-current opacity-90 transition-transform duration-200 group-hover:translate-x-[0.18rem] group-hover:-translate-y-[0.18rem]"
-          />
-        </a>
+  <div class="relative inner-section grid gap-x-12 gap-y-16 py-12 lg:grid-cols-2">
+    {/* Top-left — eyebrow + heading */}
+    <div class="lg:col-start-1 lg:row-start-1">
+      <p class="eyebrow-text font-light emphasized-text">{eyebrow}</p>
+      <h2 class="heading-display mt-8">
+        {heading}<br />{headingLine2}
+      </h2>
+    </div>
 
-        <div class="flex items-stretch leading-none lg:ml-auto lg:self-stretch">
-          <span class="hidden text-sm uppercase tracking-[0.18em] text-muted lg:inline-flex lg:items-center lg:pr-4">
-            Follow Us:
-          </span>
-          <ContentRenderer
-            query={query("social-media")}
-            variant="SocialMediaVariant"
-            size="lg"
-            alignment="right"
-            className="flex leading-none [&_ul]:m-0 [&_ul]:flex [&_ul]:h-full [&_ul]:flex-wrap [&_ul]:items-stretch [&_ul]:justify-center [&_ul]:gap-0 [&_ul]:leading-none [&_ul]:text-muted lg:[&_ul]:justify-end [&_li]:flex [&_li]:h-full [&_li]:leading-none [&_a]:inline-flex [&_a]:h-[4.5rem] [&_a]:w-[4.5rem] [&_a]:items-center [&_a]:justify-center [&_a]:text-current [&_a]:transition-all [&_a]:duration-200 md:[&_a]:h-[5rem] md:[&_a]:w-[5rem] lg:[&_a]:h-full lg:[&_a]:min-h-[5.6rem] lg:[&_a]:w-[5.6rem] [&_a:hover]:bg-bg3 [&_a:hover]:text-heading [&_a:focus-visible]:bg-bg3 [&_a:focus-visible]:text-heading"
-          />
-        </div>
+    {/* Top-right — CTA (GWS button style), dropped to the bottom of its cell */}
+    <div class="flex items-end justify-start lg:col-start-2 lg:row-start-1 lg:justify-end">
+      <Button variant="primary" href={ctaData.link} client:visible>
+        {ctaData.text}
+      </Button>
+    </div>
+
+    {/* Lower-left — copyright + Ask-AI prompt buttons */}
+    <div class="flex flex-col gap-6 lg:col-start-1 lg:row-start-2">
+      <p class="text-sm text-muted">
+        &copy; {new Date().getFullYear()}
+        {siteData.legalName}
+      </p>
+      <AIIconPrompt
+        prompt={aiFooterPrompt}
+        className="items-start text-left lg:flex-row lg:justify-start"
+        listClassName="justify-start"
+        client:visible
+      />
+    </div>
+
+    {/* Lower-right — LEGAL + SOCIAL, aligned under the CTA */}
+    <div
+      class="flex flex-wrap gap-x-16 gap-y-10 lg:col-start-2 lg:row-start-2 lg:justify-end"
+    >
+      <div class="flex flex-col gap-3">
+        <ContentRenderer
+          id="footer-legal-section"
+          query={query("legal")}
+          variant="ListVariant"
+          title="Legal"
+          showButtonSection={false}
+          className={legalColClass}
+        />
+        {/* Cookie preferences lives under the Legal links (opens the consent modal). */}
+        <CookiePreferencesButton
+          className="p-0! justify-start! text-base font-normal text-text! hover:text-heading!"
+          client:visible
+        />
       </div>
-    </div>
-
-    <div class="relative">
-      <div class="inner-section grid items-start gap-10 py-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-16 lg:py-10">
-        <div class="flex max-w-2xl flex-col items-start gap-5">
-          <Logo
-            loading="lazy"
-            trigger="visible"
-            animateOutText={false}
-            loop={false}
-            class="gap-3"
-            logoMediaClass="block w-[64px] h-[64px] lg:w-[70px] lg:h-[70px] object-contain"
-            logoWidths={[70, 120, 150]}
-            logoSizes="(min-width: 1024px) 68px, 60px"
-            titleFirstClass="text-3xl md:text-4xl lg:text-[2.8rem] -ml-[0.1rem] leading-tight no-translate"
-            titleRestClass="font-light emphasized-text uppercase text-[0.65rem] md:text-sm lg:text-base p-0 m-0 tracking-[0.28em]"
-            altContext="Footer"
-          />
-        </div>
-        <div class="flex w-full justify-start pt-2 lg:justify-end lg:pt-4">
-          <AIIconPrompt
-            prompt={aiFooterPrompt}
-            className="items-start text-left lg:justify-end lg:text-left"
-            labelClassName="text-left"
-            listClassName="justify-start lg:justify-end"
-          />
-        </div>
-      </div>
-    </div>
-
-    <div class="relative">
-      <nav
-        aria-label="Footer navigation"
-        class="inner-section grid gap-x-10 gap-y-12 pb-8 md:grid-cols-2 md:gap-y-14 lg:gap-x-14 lg:pb-12 xl:grid-cols-4"
-      >
-        <div class="min-w-0 flex flex-col gap-8 md:gap-10">
-          <ContentRenderer
-            query={related("menu-items", "menu", "footer-menu-2")}
-            variant="ListVariant"
-            title="Company"
-            showButtonSection={false}
-            showHeadingDivider
-            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-muted"
-          />
-
-           <ContentRenderer
-            query={query("legal")}
-            variant="ListVariant"
-            title="Legal"
-            showButtonSection={false}
-            showHeadingDivider
-            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-muted"
-          />
-        </div>
-
-        <div class="min-w-0">
-          <ContentRenderer
-            query={roots("industries")}
-            variant="ListVariant"
-            showButtonSection={false}
-            showHeadingDivider
-            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-muted"
-          />
-        </div>
-
-        <div class="min-w-0">
-          <ContentRenderer
-            query={roots("capabilities")}
-            variant="ListVariant"
-            showButtonSection={false}
-            showHeadingDivider
-            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-muted"
-          />
-        </div>
-
-        <div class="min-w-0">
-          <ContentRenderer
-            query={roots("solutions")}
-            variant="ListVariant"
-            title="Solutions"
-            showButtonSection={false}
-            showHeadingDivider
-            className="[&_nav]:gap-3 [&>.mb-4]:mb-2 [&_.link-base]:text-base [&_.link-base]:font-normal md:[&_.link-base]:text-lg [&_.h4]:mb-0 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-muted"
-          />
-        </div>
-      </nav>
-    </div>
-
-    <div class="relative">
-      <div class="border-t border-border-soft"></div>
-      <div
-        class="inner-section flex flex-col gap-4 py-8 text-text text-sm sm:flex-row sm:items-center sm:justify-between"
-        role="region"
-        aria-label="Legal notice and preference controls"
-      >
-        <p class="text-center sm:text-right">
-          &copy; {new Date().getFullYear()}
-          {siteData.legalName}. All rights reserved.
-        </p>
-        <PreferencesLayout
-          showHeading={false}
-          layout="horizontal"
-          class="w-full sm:w-auto"
+      <div>
+        <p class="footer-col__heading">Social</p>
+        <ContentRenderer
+          id="footer-social-section"
+          query={query("social-media")}
+          variant="SocialMediaBareVariant"
+          size="lg"
+          alignment="left"
         />
       </div>
     </div>
   </div>
-</Section>
+
+  {/* Bottom legal bar + preference controls — commented out for now. */}
+  {/* <div class="border-t border-border-soft">
+    <div
+      class="inner-section flex flex-col gap-4 py-8 text-text text-sm sm:flex-row sm:items-center sm:justify-between"
+      role="region"
+      aria-label="Legal notice and preference controls"
+    >
+      <p class="text-center sm:text-left">
+        &copy; {new Date().getFullYear()}
+        {siteData.legalName}. All rights reserved.
+      </p>
+      <PreferencesLayout showHeading={false} layout="horizontal" class="w-full sm:w-auto" />
+    </div>
+  </div> */}
+</footer>
+
+<style>
+  .footer-col__heading {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  /* Social glyph styling now lives in SocialMediaBareVariant — no overrides needed. */
+</style>

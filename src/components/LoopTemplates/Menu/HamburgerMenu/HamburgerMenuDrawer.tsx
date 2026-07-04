@@ -110,12 +110,9 @@ export default function MobileMenuDrawer({
         isOpen={isOpen}
         onClose={() => toggleMenu(false)}
         position="center"
-        className={`w-full max-w-full h-full bg-gradient p-0 rounded-none transform transition-transform duration-300 ease-out ${
-          isOpen ? "translate-y-0" : "translate-y-full"
-        }`}
-        overlayClass={`bg-black/50 transition-opacity duration-300 ${
-          isOpen ? "opacity-100" : "opacity-0"
-        }`}
+        animation="slide-up"
+        className="w-full max-w-full h-full bg-gradient p-0 rounded-none"
+        overlayClass="bg-black/50"
         closeButton={closeButton}
         ariaLabel="Mobile navigation menu"
         ssr={false}

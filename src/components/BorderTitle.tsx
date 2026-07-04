@@ -1,83 +1,39 @@
 // src/components/BorderTitle.tsx
-import AnimatedBorder, {
-  type VisibleRootMargin,
-} from "@/components/AnimatedBorder/AnimatedBorder";
+// The single defined location for every section eyebrow/title (rendered by
+// SectionHeader, so all 64+ sections flow through here). Styled to match the
+// logo's "WEB SERVICES" text: the accent gradient (emphasized-text), font-light,
+// uppercase, tracking-[0.2em] via the shared eyebrow-text utility — NO bordered
+// pill. Change the eyebrow look for the whole site by editing this one file.
 import Heading from "@/components/Heading";
 import type { ReactNode } from "react";
-import { useMotionPreference } from "@/hooks/useMotionPreference";
 
 export interface BorderTitleProps {
   children: ReactNode;
   className?: string;
+  // Kept for backward compatibility with existing callers (SectionHeader passes
+  // these); they no longer render a pill/border, so they're accepted and ignored.
   duration?: number;
   hoverSweep?: boolean;
   pillClassName?: string;
-  visibleRootMargin?: VisibleRootMargin;
+  visibleRootMargin?: unknown;
 }
 
 export default function BorderTitle({
   children,
   className = "",
-  duration = 1200,
-  hoverSweep = true,
-  pillClassName = "text-xs lg:text-sm px-3 py-2 lg:px-4.5 lg:py-2 tracking-wider",
-  visibleRootMargin = { top: -50, right: 0, bottom: -100, left: 0 },
 }: BorderTitleProps) {
-  const prefersReducedMotion = useMotionPreference();
-
-  // Don't show decorative hover sweep when reduced motion is preferred
-  const showHoverSweep = hoverSweep && !prefersReducedMotion;
-
   return (
     <div className="inline-block mb-3">
-      <div className="relative inline-block">
-        <AnimatedBorder
-          variant="progress-b-f"
-          triggers="visible"
-          duration={duration}
-          borderRadius="rounded-full"
-          borderWidth={2}
-          color="var(--color-primary)"
-          className="inline-block"
-          innerClassName={`bg-transparent border-transparent ${pillClassName}`}
-          visibleRootMargin={visibleRootMargin}
-        >
-          <Heading
-            tagName="span"
-            className={`uppercase tracking-wider font-semibold text-heading ${className}`}
-          >
-            {prefersReducedMotion ? (
-              <span className="text-primary">{children}</span>
-            ) : (
-              <span
-                data-animate="color-text-fade"
-                data-animate-once="false"
-                className="color-text-fade"
-                style={{ "--animation-duration": `${duration}ms` } as React.CSSProperties}
-              >
-                {children}
-              </span>
-            )}
-          </Heading>
-        </AnimatedBorder>
-
-        {showHoverSweep && (
-          <div className="absolute inset-0 pointer-events-none">
-            <AnimatedBorder
-              variant="progress-infinite"
-              triggers="hover"
-              duration={1200}
-              borderRadius="rounded-full"
-              borderWidth={2}
-              color="var(--color-accent)"
-              className="w-full h-full"
-              innerClassName="bg-transparent border-transparent px-0 py-0 pointer-events-none"
-            >
-              <span className="sr-only">Decorative border sweep</span>
-            </AnimatedBorder>
-          </div>
-        )}
-      </div>
+      {/* Caller className comes FIRST so its layout extras (spacing, alignment)
+          apply, then the logo "WEB SERVICES" identity classes come LAST with
+          important flags so casing/weight can never be overridden — the eyebrow
+          is ALWAYS the uppercase logo style. */}
+      <Heading
+        tagName="span"
+        className={`${className} eyebrow-text emphasized-text font-light! uppercase!`}
+      >
+        {children}
+      </Heading>
     </div>
   );
 }

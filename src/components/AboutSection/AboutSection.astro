@@ -1,0 +1,788 @@
+---
+import { splitTextIntoAnimatedWords } from "@/utils/animatedText";
+import LogoMark from "@/components/Logo/LogoMark.astro";
+import Button from "@/components/Button/Button";
+import EyebrowSection from "@/layouts/EyebrowSection.astro";
+import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import { Image } from "astro:assets";
+import { siteData } from "@/content/siteData";
+import Marquee from "@/components/Marquee.astro";
+import aboutExpandImage from "@/assets/meoncomp.jpg";
+
+interface Props {
+  eyebrow?: string;
+  statement?: string;
+  leftText?: string;
+  rightText?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  stickyHeight?: string;
+  logoSize?: number;
+  /** The single image that sits centered in the bottom section, then scales to a
+      full-bleed background as the section scrolls. Defaults to the fire image. */
+  expandImage?: ImageMetadata;
+  expandAlt?: string;
+  /** Eyebrow/headline/body revealed once the image has expanded to full-bleed. */
+  expandEyebrow?: string;
+  expandHeadline?: string;
+  expandBody?: string;
+  /** Scroll distance the expand-to-background effect spans. */
+  expandHeight?: string;
+  /** Darkening overlay strength once expanded (0–1) so overlay text is legible. */
+  expandOverlayOpacity?: number;
+  /** Show the stat counters (bottom-left on desktop). */
+  showStats?: boolean;
+  /** The stats rendered when `showStats` is on. Each item is a plain record read
+      by AboutStatsVariant (value / prefix / suffix / decimals / title). Defaults
+      to the two figures the webmaxers about layout shows: 7+ years, $1M+ revenue. */
+  stats?: Array<Record<string, any>>;
+}
+
+const DEFAULT_STATS: Array<Record<string, any>> = [
+  { value: 7, suffix: "+", title: "Years of Experience" },
+  { value: 1, prefix: "$", suffix: "M+", title: "Client Revenue" },
+];
+
+const {
+  eyebrow = "About",
+  statement = `${siteData.title} is an independent digital studio crafting meaningful brand experiences through strategy, design, and technology.`,
+  leftText = "We design for longevity, clarity first, craft always, built to scale.",
+  rightText = "Our mission is to make technology feel human by designing digital products that are intuitive, purposeful, and meaningful to people.",
+  ctaText = "Explore Our Story",
+  ctaLink = "/about-us",
+  stickyHeight = "250svh",
+  logoSize = 56,
+  expandImage = aboutExpandImage,
+  expandAlt = "",
+  expandEyebrow,
+  expandHeadline,
+  expandBody,
+  expandHeight = "300svh",
+  // Max dim over the fully-expanded image (× --color-bg). 0.88 is the middle
+  // ground — photo faintly visible behind the revealed testimonial (0.8 read too
+  // light, 0.97 too dark), text stays well past WCAG AA.
+  expandOverlayOpacity = 0.88,
+  showStats = false,
+  stats = DEFAULT_STATS,
+} = Astro.props;
+
+const words = splitTextIntoAnimatedWords(statement);
+
+// When a caller provides the `expand-content` slot, it takes precedence over the
+// eyebrow/headline/body copy as the overlay revealed on the full-bleed image.
+const hasExpandSlot = Astro.slots.has("expand-content");
+---
+
+<div class="flex flex-col gap-24 md:gap-36 lg:gap-48">
+
+  <!-- Sticky scroll statement -->
+  <aside
+    class="about-sticky-section section-container"
+    aria-label="About statement"
+    data-about-sticky="true"
+    style={`--about-section-height:${stickyHeight};`}
+  >
+    <div class:list={["about-sticky-pin", showStats && "about-sticky-pin--with-stats"]} data-about-sticky-inner>
+      <section class="relative w-full">
+        <EyebrowSection eyebrow={eyebrow}>
+          <!-- Animated statement -->
+          <h2
+            class="about-statement max-w-4xl text-[clamp(1.75rem,7vw,4.5rem)] font-light leading-[1.1]"
+            aria-label={statement}
+          >
+            {words.map((word) => (
+              <>
+                <span
+                  class="about-word"
+                  aria-hidden="true"
+                  data-about-word-progress
+                >
+                  <span class="about-word-layer about-word-layer--base">{word.word}</span>
+                  <span class="about-word-layer about-word-layer--overlay">{word.word}</span>
+                </span>
+                {!word.isLast && <span class="about-space" aria-hidden="true"> </span>}
+              </>
+            ))}
+          </h2>
+        </EyebrowSection>
+
+        {/* Animated stat counters — absolutely pinned to the BOTTOM-LEFT of the
+            frame, aligned to the same inset as the "About" eyebrow label. */}
+        {showStats && (
+          <ContentRenderer
+            id="about-metrics-section"
+            items={stats}
+            variant="AboutStatsVariant"
+            className="about-stats"
+          />
+        )}
+
+        {/* Corner image — pinned to the BOTTOM-RIGHT of the frame, mirroring the
+            bottom-left stats. Uses the "me on the computer" photo (meoncomp).
+            Optimized at build via astro:assets (webp). */}
+        {showStats && (
+          <Image
+            src={aboutExpandImage}
+            alt=""
+            width={420}
+            densities={[1, 2]}
+            format="webp"
+            quality={72}
+            loading="lazy"
+            decoding="async"
+            class="about-portrait"
+          />
+        )}
+      </section>
+    </div>
+  </aside>
+
+  <!-- Rolling logo divider -->
+  <div class="about-roll-shell relative overflow-visible" aria-hidden="true">
+    <div class="about-roll-track pointer-events-none absolute top-0 left-0 w-full overflow-visible">
+      <!-- about-roll-bounce: travel + entry drop -->
+      <!-- about-roll-spin: scroll-linked rotation wrapper around LogoMark -->
+      <span class="about-roll-bounce">
+        <span class="about-roll-spin">
+          <LogoMark size={logoSize} loading="lazy" />
+        </span>
+      </span>
+    </div>
+  </div>
+
+  {/* ── Expand region ──────────────────────────────────────────────
+      One single image (data-about-expand-media) is sticky-pinned across this
+      whole tall region. At rest it's transformed to sit exactly inside the
+      bottom-section's centre grid cell (the placeholder), looking like the
+      About media. As the region scrolls it scales/translates to a full-bleed
+      background — and the marquee (normal flow, higher z) scrolls OVER it.
+      The overlay copy reveals once it's covered the screen. */}
+  <div
+    class="about-expand-region"
+    data-about-expand
+    style={`--axp-height:${expandHeight}; --axp-overlay:${expandOverlayOpacity};`}
+  >
+    {/* The ONE pinned image + its overlay + reveal copy. */}
+    <div class="about-expand-pin" data-about-expand-pin aria-hidden="false">
+      <figure class="about-expand-media" data-about-expand-media>
+        <Image
+          src={expandImage}
+          alt={expandAlt}
+          widths={[640, 1024, 1920, 2560]}
+          sizes="100vw"
+          format="webp"
+          quality={70}
+          loading="lazy"
+          decoding="async"
+          class="about-expand-img"
+        />
+        <div class="about-expand-overlay" aria-hidden="true"></div>
+      </figure>
+
+      {/* Overlay revealed once the image is full-bleed. A caller can pass an
+          `expand-content` slot (e.g. the testimonials carousel) to render any
+          custom content over the background; otherwise it falls back to the
+          eyebrow/headline/body copy props. */}
+      {(hasExpandSlot || expandEyebrow || expandHeadline || expandBody) && (
+        <div class="about-expand-content" data-about-expand-content>
+          {hasExpandSlot ? (
+            <slot name="expand-content" />
+          ) : expandEyebrow ? (
+            <EyebrowSection eyebrow={expandEyebrow} center>
+              {expandHeadline && (
+                <h2 class="text-center text-[clamp(2rem,7vw,5rem)] font-light leading-[1.05] text-white">
+                  {expandHeadline}
+                </h2>
+              )}
+              {expandBody && (
+                <p class="mt-6 max-w-xl text-center text-base md:text-lg font-light leading-relaxed text-white/80">
+                  {expandBody}
+                </p>
+              )}
+            </EyebrowSection>
+          ) : (
+            <div class="flex w-full flex-col items-center text-center">
+              {expandHeadline && (
+                <h2 class="text-[clamp(2rem,7vw,5rem)] font-light leading-[1.05] text-white">
+                  {expandHeadline}
+                </h2>
+              )}
+              {expandBody && (
+                <p class="mt-6 max-w-xl text-base md:text-lg font-light leading-relaxed text-white/80">
+                  {expandBody}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+
+    {/* Flow content that scrolls past/over the pinned image. */}
+    <div class="about-expand-flow">
+      <!-- About Bottom Section -->
+      <section class="about-bottom section-container">
+        {/* Mobile: single column stack. md+: leftText | image placeholder | rightText+CTA.
+            The centre cell is a sized PLACEHOLDER — the pinned image visually fills it
+            at rest, then leaves it behind as it expands. */}
+        <div class="grid grid-cols-1 gap-10 md:gap-12 lg:gap-16 md:grid-cols-[1fr_2fr_1fr] items-center">
+          <p class="text-base font-light leading-relaxed text-text">
+            {leftText}
+          </p>
+          <div
+            class="about-expand-placeholder flex items-center justify-center"
+            data-about-expand-placeholder
+          >
+            {/* Reduced-motion only: the resting image, rendered in-place in the
+                grid cell. The animated pin (which morphs to full-bleed) is hidden
+                in that mode, so the layout reads identically minus the motion. */}
+            <Image
+              src={expandImage}
+              alt={expandAlt}
+              widths={[640, 1024, 1920]}
+              sizes="(min-width: 768px) 50vw, 100vw"
+              format="webp"
+              quality={70}
+              loading="lazy"
+              decoding="async"
+              class="about-expand-rest-img"
+            />
+          </div>
+          <div class="flex flex-col justify-between gap-8">
+            <p class="text-base font-light leading-relaxed text-text">
+              {rightText}
+            </p>
+            <Button variant="underline" href={ctaLink} client:load>
+              {ctaText}
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Marquee: scrolls over the pinned image as it expands behind it. -->
+      <div class="about-expand-marquee">
+        <Marquee />
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .about-sticky-section {
+    min-height: var(--about-section-height);
+    position: relative;
+  }
+
+  .about-sticky-pin {
+    --about-pin-top: clamp(5rem, 7vw, 7rem);
+    position: sticky;
+    top: var(--about-pin-top);
+    width: 100%;
+  }
+
+  /* When the stats are shown, the pinned frame fills the visible viewport so the
+     stats can anchor to its BOTTOM (the frame is 100vh minus the top offset). A
+     definite height (not just min-height) lets the inner section resolve 100%. */
+  .about-sticky-pin--with-stats {
+    height: calc(100svh - var(--about-pin-top) - 1.5rem);
+  }
+  .about-sticky-pin--with-stats > section {
+    height: 100%;
+  }
+
+  /* Mobile: cap the frame to 95svh so its bottom edge (where the stats + portrait
+     pin) rises ABOVE the fixed "Ask a question" chat bar instead of sitting
+     behind it. Below lg only — desktop has the 3-corner layout with room. */
+  @media (max-width: 1023px) {
+    .about-sticky-pin--with-stats {
+      height: calc(95svh - var(--about-pin-top) - 1.5rem);
+    }
+  }
+
+  /* Stat counters: absolutely pinned to the bottom-left of the frame, aligned to
+     the same inset as the "About" eyebrow label (the section-container edge). */
+  :global(.about-stats) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
+
+
+  /* Portrait, pinned inside the about frame. Mobile (default): bottom-LEFT and
+     lifted to sit directly ABOVE the stats (vertical stack — image, then stats,
+     then the fixed chat bar). Desktop (lg+): bottom-RIGHT corner, mirroring the
+     bottom-left stats. Square source → height auto-derives from width. */
+  .about-portrait {
+    position: absolute;
+    left: 0;
+    /* Sit just above the bottom-left stats block (~stats height + gap). */
+    bottom: 5.5rem;
+    width: clamp(7rem, 32vw, 11rem);
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+  }
+  @media (min-width: 1024px) {
+    .about-portrait {
+      left: auto;
+      right: 0;
+      bottom: 0;
+      width: clamp(10rem, 16vw, 16rem);
+    }
+  }
+
+  .about-statement {
+    color: var(--color-heading);
+    line-height: 1.08;
+    text-wrap: balance;
+    width: 100%;
+  }
+
+  .about-word {
+    --word-progress: 0;
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .about-word-layer {
+    display: block;
+  }
+
+  .about-word-layer--base {
+    /* dim colour: blend heading toward transparent */
+    color: color-mix(in srgb, var(--color-heading) 12%, transparent);
+  }
+
+  .about-word-layer--overlay {
+    position: absolute;
+    inset: 0;
+    color: var(--color-heading);
+    pointer-events: none;
+    opacity: var(--word-progress);
+    will-change: opacity;
+  }
+
+  .about-space {
+    white-space: pre;
+  }
+
+  /* ── Expand region: one image, centred card → full-bleed background ── */
+  .about-expand-region {
+    position: relative;
+    /* Tall enough to give the scale its travel; the flow content (grid + marquee)
+       lives in the first viewport-ish, the rest is scroll runway for the expand. */
+    min-height: var(--axp-height);
+  }
+
+  /* The image is pinned for the whole region. At rest the script positions it to
+     overlay the centre grid cell (the placeholder); as progress→1 it morphs to
+     full-bleed. Geometry is driven by CSS vars set per-frame in JS. */
+  .about-expand-pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    width: 100%;
+    overflow: hidden;
+    isolation: isolate;
+    /* Sit BEHIND the flow content (grid text + marquee) so they scroll over it. */
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .about-expand-media {
+    position: absolute;
+    margin: 0;
+    overflow: hidden;
+    /* Rest geometry (placeholder box) → full-bleed, interpolated in JS via vars. */
+    left: var(--axp-x, 50%);
+    top: var(--axp-y, 50%);
+    width: var(--axp-w, 60%);
+    height: var(--axp-h, 60%);
+    will-change: left, top, width, height;
+  }
+
+  .about-expand-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Overlay tints toward the page bg colour (dark in dark mode → dark dim; light
+     in light mode → light dim) so legibility holds in both themes. Driven by
+     --axp-dim, which ramps in EARLY (while the marquee scrolls over the resting
+     image) so the marquee text stays readable — not waiting for the morph. */
+  .about-expand-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--color-bg);
+    opacity: calc(var(--axp-overlay) * var(--axp-dim, 0));
+    pointer-events: none;
+  }
+
+  /* Reveal copy/content over the full-bleed image — fades/rises in at the end.
+     The wrapper stays click-through (so empty areas don't trap scroll), but its
+     children become interactive once revealed (e.g. the testimonials controls). */
+  .about-expand-content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    opacity: var(--axp-content, 0);
+    transform: translateY(calc((1 - var(--axp-content, 0)) * 2rem));
+    will-change: opacity, transform;
+  }
+  .about-expand-content > :global(*) {
+    pointer-events: auto;
+  }
+
+  /* Flow content (grid + marquee) rides ABOVE the pinned image. Pulled up by one
+     viewport so it overlaps the sticky pin's first screen — the grid placeholder
+     then sits within that first viewport, aligned with the resting image. */
+  .about-expand-flow {
+    position: relative;
+    z-index: 1;
+    margin-top: -100svh;
+  }
+
+  /* The centre grid cell is a sized placeholder the pinned image fills at rest. */
+  .about-expand-placeholder {
+    width: 100%;
+    max-width: min(100%, 40rem);
+    aspect-ratio: 16 / 9;
+  }
+
+  .about-expand-marquee {
+    position: relative;
+  }
+
+  /* Reduced motion (OS or in-app toggle): no scroll morph. The region collapses
+     to normal flow and we re-order its children with flex so the sequence reads:
+       1. about-flow   → the bottom grid (image stays a normal centred figure that
+                          does NOT enlarge) followed by the marquee
+       2. about-content → the testimonials, rendered as their own clean 100svh
+                          container (independent of the image, which never scales).
+     The pin's geometry vars (--axp-*) are overridden to rest size so any inline
+     values the script may have set before the toggle flipped are ignored. */
+  /* The resting image lives inside the grid placeholder but is ONLY shown in
+     reduced motion — normally the animated pinned figure fills the cell instead. */
+  .about-expand-rest-img {
+    display: none;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  /* No scroll runway. Flex-column so the testimonials (which live inside the pin,
+     BEFORE the flow in DOM order) can be ordered AFTER the marquee — giving the
+     identical visual sequence: about grid → marquee → testimonials. */
+  .about-expand-region.is-reduced {
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Show the in-grid resting image; the animated pinned figure is removed so it
+     can't sit full-bleed behind the page. Layout/content is otherwise identical. */
+  .about-expand-region.is-reduced .about-expand-rest-img { display: block; }
+  .about-expand-region.is-reduced .about-expand-media { display: none; }
+  /* The pin collapses (display:contents) so its children — the (hidden) media and
+     the testimonials — become direct flex children of the region and can be ordered. */
+  .about-expand-region.is-reduced .about-expand-pin {
+    position: static;
+    height: auto;
+    overflow: visible;
+    display: contents;
+  }
+  /* Bottom grid (with the resting image) + marquee come first. The scroll-overlap
+     pull-up is removed so the static flow no longer collides with what follows. */
+  .about-expand-region.is-reduced .about-expand-flow {
+    order: 1;
+    margin-top: 0;
+  }
+  /* Testimonials: a clean 100svh panel after the marquee. */
+  .about-expand-region.is-reduced .about-expand-content {
+    order: 2;
+    position: static;
+    opacity: 1;
+    transform: none;
+    min-height: 100svh;
+    justify-content: center;
+  }
+  .about-expand-region.is-reduced .about-expand-content > :global(*) {
+    width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-sticky-section {
+      min-height: auto;
+    }
+    .about-sticky-pin {
+      position: static;
+      min-height: auto;
+      padding-block: 0;
+    }
+    /* No pinned frame to anchor to — stats return to normal flow under the text. */
+    :global(.about-stats) {
+      position: static;
+      margin-top: clamp(1.5rem, 4vw, 3rem);
+    }
+    /* No pinned frame to anchor to — hide the corner portrait. */
+    .about-portrait {
+      display: none;
+    }
+    .about-word-layer--overlay {
+      opacity: 1;
+      will-change: auto;
+    }
+  }
+  /* Same static fallback for the in-app accessibility reduced-motion toggle. */
+  :global([data-a11y-motion="reduced"]) .about-sticky-section {
+    min-height: auto;
+  }
+  :global([data-a11y-motion="reduced"]) .about-sticky-pin {
+    position: static;
+    min-height: auto;
+    padding-block: 0;
+  }
+  :global([data-a11y-motion="reduced"]) .about-stats {
+    position: static;
+    margin-top: clamp(1.5rem, 4vw, 3rem);
+  }
+  :global([data-a11y-motion="reduced"]) .about-portrait {
+    display: none;
+  }
+  :global([data-a11y-motion="reduced"]) .about-word-layer--overlay {
+    opacity: 1;
+    will-change: auto;
+  }
+
+  /* ── Rolling logo divider ── */
+  .about-roll-shell {
+    view-timeline-name: --about-roll;
+    view-timeline-axis: block;
+  }
+
+  /* Bounce wrapper: positioned along the line, handles horizontal travel + entry drop */
+  .about-roll-bounce {
+    position: absolute;
+    top: 50%;
+    left: -3rem;
+    display: block;
+    transform: translateX(-50%) translateY(-50%);
+    /* Entry bounce — fires once on first paint */
+    animation: about-logo-bounce 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.1s;
+  }
+
+  /* Spin wrapper: only rotates, scroll-linked */
+  .about-roll-spin {
+    display: block;
+    transform: rotate(0deg);
+    will-change: transform;
+  }
+
+  @supports (animation-timeline: view()) {
+    .about-roll-bounce {
+      animation:
+        about-logo-bounce 0.9s cubic-bezier(0.22, 1, 0.36, 1) both 0.1s,
+        about-logo-travel linear both;
+      animation-timeline: auto, --about-roll;
+      animation-range: auto, entry 0% cover 100%;
+    }
+
+    .about-roll-spin {
+      animation: about-logo-spin linear both;
+      animation-timeline: --about-roll;
+      animation-range: entry 0% cover 100%;
+    }
+  }
+
+  @keyframes about-logo-bounce {
+    0%   { transform: translateX(-50%) translateY(calc(-50% - 220px)) scaleY(1.1) scaleX(0.9); }
+    55%  { transform: translateX(-50%) translateY(-50%) scaleY(0.7)  scaleX(1.25); }
+    70%  { transform: translateX(-50%) translateY(calc(-50% - 40px))  scaleY(1.05) scaleX(0.97); }
+    82%  { transform: translateX(-50%) translateY(-50%) scaleY(0.88) scaleX(1.1); }
+    91%  { transform: translateX(-50%) translateY(calc(-50% - 12px))  scaleY(1)   scaleX(1); }
+    100% { transform: translateX(-50%) translateY(-50%) scaleY(1)    scaleX(1); }
+  }
+
+  @keyframes about-logo-travel {
+    from { left: -3rem; }
+    to   { left: calc(100% + 3rem); }
+  }
+
+  @keyframes about-logo-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(1440deg); }
+  }
+
+  /* Reduced motion (OS preference OR the in-app accessibility toggle): hide the
+     rolling logo divider entirely. */
+  @media (prefers-reduced-motion: reduce) {
+    .about-roll-bounce {
+      display: none;
+    }
+  }
+  :global([data-a11y-motion="reduced"]) .about-roll-bounce {
+    display: none;
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { readMotionPreference } from "@/hooks/useMotionPreference";
+  gsap.registerPlugin(ScrollTrigger);
+
+  function init() {
+    const sections = document.querySelectorAll<HTMLElement>("[data-about-sticky='true']");
+    if (!sections.length) return;
+
+    sections.forEach((section) => {
+      const words = section.querySelectorAll<HTMLElement>("[data-about-word-progress]");
+      if (!words.length) return;
+
+      // Reduced motion (OS preference OR in-app accessibility toggle): show the
+      // statement fully revealed and skip the scroll-driven reveal entirely.
+      if (readMotionPreference()) {
+        words.forEach((w) => w.style.setProperty("--word-progress", "1"));
+        return;
+      }
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        onUpdate(self) {
+          const total = words.length || 1;
+          words.forEach((node, i) => {
+            const wp = Math.max(0, Math.min(self.progress * total - i, 1));
+            node.style.setProperty("--word-progress", wp.toFixed(4));
+          });
+        },
+      });
+    });
+
+    initExpand();
+  }
+
+  // ── One-image expand: centred grid cell → full-bleed background ──
+  // The pinned <figure> morphs from the placeholder's box (rest) to the full
+  // pin box (full-bleed). Geometry is measured from the real elements so it
+  // stays correct at any breakpoint; recomputed on ScrollTrigger refresh.
+  function initExpand() {
+    const regions =
+      document.querySelectorAll<HTMLElement>("[data-about-expand]");
+    if (!regions.length) return;
+
+    regions.forEach((region) => {
+      const pin = region.querySelector<HTMLElement>("[data-about-expand-pin]");
+      const media = region.querySelector<HTMLElement>(
+        "[data-about-expand-media]",
+      );
+      const placeholder = region.querySelector<HTMLElement>(
+        "[data-about-expand-placeholder]",
+      );
+      if (!pin || !media || !placeholder) return;
+
+      // Toggle the static reduced-motion layout (image stays a centred figure,
+      // testimonials become a clean 100svh container). Kept in sync with both the
+      // OS preference and the in-app accessibility toggle so flipping it live
+      // re-lays-out without a reload.
+      const syncReduced = () =>
+        region.classList.toggle("is-reduced", readMotionPreference());
+      syncReduced();
+      window
+        .matchMedia?.("(prefers-reduced-motion: reduce)")
+        ?.addEventListener("change", syncReduced);
+      new MutationObserver(syncReduced).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-a11y-motion", "data-a11y-animations", "data-a11y-images"],
+      });
+
+      // Reduced motion: leave the static CSS fallback (image shown in grid).
+      if (readMotionPreference()) return;
+
+      // Rest geometry = the placeholder's box relative to the REGION's top-left.
+      // At progress 0 the sticky pin's top aligns with the region top, so this
+      // region-relative offset equals the placeholder's position inside the pin
+      // at rest — and being pure layout (both in flow within the region) it's
+      // scroll-invariant, so it's safe to measure on any refresh.
+      let rest = { x: 0, y: 0, w: 0, h: 0 };
+      const measureRest = () => {
+        const regionRect = region.getBoundingClientRect();
+        const phRect = placeholder.getBoundingClientRect();
+        rest = {
+          x: phRect.left - regionRect.left,
+          y: phRect.top - regionRect.top,
+          w: phRect.width,
+          h: phRect.height,
+        };
+      };
+
+      // Hold the image at its resting (in-grid) size until the scroll has carried
+      // the bottom-section grid + marquee up and OVER it; only then start the
+      // morph. START is the fraction of the region's scroll spent holding.
+      const START = 0.45;
+
+      const apply = (p: number) => {
+        const fullW = pin.clientWidth;
+        const fullH = pin.clientHeight;
+        // Remap [START, 1] → [0, 1]; below START the image stays at rest.
+        const m = Math.max(0, Math.min((p - START) / (1 - START), 1));
+        // Ease the geometry so the morph feels smooth, not linear.
+        const e = m * m * (3 - 2 * m); // smoothstep
+        const x = rest.x + (0 - rest.x) * e;
+        const y = rest.y + (0 - rest.y) * e;
+        const w = rest.w + (fullW - rest.w) * e;
+        const h = rest.h + (fullH - rest.h) * e;
+        media.style.setProperty("--axp-x", `${x}px`);
+        media.style.setProperty("--axp-y", `${y}px`);
+        media.style.setProperty("--axp-w", `${w}px`);
+        media.style.setProperty("--axp-h", `${h}px`);
+        region.style.setProperty("--axp-progress", e.toFixed(4));
+        // Dim overlay — two stages so it keeps deepening AS the image grows:
+        //  1. Base dim ramps in EARLY (during the hold, p:0→START) so the marquee
+        //     stays readable over the resting photo — reaches BASE_DIM at START.
+        //  2. From there it CONTINUES darkening with the morph progress (e) up to
+        //     full (1.0) as the image expands, landing at max dim once full-bleed
+        //     so the revealed testimonial text is at WCAG AA contrast.
+        const BASE_DIM = 0.8; // dim already applied while the marquee scrolls over
+                              // the resting photo (keeps that text readable), then
+                              // it keeps deepening to full as the image expands.
+        const preDim = Math.min(p / START, 1) * BASE_DIM; // 0 → BASE_DIM over the hold
+        const growDim = BASE_DIM + (1 - BASE_DIM) * e;     // BASE_DIM → 1 as it grows
+        const dim = p < START ? preDim : growDim;
+        region.style.setProperty("--axp-dim", dim.toFixed(4));
+        // Overlay copy fades in over the final 35% of the morph.
+        const content = Math.max(0, Math.min((m - 0.65) / 0.35, 1));
+        region.style.setProperty("--axp-content", content.toFixed(4));
+      };
+
+      ScrollTrigger.create({
+        trigger: region,
+        start: "top top",
+        end: "bottom bottom",
+        invalidateOnRefresh: true,
+        onRefresh(self) {
+          measureRest();
+          apply(self.progress);
+        },
+        onUpdate(self) {
+          apply(self.progress);
+        },
+      });
+
+      measureRest();
+      apply(0);
+    });
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

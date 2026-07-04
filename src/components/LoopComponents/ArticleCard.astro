@@ -1,129 +1,175 @@
 ---
 // src/components/LoopComponents/ArticleCard.astro
 /**
- * Article Card Component
- *
- * Card component for displaying blog posts/articles with:
- * - Title with optional link
- * - Description with line clamping
- * - Publication date
- * - Tags (max 3 shown)
- * - Author information with avatar/initials
- *
- * Used in BlogVariant for blog post listings.
- * Author data is queried on-demand from references.
+ * Article Card — the editorial (webmaxers) blog card: hairline cover image,
+ * date · tag meta, light title, 2-line description, "Read article" link.
+ * The single card look for BlogVariant.
  */
 
-import { find, isCollectionReference } from "@/utils/query";
+import { resolveImageMetadata, getImageAlt } from "@/utils/images";
+import { getImage } from "astro:assets";
+import Button from "@/components/Button/Button";
 
 export interface Props {
   title: string;
   url?: string;
   description?: string;
   date?: Date | string;
+  /** Blog frontmatter date (used when `date` isn't passed). */
+  publishDate?: Date | string;
   tags?: string[];
-  author?: any; // Reference object: { collection: 'authors', id: 'jane-doe' }
+  featuredImage?: unknown;
 }
 
-const { title, url, description, date, tags, author } = Astro.props;
+const {
+  title,
+  url,
+  description,
+  date,
+  publishDate,
+  tags,
+  featuredImage,
+} = Astro.props;
 
-// Query for author data if reference exists
-let authorData: Record<string, any> | null = null;
-if (isCollectionReference(author)) {
-  const authorEntry = await find(author.collection, author.id);
-  if (authorEntry) {
-    authorData = authorEntry.data as Record<string, any>;
-  }
+const displayDate = date ?? publishDate;
+
+// Resolve + optimize the cover image.
+const imageMeta = resolveImageMetadata(featuredImage);
+let imgSrc: string | undefined;
+if (imageMeta) {
+  const img = await getImage({
+    src: imageMeta,
+    width: 800,
+    height: 500,
+    format: "webp",
+    quality: 72,
+    fit: "cover",
+    position: "top",
+  });
+  imgSrc = img.src;
 }
+const imgAlt = getImageAlt(featuredImage, `${title} cover image`);
 
-// Extract author display data
-const authorName = authorData?.title || authorData?.name || "";
-const authorRole = authorData?.role || "";
-
-// Generate initials from name
-const authorInitials =
-  authorData?.initials ||
-  (authorName
-    ? authorName
-        .split(" ")
-        .map((w: string) => w[0])
-        .join("")
-        .toUpperCase()
-    : "??");
+const dateLabel = displayDate
+  ? new Date(displayDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  : "";
 ---
 
-<article
-  class="bg-bg rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
->
-  <div class="p-6">
-    {/* Article metadata and content */}
-    <div class="mb-4">
-      {/* Tags - show first 3 */}
-      {
-        tags && tags.length > 0 && (
-          <div class="flex flex-wrap gap-2 mb-3">
-            {tags.slice(0, 3).map((tag: string) => (
-              <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )
-      }
+<article class="ac-dark group flex  flex-col">
+  {/* Media */}
+  <a href={url} class="ac-dark__media block w-full overflow-hidden" aria-hidden={!url}>
+    {imgSrc ? (
+      <img
+        src={imgSrc}
+        alt={imgAlt}
+        loading="lazy"
+        decoding="async"
+        class="block h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+      />
+    ) : (
+      <div class="ac-dark__placeholder">Article</div>
+    )}
+  </a>
 
-      {/* Title - linked if URL provided */}
-      <h3 class="text-2xl mb-2">
-        {
-          url ? (
-            <a
-              href={url}
-              class="text-heading hover:text-primary transition-colors"
-            >
-              {title}
-            </a>
-          ) : (
-            <span class="text-heading">{title}</span>
-          )
-        }
-      </h3>
-
-      {/* Description with 2-line clamp */}
-      {description && <p class="text-text mb-4 line-clamp-2">{description}</p>}
-
-      {/* Publication date */}
-      <div class="flex items-center text-sm text-text gap-4">
-        {date && <time>{new Date(date).toLocaleDateString()}</time>}
-      </div>
-    </div>
-
-    {/* Author info with avatar */}
-    {
-      authorName && (
-        <div class="pt-4 mt-4 border-t border-surface">
-          <div class="flex items-center gap-3">
-            {/* Avatar circle with initials */}
-            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <span class="text-primary text-sm font-semibold">
-                {authorInitials}
-              </span>
-            </div>
-            <div>
-              <p class="font-medium text-heading">{authorName}</p>
-              {authorRole && <p class="text-xs text-text">{authorRole}</p>}
-            </div>
-          </div>
-        </div>
-      )
-    }
+  {/* Meta row */}
+  <div class="ac-dark__meta">
+    {dateLabel && <time class="ac-dark__date">{dateLabel}</time>}
+    {tags && tags.length > 0 && (
+      <span class="ac-dark__tag">{tags[0]}</span>
+    )}
   </div>
+
+  {/* Title */}
+  <h3 class="ac-dark__title">
+    {url ? <a href={url}>{title}</a> : <span>{title}</span>}
+  </h3>
+
+  {description && <p class="ac-dark__desc">{description}</p>}
+
+  {url && (
+    <Button
+      variant="underline"
+      href={url}
+      size="sm"
+      className="ac-dark__link mt-4 self-start"
+      client:load
+    >
+      Read article
+    </Button>
+  )}
 </article>
 
 <style>
-  /* CSS for 2-line text truncation */
-  .line-clamp-2 {
+  /* ── Editorial card — hairline, light type, cover image ── */
+  .ac-dark {
+    --ac-rule: color-mix(in srgb, currentColor 12%, transparent);
+    --ac-muted: color-mix(in srgb, currentColor 45%, transparent);
+    color: var(--color-heading);
+  }
+
+  .ac-dark__media {
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--ac-rule);
+  }
+  .ac-dark__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg3, #18181b);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ac-muted);
+  }
+
+  .ac-dark__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.1rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ac-muted);
+  }
+  .ac-dark__tag::before {
+    content: "·";
+    margin-right: 0.75rem;
+    color: var(--ac-muted);
+  }
+
+  .ac-dark__title {
+    margin-top: 0.55rem;
+    font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-heading);
+  }
+  .ac-dark__title a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+  .ac-dark__title a:hover { opacity: 0.7; }
+
+  .ac-dark__desc {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--color-text) 60%, transparent);
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
   }
+
 </style>

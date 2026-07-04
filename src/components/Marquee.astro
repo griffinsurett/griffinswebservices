@@ -1,0 +1,67 @@
+---
+// src/components/Marquee.astro
+import LogoMark from "@/components/Logo/LogoMark.astro";
+
+interface Props {
+  items?: string[];
+  speed?: number; // seconds for one full loop
+  logoSize?: number;
+  class?: string;
+}
+
+const {
+  items = [
+    "DESIGN",
+    "DEVELOP",
+    "DEPLOY",
+    "STRATEGY",
+    "BRANDING",
+    "PERFORMANCE",
+    "SCALE",
+    "RESULTS",
+  ],
+  speed = 20,
+  logoSize = 40,
+  class: className = "",
+} = Astro.props;
+
+// Duplicate so the seam is invisible
+const repeated = [...items, ...items];
+---
+
+<div
+  class={`marquee-root overflow-hidden w-full py-32 lg:py-48 ${className}`}
+  aria-hidden="true"
+>
+  <div
+    class="marquee-track flex items-center whitespace-nowrap"
+    style={`--marquee-speed: ${speed}s`}
+  >
+    {repeated.map((item) => (
+      <span class="marquee-item inline-flex items-center gap-6 px-6 md:gap-12 md:px-12">
+        <span class="text-heading font-light text-[clamp(2.25rem,9vw,8rem)] tracking-tight uppercase leading-none">
+          {item}
+        </span>
+        <LogoMark size={logoSize} loading="lazy" imgClass="block w-6 h-6 md:w-10 md:h-10" />
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .marquee-track {
+    animation: marquee var(--marquee-speed, 20s) linear infinite;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+</style>

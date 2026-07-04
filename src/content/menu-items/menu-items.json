@@ -10,16 +10,6 @@
     "menu": ["main-menu", "links-menu", "footer-menu-2"]
   },
   {
-    "id": "pricing",
-    "title": "Pricing",
-    "description": "Pricing estimator",
-    "url": "/pricing",
-    "icon": "fa6-solid:tag",
-    "order": 4.5,
-    "openInNewTab": false,
-    "menu": ["main-menu"]
-  },
-  {
     "id": "contact-us",
     "title": "Contact Us",
     "description": "Contact page link",

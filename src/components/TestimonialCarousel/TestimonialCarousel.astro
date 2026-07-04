@@ -1,0 +1,388 @@
+---
+import { getImage } from "astro:assets";
+import TestimonialCarouselClient from "./TestimonialCarousel";
+import EyebrowSection from "@/layouts/EyebrowSection.astro";
+import { getCollection } from "astro:content";
+import { getCollectionMeta } from "@/utils/collections";
+import { resolveImageMetadata, getImageAlt } from "@/utils/images";
+import servicesBg from "@/assets/fire-pic.jpg";
+
+interface Props {
+  /** Render a full-bleed fixed background photo (dimmed for readability) behind
+   *  the carousel. Used on the homepage to put testimonials on the fire image. */
+  withBackground?: boolean;
+}
+const { withBackground = false } = Astro.props;
+
+// Optimized fire background sources — only built when requested.
+const bg = withBackground
+  ? await Promise.all([
+      getImage({ src: servicesBg, format: "webp", quality: 68, width: 768 }),
+      getImage({ src: servicesBg, format: "webp", quality: 72, width: 1280 }),
+      getImage({ src: servicesBg, format: "webp", quality: 74, width: 1920 }),
+    ])
+  : null;
+
+const raw = await getCollection("testimonials");
+
+// Eyebrow comes from the collection's _meta title.
+const meta = getCollectionMeta("testimonials");
+const eyebrow = meta.title ?? "Testimonials";
+
+const sorted = raw
+  .filter((e) => !e.data.draft)
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+
+interface SerializedItem {
+  id: string;
+  quote: string;
+  author: string;
+  role: string;
+  company?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+}
+
+const items: SerializedItem[] = await Promise.all(
+  sorted.map(async (entry) => {
+    const meta = resolveImageMetadata(entry.data.featuredImage);
+    let imageSrc: string | undefined;
+
+    if (meta) {
+      const optimised = await getImage({
+        src: meta,
+        width: 288,
+        height: 288,
+        format: "webp",
+        quality: 85,
+      });
+      imageSrc = optimised.src;
+    }
+
+    return {
+      id: entry.id,
+      quote: entry.data.description ?? "",
+      author: entry.data.author ?? entry.data.title,
+      role: entry.data.role ?? "",
+      company: entry.data.company,
+      imageSrc,
+      imageAlt: getImageAlt(entry.data.featuredImage, entry.data.author ?? entry.data.title),
+    };
+  }),
+);
+---
+
+<div class:list={["tc-section", { "tc-section--bg": withBackground }]}>
+  {bg && (
+    <div class="tc-bg" aria-hidden="true">
+      <picture>
+        <source media="(max-width: 640px)" srcset={bg[0].src} type="image/webp" />
+        <source media="(min-width: 641px) and (max-width: 1024px)" srcset={bg[1].src} type="image/webp" />
+        <source media="(min-width: 1025px)" srcset={bg[2].src} type="image/webp" />
+        <img src={bg[2].src} alt="" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" fetchpriority="low" />
+      </picture>
+      <div class="tc-bg-dim"></div>
+    </div>
+  )}
+  <div class="tc-content section-container">
+    <EyebrowSection eyebrow={eyebrow}>
+      <TestimonialCarouselClient items={items} client:visible />
+    </EyebrowSection>
+  </div>
+</div>
+
+<style>
+  /* Outer section padding (the EyebrowSection owns the eyebrow/content columns;
+     the background comes from the parent curtain layer). */
+  .tc-section {
+    width: 100%;
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+
+  /* ── Fire-background variant ──────────────────────────────────────
+     Full-bleed fire photo behind the carousel with a dim overlay so the light
+     testimonial text stays readable. Fills the pinned curtain layer. */
+  .tc-section--bg {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* EXACTLY one viewport — not min-height. As a curtain layer this section
+       must never exceed the layer's 100vh, or its overflow stays in frame when
+       the layer slides up (a band of it covers the footer beneath). */
+    height: 100vh;
+    overflow: hidden;
+  }
+  .tc-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .tc-bg picture,
+  .tc-bg img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .tc-bg-dim {
+    position: absolute;
+    inset: 0;
+    /* Darken the fire so the testimonial text reads clearly on top. */
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .tc-section--bg .tc-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+  }
+
+  /* ── Root ── EyebrowSection's slot column drives width now, so the carousel
+     fills it (no own max-width / centering / padding / background). */
+  :global(.tc-root) {
+    width: 100%;
+    outline: none;
+  }
+
+  :global(.tc-inner) {
+    width: 100%;
+  }
+
+  /* ── Float layout ── */
+  :global(.tc-quote-wrap) {
+    /* Quote size — single source of truth, shared by the quote text and the
+       float image (which sizes itself to exactly two text lines). Defined on
+       the wrapper so both the floated image and the quote inherit it.
+       min = mobile (a lot smaller), max = desktop (a little smaller). */
+    --tc-quote-size: clamp(1.35rem, 4vw, 3.25rem);
+    /* overflow:hidden creates a block formatting context — contains the float */
+    overflow: hidden;
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  /*
+   * The square image floats left. Its size is tied to two line-heights of the
+   * quote text so it occupies exactly the first two lines, matching the reference.
+   * line-height 1.18 × font-size × 2 lines ≈ the magic number.
+   * We use a CSS custom property computed from the quote font-size for precision.
+   */
+  :global(.tc-float-img),
+  :global(.tc-float-initials) {
+    float: left;
+    /* ~2 lines tall — font-size × line-height (1.18) × lines, trimmed slightly
+       so it sits a touch under two full lines. */
+    --tc-img-size: calc(var(--tc-quote-size) * 1.18 * 1.8);
+    width: var(--tc-img-size);
+    height: var(--tc-img-size);
+    object-fit: cover;
+    /* gap between image and text */
+    margin-right: clamp(0.9rem, 1.8vw, 1.5rem);
+    /* nudge down slightly so image baseline aligns with first text line */
+    margin-top: 0.08em;
+    flex-shrink: 0;
+    /* square — no border-radius, matches reference exactly */
+    border-radius: 0;
+  }
+
+  :global(.tc-float-initials) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: calc(var(--tc-img-size, 5rem) * 0.4);
+    font-weight: 300;
+  }
+
+  :global(.tc-quote) {
+    margin: 0;
+    font-size: var(--tc-quote-size);
+    font-weight: 300;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+    color: var(--color-heading);
+    /* display:block so text wraps around the float naturally */
+    display: block;
+  }
+
+/* clearfix element */
+  :global(.tc-clear) {
+    clear: both;
+  }
+
+  /* ── Footer ── */
+  :global(.tc-footer) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* ── Attribution ── */
+  :global(.tc-attribution) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  :global(.tc-author) {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-heading);
+    text-transform: uppercase;
+  }
+
+  :global(.tc-sep) {
+    display: inline-block;
+    width: 1px;
+    height: 0.8em;
+    background: var(--color-border-strong);
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  :global(.tc-role) {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  :global(.tc-dot) {
+    color: var(--color-border-strong);
+    font-size: 0.85rem;
+  }
+
+  :global(.tc-company) {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* ── Nav ── */
+  :global(.tc-nav) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  :global(.tc-arrow) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-muted);
+    transition: color 200ms, border-color 200ms;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  :global(.tc-arrow:hover:not(:disabled)) {
+    color: var(--color-heading);
+    border-color: var(--color-border-strong);
+  }
+  :global(.tc-arrow:disabled) {
+    opacity: 0.35;
+    cursor: default;
+  }
+  :global(.tc-arrow:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  :global(.tc-dots) {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  :global(.tc-dot-btn) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding-inline: 0.35rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid transparent;
+    margin-bottom: -1px;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: color 200ms;
+  }
+  :global(.tc-dot-btn:hover:not(:disabled)) {
+    color: var(--color-text);
+  }
+  :global(.tc-dot-btn--active) {
+    color: var(--color-heading);
+    border-bottom-color: var(--color-accent);
+  }
+  :global(.tc-dot-btn:focus-visible) {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* ── Transition animations ── */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.tc-quote-wrap--in),
+    :global(.tc-attribution--in) {
+      animation: tc-fade-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    :global(.tc-quote-wrap--out-next),
+    :global(.tc-attribution--out-next) {
+      animation: tc-out-next 380ms cubic-bezier(0.55, 0, 1, 0.45) both;
+    }
+    :global(.tc-quote-wrap--out-prev),
+    :global(.tc-attribution--out-prev) {
+      animation: tc-out-prev 380ms cubic-bezier(0.55, 0, 1, 0.45) both;
+    }
+
+    @keyframes tc-fade-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes tc-out-next {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-10px); }
+    }
+    @keyframes tc-out-prev {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(10px); }
+    }
+  }
+
+  /* ── Mobile: unfloat, stack vertically ── */
+  @media (max-width: 640px) {
+    :global(.tc-float-img),
+    :global(.tc-float-initials) {
+      float: none;
+      width: clamp(52px, 14vw, 72px);
+      height: clamp(52px, 14vw, 72px);
+      margin-right: 0;
+      margin-bottom: 1.25rem;
+    }
+
+    :global(.tc-footer) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+    }
+  }
+</style>

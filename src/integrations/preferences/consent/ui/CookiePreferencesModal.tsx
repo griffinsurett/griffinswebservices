@@ -170,7 +170,9 @@ function CookiePreferencesModal({
       onClose={onClose}
       closeButton={true}
       className="bg-bg rounded-2xl p-8 max-w-3xl w-full mx-4 max-h-[90vh] flex flex-col shadow-2xl"
-      overlayClass="bg-primary-dark/60"
+      // z-[100001] stacks the overlay ABOVE the site header (z-[100000]); the
+      // Modal's default z-[99999] would otherwise sit under the header.
+      overlayClass="bg-primary-dark/60 z-[100001]"
       ariaLabel="Manage cookie consent preferences"
       ssr={false}
     >
