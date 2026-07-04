@@ -42,119 +42,123 @@ const heroDescription =
     scrollToSection="#under-hero"
   />
 
-  <!-- <div id="under-hero">
-    <div
+  <div id="under-hero">
+    <!-- <div
       class="block lg:min-h-screen inner-section"
-      {...animationProps("fade-in-up", { once: false, threshold: 0.2 })}
-    >
+      {...animationProps("fade-in-up", { once: false, threshold: 0.2 })} -->
+    
       <ContentRenderer
+        query={byTag("capabilities", "featured").orderBy(sortByOrder())}
+        variant="CardVariant"
+        id="capabilities"
+        title="What We Do"
+        columns={3}
+        gap="md"
+        showHeadingSection={false}
+        showButtonSection={false}
+        card={{
+          hoverOverlayClassName: "inset-0 bg-transparent",
+        }}
+      />
+      <!-- <ContentRenderer
         query={byTag("projects", "screen").orderBy(sortByOrder())}
         variant="PortfolioScreenVariant"
         clientLoadPlaceholder={true}
-      />
-    </div> -->
+      /> -->
+    <!-- </div> -->
 
-  <ContentRenderer
-    query={byTag("capabilities", "featured").orderBy(sortByOrder())}
-    variant="CardVariant"
-    id="capabilities"
-    title="What We Do"
-    columns={3}
-    gap="md"
-    showHeadingSection={false}
-    showButtonSection={false}
-    card={{
-      hoverOverlayClassName: "inset-0 bg-transparent",
-    }}
-  />
-
-  {
-    /* ABOUT — ported from webmaxers. Animated statement reveal → rolling logo
+    {
+      /* ABOUT — ported from webmaxers. Animated statement reveal → rolling logo
         divider → single image that expands to a full-bleed background with a
         marquee scrolling over it. The testimonials carousel is revealed over the
         full-bleed image via the `expand-content` slot — same as the webmaxers
         homepage. (No `withBackground` here: the AboutSection's own expanding
         image is already the backdrop.) */
-  }
-  <AboutSection
-    statement={`${siteData.title} builds fast, trustworthy websites that help local businesses get found, look credible, and win more work.`}
-    leftText="We design for clarity first, build it right the first time, and keep it fast long after launch."
-    rightText="Our goal is simple: a website that makes your business easier to trust, easier to find, and easier to contact."
-    ctaText="See What We Do"
-    ctaLink="/capabilities"
-    showStats
-  >
-    <div slot="expand-content" class="w-full">
-      <TestimonialCarousel />
-    </div>
-  </AboutSection>
+    }
+    <AboutSection
+      statement={`${siteData.title} builds fast, trustworthy websites that help local businesses get found, look credible, and win more work.`}
+      leftText="We design for clarity first, build it right the first time, and keep it fast long after launch."
+      rightText="Our goal is simple: a website that makes your business easier to trust, easier to find, and easier to contact."
+      ctaText="See What We Do"
+      ctaLink="/capabilities"
+      showStats
+    >
+      <div slot="expand-content" class="w-full">
+        <TestimonialCarousel />
+      </div>
+    </AboutSection>
 
-  {
-    /* PROJECTS — ported from webmaxers' filmstrip. In standalone mode it
+    {
+      /* PROJECTS — ported from webmaxers' filmstrip. In standalone mode it
         self-pins: the project row scrubs left, then the whole section peels
         off-LEFT to reveal whatever follows it in normal document flow (here,
         the Benefits section). This is the same "curtain" peel as webmaxers, but
         the revealed content below scrolls NATURALLY — it isn't trapped in a
         fixed-height stacked layer, so tall sections are never clipped.
         Below 768px / reduced-motion the filmstrip flattens to a vertical stack. */
-  }
-  <ContentRenderer
-    query={byTag("projects", "screen").orderBy(sortByOrder())}
-    variant="FilmstripVariant"
-    title={"Selected work\n& explorations"}
-    collectionUrl="/projects"
-  />
-
-  <!-- PROCESS (disabled) -->
-  <!-- <HomeProblemSolutionIntro /> -->
-  <!-- <HomeSolutionBridge /> -->
-
-  {
-    /* BENEFITS — revealed as the filmstrip peels off-left, then scrolls
-        naturally as normal-flow content (no fixed-height clipping). */
-  }
-  <ContentRenderer
-    query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
-    variant="BenefitsVariant"
-    id="benefits"
-    heading="Your website should help with things like this."
-    description="A good website should make your business easier to trust, easier to find, and easier to contact."
-    columns={2}
-    gap="lg"
-  />
-
-  <!-- PROCESS (disabled) -->
-  <!-- <HomeProblemSolutionIntro /> -->
-  <!-- <HomeSolutionBridge /> -->
-
-  {
-    /* TrustPanel removed — its trust stats + testimonial quote are now covered
-        by the ported About section above. Re-enable by uncommenting. */
-  }
-  {/* <TrustPanel /> */}
-
-  <div class="bottom-content-section">
+    }
     <ContentRenderer
-      query={byTag("technologies", "featured").orderBy(sortByOrder()).limit(8)}
-      variant="TechnologiesVariant"
-      title="Featured Technologies"
-      description="These are some of the tools and platforms we use to build and support websites."
+      query={byTag("projects", "screen").orderBy(sortByOrder())}
+      variant="FilmstripVariant"
+      title={"Selected work\n& explorations"}
+      collectionUrl="/projects"
     />
 
-    {/* FAQs moved to /faq */}
-  </div>
+    <!-- PROCESS (disabled) -->
+    <!-- <HomeProblemSolutionIntro /> -->
+    <!-- <HomeSolutionBridge /> -->
 
-  <!-- BLOG — editorial cards (webmaxers style) under a GWS SectionHeader. -->
-  <ContentRenderer
-    query={query("blog").orderBy(sortByDate("publishDate", "desc")).limit(4)}
-    variant="BlogVariant"
-    columns={2}
-    showButtonSection={false}
-    eyebrow="Latest Articles"
-    title="Latest Articles"
-    heading={{
-      before: "Stay Informed.",
-      text: "Read Our Latest Insights.",
-    }}
-  />
+    {
+      /* BENEFITS — revealed as the filmstrip peels off-left, then scrolls
+        naturally as normal-flow content (no fixed-height clipping). */
+    }
+    <ContentRenderer
+      query={related("benefits", "solutions", "websites").orderBy(
+        sortByOrder(),
+      )}
+      variant="BenefitsVariant"
+      id="benefits"
+      heading="Your website should help with things like this."
+      description="A good website should make your business easier to trust, easier to find, and easier to contact."
+      columns={2}
+      gap="lg"
+    />
+
+    <!-- PROCESS (disabled) -->
+    <!-- <HomeProblemSolutionIntro /> -->
+    <!-- <HomeSolutionBridge /> -->
+
+    {
+      /* TrustPanel removed — its trust stats + testimonial quote are now covered
+        by the ported About section above. Re-enable by uncommenting. */
+    }
+    {/* <TrustPanel /> */}
+
+    <div class="bottom-content-section">
+      <ContentRenderer
+        query={byTag("technologies", "featured")
+          .orderBy(sortByOrder())
+          .limit(8)}
+        variant="TechnologiesVariant"
+        title="Featured Technologies"
+        description="These are some of the tools and platforms we use to build and support websites."
+      />
+
+      {/* FAQs moved to /faq */}
+    </div>
+
+    <!-- BLOG — editorial cards (webmaxers style) under a GWS SectionHeader. -->
+    <ContentRenderer
+      query={query("blog").orderBy(sortByDate("publishDate", "desc")).limit(4)}
+      variant="BlogVariant"
+      columns={2}
+      showButtonSection={false}
+      eyebrow="Latest Articles"
+      title="Latest Articles"
+      heading={{
+        before: "Stay Informed.",
+        text: "Read Our Latest Insights.",
+      }}
+    />
+  </div>
 </SiteLayout>
