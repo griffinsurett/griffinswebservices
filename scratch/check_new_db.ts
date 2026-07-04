@@ -50,7 +50,7 @@ async function check() {
 
   if (docsErr || chunksErr) {
     console.log("\n⚠️  SETUP NEEDED — Run the SQL schema manually:");
-    console.log("👉 https://supabase.com/dashboard/project/afvzesojldpbfaiedwme/sql/new");
+    console.log("👉 https://supabase.com/dashboard/project/bxsjlnmuyizoxwmfqxsb/sql/new");
     console.log("   Copy & paste the contents of: scratch/schema.sql");
   } else {
     console.log("\n🎉 Database is fully ready!");

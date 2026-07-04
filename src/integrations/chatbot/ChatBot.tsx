@@ -237,21 +237,31 @@ function ChatBot() {
     setMsgs(prev => [...prev, userMsg]);
     setInput("");
     setTyping(true);
-    // UI-ONLY MODE — the /api/chat endpoint is disabled, so we do NOT call it.
-    // Show the typing indicator briefly, then a canned reply so the widget's UI
-    // (bubbles, typing dots, unread badge) is fully demonstrable without a backend.
-    // To restore live chat: re-enable /api/chat and swap this block for
-    //   const reply = await callChatAPI(history, sessionId);
-    window.setTimeout(() => {
+    const history = [...msgs, userMsg].map(m => ({
+      role: m.role,
+      content: m.text,
+    }));
+
+    try {
+      const reply = await callChatAPI(history, sessionId);
       setMsgs(prev => [...prev, {
-        id: `b${Date.now()}`, role: "assistant",
-        text: "Thanks for reaching out! Live chat isn't available right now — please reach us at /contact-us and we'll get right back to you.",
+        id: `b${Date.now()}`,
+        role: "assistant",
+        text: reply,
         time: getTime(),
       }]);
+    } catch (err) {
+      console.error(err);
+      setMsgs(prev => [...prev, {
+        id: `b${Date.now()}`,
+        role: "assistant",
+        text: "Sorry, I'm having trouble connecting to live support. Please try again or reach out at /contact-us.",
+        time: getTime(),
+      }]);
+    } finally {
       setTyping(false);
-      if (!open) setUnread(n => n + 1);
-    }, 700);
-  }, [input, open]);
+    }
+  }, [input, open, msgs, sessionId]);
 
   if (!mounted) return null;
 

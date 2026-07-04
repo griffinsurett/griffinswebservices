@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node -e \"const fs = require('fs'); fs.rmSync('.vercel/output/functions/_render.func/public', { recursive: true, force: true });\"",
     "preview": "astro preview",
     "astro": "astro",
     "generate:icons": "node src/utils/icons/generate-icon-map.mjs"

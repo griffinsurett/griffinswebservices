@@ -1,6 +1,8 @@
 // src/utils/knowledgeSync.ts
 import { supabase } from "./supabase";
-import { PDFParse } from "pdf-parse";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const pdf = require("pdf-parse");
 import OpenAI from "openai";
 
 let openai: OpenAI | null = null;
@@ -156,8 +158,7 @@ export async function syncSupabaseKnowledge(): Promise<void> {
           if (ext === "txt") {
             text = buffer.toString("utf-8");
           } else if (ext === "pdf") {
-            const parser = new PDFParse({ data: buffer });
-            const parsedPdf = await parser.getText();
+            const parsedPdf = await pdf(buffer);
             text = parsedPdf.text || "";
           }
 

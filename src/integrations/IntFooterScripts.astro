@@ -25,8 +25,10 @@
 // The previous ChatBot lives at @/integrations/chatbot/chatbot.integration.astro
 // if it's ever needed again.
 import AskAi from "@/components/AskAi/AskAi";
+import ChatBot from "@/integrations/chatbot/chatbot.integration.astro";
 ---
 
 <!-- Footer-level integration components -->
 <AskAi client:visible />
+<ChatBot />
 <slot />

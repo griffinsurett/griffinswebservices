@@ -69,6 +69,25 @@ export default defineConfig({
     robotsLlmsIntegration(),
     // TEMPORARILY DISABLED — chatbot KB generator (API-connected ChatBot). Re-enable with the import above.
     // chatbotKbIntegration(),
+    {
+      name: 'background-sync',
+      hooks: {
+        'astro:server:start': () => {
+          console.log("[Background Sync] Starting background sync interval (every 20 seconds)...");
+          const intervalId = setInterval(async () => {
+            try {
+              const { syncSupabaseKnowledge } = await import('./src/utils/knowledgeSync.ts');
+              await syncSupabaseKnowledge();
+            } catch (err) {
+              // Fail silently or print error
+            }
+          }, 20000);
+
+          process.on('SIGINT', () => clearInterval(intervalId));
+          process.on('SIGTERM', () => clearInterval(intervalId));
+        }
+      }
+    }
   ],
   
   build: {
