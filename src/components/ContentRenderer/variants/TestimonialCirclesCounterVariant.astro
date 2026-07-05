@@ -1,30 +1,41 @@
 ---
-// TestimonialCirclesVariant.astro - Face circles over a five-star rating.
-// No counter. (The animated-counter version is kept as
-// TestimonialCirclesCounterVariant.astro.)
+// TestimonialCirclesVariant.astro - Uses lightweight Astro Counter with reduced motion support
 import { Image } from "astro:assets";
-import Icon from "@/components/Icon";
+import Counter from "@/components/Counter.astro";
 import Placeholder from "@/assets/placeholder.jpg";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import { toArray } from "@/utils/array";
 import { resolveImageMetadata, getImageAlt } from "@/utils/images";
 
 interface Props extends BaseVariantProps {
+  counterStart?: number;
+  counterEnd?: number;
+  counterDuration?: number;
+  counterDecimals?: number;
+  counterPrefix?: string;
+  counterSuffix?: string;
+  counterLabel?: string;
+  counterClassName?: string;
   link?: string;
 }
 
 const {
   items = [],
   className = "",
+  counterStart = 1,
+  counterEnd = 100,
+  counterDuration = 2000,
+  counterDecimals,
+  counterPrefix = "",
+  counterSuffix = "+",
+  counterLabel = "Happy Clients",
+  counterClassName = "text-heading m-0 p-0 text-[1.7rem] sm:text-3xl lg:text-4xl",
   link = "/#testimonials-home",
   id,
 } = Astro.props as Props;
 
 const safeItems = toArray(items);
-const faces = safeItems.slice(0, 5);
-
-// Unique per-render id so multiple instances on a page don't collide.
-const starGradientId = `${id ?? "testimonial"}-star-gradient`;
+const faces = safeItems.slice(0, 3);
 if (faces.length === 0) {
   return;
 }
@@ -46,20 +57,8 @@ const resolveImage = (face: any) => {
   id={id}
   href={link}
   class={`testimonials flex items-center gap-4 lg:gap-5 px-2 md:px-0 ${className}`.trim()}
-  aria-label="Five-star rated - View testimonials"
+  aria-label={`${counterLabel} - View testimonials`}
 >
-  {/* Brand gradient used to fill the stars (fa6-solid stars are fill-based, so
-      passing this as the Icon `color` renders fill="url(#…)"). */}
-  <svg aria-hidden="true" width="0" height="0" focusable="false" class="absolute pointer-events-none w-0 h-0 overflow-hidden">
-    <defs>
-      <linearGradient id={starGradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="currentColor" class="text-primary-100" />
-        <stop offset="55%" stop-color="currentColor" class="text-primary" />
-        <stop offset="100%" stop-color="currentColor" class="text-primary-800" />
-      </linearGradient>
-    </defs>
-  </svg>
-
   <div class="flex justify-center items-center">
     {faces.map((face) => (
       <div class="circle -mr-2 lg:-mr-4 first:ml-0 w-11 h-11 sm:w-12 sm:h-12 lg:w-13 lg:h-13 rounded-full overflow-hidden shrink-0 flex items-center justify-center">
@@ -80,23 +79,24 @@ const resolveImage = (face: any) => {
     ))}
   </div>
 
-  {/* Stars pinned to the top, label to the bottom — the column stretches to the
-      circle height so the two lines flank it. */}
-  <div class="flex flex-col items-start justify-between self-stretch py-0.5">
-    <div class="flex items-center gap-0.5" role="img" aria-label="Rated 5 out of 5 stars">
-      {Array.from({ length: 5 }).map(() => (
-        <Icon
-          icon="fa6-solid:star"
-          size="sm"
-          color={`url(#${starGradientId})`}
-          className="w-3.5 h-3.5 sm:w-4 sm:h-4"
-          aria-hidden={true}
-        />
-      ))}
-    </div>
-
-    <p class="m-0 text-xs capitalize sm:text-sm text-muted">
-      Trusted by businesses
+  <div class="flex flex-col items-start">
+    <span
+      class={`${counterClassName} capitalize`}
+      role="heading"
+      aria-level="3"
+    >
+      <Counter
+        prefix={counterPrefix}
+        start={counterStart}
+        end={counterEnd}
+        duration={counterDuration}
+        decimals={counterDecimals}
+        suffix={counterSuffix}
+        class="leading-none"
+      />
+    </span>
+    <p class="m-0 text-xs capitalize sm:text-sm">
+      {counterLabel}
     </p>
   </div>
 </a>
@@ -107,7 +107,6 @@ const resolveImage = (face: any) => {
     window.__testimonialsPulseInitialized = true;
 
     const initTestimonialsPulse = () => {
-      // Pulse only the face circles — leave the trailing "+" badge static.
       const circles = document.querySelectorAll(".testimonials .circle");
       if (!circles.length) return;
 

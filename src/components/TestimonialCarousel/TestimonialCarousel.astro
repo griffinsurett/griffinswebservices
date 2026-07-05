@@ -11,8 +11,10 @@ interface Props {
   /** Render a full-bleed fixed background photo (dimmed for readability) behind
    *  the carousel. Used on the homepage to put testimonials on the fire image. */
   withBackground?: boolean;
+  /** Optional id set on the section root (e.g. for in-page anchor links). */
+  id?: string;
 }
-const { withBackground = false } = Astro.props;
+const { withBackground = false, id } = Astro.props;
 
 // Optimized fire background sources — only built when requested.
 const bg = withBackground
@@ -72,7 +74,7 @@ const items: SerializedItem[] = await Promise.all(
 );
 ---
 
-<div class:list={["tc-section", { "tc-section--bg": withBackground }]}>
+<div id={id} class:list={["tc-section", { "tc-section--bg": withBackground }]}>
   {bg && (
     <div class="tc-bg" aria-hidden="true">
       <picture>
