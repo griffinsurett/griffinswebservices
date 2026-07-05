@@ -47,7 +47,7 @@ const heroDescription =
       class="block lg:min-h-screen inner-section"
       {...animationProps("fade-in-up", { once: false, threshold: 0.2 })} -->
     
-      <ContentRenderer
+      <!-- <ContentRenderer
         query={byTag("capabilities", "featured").orderBy(sortByOrder())}
         variant="CardVariant"
         id="capabilities"
@@ -59,7 +59,7 @@ const heroDescription =
         card={{
           hoverOverlayClassName: "inset-0 bg-transparent",
         }}
-      />
+      /> -->
       <!-- <ContentRenderer
         query={byTag("projects", "screen").orderBy(sortByOrder())}
         variant="PortfolioScreenVariant"
@@ -114,12 +114,10 @@ const heroDescription =
     }
     <ContentRenderer
       query={query("benefits").orderBy(sortByOrder()).limit(8)}
-      variant="BenefitsVariant"
+      variant="BenefitsCardStackVariant"
       id="benefits"
       heading="Your website should help with things like this."
       description="A good website should make your business easier to trust, easier to find, and easier to contact."
-      columns={2}
-      gap="lg"
     />
 
     <!-- PROCESS (disabled) -->

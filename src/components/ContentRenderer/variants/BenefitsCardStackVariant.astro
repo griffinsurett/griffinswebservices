@@ -1,0 +1,96 @@
+---
+// src/components/ContentRenderer/variants/BenefitsCardStackVariant.astro
+/**
+ * BenefitsCardStackVariant — "Why Choose Us", 50/50 like the projects section.
+ *
+ *   • LEFT  — the section heading + description, sticky (CSS): it stays in view
+ *     while the right column scrolls past. Never changes.
+ *   • RIGHT — the benefits stacked vertically; each is a full-height 50%-width
+ *     square holding its title + description + animated example.
+ *
+ * Borders match the filmstrip: section top/bottom rules + a divider between the
+ * two columns and between each right square. No cards, no JS — pure sticky.
+ * Below md the left heading stacks on top and squares flow normally.
+ */
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { toArray } from "@/utils/array";
+
+const { items = [], title, heading, description, collectionTitle, id } =
+  Astro.props as BaseVariantProps;
+
+const sectionTitle = title ?? collectionTitle;
+
+// Resolve each benefit's MDX body to its Content (the animated example).
+const panels = await Promise.all(
+  toArray(items).map(async (item: any) => {
+    if (item?.Content || !item?.render) return item;
+    try {
+      const { Content } = await item.render();
+      return { ...item, Content };
+    } catch {
+      return item;
+    }
+  }),
+);
+---
+
+<section id={id} class="bcs" data-benefits-cardstack aria-label="Why choose us">
+  {/* LEFT — sticky heading */}
+  <div class="bcs-aside">
+    <SectionHeader title={sectionTitle} heading={heading} description={description} className="text-left" />
+  </div>
+
+  {/* RIGHT — benefit squares */}
+  <div class="bcs-stack">
+    {panels.map((item: any) => (
+      <article class="bcs-slide">
+        <div class="bcs-text">
+          <h3 class="text-2xl md:text-3xl font-medium leading-tight tracking-tight text-heading">{item.title}</h3>
+          {item.description && <p class="mt-3 text-sm font-light leading-relaxed text-text/65">{item.description}</p>}
+        </div>
+        {item.Content && (
+          <div class="bcs-media"><item.Content /></div>
+        )}
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .bcs {
+    --bcs-rule: color-mix(in srgb, currentColor 12%, transparent);
+    --bcs-pad: clamp(2rem, 5vw, 5rem);
+    border-block: 1px solid var(--bcs-rule);
+  }
+  @media (min-width: 768px) {
+    .bcs { display: grid; grid-template-columns: 1fr 1fr; }
+  }
+
+  /* LEFT — sticky, vertically centred in the viewport. */
+  .bcs-aside { padding-inline: var(--bcs-pad); }
+  @media (max-width: 767px) { .bcs-aside { padding-block: var(--bcs-pad); } }
+  @media (min-width: 768px) {
+    .bcs-aside {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid var(--bcs-rule);
+    }
+  }
+
+  /* RIGHT — each benefit is a full-height square, divided by a rule. */
+  .bcs-slide {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--bcs-pad);
+  }
+  .bcs-slide + .bcs-slide { border-top: 1px solid var(--bcs-rule); }
+  @media (min-width: 768px) { .bcs-slide { min-height: 100vh; } }
+
+  .bcs-media { margin-top: clamp(1.5rem, 3vh, 3rem); }
+</style>
