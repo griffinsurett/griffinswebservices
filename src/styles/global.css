@@ -1037,7 +1037,7 @@ body {
 /* Large display heading — the footer "Ready to build…" scale (ported from
    webmaxers). Single source of truth for the footer-top heading. */
 @utility heading-display {
-  @apply text-[clamp(2.8rem,6.5vw,6rem)] font-light leading-[0.9] tracking-tight text-heading;
+  @apply text-[clamp(2.8rem,5vw,4rem)] font-light leading-[0.9] tracking-tight text-heading;
 }
 
 /* Eyebrow / label text — matches the logo's "WEB SERVICES" typography exactly:
