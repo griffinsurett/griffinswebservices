@@ -69,10 +69,10 @@ function SendIcon() {
 }
 
 const DEFAULT_SUGGESTIONS = [
-  "What can you build for my business?",
-  "How do you approach a website project?",
-  "Can you create custom AI agents?",
-  "What does branding work include?",
+  "What kind of websites do you build?",
+  "Can you redesign or fix my current site?",
+  "Do you handle hosting and ongoing support?",
+  "How do you help my site get found on Google?",
 ];
 
 /** The pill-shaped "Ask a question" input bar (shared by the trigger + modal).
