@@ -83,8 +83,12 @@ export default defineConfig({
             }
           }, 20000);
 
-          process.on('SIGINT', () => clearInterval(intervalId));
-          process.on('SIGTERM', () => clearInterval(intervalId));
+          const shutdown = () => {
+            clearInterval(intervalId);
+            process.exit(0);
+          };
+          process.once('SIGINT', shutdown);
+          process.once('SIGTERM', shutdown);
         }
       }
     }

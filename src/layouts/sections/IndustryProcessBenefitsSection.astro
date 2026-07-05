@@ -1,7 +1,6 @@
 ---
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import { query, sortByOrder } from "@/utils/query";
-import { related } from "@/utils/query/snippets";
+import { query, sortByOrder, byTag } from "@/utils/query";
 ---
 
 <>
@@ -16,8 +15,10 @@ import { related } from "@/utils/query/snippets";
     showButtonSection={false}
   />
 
+  {/* solutions collection removed — was related("benefits","solutions","websites").
+      Benefits are no longer scoped by solution, so show featured benefits by order. */}
   <ContentRenderer
-    query={related("benefits", "solutions", "websites").orderBy(sortByOrder())}
+    query={byTag("benefits", "featured").orderBy(sortByOrder())}
     variant="BenefitsVariant"
     id="benefits"
     heading="Your website should help with things like this."

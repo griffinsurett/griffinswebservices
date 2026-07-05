@@ -810,6 +810,7 @@ npx astro sync
 ```bash
 rm -rf .astro node_modules/.astro dist
 npm install
+
 npm run build
 ```
 

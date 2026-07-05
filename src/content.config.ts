@@ -160,18 +160,7 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         category: z.string().optional(),
-        solutions: refSchema(["solutions", "features"]),
         capabilities: refSchema("capabilities"),
-      }),
-  }),
-
-  // ── solutions ─────────────────────────────────────────────
-  "solutions": defineCollection({
-    loader: GlobLoad("solutions"),
-    schema: ({ image }) =>
-      baseSchema({ image }).extend({
-        price: z.string().optional(),
-        featured: z.boolean().optional(),
       }),
   }),
 
@@ -179,9 +168,7 @@ export const collections = {
   "features": defineCollection({
     loader: GlobLoad("features"),
     schema: ({ image }) =>
-      baseSchema({ image }).extend({
-        solutions: refSchema("solutions"),
-      }),
+      baseSchema({ image }),
   }),
 
   // ── capabilities ──────────────────────────────────────────
@@ -190,7 +177,6 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         features: z.array(z.string()).default([]),
-        solutions: refSchema(["solutions", "features"]),
         technologyCards: refSchema("technologies"),
       }),
   }),
@@ -208,7 +194,6 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         capabilities: refSchema("capabilities"),
-        solutions: refSchema("solutions"),
       }),
   }),
 
@@ -234,7 +219,6 @@ export const collections = {
     schema: ({ image }) =>
       baseSchema({ image }).extend({
         highlight: z.boolean().optional(),
-        solutions: refSchema(["solutions", "features"]),
       }),
   }),
 

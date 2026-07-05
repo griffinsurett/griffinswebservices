@@ -113,11 +113,8 @@ const heroDescription =
         naturally as normal-flow content (no fixed-height clipping). */
     }
     <ContentRenderer
-      query={related("benefits", "solutions", "websites").orderBy(
-        sortByOrder(),
-      )}
+      query={query("benefits").orderBy(sortByOrder())}
       variant="BenefitsVariant"
-      id="benefits"
       heading="Your website should help with things like this."
       description="A good website should make your business easier to trust, easier to find, and easier to contact."
       columns={2}
