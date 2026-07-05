@@ -63,7 +63,7 @@ const mobileClasses = showMobile && mode === "responsive" ? "md:hidden" : "";
     showMobile && (
       <div class={`menu-mobile ${mobileClasses}`}>
         <HamburgerMenuDrawer
-          client:hover
+          client:idle
           items={menuTree}
           currentPath={currentPath}
           socialLinks={socialLinks.map((entry) => ({
