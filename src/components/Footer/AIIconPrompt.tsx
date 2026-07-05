@@ -6,6 +6,15 @@ import {
   SiPerplexity,
 } from "react-icons/si";
 
+// react-icons@5.5.0 has no Grok/xAI mark, so we ship the logo as an inline SVG.
+// Matches the IconType call signature (accepts className) so it drops into the
+// same AI_PLATFORMS list as the react-icons entries.
+const SiGrok: IconType = (props) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+    <path d="M9.27 15.29l7.978-5.897c.391-.29.95-.177 1.137.272.98 2.369.542 5.215-1.41 7.169-1.951 1.954-4.667 2.382-7.149 1.406l-2.711 1.257c3.889 2.661 8.611 2.003 11.562-.953 2.341-2.344 3.066-5.539 2.388-8.42l.006.007c-.983-4.232.242-5.924 2.75-9.383.06-.082.12-.164.179-.248l-3.301 3.305v-.01L9.267 15.284m-1.104 4.716c-2.646-2.522-2.202-6.462.096-8.763 1.701-1.703 4.611-2.399 7.13-1.383l2.703-1.253c-.473-.361-1.065-.7-1.749-.968-3.062-1.242-6.591-.588-9.019 1.842-2.34 2.343-3.066 5.538-2.386 8.418.677 2.881-.242 5.925-2.75 9.384L9.6 24.001c.06-.082.12-.164.18-.248l-1.62-3.753z" />
+  </svg>
+);
+
 interface AIPlatform {
   name: string;
   hrefBase: string;
@@ -41,6 +50,11 @@ const AI_PLATFORMS: AIPlatform[] = [
     name: "Perplexity",
     hrefBase: "https://www.perplexity.ai/search?q=",
     Icon: SiPerplexity,
+  },
+  {
+    name: "Grok",
+    hrefBase: "https://grok.com/?q=",
+    Icon: SiGrok,
   },
 ];
 
