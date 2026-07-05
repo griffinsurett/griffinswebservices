@@ -33,14 +33,12 @@ interface Props {
   /** Show the stat counters (bottom-left on desktop). */
   showStats?: boolean;
   /** The stats rendered when `showStats` is on. Each item is a plain record read
-      by AboutStatsVariant (value / prefix / suffix / decimals / title). Defaults
-      to the two figures the webmaxers about layout shows: 7+ years, $1M+ revenue. */
+      by AboutStatsVariant (value / prefix / suffix / decimals / title). */
   stats?: Array<Record<string, any>>;
 }
 
 const DEFAULT_STATS: Array<Record<string, any>> = [
   { value: 7, suffix: "+", title: "Years of Experience" },
-  { value: 1, prefix: "$", suffix: "M+", title: "Client Revenue" },
 ];
 
 const {
