@@ -22,6 +22,7 @@ import { FormContext } from "./FormContext";
 import Checkbox from "./inputs/Checkbox";
 import Button, { type ButtonVariant } from "@/components/Button/Button";
 import { submitToFormspree } from "@/utils/formspree";
+import { siteData } from "@/content/siteData";
 
 export interface SubmitButtonConfig {
   text?: string;
@@ -83,7 +84,6 @@ export default function FormWrapper({
   termsCheckboxLabel,
   termsCheckboxName = "terms-agreement",
   privacyPolicyUrl = "/privacy-policy",
-  termsOfServiceUrl = "/terms-of-service",
   submitButton,
 }: FormWrapperProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -221,17 +221,7 @@ export default function FormWrapper({
 
   const defaultTermsLabel = (
     <span className="text-muted">
-      I agree to the{" "}
-      <a
-        href={termsOfServiceUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-text hover:underline"
-        aria-label="Terms of Service (opens in new tab)"
-      >
-        Terms of Service
-      </a>{" "}
-      and{" "}
+      I have read and agree to the{" "}
       <a
         href={privacyPolicyUrl}
         target="_blank"
@@ -241,6 +231,7 @@ export default function FormWrapper({
       >
         Privacy Policy
       </a>
+      , and consent to {siteData.title} contacting me about my inquiry.
     </span>
   );
 

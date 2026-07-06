@@ -728,6 +728,15 @@ const hasExpandSlot = Astro.slots.has("expand-content");
       // morph. START is the fraction of the region's scroll spent holding.
       const START = 0.45;
 
+      // On mobile the flow content slides over the pinned image almost as soon as
+      // the pin sticks, so the dim must be ready fast; on desktop there's room to
+      // ramp it linearly across the whole hold. Re-checked on each refresh.
+      let isMobile = false;
+      const measureViewport = () => {
+        isMobile = window.matchMedia("(max-width: 767px)").matches;
+      };
+      measureViewport();
+
       const apply = (p: number) => {
         const fullW = pin.clientWidth;
         const fullH = pin.clientHeight;
@@ -753,8 +762,22 @@ const hasExpandSlot = Astro.slots.has("expand-content");
         const BASE_DIM = 0.8; // dim already applied while the marquee scrolls over
                               // the resting photo (keeps that text readable), then
                               // it keeps deepening to full as the image expands.
-        const preDim = Math.min(p / START, 1) * BASE_DIM; // 0 → BASE_DIM over the hold
-        const growDim = BASE_DIM + (1 - BASE_DIM) * e;     // BASE_DIM → 1 as it grows
+        // Pre-dim (during the hold, p:0→START): front-load it so the image is a
+        // ready backdrop before the flow content slides over it. Reach BASE_DIM
+        // within the first DIM_LEAD fraction of the hold, eased so it's quick.
+        // Mobile leads hardest (content covers the image almost as soon as the pin
+        // sticks); large screens front-load too, just a touch gentler.
+        const DIM_LEAD = isMobile ? 0.14 : 0.4; // fraction of hold to reach full dim
+        const preT = Math.min(p / (START * DIM_LEAD), 1);
+        const preDim = preT * (2 - preT) * BASE_DIM; // easeOut — quick to dark
+        // As the image grows, deepen from BASE_DIM up to full (1.0 → max overlay,
+        // i.e. WCAG-AA contrast for the revealed text). On mobile the text reveals
+        // almost immediately, so rush to full dim over the FIRST slice of the morph
+        // (GROW_LEAD) — full AA dim is in place before any copy sits over the image.
+        // On desktop deepen gradually across the whole morph (original feel).
+        const GROW_LEAD = isMobile ? 0.25 : 1;
+        const g = Math.min(e / GROW_LEAD, 1);
+        const growDim = BASE_DIM + (1 - BASE_DIM) * g; // BASE_DIM → 1
         const dim = p < START ? preDim : growDim;
         region.style.setProperty("--axp-dim", dim.toFixed(4));
         // Overlay copy fades in over the final 35% of the morph.
@@ -768,6 +791,7 @@ const hasExpandSlot = Astro.slots.has("expand-content");
         end: "bottom bottom",
         invalidateOnRefresh: true,
         onRefresh(self) {
+          measureViewport();
           measureRest();
           apply(self.progress);
         },
