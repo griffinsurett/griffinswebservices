@@ -190,22 +190,6 @@ export const collections = {
       }),
   }),
 
-  // ── stats ──────────────────────────────────────────
-  "stats": defineCollection({
-    loader: GlobLoad("stats"),
-    schema: ({ image }) =>
-      baseSchema({ image }).extend({
-        stat: z.string().optional(),
-        statValue: z.number().optional(),
-        statStart: z.number().optional(),
-        statPrefix: z.string().optional(),
-        statSuffix: z.string().optional(),
-        statAnimate: z.boolean().optional(),
-        icon: z.string().optional(),
-        highlight: z.boolean().optional(),
-      }),
-  }),
-
   // ── benefits ──────────────────────────────────────────
   "benefits": defineCollection({
     loader: GlobLoad("benefits"),
@@ -215,17 +199,4 @@ export const collections = {
       }),
   }),
 
-  // ── process ──────────────────────────────────────────
-  "process": defineCollection({
-    loader: GlobLoad("process"),
-    schema: ({ image }) =>
-      baseSchema({ image }),
-  }),
-
-  // ── philosophy ──────────────────────────────────────────
-  "philosophy": defineCollection({
-    loader: GlobLoad("philosophy"),
-    schema: ({ image }) =>
-      baseSchema({ image }),
-  }),
 };
