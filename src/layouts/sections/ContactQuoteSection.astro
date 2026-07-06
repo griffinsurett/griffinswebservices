@@ -2,6 +2,8 @@
 import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
 import SectionHeading from "@/components/SectionHeading.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
+import BackgroundMedia from "@/components/BackgroundMedia.astro";
+import asideBgImage from "@/assets/meoncomp.jpg";
 
 interface Props {
   id?: string;
@@ -42,16 +44,24 @@ const {
 */}
 <section id={id} class:list={["cq", className]} aria-label="Contact us">
   <div class="cq-aside">
-    <SectionHeading
-      title={showEyebrow ? eyebrowTitle : undefined}
-      heading="Tell us what you are planning and we will point you in the right direction."
-      description="Whether you need a new website, a set of focused improvements, or ongoing support, this is the best place to start."
-      className="text-left"
-      headingClassName="h2 mb-6 text-heading"
-      emphasisClassName="text-heading"
-      descriptionClassName="large-text max-w-2xl"
+    <BackgroundMedia
+      backgroundMedia={{
+        image: { src: asideBgImage, imageClass: "object-cover", maxWidth: 1600 },
+        overlayClass: "bg-bg/82",
+      }}
     />
 
+    <div class="cq-aside__content">
+      <SectionHeading
+        title={showEyebrow ? eyebrowTitle : undefined}
+        heading="Tell us what you are planning and we will point you in the right direction."
+        description="Whether you need a new website, a set of focused improvements, or ongoing support, this is the best place to start."
+        className="text-left"
+        headingClassName="h2 mb-6 text-heading"
+        emphasisClassName="text-heading"
+        descriptionClassName="large-text max-w-2xl"
+      />
+    </div>
   </div>
 
   <div class="cq-main">
@@ -76,14 +86,27 @@ const {
     .cq { display: grid; grid-template-columns: 1fr 1fr; }
   }
 
-  /* LEFT — sticky heading + proof, center divider on the right edge. */
+  /* LEFT — sticky heading + proof over a portrait background, center divider on
+     the right edge. `position: relative` anchors the absolute-filling
+     BackgroundMedia; `overflow: hidden` clips it to the panel. */
   .cq-aside {
+    position: relative;
+    overflow: hidden;
     padding-inline: var(--cq-pad);
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
   @media (max-width: 767px) { .cq-aside { padding-block: var(--cq-pad); } }
+
+  /* Content rides above the background image + overlay (which are z-0). */
+  .cq-aside__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
   @media (min-width: 768px) {
     .cq-aside {
       position: sticky;
