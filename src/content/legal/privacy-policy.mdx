@@ -57,12 +57,12 @@ This data is used solely to monitor and improve site performance. It cannot be u
 
 ### AI-Powered Features (OpenAI)
 
-Our website uses the **OpenAI API** to power two interactive tools:
+Our website offers a **Website Chat Assistant** powered by the **OpenAI API**:
 
-- **Pricing Estimator:** When you use our pricing calculator, the business details you enter (business name, location, service area, industry niches, and project description) are sent to OpenAI's servers to generate a customized estimate. This data is processed by OpenAI subject to their [Privacy Policy](https://openai.com/privacy) and [Terms of Use](https://openai.com/terms). We do not use your inputs to train AI models.
-- **Website Chat Assistant:** When you interact with our chatbot, your messages are sent to OpenAI for processing to generate responses. Conversation content is not stored on our servers beyond the active session.
+- **What is sent to OpenAI:** When you interact with the chat assistant, the messages you type are sent to OpenAI's servers to generate responses. This data is processed by OpenAI subject to their [Privacy Policy](https://openai.com/privacy) and [Terms of Use](https://openai.com/terms). We do not use your inputs to train AI models.
+- **What we store:** Your conversation (the messages you send and the assistant's replies) is stored on our infrastructure (Supabase) under a random, per-visit session identifier so we can maintain conversation context and improve support. It is **not** linked to your name, email, or IP address unless you choose to type such details into the chat. Please avoid sharing sensitive personal information in the chat.
 
-We use the `gpt-4o-mini` model and apply rate limiting and input validation to minimize unnecessary data transmission. By using these features, you acknowledge that your inputs are processed by OpenAI.
+We use OpenAI's `gpt-4o-mini` model (and `text-embedding-3-small` for retrieving relevant site content) and apply rate limiting and input validation to minimize unnecessary data transmission. By using this feature, you acknowledge that your inputs are processed by OpenAI and stored as described above.
 
 ### Appointment Scheduling (Calendly)
 

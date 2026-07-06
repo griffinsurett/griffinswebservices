@@ -391,8 +391,16 @@ export default function AskAi({
           </div>
 
           <p className="max-w-2xl text-center text-xs leading-relaxed text-text/45">
-            This AI assistant is for guidance only. Responses may be inaccurate;
-            don't share sensitive information.
+            This AI assistant is for guidance only and responses may be
+            inaccurate. Messages are processed by OpenAI and stored to improve
+            support — please don't share sensitive personal information. See our{" "}
+            <a
+              href="/privacy-policy"
+              className="underline underline-offset-2 hover:text-heading"
+            >
+              Privacy Policy
+            </a>
+            .
           </p>
         </div>
       </Modal>
