@@ -14,6 +14,7 @@
  * This component can be embedded in privacy policies or displayed standalone.
  */
 import OptOutButton from "../OptOutButton";
+import Button from "@/components/Button/Button";
 
 interface Props {
   sectionNumber?: number; // Optional section number for sequential numbering
@@ -68,13 +69,14 @@ const { sectionNumber } = Astro.props;
 
     <div class="mb-4">
       <p class="font-semibold mb-2">Manage Individual Cookie Categories</p>
-      <button
+      <Button
+        variant="secondary"
         id="open-cookie-preferences"
-        class="bg-bg border-2 border-primary text-primary px-6 py-3 rounded-lg font-semibold hover:bg-primary/10 transition-colors"
-        type="button"
+        buttonWrapperClasses="not-prose"
+        client:visible
       >
         🍪 Cookie Settings
-      </button>
+      </Button>
       <p class="text-sm text-text mt-2">
         Choose which types of cookies to enable or disable individually.
       </p>
@@ -169,17 +171,19 @@ const { sectionNumber } = Astro.props;
       </li>
       <li><strong>Response Time:</strong> We'll respond within 45 days</li>
     </ul>
-    <a
+    <Button
+      variant="primary"
       href="/contact-us"
-      class="inline-block bg-primary text-bg px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
+      animated={false}
+      buttonWrapperClasses="not-prose"
     >
       Open Contact Form →
-    </a>
+    </Button>
   </div>
 
-  <div class="bg-yellow-50 border-2 border-yellow-600 rounded-lg p-4 mt-4">
+  <div class="not-prose bg-yellow-50 border-2 border-yellow-600 rounded-lg p-4 mt-4">
     <p class="text-sm text-yellow-900 mb-2">
-      <strong>⚠️ Verification Required</strong>
+      <strong class="text-yellow-900">⚠️ Verification Required</strong>
     </p>
     <p class="text-sm text-yellow-900 mb-0">
       To protect your privacy, we must verify your identity before processing
@@ -189,3 +193,14 @@ const { sectionNumber } = Astro.props;
     </p>
   </div>
 </div>
+
+<script>
+  // Wire the "Cookie Settings" button to open the global consent modal.
+  // The modal (CookiePreferencesButton / CookieConsentBanner) listens for the
+  // "open-cookie-preferences" window CustomEvent and lazy-loads on demand.
+  document
+    .getElementById("open-cookie-preferences")
+    ?.addEventListener("click", () => {
+      window.dispatchEvent(new CustomEvent("open-cookie-preferences"));
+    });
+</script>

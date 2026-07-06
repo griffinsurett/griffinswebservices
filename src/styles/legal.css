@@ -58,7 +58,7 @@
   @apply mb-2;
 }
 
-.legal-document a {
+.legal-document a:not(.not-prose a):not(.not-prose) {
   @apply text-primary underline hover:text-primary-700 transition-colors;
 }
 

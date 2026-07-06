@@ -8,14 +8,14 @@
  * - Clean, professional typography
  * - Date display (Last Updated + Effective Date)
  * - Print-friendly styling
- * - No hero section (gets right to content)
+ * - SecondaryHero header (title / heading / description)
  * 
  * Specify in _meta.mdx with: itemsLayout: "@/layouts/collections/LegalLayout.astro"
  */
 
 import SiteLayout from '@/layouts/SiteLayout.astro';
 import LastUpdated from '@/integrations/preferences/consent/ui/PrivacyPolicy/LastUpdated.astro';
-import BreadcrumbHeroCenter from '@/layouts/heroes/BreadcrumbHeroCenter.astro';
+import SecondaryHero from '@/layouts/heroes/SecondaryHero.astro';
 import type { CollectionLayoutProps } from './types';
 
 const { 
@@ -45,11 +45,10 @@ const effectiveDate = formatDate(data.effectiveDate);
 ---
 
 <SiteLayout {...seoProps}>
-    <BreadcrumbHeroCenter
+    <SecondaryHero
       title={data.title}
       heading={data.heading}
       description={data.description}
-      minHeight="45vh"
     />
 
     <article class="legal-document prose prose-lg max-w-4xl mx-auto py-12 px-6">

@@ -54,13 +54,27 @@ export default function AccordionItem({
         className="transition-all duration-200 overflow-hidden"
         innerClassName="card-bg"
       >
-        <button
-          type="button"
+        {/*
+          role="button" on a <div> (not a real <button>) because headerSlot may
+          contain its own interactive controls (e.g. the cookie modal's toggle
+          switch). Nesting a <button> inside a <button> is invalid HTML and makes
+          React throw a hydration/DOM-nesting error that remounts the subtree —
+          which caused the cookie consent modal to flash open then closed.
+        */}
+        <div
+          role="button"
+          tabIndex={0}
           id={`${id}-trigger`}
           aria-expanded={isExpanded}
           aria-controls={`${id}-content`}
           className={`w-full text-left flex items-center justify-between px-6 py-5 hover:bg-transparent transition-colors duration-300 cursor-pointer relative z-20 ${headerClassName}`.trim()}
           onClick={onToggle}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onToggle();
+            }
+          }}
         >
           {headerSlot ? (
             <div className="flex-1">{headerSlot}</div>
@@ -91,7 +105,7 @@ export default function AccordionItem({
               />
             </div>
           )}
-        </button>
+        </div>
 
         <div
           id={`${id}-content`}

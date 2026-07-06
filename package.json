@@ -37,6 +37,7 @@
     "tailwindcss": "^4.1.12"
   },
   "devDependencies": {
-    "@builder.io/partytown": "^0.10.3"
+    "@builder.io/partytown": "^0.10.3",
+    "playwright-core": "^1.61.1"
   }
 }
