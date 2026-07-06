@@ -34,6 +34,28 @@ export interface ModalProps {
   ssr?: boolean;
 }
 
+// Selector for tabbable elements inside the dialog (used for the focus trap).
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+  "audio[controls]",
+  "video[controls]",
+  '[contenteditable]:not([contenteditable="false"])',
+].join(",");
+
+function getFocusable(container: HTMLElement): HTMLElement[] {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  ).filter(
+    (el) =>
+      el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement,
+  );
+}
+
 // Cache portal root - only create once
 let portalRoot: HTMLElement | null = null;
 
@@ -149,6 +171,73 @@ function Modal({
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [mounted, isOpen, onClose]);
+
+  // Focus management (WCAG 2.4.3 / 4.1.2): on open, remember the trigger, move
+  // focus into the dialog, trap Tab within it, and mark the rest of the page
+  // `inert` so AT/keyboard can't reach it. On close, undo inert and restore
+  // focus to the trigger. This is what makes `aria-modal="true"` honest.
+  useEffect(() => {
+    if (!mounted || !isOpen) return;
+    const panel = modalRef.current;
+    if (!panel) return;
+
+    // Remember what had focus so we can restore it on close.
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    // Make everything except the portal'd dialog inert while open.
+    const root = getPortalRoot();
+    const siblings = root
+      ? (Array.from(root.children) as HTMLElement[]).filter(
+          (child) => !child.contains(panel),
+        )
+      : [];
+    const inerted: HTMLElement[] = [];
+    siblings.forEach((el) => {
+      if (!el.hasAttribute("inert")) {
+        el.setAttribute("inert", "");
+        inerted.push(el);
+      }
+    });
+
+    // Move focus into the dialog: first focusable child, else the panel itself.
+    const focusFirst = () => {
+      const focusable = getFocusable(panel);
+      (focusable[0] ?? panel).focus();
+    };
+    const raf = requestAnimationFrame(focusFirst);
+
+    // Trap Tab / Shift+Tab within the dialog.
+    const handleTrap = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const focusable = getFocusable(panel);
+      if (focusable.length === 0) {
+        e.preventDefault();
+        panel.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || active === panel)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleTrap);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      document.removeEventListener("keydown", handleTrap);
+      inerted.forEach((el) => el.removeAttribute("inert"));
+      // Restore focus to the trigger if it's still in the document.
+      if (previouslyFocused && document.contains(previouslyFocused)) {
+        previouslyFocused.focus();
+      }
+    };
+  }, [mounted, isOpen]);
 
   // Unmount modal after exit animation completes
   const handleAnimationEnd = (): void => {
