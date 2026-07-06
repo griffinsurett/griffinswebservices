@@ -3,7 +3,7 @@
 import Button from "@/components/Button/Button";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import Hero from "@/components/Hero.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import { query } from "@/utils/query";
 import { siteData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
@@ -141,7 +141,7 @@ const resolvedMinHeight = minHeight ?? "100vh";
         <div
           class="mx-auto flex w-full max-w-5xl flex-col items-start gap-5 px-2 text-left sm:px-4 lg:items-center lg:gap-8 lg:px-0 lg:text-center"
         >
-          <SectionHeader
+          <SectionHeading
             className="w-full text-left lg:text-center"
             title={title}
             heading={heading}

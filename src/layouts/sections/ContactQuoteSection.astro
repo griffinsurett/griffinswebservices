@@ -2,7 +2,7 @@
 import Section from "@/components/Section.astro";
 import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
 import Icon from "@/components/Icon";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query } from "@/utils/query";
 
@@ -56,7 +56,7 @@ const highlights = [
   <div class="inner-section">
     <div class="contact-quote-layout">
       <div class="contact-quote-copy sticky-section lg:self-start">
-        <SectionHeader
+        <SectionHeading
           title={showEyebrow ? eyebrowTitle : undefined}
           heading="Tell us what you are planning and we will point you in the right direction."
           description="Whether you need a new website, a set of focused improvements, or ongoing support, this is the best place to start."

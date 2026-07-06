@@ -10,7 +10,7 @@ import type { BaseVariantProps } from "../ContentRenderer.types";
 import ContentBridge from "../ContentBridge/ContentBridge.astro";
 import Accordion from "@/components/LoopTemplates/Accordion";
 import Button from "@/components/starter/Button/Button";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/project/Section.astro";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import { toArray } from "@/utils/array";
@@ -39,7 +39,7 @@ const {
 const safeItems = toArray(items);
 const sectionTitle = title ?? collectionTitle;
 
-// SectionHeader handles heading normalization automatically
+// SectionHeading handles heading normalization automatically
 const showHeader = Boolean(sectionTitle || heading || description);
 ---
 
@@ -50,7 +50,7 @@ const showHeader = Boolean(sectionTitle || heading || description);
       {
         showHeader && (
           <div class="lg:w-1/2 sticky-section lg:self-start">
-            <SectionHeader
+            <SectionHeading
               title={sectionTitle}
               heading={heading}
               description={description}

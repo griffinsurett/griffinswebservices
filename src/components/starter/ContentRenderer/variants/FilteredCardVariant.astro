@@ -42,7 +42,7 @@ import type {
 import type { FilterConfig } from "@/components/LoopTemplates/FilteredCardRenderer";
 import FilteredCardRenderer from "@/components/LoopTemplates/FilteredCardRenderer";
 import ContentBridge from "../ContentBridge/ContentBridge.astro";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/project/Section.astro";
 import Button from "@/components/starter/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
@@ -134,7 +134,7 @@ const resolveRingDuration = (item: FeatureCardData): number => {
   return typeof record?.ringDuration === "number" ? record.ringDuration : 800;
 };
 
-// SectionHeader handles heading normalization automatically
+// SectionHeading handles heading normalization automatically
 const showHeader = Boolean(title || heading || description);
 const gridMarginClass = showHeader ? "mt-12" : "";
 const showCTA =
@@ -160,7 +160,7 @@ const showCTA =
               ctaInlineOnDesktop && showCTA ? "lg:flex-1" : "heading-padding"
             }
           >
-            <SectionHeader
+            <SectionHeading
               title={title}
               heading={heading}
               description={description}

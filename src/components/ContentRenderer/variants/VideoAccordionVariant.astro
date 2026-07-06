@@ -6,7 +6,7 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import VideoAccordion from "@/components/LoopTemplates/VideoAccordion";
 import Button from "@/components/Button/Button";
@@ -45,7 +45,7 @@ const solutionEntries = safeItems.filter(
 const contentItems = solutionEntries.length > 0 ? solutionEntries : safeItems;
 const sectionTitle = title ?? collectionTitle;
 
-// SectionHeader handles heading normalization automatically
+// SectionHeading handles heading normalization automatically
 const showHeader = Boolean(sectionTitle || heading || description);
 
 async function resolveVideoPoster(
@@ -101,7 +101,7 @@ const accordionItems = await Promise.all(
 <Section id={id} class={`outer-section relative ${className}`.trim()}>
   <div class="inner-section">
     {showHeader && (
-      <SectionHeader
+      <SectionHeading
         title={sectionTitle}
         heading={heading}
         description={description}

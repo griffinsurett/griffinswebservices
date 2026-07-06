@@ -8,7 +8,7 @@
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import MasonryGrid from "@/components/LoopTemplates/MasonryGrid.astro";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/project/Section.astro";
 import Button from "@/components/starter/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
@@ -36,7 +36,7 @@ const {
 const safeItems = toArray(items);
 const sectionTitle = title ?? collectionTitle;
 
-// SectionHeader handles heading normalization automatically
+// SectionHeading handles heading normalization automatically
 const showHeader = Boolean(sectionTitle || heading || description);
 const gridMarginClass = showHeader ? "mt-12" : "";
 const showCTA =
@@ -50,7 +50,7 @@ const showCTA =
   <div class="inner-section">
     {showHeader && (
       <div class="heading-padding">
-        <SectionHeader
+        <SectionHeading
           title={sectionTitle}
           heading={heading}
           description={description}

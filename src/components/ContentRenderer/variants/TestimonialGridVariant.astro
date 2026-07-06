@@ -1,7 +1,7 @@
 ---
 // src/components/ContentRenderer/variants/TestimonialGridVariant.astro
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import TestimonialQuoteCarousel from "@/components/LoopTemplates/TestimonialQuoteCarousel";
 import { toArray } from "@/utils/array";
@@ -30,7 +30,7 @@ const safeItems = toArray(items);
 >
   <div class="inner-section">
     {(title || collectionTitle || description || heading) && (
-      <SectionHeader
+      <SectionHeading
         title={title ?? collectionTitle}
         heading={heading ?? title ?? collectionTitle}
         description={description}

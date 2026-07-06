@@ -1,7 +1,7 @@
 ---
 // src/components/ContentRenderer/variants/TestimonialCarouselVariant.astro
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import Button from "@/components/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
@@ -36,7 +36,7 @@ const safeItems = toArray(items);
 >
   <div class="inner-section">
     {(title || collectionTitle || description || heading) && (
-      <SectionHeader
+      <SectionHeading
         title={title ?? collectionTitle}
         heading={heading ?? title ?? collectionTitle}
         description={description}

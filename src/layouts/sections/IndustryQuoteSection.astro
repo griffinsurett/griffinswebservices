@@ -2,7 +2,7 @@
 import Section from "@/components/Section.astro";
 import QuoteForm from "@/components/Form/forms/QuoteForm.astro";
 import Icon from "@/components/Icon";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 
 interface Props {
   id?: string;
@@ -46,7 +46,7 @@ const highlights = [
   <div class="inner-section">
     <div class="industry-quote-layout">
       <div class="industry-quote-copy sticky-section lg:self-start">
-        <SectionHeader
+        <SectionHeading
           title="Request a Quote"
           heading={heading}
           description={`If you are planning a website for ${industryTitle.toLowerCase()}, ${description.toLowerCase()}`}

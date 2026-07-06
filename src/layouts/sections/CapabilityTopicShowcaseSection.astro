@@ -1,5 +1,5 @@
 ---
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import HiddenCardVariant from "@/components/starter/ContentRenderer/variants/HiddenCardVariant.astro";
 
 interface Props {
@@ -77,7 +77,7 @@ const compactTopicCardProps = {
       class={`grid items-start gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1fr)] ${sectionMinHeightClass}`.trim()}
     >
       <div class={textOrderClass}>
-        <SectionHeader
+        <SectionHeading
           title={title}
           heading={heading}
           description={description}

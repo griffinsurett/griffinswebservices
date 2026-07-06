@@ -7,7 +7,7 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/project/Section.astro";
 import { toArray } from "@/utils/array";
 
@@ -43,7 +43,7 @@ const showHeader = Boolean(title || heading || description);
 {safeItems.length > 0 && (
   <div id={id} class={className}>
     {showHeader && (
-      <SectionHeader
+      <SectionHeading
         title={title}
         heading={heading}
         description={description}

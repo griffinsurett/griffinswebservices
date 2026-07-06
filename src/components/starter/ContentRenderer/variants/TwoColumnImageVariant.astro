@@ -19,7 +19,7 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/project/Section.astro";
 import IconListItem from "@/components/LoopComponents/IconListItem";
 import Button from "@/components/starter/Button/Button";
@@ -170,7 +170,7 @@ const contentOrderClass =
       >
         {
           showHeader && (
-            <SectionHeader
+            <SectionHeading
               title={title}
               heading={heading}
               description={description}

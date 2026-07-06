@@ -3,7 +3,7 @@
 import Button from "@/components/Button/Button";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import Hero from "@/components/Hero.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import { siteData } from "@/content/siteData";
 import type { HeadingContent } from "@/content/schema";
 import { query } from "@/utils/query";
@@ -204,7 +204,7 @@ const mobileLeftColumnHeightClass = hasStaticBreadcrumbs
       <div class="flex flex-1 items-center">
         <div class="w-full lg:flex lg:flex-row lg:items-stretch lg:gap-16">
           <div class={`flex ${mobileLeftColumnHeightClass} w-full flex-col items-start justify-center gap-5 text-left lg:min-h-auto lg:w-1/2 lg:flex-[0_0_50%] lg:gap-8`}>
-            <SectionHeader
+            <SectionHeading
               className="text-left max-w-[42rem]"
               title={title}
               heading={heading}

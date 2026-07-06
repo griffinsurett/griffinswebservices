@@ -1,7 +1,7 @@
 ---
 import Icon from "@/components/Icon";
 import Section from "@/components/Section.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 
 interface Point {
   icon?: string;
@@ -31,7 +31,7 @@ const safePoints = points.filter(Boolean);
 <Section class={`outer-section relative ${className}`.trim()}>
   <div class="inner-section">
     <div class="standard-capability-intro grid gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-14">
-      <SectionHeader
+      <SectionHeading
         title={title}
         heading={heading}
         description={description}

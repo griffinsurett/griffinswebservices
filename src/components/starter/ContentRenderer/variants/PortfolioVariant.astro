@@ -8,7 +8,7 @@
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/project/Section.astro";
 import Button from "@/components/starter/Button/Button";
 import PortfolioCarousel from "@/components/LoopTemplates/Portfolio/PortfolioCarousel";
@@ -110,7 +110,7 @@ const portfolioItems = processedItems.map((entry) => entry.data);
 const mediaEntries = processedItems.map((entry) => entry.mediaEntry);
 const sectionTitle = collectionTitle ?? title;
 
-// SectionHeader handles heading normalization automatically
+// SectionHeading handles heading normalization automatically
 const showHeader = Boolean(sectionTitle || headingValue || description);
 ---
 
@@ -121,7 +121,7 @@ const showHeader = Boolean(sectionTitle || headingValue || description);
   <div class="">
     {
       showHeader && (
-        <SectionHeader
+        <SectionHeading
           title={sectionTitle}
           heading={headingValue}
           description={description}

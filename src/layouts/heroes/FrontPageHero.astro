@@ -3,7 +3,7 @@
 // Hero with TextHero layout + Portfolio showcase
 import Button from "@/components/Button/Button";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Hero from "@/components/Hero.astro";
 import ScrollIndicator from "@/components/ScrollIndicator.astro";
 import { query } from "@/utils/query";
@@ -84,7 +84,7 @@ const checklistGradientId = `${id}-hero-check-gradient`;
         <!-- Left side: Text content -->
         <div class="flex-1 flex flex-col gap-3 lg:gap-6 justify-left hero-content">
           <div class="flex flex-wrap items-end gap-4">
-            <SectionHeader
+            <SectionHeading
               className="text-left lg:text-left"
               heading={heading}
               headingTag="h1"

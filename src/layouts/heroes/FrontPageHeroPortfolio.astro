@@ -3,7 +3,7 @@
 // Hero with TextHero layout + Portfolio showcase
 import Button from "@/components/Button/Button";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import ScrollIndicator from "@/components/ScrollIndicator.astro";
 import { query } from "@/utils/query";
 import { siteData } from "@/content/siteData";
@@ -60,7 +60,7 @@ const primaryCTA: CTA = {
           data-animate-root-margin="0px 0px -50% 0px"
           data-animate-directional="true"
         >
-          <SectionHeader
+          <SectionHeading
             className="text-left lg:text-left w-full"
             heading={heading}
             headingTag="h1"

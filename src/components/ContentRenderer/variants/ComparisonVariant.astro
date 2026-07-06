@@ -8,7 +8,7 @@
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import type { HeadingContent } from "@/content/schema";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import Button from "@/components/Button/Button";
 import { toArray } from "@/utils/array";
@@ -44,7 +44,7 @@ const {
   ctaText,
 } = Astro.props as Props;
 
-// SectionHeader handles heading normalization automatically
+// SectionHeading handles heading normalization automatically
 const showHeader = Boolean(title || headingValue || description);
 
 const safeLeftItems = toArray(leftItems);
@@ -54,7 +54,7 @@ const safeRightItems = toArray(rightItems);
 <Section id={id} class={`outer-section bg-bg relative ${className}`.trim()}>
   <div class="inner-section">
     {showHeader && (
-      <SectionHeader
+      <SectionHeading
         title={title}
         heading={headingValue}
         description={description}

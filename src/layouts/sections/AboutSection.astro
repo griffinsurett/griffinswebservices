@@ -6,7 +6,7 @@
  * A simple centered section with a section heading and description.
  * Used for introducing content or providing context.
  */
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import type { HeadingContent } from "@/content/schema";
 import type { ReactNode } from "react";
 
@@ -29,7 +29,7 @@ const {
 
 <section id={id} class={`outer-section bg-bg ${className}`.trim()}>
   <div class="inner-section">
-    <SectionHeader
+    <SectionHeading
       title={title}
       heading={heading}
       description={description}

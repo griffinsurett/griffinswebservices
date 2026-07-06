@@ -12,7 +12,7 @@
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import type { CollectionKey } from "astro:content";
 import type { ChildCardData } from "@/components/LoopComponents/ChildCard";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/project/Section.astro";
 import ChildCardRenderer from "@/components/LoopTemplates/ChildCardRenderer";
 import { children } from "@/utils/query";
@@ -108,7 +108,7 @@ const showHeader = Boolean(title || heading || description);
       <div class="inner-section">
         {showHeader && (
           <div class="heading-padding">
-            <SectionHeader
+            <SectionHeading
               title={title}
               heading={heading}
               description={description}

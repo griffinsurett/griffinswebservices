@@ -7,7 +7,7 @@
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import Section from "@/components/Section.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Button from "@/components/Button/Button";
 import SmallChecklistItem from "@/components/LoopComponents/SmallChecklistItem.astro";
 import { shouldShowCollectionCTA } from "../utils/helpers";
@@ -56,7 +56,7 @@ const showCTA =
 <Section id={id} class={`relative ${className}`.trim()}>
   <div class="inner-section">
     {showHeader && (
-      <SectionHeader
+      <SectionHeading
         title={title}
         heading={heading}
         description={description}

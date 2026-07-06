@@ -2,7 +2,7 @@
 // PortfolioVideoShowcaseVariant.astro
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import Section from "@/components/Section.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import PortfolioMediaTile from "@/components/LoopComponents/Portfolio/PortfolioMediaTile.astro";
 import Button from "@/components/Button/Button";
 import { toArray } from "@/utils/array";
@@ -76,7 +76,7 @@ const desktopCardPositionClasses = [
             class="portfolio-video-showcase__copy"
             {...animationProps("fade-in-up", { once: false, threshold: 0.15, rootMargin: "-10% 0px -20% 0px" })}
           >
-            <SectionHeader
+            <SectionHeading
               title={sectionEyebrow}
               heading={normalizedHeading}
               description={sectionDescription}

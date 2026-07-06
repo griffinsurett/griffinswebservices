@@ -5,7 +5,7 @@
  * an automatic anchor for deep-linking.
  */
 
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import TableOfContents from "@/components/TableOfContents/TableOfContents";
 
 interface Props {
@@ -45,7 +45,7 @@ const showHeader =
 <section id={sectionId} class={`outer-section relative ${className}`.trim()}>
   <div class="inner-section space-y-12">
     {showHeader && (
-      <SectionHeader
+      <SectionHeading
         title={title}
         heading={heading}
         description={description}

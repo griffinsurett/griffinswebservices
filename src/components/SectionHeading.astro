@@ -1,0 +1,12 @@
+---
+// src/components/SectionHeading.astro
+// Thin .astro entry to the shared SectionHeading.tsx so .astro callers use plain
+// prop syntax. All logic lives in the .tsx. Rendered statically (no client
+// directive) — the header is static; its data-animate attrs are read from the
+// DOM by the scroll-animations integration.
+import SectionHeading from "@/components/SectionHeading";
+
+const props = Astro.props as Record<string, unknown>;
+---
+
+<SectionHeading {...props} />

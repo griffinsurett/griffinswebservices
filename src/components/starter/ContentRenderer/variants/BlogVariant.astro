@@ -8,7 +8,7 @@
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import BlogCard from "@/components/LoopComponents/BlogCard";
 import Section from "@/components/project/Section.astro";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Button from "@/components/starter/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import { toArray } from "@/utils/array";
@@ -35,7 +35,7 @@ const {
   ctaText,
 } = Astro.props as Props;
 
-// SectionHeader handles heading normalization automatically
+// SectionHeading handles heading normalization automatically
 const showHeader = Boolean(title || heading || description);
 
 const safeItems = toArray(items);
@@ -113,7 +113,7 @@ const getStaggerDelay = (index: number): number => {
     {
       showHeader && (
         <div class="heading-padding">
-          <SectionHeader
+          <SectionHeading
             title={title}
             heading={heading}
             description={description}

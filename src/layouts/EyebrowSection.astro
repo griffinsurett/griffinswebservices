@@ -18,6 +18,7 @@
  * wrap it in whatever section/background/pin they need.
  */
 import Button from "@/components/Button/Button";
+import Eyebrow from "@/components/Eyebrow";
 
 interface Props {
   /** Small uppercase label. */
@@ -45,11 +46,7 @@ const hasButton = Boolean(buttonText && buttonLink);
   {/* Eyebrow — same placement everywhere: left column (default) or pinned
       top-left at the shared inset (center). */}
   <div class:list={[center ? "eyebrow-label" : "shrink-0 md:pt-2"]}>
-    {/* Matches the logo's "WEB SERVICES" text exactly: font-light + the accent
-        gradient (emphasized-text) + eyebrow-text's size/tracking. */}
-    <p class="eyebrow-text font-light emphasized-text">
-      {eyebrow}
-    </p>
+    <Eyebrow>{eyebrow}</Eyebrow>
   </div>
 
   {/* Content — caller's heading/markup, with optional CTA bottom-right. */}

@@ -13,6 +13,7 @@ import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro"
 import { query } from "@/utils/query";
 import Button from "@/components/Button/Button";
 import AIIconPrompt from "@/components/Footer/AIIconPrompt";
+import Eyebrow from "@/components/Eyebrow";
 import CookiePreferencesButton from "@/integrations/preferences/consent/ui/CookiePreferencesButton";
 
 const eyebrow = "Let's build work that inspires.";
@@ -51,7 +52,7 @@ const legalColClass = [
   <div class="relative inner-section grid gap-x-12 gap-y-16 py-12 lg:grid-cols-2">
     {/* Top-left — eyebrow + heading */}
     <div class="lg:col-start-1 lg:row-start-1">
-      <p class="eyebrow-text font-light emphasized-text">{eyebrow}</p>
+      <Eyebrow>{eyebrow}</Eyebrow>
       <h2 class="heading-display mt-8">
         {heading}<br />{headingLine2}
       </h2>

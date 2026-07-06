@@ -47,7 +47,7 @@ const heroDescription =
       class="block lg:min-h-screen inner-section"
       {...animationProps("fade-in-up", { once: false, threshold: 0.2 })} -->
     
-      <!-- <ContentRenderer
+      <ContentRenderer
         query={byTag("capabilities", "featured").orderBy(sortByOrder())}
         variant="CardVariant"
         id="capabilities"
@@ -59,7 +59,7 @@ const heroDescription =
         card={{
           hoverOverlayClassName: "inset-0 bg-transparent",
         }}
-      /> -->
+      />
       <!-- <ContentRenderer
         query={byTag("projects", "screen").orderBy(sortByOrder())}
         variant="PortfolioScreenVariant"
@@ -104,31 +104,13 @@ const heroDescription =
       collectionUrl="/projects"
     />
 
-    <!-- PROCESS (disabled) -->
-    <!-- <HomeProblemSolutionIntro /> -->
-    <!-- <HomeSolutionBridge /> -->
-
-    {
-      /* BENEFITS — revealed as the filmstrip peels off-left, then scrolls
-        naturally as normal-flow content (no fixed-height clipping). */
-    }
     <ContentRenderer
       query={query("benefits").orderBy(sortByOrder()).limit(8)}
       variant="BenefitsCardStackVariant"
       id="benefits"
       heading="Your website should help with things like this."
-      description="A good website should make your business easier to trust, easier to find, and easier to contact."
+      description="Your website should do more than look good — it should quietly work for your business every day. It should make you easier to trust the moment someone lands on it, easier to find when people search, and easier to contact when they're ready to act. Every site we build is designed around outcomes like these, so the things that actually move your business forward keep happening long after launch."
     />
-
-    <!-- PROCESS (disabled) -->
-    <!-- <HomeProblemSolutionIntro /> -->
-    <!-- <HomeSolutionBridge /> -->
-
-    {
-      /* TrustPanel removed — its trust stats + testimonial quote are now covered
-        by the ported About section above. Re-enable by uncommenting. */
-    }
-    {/* <TrustPanel /> */}
 
     <div class="bottom-content-section">
       <ContentRenderer
@@ -143,7 +125,7 @@ const heroDescription =
       {/* FAQs moved to /faq */}
     </div>
 
-    <!-- BLOG — editorial cards (webmaxers style) under a GWS SectionHeader. -->
+    <!-- BLOG — editorial cards (webmaxers style) under a GWS SectionHeading. -->
     <ContentRenderer
       query={query("blog").orderBy(sortByDate("publishDate", "desc")).limit(4)}
       variant="BlogVariant"

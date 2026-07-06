@@ -1,7 +1,7 @@
 ---
 // src/layouts/ContentSection.astro
 // Modern, editorial about section optimized for the refreshed build
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import Button from "@/components/Button/Button";
 import IconListItem from "@/components/LoopComponents/IconListItem";
@@ -62,7 +62,7 @@ const sidebarFeatureKey = (feature: SidebarFeature, index: number) =>
   <div class="inner-section space-y-20">
     <div class="flex flex-col gap-12 lg:flex-row lg:items-start">
       <article class="space-y-8 lg:flex-[1.25] min-w-0 sticky-section">
-        <SectionHeader
+        <SectionHeading
           title={headingTitle}
           headingBefore={headingBefore}
           headingEmphasis={headingEmphasis}

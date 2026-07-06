@@ -3,7 +3,7 @@
 // Lightweight hero with zero JavaScript - optimized for 100 Lighthouse score
 import Button from "@/components/Button/Button";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import ScrollIndicator from "@/components/ScrollIndicator.astro";
 import { query } from "@/utils/query";
 import { siteData } from "@/content/siteData";
@@ -54,7 +54,7 @@ const primaryCTA: CTA = {
       data-animate="fade-in-up"
       data-animate-once="false"
     >
-      <SectionHeader
+      <SectionHeading
         className="text-left lg:text-center w-full"
         heading={heading}
         headingTag="h1"

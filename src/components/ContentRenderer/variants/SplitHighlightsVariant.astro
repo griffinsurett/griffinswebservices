@@ -2,14 +2,14 @@
 // src/components/ContentRenderer/variants/SplitHighlightsVariant.astro
 /**
  * SplitHighlightsVariant
- * Two-part editorial section with a SectionHeader column and supporting copy,
+ * Two-part editorial section with a SectionHeading column and supporting copy,
  * followed by a responsive grid of highlight cards.
  * Designed for capability/solution pages that need a narrative followed by
  * supporting proof points (similar to the provided inspiration screenshot).
  */
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import Button from "@/components/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
@@ -94,12 +94,11 @@ const getItemEyebrow = (record: Record<string, any>) =>
     {showTopRegion && (
       <div class="grid gap-10 lg:gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
         {showHeader && (
-          <SectionHeader
+          <SectionHeading
             title={sectionTitle}
             heading={heading}
             className="space-y-4 text-left"
             headingClassName="h2 leading-tight"
-            titleVisibleRootMargin={0}
           />
         )}
 

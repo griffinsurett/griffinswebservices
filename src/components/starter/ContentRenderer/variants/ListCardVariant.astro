@@ -12,7 +12,7 @@ import type {
   FeatureCardProps,
 } from "@/components/LoopComponents/FeatureCard";
 import CardRenderer from "@/components/LoopTemplates/CardRenderer";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/project/Section.astro";
 import Button from "@/components/starter/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
@@ -39,7 +39,7 @@ const {
 
 const safeItems = toArray(items) as FeatureCardData[];
 
-// SectionHeader handles heading normalization automatically
+// SectionHeading handles heading normalization automatically
 const showHeader = Boolean(title || heading || description);
 const gridMarginClass = showHeader ? "mt-5 lg:px-25" : "";
 const showCTA =
@@ -69,7 +69,7 @@ const featureCardProps: Partial<FeatureCardProps> = {
     {
       showHeader && (
         <div class="heading-padding">
-          <SectionHeader
+          <SectionHeading
             title={title}
             heading={heading}
             description={description}

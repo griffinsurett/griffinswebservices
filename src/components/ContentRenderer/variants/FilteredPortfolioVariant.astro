@@ -24,7 +24,7 @@ import type { CollectionKey } from "astro:content";
 import { getPublishedCollection } from "@/utils/collections";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import type { FilterConfig } from "@/hooks/useFilter";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import Button from "@/components/Button/Button";
 import FilteredPortfolioCarousel from "@/components/LoopTemplates/Portfolio/FilteredPortfolioCarousel";
@@ -227,7 +227,7 @@ const showHeader = Boolean(sectionTitle || headingValue || description);
 >
   <div class="">
     {showHeader && (
-      <SectionHeader
+      <SectionHeading
         title={sectionTitle}
         heading={headingValue}
         description={description}

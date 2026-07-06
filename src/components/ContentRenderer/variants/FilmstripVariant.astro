@@ -22,6 +22,7 @@
 
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import FilmstripCard from "@/components/LoopComponents/FilmstripCard.astro";
+import Eyebrow from "@/components/Eyebrow";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import Button from "@/components/Button/Button";
 import { find } from "@/utils/query";
@@ -93,10 +94,9 @@ const totalPanels = items.length + 2;
       <div class="fs-panel fs-panel--intro">
         <div class="fs-rule" aria-hidden="true"></div>
         <div class="fs-panel-inner">
-          {/* Matches the logo's "WEB SERVICES" text: eyebrow-text size/tracking
-              + font-light + the accent gradient (emphasized-text). fs-eyebrow
-              only carries the bottom spacing now. */}
-          <p class="fs-eyebrow eyebrow-text font-light emphasized-text">Work</p>
+          {/* Shared Eyebrow (theme-safe primary gradient). fs-eyebrow only
+              carries the bottom spacing. */}
+          <Eyebrow className="fs-eyebrow">Work</Eyebrow>
           <h2 class="fs-heading">
             {title.split("\n").map((line: string, i: number) => (
               <span class:list={["fs-heading-line", i > 0 && "fs-heading-line--indent"]}>{line}</span>
@@ -243,8 +243,9 @@ const totalPanels = items.length + 2;
 
   /* ── Intro text ──────────────────────────────────────────────── */
   /* Typography (size, weight, tracking, gradient color) comes from the shared
-     eyebrow-text + emphasized-text utilities on the element — matching the logo's
-     "WEB SERVICES" text. This rule only owns the spacing below it. */
+     Eyebrow component's class list (eyebrow-text + secondary-primary-gradient) on
+     the element — theme-safe in light and dark. This rule only owns the spacing
+     below it. */
   .fs-eyebrow {
     margin-bottom: 1.25rem;
   }

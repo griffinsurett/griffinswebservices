@@ -13,7 +13,7 @@
  * Below md the left heading stacks on top and squares flow normally.
  */
 import type { BaseVariantProps } from "../ContentRenderer.types";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import { toArray } from "@/utils/array";
 
 const { items = [], title, heading, description, collectionTitle, id } =
@@ -38,7 +38,7 @@ const panels = await Promise.all(
 <section id={id} class="bcs" data-benefits-cardstack aria-label="Why choose us">
   {/* LEFT — sticky heading */}
   <div class="bcs-aside">
-    <SectionHeader title={sectionTitle} heading={heading} description={description} className="text-left" />
+    <SectionHeading title={sectionTitle} heading={heading} description={description} className="text-left" />
   </div>
 
   {/* RIGHT — benefit squares */}

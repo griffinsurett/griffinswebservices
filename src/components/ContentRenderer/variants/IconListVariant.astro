@@ -3,7 +3,7 @@
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import IconListItem from "@/components/LoopComponents/IconListItem";
 import FeatureCard from "@/components/LoopComponents/FeatureCard";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import { toArray } from "@/utils/array";
 
@@ -48,7 +48,7 @@ const showHeader = Boolean(sectionTitle ?? description ?? heading);
             {
                 showHeader && (
                     <div class="w-full min-w-0 lg:w-1/2 sticky-section lg:self-start">
-                        <SectionHeader
+                        <SectionHeading
                             title={sectionTitle}
                             heading={heading}
                             description={description}
@@ -56,7 +56,6 @@ const showHeader = Boolean(sectionTitle ?? description ?? heading);
                             headingTag={headingTag}
                             headingClassName={headingClassName}
                             descriptionClassName="large-text leading-relaxed"
-                            titleVisibleRootMargin={0}
                         />
 
                         {Astro.slots.has("under-text") && (

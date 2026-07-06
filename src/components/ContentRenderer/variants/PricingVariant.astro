@@ -1,7 +1,7 @@
 ---
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import Section from "@/components/Section.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Button from "@/components/Button/Button";
 import IconListItem from "@/components/LoopComponents/IconListItem";
 import SmallChecklistItem from "@/components/LoopComponents/SmallChecklistItem.astro";
@@ -66,7 +66,7 @@ const isExternalHref = (href?: string) =>
   <div class="inner-section">
     {showHeader && (
       <div class="mx-auto max-w-4xl">
-        <SectionHeader
+        <SectionHeading
           title={title}
           heading={heading}
           description={description}

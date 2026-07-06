@@ -1,7 +1,7 @@
 ---
 import Icon from "@/components/Icon";
 import Section from "@/components/Section.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 
 interface FitItem {
   title: string;
@@ -37,7 +37,7 @@ const columns = [left, right];
 
 <Section class={`outer-section relative ${className}`.trim()}>
   <div class="inner-section">
-    <SectionHeader
+    <SectionHeading
       title={title}
       heading={heading}
       description={description}

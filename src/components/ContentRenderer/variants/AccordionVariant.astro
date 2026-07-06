@@ -10,7 +10,7 @@ import type { BaseVariantProps } from "../ContentRenderer.types";
 import ContentBridge from "../ContentBridge/ContentBridge.astro";
 import FaqAccordion from "@/components/LoopTemplates/FaqAccordion";
 import Button from "@/components/Button/Button";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import { shouldShowCollectionCTA } from "../utils/helpers";
 import { toArray } from "@/utils/array";
@@ -49,7 +49,7 @@ const showHeader = Boolean(sectionTitle || heading || description);
     {
       showHeader && (
         <div class="mx-auto mb-14 max-w-3xl text-center md:mb-16">
-          <SectionHeader
+          <SectionHeading
             title={sectionTitle}
             heading={heading}
             description={description}

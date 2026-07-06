@@ -11,12 +11,15 @@ import { resolveImageMetadata, getImageAlt } from "@/utils/images";
 
 interface Props extends BaseVariantProps {
   link?: string;
+  /** Caption under the star row. */
+  label?: string;
 }
 
 const {
   items = [],
   className = "",
   link = "/#testimonials-home",
+  label = "Hear from our clients",
   id,
 } = Astro.props as Props;
 
@@ -96,7 +99,7 @@ const resolveImage = (face: any) => {
     </div>
 
     <p class="m-0 capitalize text-sm lg:text-base leading-relaxed text-heading">
-      Trusted by businesses
+      {label}
     </p>
   </div>
 </a>

@@ -12,7 +12,7 @@ import type {
 } from "@/components/LoopComponents/FeatureCard";
 import CardRenderer from "@/components/LoopTemplates/CardRenderer";
 import ContentBridge from "../ContentBridge/ContentBridge.astro";
-import SectionHeader from "@/components/project/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/project/Section.astro";
 import Button from "@/components/starter/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
@@ -103,7 +103,7 @@ const resolveRingDuration = (item: FeatureCardData): number => {
   return typeof record?.ringDuration === "number" ? record.ringDuration : 800;
 };
 
-// SectionHeader handles heading normalization automatically
+// SectionHeading handles heading normalization automatically
 const showHeader = Boolean(title || heading || description);
 const gridMarginClass = [showHeader ? "mt-12" : "", gridClassName]
   .filter(Boolean)
@@ -131,7 +131,7 @@ const showCTA =
               ctaInlineOnDesktop && showCTA ? "lg:flex-1" : "heading-padding"
             }
           >
-            <SectionHeader
+            <SectionHeading
               title={title}
               heading={heading}
               description={description}

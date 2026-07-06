@@ -2,7 +2,7 @@
 // src/pages/404.astro
 import SiteLayout from "@/layouts/SiteLayout.astro";
 import Button from "@/components/Button/Button";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 ---
 <SiteLayout title="Page Not Found" description="The page you requested does not exist." robots="noindex, nofollow" addToLLMs={false}>
   <section
@@ -30,7 +30,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
       </div>
 
       <div class="max-h-0 overflow-hidden opacity-0 translate-y-[0.65rem] text-left motion-safe:animate-[revealMessageStage_380ms_ease_2s_forwards] motion-reduce:max-h-none motion-reduce:overflow-visible motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:animate-none">
-        <SectionHeader
+        <SectionHeading
           title="404 Error"
           heading="This page is not loading slowly. It is just not here."
           headingTag="h1"

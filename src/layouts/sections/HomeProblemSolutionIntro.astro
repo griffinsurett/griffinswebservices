@@ -1,6 +1,6 @@
 ---
 import Section from "@/components/Section.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
 
 interface IntroItem {
@@ -51,7 +51,7 @@ const getCardSpanClass = (index: number) => {
       class="mx-auto max-w-6xl space-y-8 lg:space-y-12"
       {...animationProps("fade-in-up", { once: true, threshold: 0.08 })}
     >
-      <SectionHeader
+      <SectionHeading
         className="mx-auto max-w-5xl text-center"
         heading={heading}
         headingClassName="h2 leading-[0.98] font-semibold text-heading"

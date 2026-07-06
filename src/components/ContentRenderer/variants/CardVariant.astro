@@ -9,7 +9,7 @@ import type { BaseVariantProps } from "../ContentRenderer.types";
 import type { FeatureCardData, FeatureCardProps } from "@/components/LoopComponents/FeatureCard";
 import CardRenderer from "@/components/LoopTemplates/CardRenderer";
 import ContentBridge from "../ContentBridge/ContentBridge.astro";
-import SectionHeader from "@/components/SectionHeader.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
 import Section from "@/components/Section.astro";
 import Button from "@/components/Button/Button";
 import { shouldShowCollectionCTA } from "../utils/helpers";
@@ -148,7 +148,7 @@ const sectionOverflowClass = isSplitLayout ? "" : "overflow-hidden";
         <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-12 xl:gap-16">
           <div class="flex flex-col gap-6 sticky-section lg:self-start">
             {showHeader && (
-              <SectionHeader
+              <SectionHeading
                 title={title}
                 heading={heading}
                 description={description}
@@ -261,7 +261,7 @@ const sectionOverflowClass = isSplitLayout ? "" : "overflow-hidden";
             }
           >
             <div class={ctaInlineOnDesktop && showCTA ? "lg:flex-1" : "heading-padding"}>
-              <SectionHeader
+              <SectionHeading
                 title={title}
                 heading={heading}
                 description={description}
