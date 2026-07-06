@@ -164,13 +164,6 @@ export const collections = {
       }),
   }),
 
-  // ── features ──────────────────────────────────────────────
-  "features": defineCollection({
-    loader: GlobLoad("features"),
-    schema: ({ image }) =>
-      baseSchema({ image }),
-  }),
-
   // ── capabilities ──────────────────────────────────────────
   "capabilities": defineCollection({
     loader: GlobLoad("capabilities"),
