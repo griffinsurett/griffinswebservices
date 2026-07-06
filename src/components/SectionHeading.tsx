@@ -7,7 +7,8 @@
  * eyebrow → <Eyebrow> (theme-safe primary gradient, single source).
  * heading → <Heading> (plain, segmented before/emphasis/after, or a
  *           HeadingContent object).
- * description → <p>, exposed to AT as a heading when it uses large-text styles.
+ * description → <p>. Plain prose by default; only exposed to AT as a heading
+ *           when a caller explicitly sets descriptionAsHeading={true}.
  *
  * .tsx hybrid: usable from .tsx directly and from .astro (no client directive
  * needed — it's static; data-animate attrs are read from the DOM by the
@@ -41,7 +42,7 @@ export interface SectionHeadingProps {
   emphasisClassName?: string;
   description?: ReactNode;
   descriptionClassName?: string;
-  /** Treat description as heading (adds role/aria-level). Defaults to true when large-text styles are used. */
+  /** Treat description as a heading (adds role/aria-level). Opt-in only — defaults to false. */
   descriptionAsHeading?: boolean;
   /** Heading level used when description is treated as heading. */
   descriptionHeadingLevel?: number;
@@ -59,9 +60,6 @@ const isHeadingContent = (value: unknown): value is HeadingContent => {
   const looksLikeReactElement = "props" in record && "type" in record;
   return hasKeys && !looksLikeReactElement;
 };
-
-const classContains = (classValue: string | undefined, needle: string) =>
-  Boolean(classValue && classValue.split(/\s+/).some((cls) => cls === needle));
 
 export default function SectionHeading({
   eyebrow,
@@ -104,11 +102,14 @@ export default function SectionHeading({
     return match ? Number(match[1]) : 2;
   })();
 
+  // Only expose the description as a heading when a caller EXPLICITLY opts in
+  // (descriptionAsHeading={true}). Previously this was inferred from the
+  // `large-text` style class, which let styling drive semantics — every card
+  // section's prose description became a fake role="heading", polluting the
+  // screen-reader heading outline (WCAG 1.3.1). Audited all 7 large-text
+  // callers: none rely on the heading role (each already has a real `heading`).
   const shouldTreatDescriptionAsHeading = Boolean(
-    description &&
-      (descriptionAsHeading !== undefined
-        ? descriptionAsHeading
-        : classContains(descriptionClassName, "large-text"))
+    description && descriptionAsHeading === true
   );
 
   const resolvedDescriptionHeadingLevel =

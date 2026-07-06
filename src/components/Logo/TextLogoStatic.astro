@@ -10,8 +10,6 @@ interface Props {
   restClass?: string;
   fadeDuration?: number;
   animateOutText?: boolean;
-  asHeading?: boolean;
-  headingLevel?: number;
   colorMode?: "invert" | "dark" | "light";
 }
 
@@ -22,8 +20,6 @@ const {
   restClass = "text-xs lg:text-sm p-0 m-0",
   fadeDuration = 1200,
   animateOutText = false,
-  asHeading = true,
-  headingLevel = 2,
   colorMode = "invert",
 } = Astro.props;
 
@@ -40,19 +36,13 @@ const textColorClass =
 const words = title.split(" ");
 const firstWord = words[0] || "";
 const restOfTitle = words.slice(1).join(" ");
-
-const headingAttrs = asHeading
-  ? ({
-      role: "heading",
-      "aria-level": headingLevel,
-    } as const)
-  : {};
 ---
 
+<!-- The logo is branding, not a section title — never a heading (WCAG 1.3.1).
+     The logo link already carries the accessible name. -->
 <div
   class={className}
   data-scroll-fade-css={animateOutText ? "true" : undefined}
-  {...headingAttrs}
 >
   <span class={`${firstClass} ${textColorClass} leading-wide font-semibold no-translate`} style="line-height: normal;">
     {firstWord}
