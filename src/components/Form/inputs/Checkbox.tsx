@@ -24,7 +24,7 @@ export default function Checkbox({
   children,
   required = false,
   containerClassName = "mb-4",
-  labelClassName = "flex items-center gap-1.5 cursor-pointer",
+  labelClassName = "flex items-start gap-1.5 cursor-pointer",
   checkboxClassName = "w-4 h-4 text-primary border-surface accent-accent rounded mt-0.5",
   ...checkboxProps
 }: CheckboxProps) {

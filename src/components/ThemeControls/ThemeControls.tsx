@@ -1,10 +1,8 @@
 import { useEffect, useId, useRef, useState } from "react";
-import DarkLightToggle from "./DarkLightToggle";
-import AccentPicker from "./AccentPicker";
-import LanguagePicker from "./LanguagePicker";
 import Icon from "@/components/Icon";
 import { UseMode } from "@/hooks/theme/UseMode";
-import { useAccentColor } from "@/hooks/useAccentColor";
+import { useAccentColor, type AccentColor } from "@/hooks/useAccentColor";
+import { useAccessibility } from "@/integrations/preferences/accessibility/core/hooks/useAccessibility";
 import { useLanguageSwitcher } from "@/integrations/preferences/language/core/hooks/useLanguageSwitcher";
 import { SquareCheckbox } from "./checkboxes/SquareCheckbox";
 
@@ -12,18 +10,25 @@ interface ThemeControlsProps {
   className?: string;
 }
 
-type MobilePanel = "root" | "language" | "accent";
+type Panel = "root" | "language" | "accent";
 
-function MobileActionButton({
+/**
+ * Theme / motion / language / accent preferences.
+ *
+ * A single gear button at ALL screen sizes opens a popup that holds every
+ * preference as a row (mirrors webmaxers). No inline desktop pills — the gear
+ * is the only entry point on desktop and mobile alike.
+ */
+function PreferenceRow({
   label,
+  value,
   onClick,
   leading,
-  trailing,
 }: {
   label: string;
+  value: React.ReactNode;
   onClick: () => void;
   leading: React.ReactNode;
-  trailing: React.ReactNode;
 }) {
   return (
     <button
@@ -37,7 +42,7 @@ function MobileActionButton({
         </span>
         <span className="text-sm font-medium">{label}</span>
       </span>
-      <span className="text-sm text-text/75">{trailing}</span>
+      <span className="text-sm text-text/75">{value}</span>
     </button>
   );
 }
@@ -48,11 +53,12 @@ function ThemeGlyph({ isLight, gradientId }: { isLight: boolean; gradientId: str
 
 export default function ThemeControls({ className = "" }: ThemeControlsProps) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [hidden] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobilePanel, setMobilePanel] = useState<MobilePanel>("root");
+  const [open, setOpen] = useState(false);
+  const [panel, setPanel] = useState<Panel>("root");
   const [isLight, setIsLight] = UseMode();
   const { accent, setAccent, accents } = useAccentColor();
+  const { preferences, setPreferences } = useAccessibility();
+  const reduced = preferences.content.reducedMotion;
   const {
     currentLanguage,
     requiresConsent,
@@ -63,53 +69,53 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
   const iconGradientId = useId();
   const accentGradientId = useId();
 
-  const closeMobileMenu = () => {
-    setMobileOpen(false);
-    setMobilePanel("root");
+  const close = () => {
+    setOpen(false);
+    setPanel("root");
   };
 
-  const openMobileMenu = () => {
-    setMobilePanel("root");
-    setMobileOpen(true);
+  const openMenu = () => {
+    setPanel("root");
+    setOpen(true);
   };
 
+  // Dismiss the popup on outside-click / Escape.
   useEffect(() => {
-    if (!mobileOpen) return;
+    if (!open) return;
 
-    const handlePointerDown = (event: MouseEvent | TouchEvent) => {
+    const onPointerDown = (event: MouseEvent | TouchEvent) => {
       if (ref.current?.contains(event.target as Node)) return;
-      closeMobileMenu();
+      close();
+    };
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
     };
 
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeMobileMenu();
-    };
-
-    const handleResize = () => {
-      if (window.innerWidth >= 640) closeMobileMenu();
-    };
-
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("touchstart", handlePointerDown);
-    document.addEventListener("keydown", handleEscape);
-    window.addEventListener("resize", handleResize);
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("touchstart", onPointerDown);
+    document.addEventListener("keydown", onEscape);
 
     return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("touchstart", handlePointerDown);
-      document.removeEventListener("keydown", handleEscape);
-      window.removeEventListener("resize", handleResize);
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("touchstart", onPointerDown);
+      document.removeEventListener("keydown", onEscape);
     };
-  }, [mobileOpen]);
+  }, [open]);
 
   const handleThemeToggle = () => {
     setIsLight(!isLight);
-    closeMobileMenu();
   };
 
-  const handleAccentSelect = (color: string) => {
+  const handleReducedMotionToggle = () => {
+    setPreferences({
+      ...preferences,
+      content: { ...preferences.content, reducedMotion: !reduced },
+    });
+  };
+
+  const handleAccentSelect = (color: AccentColor) => {
     setAccent(color);
-    closeMobileMenu();
+    close();
   };
 
   const handleLanguageSelect = (code: string) => {
@@ -118,7 +124,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
     if (!result.success) {
       if (requiresConsent && code !== "en") {
         openConsentModal();
-        closeMobileMenu();
+        close();
         return;
       }
 
@@ -126,18 +132,14 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
       return;
     }
 
-    closeMobileMenu();
+    close();
   };
 
   return (
     <div
       ref={ref}
       className={[
-        "relative flex h-9 shrink-0 items-center justify-center sm:h-10",
-        "transition-opacity duration-300 ease-in-out z-999999",
-        hidden
-          ? "opacity-0 pointer-events-none"
-          : "opacity-100 pointer-events-auto",
+        "relative flex h-9 shrink-0 items-center justify-center sm:h-10 z-999999",
         className,
       ]
         .filter(Boolean)
@@ -158,41 +160,43 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
         </defs>
       </svg>
 
+      {/* A single gear button (all screen sizes) that opens the preferences popup. */}
       <button
         type="button"
-        className="faded-bg inline-flex h-8 w-8 items-center justify-center rounded-full text-primary transition-all main-duration sm:hidden"
+        className="faded-bg inline-flex h-8 w-8 items-center justify-center rounded-full text-primary transition-all main-duration sm:h-9 sm:w-9"
         aria-label="Open preferences"
-        aria-expanded={mobileOpen}
+        aria-expanded={open}
         aria-haspopup="menu"
-        onClick={() => (mobileOpen ? closeMobileMenu() : openMobileMenu())}
+        onClick={() => (open ? close() : openMenu())}
       >
         <Icon icon="lu:settings" size="sm" className="h-4 w-4 text-current" />
       </button>
 
-      <div className="hidden h-10 items-center gap-1.5 sm:flex">
-        <LanguagePicker />
-        <DarkLightToggle gradientId={iconGradientId} />
-        <AccentPicker gradientId={accentGradientId} />
-      </div>
-
-      {mobileOpen && (
+      {/* Preferences popup (all screen sizes). */}
+      {open && (
         <div
-          className="absolute left-1/2 top-full z-10 mt-4 w-[min(18rem,calc(100vw-1.5rem))] -translate-x-1/2 rounded-2xl card-bg-2 p-3 shadow-2xl sm:hidden"
+          className="absolute left-1/2 top-full z-10 mt-4 w-[min(18rem,calc(100vw-1.5rem))] -translate-x-1/2 rounded-2xl card-bg-2 p-3 shadow-2xl"
           onPointerDown={(event) => event.stopPropagation()}
           role="menu"
           aria-label="Preferences"
         >
-          {mobilePanel === "root" && (
+          {panel === "root" && (
             <div className="flex flex-col gap-1">
-              <MobileActionButton
+              <PreferenceRow
                 label="Theme"
                 onClick={handleThemeToggle}
                 leading={<ThemeGlyph isLight={isLight} gradientId={iconGradientId} />}
-                trailing={isLight ? "Light" : "Dark"}
+                value={isLight ? "Light" : "Dark"}
               />
-              <MobileActionButton
+              <PreferenceRow
+                label="Reduce motion"
+                onClick={handleReducedMotionToggle}
+                leading={<Icon icon="fa6:wand-magic-sparkles" size="md" color={`url(#${iconGradientId})`} />}
+                value={reduced ? "On" : "Off"}
+              />
+              <PreferenceRow
                 label="Language"
-                onClick={() => setMobilePanel("language")}
+                onClick={() => setPanel("language")}
                 leading={
                   currentLanguage.flag ? (
                     <span className="text-[20px] leading-none" aria-hidden="true">
@@ -202,13 +206,22 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
                     <Icon icon="lu:globe" size="md" className="text-current" />
                   )
                 }
-                trailing={currentLanguage.flag || currentLanguage.code.toUpperCase()}
+                value={
+                  <span className="flex items-center gap-2">
+                    {currentLanguage.flag && (
+                      <span className="text-base leading-none" aria-hidden="true">
+                        {currentLanguage.flag}
+                      </span>
+                    )}
+                    <span>{currentLanguage.nativeName || currentLanguage.code.toUpperCase()}</span>
+                  </span>
+                }
               />
-              <MobileActionButton
+              <PreferenceRow
                 label="Accent"
-                onClick={() => setMobilePanel("accent")}
+                onClick={() => setPanel("accent")}
                 leading={<Icon icon="fa6:droplet" size="md" color={`url(#${accentGradientId})`} />}
-                trailing={
+                value={
                   <span
                     className="inline-flex h-4 w-4 rounded-full border border-white/15"
                     style={{ backgroundColor: accent }}
@@ -219,12 +232,12 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
             </div>
           )}
 
-          {mobilePanel === "language" && (
+          {panel === "language" && (
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between px-2 py-1">
                 <button
                   type="button"
-                  onClick={() => setMobilePanel("root")}
+                  onClick={() => setPanel("root")}
                   className="text-sm font-medium text-primary transition-opacity hover:opacity-75"
                 >
                   Back
@@ -238,7 +251,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
                   type="button"
                   onClick={() => {
                     openConsentModal();
-                    closeMobileMenu();
+                    close();
                   }}
                   className="mx-1 rounded-2xl border border-yellow-400/35 bg-yellow-500/10 px-3 py-2 text-left text-xs text-text transition-colors hover:bg-yellow-500/15"
                 >
@@ -285,12 +298,12 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
             </div>
           )}
 
-          {mobilePanel === "accent" && (
+          {panel === "accent" && (
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between px-2 py-1">
                 <button
                   type="button"
-                  onClick={() => setMobilePanel("root")}
+                  onClick={() => setPanel("root")}
                   className="text-sm font-medium text-primary transition-opacity hover:opacity-75"
                 >
                   Back
@@ -300,18 +313,16 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
               </div>
 
               <div className="grid grid-cols-4 gap-3 px-2 pt-1 pb-1">
-                {accents.map((color) => {
-                  return (
-                    <div key={color} className="flex items-center justify-center">
-                      <SquareCheckbox
-                        color={color}
-                        checked={accent === color}
-                        onChange={() => handleAccentSelect(color)}
-                        aria-label={`Select accent color ${color}`}
-                      />
-                    </div>
-                  );
-                })}
+                {accents.map((color) => (
+                  <div key={color} className="flex items-center justify-center">
+                    <SquareCheckbox
+                      color={color}
+                      checked={accent === color}
+                      onChange={() => handleAccentSelect(color)}
+                      aria-label={`Select accent color ${color}`}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           )}
