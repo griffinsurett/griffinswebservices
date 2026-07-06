@@ -262,9 +262,17 @@ body {
     @apply overflow-x-hidden;
   }
 
-  /* Remove focus outlines globally - using custom focus indicators instead */
-  *:focus {
+  /* Drop the UA outline only for mouse/programmatic focus (:focus, not
+     :focus-visible), so it never lingers on click — but ALWAYS keep a visible
+     indicator for keyboard focus. Components with richer rings (.btn-base,
+     .link-base, .logo-link-base, etc.) override this later as enhancements. */
+  :focus:not(:focus-visible) {
     outline: none;
+  }
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 3px;
   }
 
   ::selection {
@@ -277,7 +285,9 @@ body {
     --color-primary: var(--color-zinc-900);
     --color-heading: var(--color-tertiary-dark);
     --color-text: var(--color-zinc-600);
-    --color-muted: var(--text-gray-500);
+    /* zinc-600: AA on every light ground incl. bg3 cards (≥6:1). Replaces the
+       broken `var(--text-gray-500)` (undefined token → invalid muted color). */
+    --color-muted: var(--color-zinc-600);
     --color-bg: var(--color-primary-light);
     --color-bg2: var(--color-secondary-light);
     --color-bg3: var(--color-tertiary-light);
@@ -464,7 +474,9 @@ body {
   border-width: 1px;
   border-style: solid;
   border-color: var(--color-border);
-  @apply text-muted;
+  /* The entered value is content — it must meet 4.5:1, so use solid text, not
+     muted. Only the placeholder (a hint) is muted. */
+  @apply text-text;
 
   &:focus {
     border-color: var(--color-accent);
