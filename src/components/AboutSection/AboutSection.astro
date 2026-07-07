@@ -462,10 +462,15 @@ const hasExpandSlot = Astro.slots.has("expand-content");
   .about-expand-content :global(.tc-company) {
     color: var(--color-text);
   }
-  .about-expand-content :global(.tc-sep),
+  /* Separators are hairline structure, not text — they only need to be faintly
+     visible over the photo (~non-text 3:1), NOT promoted to text weight. Keep them
+     subtle so the byline row stays elegant; text/35 reads as a thin divider like
+     the original border token, just bright enough to survive the photo. */
+  .about-expand-content :global(.tc-sep) {
+    background: color-mix(in srgb, var(--color-text) 35%, transparent);
+  }
   .about-expand-content :global(.tc-dot) {
-    color: color-mix(in srgb, var(--color-text) 60%, transparent);
-    background: color-mix(in srgb, var(--color-text) 60%, transparent);
+    color: color-mix(in srgb, var(--color-text) 35%, transparent);
   }
 
   /* Flow content (grid + marquee) rides ABOVE the pinned image. Pulled up by one

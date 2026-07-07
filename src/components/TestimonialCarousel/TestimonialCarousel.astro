@@ -147,6 +147,13 @@ const items: SerializedItem[] = await Promise.all(
 
   :global(.tc-inner) {
     width: 100%;
+    /* Byline (author / role / company) size — fluid so the attribution row scales
+       WITH the quote instead of staying a flat 13px. On wide desktop the quote
+       reaches ~52px, so a fixed byline looked tiny beneath it; this grows it to
+       ~16px there while staying 13px on mobile. Defined HERE (not on tc-quote-wrap)
+       because the .tc-footer byline is a SIBLING of the quote-wrap — both inherit
+       it from .tc-inner. Single source, shared by all three byline pieces. */
+    --tc-byline-size: clamp(0.8125rem, 1vw, 1rem);
   }
 
   /* ── Float layout ── */
@@ -231,7 +238,7 @@ const items: SerializedItem[] = await Promise.all(
   }
 
   :global(.tc-author) {
-    font-size: 0.8125rem;
+    font-size: var(--tc-byline-size);
     font-weight: 500;
     letter-spacing: 0.04em;
     color: var(--color-heading);
@@ -248,7 +255,9 @@ const items: SerializedItem[] = await Promise.all(
   }
 
   :global(.tc-role) {
-    font-size: 0.75rem;
+    /* Shares --tc-byline-size with the author name so the row reads evenly and
+       scales together with the quote on wide desktops. */
+    font-size: var(--tc-byline-size);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-muted);
@@ -260,7 +269,7 @@ const items: SerializedItem[] = await Promise.all(
   }
 
   :global(.tc-company) {
-    font-size: 0.75rem;
+    font-size: var(--tc-byline-size);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-muted);
