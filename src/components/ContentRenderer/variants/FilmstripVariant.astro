@@ -115,7 +115,7 @@ const totalPanels = items.length + 2;
         <div class="fs-panel fs-panel--project" data-slide-index={i + 1} data-filmstrip-card>
           <div class="fs-rule" aria-hidden="true"></div>
           <div class="fs-panel-inner fs-panel-inner--project">
-            <div class="fs-card-rise" style="transform:translateY(100%)">
+            <div class="fs-card-rise">
               <FilmstripCard
                 title={item.title}
                 description={item.description}
@@ -274,89 +274,78 @@ const totalPanels = items.length + 2;
     margin-bottom: 2.5rem;
   }
 
-  /* ── Card rise animation ─────────────────────────────────────── */
-  /* transform and opacity are set directly via JS style — no custom property needed */
-  .fs-card-rise {
-    will-change: transform, opacity;
+  /* ── Card rise animation ─────────────────────────────────────────
+     Cards start hidden BELOW their panel and are raised by JS during the scrub
+     (it writes transform/opacity inline per frame). The hidden start state lives
+     here — gated to when the scrub actually runs — so the fallback layouts need
+     no override to reveal the cards; they simply never receive it. */
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    .fs-section:not(.fs-reduce-stack) .fs-card-rise {
+      transform: translateY(100%);
+      opacity: 0;
+      will-change: transform, opacity;
+    }
   }
 
-  /* ── FALLBACK LAYOUTS (no horizontal pin/scrub) ──────────────────────
-     The scrub runs on DESKTOP (≥768px) with motion allowed. Otherwise the
-     section reflows to a normal-scroll layout. Two fallback shapes:
+  /* ── FALLBACK LAYOUT (no horizontal pin/scrub) ───────────────────────
+     The scrub runs only on ≥768px with motion allowed. Otherwise the JS applies
+     `.fs-reduce-stack` (reduced motion at any width, or <768px) and never builds
+     the pin or writes inline card transforms — so these rules never fight inline
+     styles and no `!important` is needed. The <768px media query mirrors the
+     same reset so the stack is correct before JS hydrates, too.
 
-       • <768px OR no-JS reduced-motion → simple full-width vertical stack.
-       • JS-detected reduced motion (OS pref OR the in-app a11y toggle), ≥768px
-         → the Benefits-style SIDE layout: sticky heading column on the left,
-         project panels scrolling in the right column. `.is-reduced` is applied
-         by the script (readMotionPreference covers both sources), so it always
-         agrees with whether the pin was built. */
+     Two shapes:
+       • <768px  → full-width vertical stack, one project per row.
+       • ≥768px  → Benefits-style side layout: sticky heading column left,
+                   project panels scrolling right. */
+  .fs-reduce-stack,
+  .fs-reduce-stack .fs-track,
+  .fs-reduce-stack .fs-panel,
+  .fs-reduce-stack .fs-panel-inner { height: auto; }
+  .fs-reduce-stack { overflow: visible; }
+  .fs-reduce-stack .fs-track { flex-direction: column; width: 100%; }
+  .fs-reduce-stack .fs-panel { width: 100%; }
 
-  /* Shared reset: kill the horizontal track in any fallback. */
-  @media (max-width: 767px), (prefers-reduced-motion: reduce) {
-    .fs-section  { height: auto; overflow: visible; }
-    .fs-track    { flex-direction: column; width: 100%; transform: none !important; transition: none !important; }
-    .fs-panel    { width: 100%; height: auto; }
+  /* No-JS / pre-hydration guard: below 768px, stack without needing the class. */
+  @media (max-width: 767px) {
+    .fs-section { height: auto; overflow: visible; }
+    .fs-track { flex-direction: column; width: 100%; }
+    .fs-panel { width: 100%; height: auto; }
     .fs-panel-inner { height: auto; }
-    /* Outro copy left-aligns in the stack; the intro keeps its native centred
-       alignment (unchanged from the motion version). */
-    .fs-panel--outro .fs-panel-inner { align-items: flex-start; text-align: left; }
-    .fs-arrow    { transition: none; }
-    .fs-card-rise { --_rise: 1 !important; transform: none !important; opacity: 1 !important; }
   }
 
-  .is-reduced.fs-section { height: auto; overflow: visible; }
-  .is-reduced .fs-track {
-    flex-direction: column;
-    width: 100%;
-    transform: none !important;
-    transition: none !important;
-  }
-  .is-reduced .fs-panel { width: 100%; height: auto; }
-  .is-reduced .fs-panel-inner { height: auto; }
-  .is-reduced .fs-panel--outro .fs-panel-inner { align-items: flex-start; text-align: left; }
-  .is-reduced .fs-card-rise { --_rise: 1 !important; transform: none !important; opacity: 1 !important; }
-
-  /* ── Reduced motion on ≥768px: Benefits-style sticky SIDE layout ──── */
   @media (min-width: 768px) {
-    .is-reduced .fs-track {
+    .fs-reduce-stack .fs-track {
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: start;
     }
-    /* Left column = the intro/heading panel, sticky and vertically centred,
-       exactly like BenefitsCardStackVariant's .bcs-aside. It spans all rows so
-       it stays put while the right column's project panels scroll past. */
-    .is-reduced .fs-panel--intro {
+    /* Left = sticky intro column, spanning all rows so it holds while the right
+       column scrolls. Keeps the intro's native centred alignment. */
+    .fs-reduce-stack .fs-panel--intro {
       grid-column: 1;
       grid-row: 1 / -1;
       position: sticky;
       top: 0;
-      align-self: start;
       height: 100vh;
       border-right: 1px solid var(--fs-border-col);
     }
-    /* Fill the sticky box so the intro is centred both vertically AND
-       horizontally — identical alignment to the motion version (the default
-       .fs-panel-inner already centres; we only restore the height the reset
-       collapsed). */
-    .is-reduced .fs-panel--intro .fs-panel-inner {
+    .fs-reduce-stack .fs-panel--intro .fs-panel-inner {
       height: 100%;
     }
-    /* Right column = the project panels only, stacked and scrolling. */
-    .is-reduced .fs-panel--project {
+    /* Right = project panels stacked and scrolling, divided by a rule. */
+    .fs-reduce-stack .fs-panel--project {
       grid-column: 2;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
       justify-content: center;
     }
-    /* Divider rule between the stacked project panels (matches Benefits). */
-    .is-reduced .fs-panel--project + .fs-panel--project {
+    .fs-reduce-stack .fs-panel--project + .fs-panel--project {
       border-top: 1px solid var(--fs-border-col);
     }
-    /* The outro "View all projects" box is redundant here — the sticky intro
-       already carries that CTA — so drop it in the reduced side layout. */
-    .is-reduced .fs-panel--outro { display: none; }
+    /* The intro already carries the "View all" CTA, so the outro is redundant. */
+    .fs-reduce-stack .fs-panel--outro {
+      display: none;
+    }
   }
 </style>
 
@@ -507,15 +496,16 @@ const totalPanels = items.length + 2;
     });
   }
 
-  // Reflect reduced-motion (any source) on the root so the CSS stack fallback
-  // triggers from the in-app toggle too, then (re)build. Toggling motion at
-  // runtime tears down / rebuilds the pin so JS and CSS never disagree — the
-  // same live re-sync AboutSection uses.
+  // A section uses the stacked fallback whenever the scrub can't/shouldn't run:
+  // reduced motion (OS pref OR the in-app toggle) at any width, or below 768px.
+  // The `.fs-reduce-stack` class is the single switch the CSS keys off, so JS
+  // and CSS always agree on which layout is showing.
   function syncReduced() {
-    const reduced = readMotionPreference();
+    const stack =
+      readMotionPreference() || window.matchMedia("(max-width: 767px)").matches;
     document
       .querySelectorAll<HTMLElement>("[data-filmstrip]")
-      .forEach((s) => s.classList.toggle("is-reduced", reduced));
+      .forEach((s) => s.classList.toggle("fs-reduce-stack", stack));
   }
 
   function reinit() {
@@ -538,9 +528,12 @@ const totalPanels = items.length + 2;
       attributes: true,
       attributeFilter: ["data-a11y-motion", "data-a11y-animations", "data-a11y-images"],
     });
-    // And when the OS preference changes.
+    // And when the OS motion preference or the 768px breakpoint changes.
     window
       .matchMedia?.("(prefers-reduced-motion: reduce)")
+      ?.addEventListener?.("change", reinit);
+    window
+      .matchMedia?.("(max-width: 767px)")
       ?.addEventListener?.("change", reinit);
   }
 
