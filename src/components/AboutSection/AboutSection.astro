@@ -224,7 +224,7 @@ const hasExpandSlot = Astro.slots.has("expand-content");
             The centre cell is a sized PLACEHOLDER — the pinned image visually fills it
             at rest, then leaves it behind as it expands. */}
         <div class="grid grid-cols-1 gap-10 md:gap-12 lg:gap-16 md:grid-cols-[1fr_2fr_1fr] items-center">
-          <p class="text-base font-light leading-relaxed text-text">
+          <p class="about-flow-text text-base font-normal leading-relaxed text-text">
             {leftText}
           </p>
           <div
@@ -247,7 +247,7 @@ const hasExpandSlot = Astro.slots.has("expand-content");
             />
           </div>
           <div class="flex flex-col justify-between gap-8">
-            <p class="text-base font-light leading-relaxed text-text">
+            <p class="about-flow-text text-base font-normal leading-relaxed text-text">
               {rightText}
             </p>
             <Button variant="underline" href={ctaLink} client:load>
@@ -456,6 +456,18 @@ const hasExpandSlot = Astro.slots.has("expand-content");
 
   .about-expand-marquee {
     position: relative;
+  }
+
+  /* The left/right body copy scrolls OVER the pinning photo while --axp-dim is
+     still ramping from 0, so at low dim the text can sit on bright photo regions
+     below WCAG AA. A soft text scrim (shadow in the page-bg colour) guarantees a
+     legible floor at ANY dim level without darkening the resting look on the flat
+     background — dark-on-dark the shadow is imperceptible; over a bright photo it
+     restores the needed contrast. */
+  .about-flow-text {
+    text-shadow:
+      0 0 6px var(--color-bg),
+      0 1px 3px var(--color-bg);
   }
 
   /* Reduced motion (OS or in-app toggle): no scroll morph. The region collapses

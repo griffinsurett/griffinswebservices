@@ -60,10 +60,14 @@ const { items = [], id, className = "", counterDuration = 1800 } =
   }
 
   .stat-label {
-    font-size: 0.6875rem;
+    /* Solid --color-text, not --color-muted: this label is the smallest text on
+       the site (12px uppercase) AND renders over the About expand photo, where
+       muted (5.15:1 on base, less over the dimmed image) dipped under WCAG AA.
+       Solid text is 15.78:1 on base and stays legible over the photo. */
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--color-text);
   }
 </style>
