@@ -280,28 +280,90 @@ const totalPanels = items.length + 2;
     will-change: transform, opacity;
   }
 
-  /* The horizontal filmstrip scrub runs on DESKTOP (≥768px). Below that — and
-     for reduced-motion users at any width — it flattens to a static vertical
-     stack (no pin, no horizontal scrub), one project per row. The JS skips the
-     pin in those same cases so the two never disagree. */
+  /* ── FALLBACK LAYOUTS (no horizontal pin/scrub) ──────────────────────
+     The scrub runs on DESKTOP (≥768px) with motion allowed. Otherwise the
+     section reflows to a normal-scroll layout. Two fallback shapes:
 
-  /* ── Mobile (<768px) OR reduced motion: vertical stack, no pinning ──── */
+       • <768px OR no-JS reduced-motion → simple full-width vertical stack.
+       • JS-detected reduced motion (OS pref OR the in-app a11y toggle), ≥768px
+         → the Benefits-style SIDE layout: sticky heading column on the left,
+         project panels scrolling in the right column. `.is-reduced` is applied
+         by the script (readMotionPreference covers both sources), so it always
+         agrees with whether the pin was built. */
+
+  /* Shared reset: kill the horizontal track in any fallback. */
   @media (max-width: 767px), (prefers-reduced-motion: reduce) {
     .fs-section  { height: auto; overflow: visible; }
     .fs-track    { flex-direction: column; width: 100%; transform: none !important; transition: none !important; }
     .fs-panel    { width: 100%; height: auto; }
     .fs-panel-inner { height: auto; }
-    .fs-panel--intro .fs-panel-inner,
+    /* Outro copy left-aligns in the stack; the intro keeps its native centred
+       alignment (unchanged from the motion version). */
     .fs-panel--outro .fs-panel-inner { align-items: flex-start; text-align: left; }
     .fs-arrow    { transition: none; }
-    /* Cards fully visible, no rise animation */
     .fs-card-rise { --_rise: 1 !important; transform: none !important; opacity: 1 !important; }
+  }
+
+  .is-reduced.fs-section { height: auto; overflow: visible; }
+  .is-reduced .fs-track {
+    flex-direction: column;
+    width: 100%;
+    transform: none !important;
+    transition: none !important;
+  }
+  .is-reduced .fs-panel { width: 100%; height: auto; }
+  .is-reduced .fs-panel-inner { height: auto; }
+  .is-reduced .fs-panel--outro .fs-panel-inner { align-items: flex-start; text-align: left; }
+  .is-reduced .fs-card-rise { --_rise: 1 !important; transform: none !important; opacity: 1 !important; }
+
+  /* ── Reduced motion on ≥768px: Benefits-style sticky SIDE layout ──── */
+  @media (min-width: 768px) {
+    .is-reduced .fs-track {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+    /* Left column = the intro/heading panel, sticky and vertically centred,
+       exactly like BenefitsCardStackVariant's .bcs-aside. It spans all rows so
+       it stays put while the right column's project panels scroll past. */
+    .is-reduced .fs-panel--intro {
+      grid-column: 1;
+      grid-row: 1 / -1;
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      border-right: 1px solid var(--fs-border-col);
+    }
+    /* Fill the sticky box so the intro is centred both vertically AND
+       horizontally — identical alignment to the motion version (the default
+       .fs-panel-inner already centres; we only restore the height the reset
+       collapsed). */
+    .is-reduced .fs-panel--intro .fs-panel-inner {
+      height: 100%;
+    }
+    /* Right column = the project panels only, stacked and scrolling. */
+    .is-reduced .fs-panel--project {
+      grid-column: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    /* Divider rule between the stacked project panels (matches Benefits). */
+    .is-reduced .fs-panel--project + .fs-panel--project {
+      border-top: 1px solid var(--fs-border-col);
+    }
+    /* The outro "View all projects" box is redundant here — the sticky intro
+       already carries that CTA — so drop it in the reduced side layout. */
+    .is-reduced .fs-panel--outro { display: none; }
   }
 </style>
 
 <script>
   import gsap from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { readMotionPreference } from "@/hooks/useMotionPreference";
   gsap.registerPlugin(ScrollTrigger);
 
   function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3); }
@@ -430,17 +492,58 @@ const totalPanels = items.length + 2;
         return;
       }
 
-      // Standalone — the horizontal pin runs on DESKTOP only (≥768px). Below
-      // that, and for reduced-motion, no ScrollTrigger is registered and the CSS
-      // above flattens it to a static vertical stack.
+      // Standalone — the horizontal pin runs on DESKTOP only (≥768px) AND only
+      // when motion is allowed. Under reduced motion (OS pref OR the in-app
+      // accessibility toggle) we register NO ScrollTrigger and the CSS below
+      // flattens the section to a static vertical stack — identical in spirit to
+      // the Benefits card-stack (pure scroll, no pin, no scrub, cards all visible).
       ScrollTrigger.matchMedia({
-        "(min-width: 768px) and (prefers-reduced-motion: no-preference)": () => {
+        "(min-width: 768px)": () => {
+          // matchMedia can't watch the in-app data-attribute, so gate here.
+          if (readMotionPreference()) return;
           buildStandalone(section);
         },
       });
     });
   }
 
-  init();
-  document.addEventListener("astro:page-load", init);
+  // Reflect reduced-motion (any source) on the root so the CSS stack fallback
+  // triggers from the in-app toggle too, then (re)build. Toggling motion at
+  // runtime tears down / rebuilds the pin so JS and CSS never disagree — the
+  // same live re-sync AboutSection uses.
+  function syncReduced() {
+    const reduced = readMotionPreference();
+    document
+      .querySelectorAll<HTMLElement>("[data-filmstrip]")
+      .forEach((s) => s.classList.toggle("is-reduced", reduced));
+  }
+
+  function reinit() {
+    // Kill our standalone pins/triggers, then re-run init under current prefs.
+    ScrollTrigger.getAll().forEach((t) => {
+      const trig = t.trigger as HTMLElement | undefined;
+      if (trig && trig.closest("[data-filmstrip]")) t.kill();
+    });
+    syncReduced();
+    init();
+    ScrollTrigger.refresh();
+  }
+
+  function start() {
+    syncReduced();
+    init();
+
+    // Live re-sync when the accessibility motion toggle flips.
+    new MutationObserver(reinit).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-a11y-motion", "data-a11y-animations", "data-a11y-images"],
+    });
+    // And when the OS preference changes.
+    window
+      .matchMedia?.("(prefers-reduced-motion: reduce)")
+      ?.addEventListener?.("change", reinit);
+  }
+
+  start();
+  document.addEventListener("astro:page-load", start);
 </script>
