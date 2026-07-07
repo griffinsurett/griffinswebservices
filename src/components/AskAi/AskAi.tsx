@@ -110,19 +110,56 @@ function AskBar({
     if (autoFocus) inputRef.current?.focus();
   }, [autoFocus]);
 
+  // Shared pill shell — the "looks like an input" styling. Used verbatim by both
+  // the real input (form) and the trigger (button) so they're visually identical.
+  const shell = [
+    "flex w-full items-center gap-2 rounded-full border border-heading/15 bg-bg2",
+    "shadow-sm transition-colors",
+    big ? "px-5 py-3.5" : "px-4 py-2.5",
+  ].join(" ");
+
+  // ── Trigger mode: a REAL <button> that only LOOKS like the input. Fully
+  // clickable + keyboard-activatable + announced as a button; the "placeholder"
+  // is plain text, not a read-only field. Opens the modal via onActivate. ──
+  if (asButton) {
+    return (
+      <button
+        type="button"
+        onClick={onActivate}
+        aria-label={placeholder}
+        className={[shell, "cursor-pointer text-left focus:outline-none focus-visible:border-primary/50"].join(" ")}
+      >
+        <span className="shrink-0 text-primary">
+          <SparkleIcon />
+        </span>
+        {/* Placeholder-styled label — mirrors the input's placeholder look. */}
+        <span
+          className={[
+            "min-w-0 flex-1 truncate text-text",
+            big ? "text-base" : "text-sm",
+          ].join(" ")}
+        >
+          {placeholder}
+        </span>
+        {/* Decorative send glyph — matches the input variant's trailing icon. */}
+        <span
+          aria-hidden="true"
+          className="shrink-0 rounded-full p-1.5 text-text"
+        >
+          <SendIcon />
+        </span>
+      </button>
+    );
+  }
+
+  // ── Input mode: the real editable field inside the modal. ──
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
       }}
-      onClick={asButton ? onActivate : undefined}
-      className={[
-        "flex items-center gap-2 rounded-full border border-heading/15 bg-bg2",
-        "shadow-sm transition-colors focus-within:border-primary/50",
-        asButton ? "cursor-pointer" : "",
-        big ? "px-5 py-3.5" : "px-4 py-2.5",
-      ].join(" ")}
+      className={[shell, "focus-within:border-primary/50"].join(" ")}
     >
       <span className="shrink-0 text-primary">
         <SparkleIcon />
@@ -134,20 +171,14 @@ function AskBar({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
-        // Trigger mode: read-only + not focusable, so it behaves as part of the
-        // button and never grabs focus (which would re-open the modal on close).
-        readOnly={asButton}
-        tabIndex={asButton ? -1 : undefined}
         className={[
           "min-w-0 flex-1 bg-transparent text-text placeholder:text-text focus:outline-none",
-          asButton ? "cursor-pointer" : "",
           big ? "text-base" : "text-sm",
         ].join(" ")}
       />
       <button
         type="submit"
         aria-label="Send"
-        tabIndex={asButton ? -1 : undefined}
         disabled={disabled}
         className="shrink-0 rounded-full p-1.5 text-text transition-colors hover:bg-heading/8 hover:text-heading disabled:opacity-40"
       >

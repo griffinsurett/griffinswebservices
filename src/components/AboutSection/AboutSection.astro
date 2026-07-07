@@ -85,7 +85,7 @@ const hasExpandSlot = Astro.slots.has("expand-content");
         <EyebrowSection eyebrow={eyebrow}>
           <!-- Animated statement -->
           <h2
-            class="about-statement max-w-4xl text-[clamp(1.75rem,7vw,4.5rem)] font-light leading-[1.1]"
+            class="about-statement max-w-4xl text-[clamp(1.75rem,4.5vw,4rem)] font-light leading-[1.1]"
             aria-label={statement}
           >
             {words.map((word) => (
@@ -138,6 +138,7 @@ const hasExpandSlot = Astro.slots.has("expand-content");
             loading="lazy"
             decoding="async"
             class="about-portrait"
+            data-about-portrait
           />
         )}
       </section>
@@ -232,7 +233,7 @@ const hasExpandSlot = Astro.slots.has("expand-content");
         {/* Mobile: single column stack. md+: leftText | image placeholder | rightText+CTA.
             The centre cell is a sized PLACEHOLDER — the pinned image visually fills it
             at rest, then leaves it behind as it expands. */}
-        <div class="grid grid-cols-1 gap-10 md:gap-12 lg:gap-16 md:grid-cols-[1fr_2fr_1fr] items-center">
+        <div class="grid grid-cols-1 gap-10 md:gap-12 lg:gap-16 md:grid-cols-[1fr_1.5fr_1fr] items-center">
           <p class="about-flow-text text-base font-normal leading-relaxed text-text">
             {leftText}
           </p>
@@ -482,11 +483,16 @@ const hasExpandSlot = Astro.slots.has("expand-content");
     margin-top: -100svh;
   }
 
-  /* The centre grid cell is a sized placeholder the pinned image fills at rest. */
+  /* The centre grid cell is a sized placeholder the pinned image fills at rest.
+     Capped at 32rem (was 40rem) and centred so the resting image doesn't crowd the
+     side text columns — the grid centre column is also narrowed to 1.5fr. The
+     pinned image measures THIS box for its rest geometry, so the animation stays in
+     sync automatically. */
   .about-expand-placeholder {
     width: 100%;
-    max-width: min(100%, 40rem);
+    max-width: min(100%, 32rem);
     aspect-ratio: 16 / 9;
+    margin-inline: auto;
   }
 
   .about-expand-marquee {
@@ -714,6 +720,74 @@ const hasExpandSlot = Astro.slots.has("expand-content");
     });
 
     initExpand();
+    initPortrait();
+  }
+
+  // ── Corner portrait: animate UP-and-OUT as the user scrolls past the About
+  // section, and UP-and-back-IN on the way back. Large screens only (the portrait
+  // is the bottom-RIGHT corner image at md+; below that it's part of the mobile
+  // stack and stays put). Fully gated on reduced motion — OS preference AND the
+  // in-app accessibility toggle — matching the rest of this component.
+  function initPortrait() {
+    const portraits =
+      document.querySelectorAll<HTMLElement>("[data-about-portrait]");
+    if (!portraits.length) return;
+
+    portraits.forEach((portrait) => {
+      const section = portrait.closest<HTMLElement>("[data-about-sticky='true']");
+      if (!section) return;
+
+      let trigger: ScrollTrigger | null = null;
+      // Only on md+ (matches the CSS breakpoint that places the portrait as the
+      // bottom-right corner). On phones it's part of the stacked layout — no motion.
+      const isLarge = () => window.matchMedia("(min-width: 768px)").matches;
+
+      // Rest state — CSS owns it. Clearing inline props snaps the portrait home
+      // (used when reduced motion turns on, or the effect is torn down).
+      const reset = () => gsap.set(portrait, { clearProps: "transform,opacity" });
+
+      const build = () => {
+        // Tear down any prior instance first so toggles/resizes don't stack.
+        trigger?.kill();
+        trigger = null;
+        reset();
+
+        // Skip entirely under reduced motion or on small screens — the portrait
+        // simply stays pinned in its corner.
+        if (readMotionPreference() || !isLarge()) return;
+
+        // Scrub the portrait up (−distance) and fade it out as the About section
+        // scrolls past its end. `scrub` makes it reversible: scroll back up and it
+        // slides back down into place and fades in — no extra code needed.
+        trigger = ScrollTrigger.create({
+          trigger: section,
+          start: "bottom bottom", // begin as the section's end reaches the viewport bottom
+          end: "bottom top",      // finish once the section has fully scrolled past
+          scrub: true,
+          invalidateOnRefresh: true,
+          animation: gsap.fromTo(
+            portrait,
+            { yPercent: 0, autoAlpha: 1 },
+            { yPercent: -280, autoAlpha: 0, ease: "none" },
+          ),
+        });
+      };
+
+      build();
+
+      // Rebuild when the in-app motion / breakpoint context changes so turning
+      // reduced-motion on (or crossing the md breakpoint) re-lays-out live.
+      window
+        .matchMedia?.("(prefers-reduced-motion: reduce)")
+        ?.addEventListener("change", build);
+      window
+        .matchMedia?.("(min-width: 768px)")
+        ?.addEventListener("change", build);
+      new MutationObserver(build).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-a11y-motion", "data-a11y-animations"],
+      });
+    });
   }
 
   // ── One-image expand: centred grid cell → full-bleed background ──
