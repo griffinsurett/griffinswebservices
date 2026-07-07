@@ -184,11 +184,17 @@ function Modal({
     // Remember what had focus so we can restore it on close.
     const previouslyFocused = document.activeElement as HTMLElement | null;
 
-    // Make everything except the portal'd dialog inert while open.
+    // Make everything except the portal'd dialog inert while open — EXCEPT the
+    // sibling that contains the control which opened the modal. That trigger
+    // (e.g. a hamburger button that transforms into the close "X") must stay
+    // interactive so it can still close the modal; inerting it is what would
+    // make the menu impossible to close by its own toggle.
     const root = getPortalRoot();
     const siblings = root
       ? (Array.from(root.children) as HTMLElement[]).filter(
-          (child) => !child.contains(panel),
+          (child) =>
+            !child.contains(panel) &&
+            !(previouslyFocused && child.contains(previouslyFocused)),
         )
       : [];
     const inerted: HTMLElement[] = [];

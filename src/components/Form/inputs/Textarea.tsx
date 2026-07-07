@@ -1,4 +1,12 @@
-import { useId, type TextareaHTMLAttributes } from "react";
+// src/components/Form/inputs/Textarea.tsx
+import {
+  useState,
+  type ChangeEvent,
+  type FocusEvent,
+  type ReactNode,
+  type TextareaHTMLAttributes,
+} from "react";
+import Field, { useField } from "./Field";
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   name: string;
@@ -6,8 +14,9 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   containerClassName?: string;
   labelClassName?: string;
   textareaClassName?: string;
-  showLabel?: boolean;
-  labelHidden?: boolean;
+  hint?: ReactNode;
+  error?: ReactNode;
+  floating?: boolean;
   describedBy?: string;
 }
 
@@ -16,40 +25,75 @@ export default function Textarea({
   label,
   required = false,
   containerClassName = "space-y-2",
-  labelClassName = "block text-sm text-text/80",
+  labelClassName,
   textareaClassName = "",
-  showLabel = true,
-  labelHidden = false,
+  hint,
+  error,
+  floating = true,
   describedBy,
   rows = 5,
   id: idProp,
+  defaultValue,
+  value,
+  onChange,
+  onFocus,
+  onBlur,
+  placeholder,
   ...textareaProps
 }: TextareaProps) {
-  const reactId = useId();
-  const id = idProp ?? `${name}-${reactId}`;
+  const a11y = useField({ name, idProp, required, hint, error, describedBy });
 
-  const labelClasses = [labelClassName, !showLabel || labelHidden ? "sr-only" : ""]
-    .filter(Boolean)
-    .join(" ");
+  const [focused, setFocused] = useState(false);
+  const [hasValue, setHasValue] = useState(
+    Boolean(defaultValue ?? value ?? "")
+  );
+  const filled = focused || hasValue;
 
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setHasValue(e.target.value.length > 0);
+    onChange?.(e);
+  };
+  const handleFocus = (e: FocusEvent<HTMLTextAreaElement>) => {
+    setFocused(true);
+    onFocus?.(e);
+  };
+  const handleBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
+    setFocused(false);
+    setHasValue(e.target.value.length > 0);
+    onBlur?.(e);
+  };
+
+  // For a multi-line control the label floats to the TOP of the box, not the
+  // vertical centre — pass a label override so <Field> anchors it near the top.
   return (
-    <div className={containerClassName}>
-      {label && (
-        <label htmlFor={id} className={labelClasses}>
-          {label}
-          {required && <span aria-hidden="true"> *</span>}
-        </label>
-      )}
+    <Field
+      a11y={a11y}
+      label={label}
+      required={required}
+      hint={hint}
+      error={error}
+      floating={floating}
+      filled={filled}
+      containerClassName={containerClassName}
+      labelClassName={
+        // Anchor the resting label near the top for a tall control.
+        floating ? "!top-4 !translate-y-0" : labelClassName
+      }
+    >
       <textarea
-        id={id}
+        {...a11y.controlProps}
         name={name}
         rows={rows}
         required={required}
-        aria-required={required || undefined}
-        aria-describedby={describedBy}
-        className={`form-field resize-none ${textareaClassName}`.trim()}
+        value={value}
+        defaultValue={defaultValue}
+        placeholder={floating && label ? undefined : placeholder}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        className={`peer form-field resize-none ${error ? "form-field-error" : ""} ${textareaClassName}`.trim()}
         {...textareaProps}
       />
-    </div>
+    </Field>
   );
 }

@@ -1,13 +1,11 @@
 ---
 // src/components/Form/forms/ContactForm.astro
 /**
- * Contact Form - Astro Version
- * Pure HTML with optional React enhancement via client:idle
+ * Contact Form — declarative field config rendered by a single accessible
+ * FormWrapper island (real labels, per-field errors, autocomplete, live region).
  */
 import FormWrapper from "@/components/Form/FormWrapper";
-import Input from "@/components/Form/inputs/Input";
-import Select from "@/components/Form/inputs/Select";
-import Textarea from "@/components/Form/inputs/Textarea";
+import type { FieldConfig } from "@/components/Form/fields";
 
 interface Props {
   title?: string;
@@ -24,11 +22,30 @@ const {
 } = Astro.props;
 
 const currentPageUrl = Astro.url.href;
-// solutions collection removed — the interest dropdown previously listed parent
-// solutions (roots("solutions")). Falls back to a general inquiry / other choice.
+
 const solutionOptions = [
   { value: "general-contact-inquiry", label: "General Contact Inquiry" },
   { value: "other", label: "Other" },
+];
+
+const fields: FieldConfig[] = [
+  { name: "firstName", label: "Full Name", type: "text", required: true, minLength: 2, autoComplete: "name", colSpan: 1 },
+  { name: "lastName", label: "Last Name", type: "text", required: true, minLength: 2, autoComplete: "family-name", colSpan: 1 },
+  { name: "email", label: "Email Address", type: "email", required: true, autoComplete: "email", colSpan: 1 },
+  {
+    name: "phone",
+    label: "Phone Number",
+    type: "tel",
+    required: true,
+    autoComplete: "tel",
+    pattern: "[0-9]{10,}",
+    hint: "At least 10 digits, numbers only.",
+    errorMessage: "Enter a phone number with at least 10 digits.",
+    colSpan: 1,
+  },
+  { name: "company", label: "Company Name", type: "text", autoComplete: "organization", colSpan: 2 },
+  { name: "solution", label: "What are you interested in?", type: "select", required: true, options: solutionOptions, colSpan: 2 },
+  { name: "message", label: "Tell us about your project", type: "textarea", required: true, minLength: 10, rows: 5, colSpan: 2 },
 ];
 
 const FORMSPREE_BASE_ACTION = "https://formspree.io/f/";
@@ -43,100 +60,18 @@ const contactFormAction = contactFormId
   {description && <p class="text-text mb-8">{description}</p>}
 
   <FormWrapper
-    client:idle
-    formAction={contactFormAction}
-    formMethod="post"
-    useNativeFormSubmission={true}
+    client:load
+    fields={fields}
+    fieldsClassName="grid gap-4 md:grid-cols-2"
+    formspreeEndpoint={contactFormAction}
     formspreeFormName="Contact Form"
     className="group flex flex-col relative overflow-hidden"
     submitButton={{
       text: buttonText,
       className: "w-full md:w-auto",
-      disabled: !contactFormAction
+      disabled: !contactFormAction,
     }}
   >
     <input type="hidden" name="pageUrl" value={currentPageUrl} />
-    <div class="relative z-10 grid gap-4 md:grid-cols-2">
-      <Input
-        client:idle
-        name="firstName"
-        label="Full Name"
-        type="text"
-        required={true}
-        minLength={2}
-        placeholder="Full Name *"
-        containerClassName="md:col-span-1"
-        showLabel={false}
-      />
-
-      <Input
-        client:idle
-        name="lastName"
-        label="Last Name"
-        type="text"
-        required={true}
-        minLength={2}
-        placeholder="Last Name *"
-        containerClassName="md:col-span-1"
-        showLabel={false}
-      />
-
-      <Input
-        client:idle
-        name="email"
-        label="Email Address"
-        type="email"
-        required={true}
-        placeholder="Email Address *"
-        containerClassName="md:col-span-1"
-        showLabel={false}
-      />
-
-      <Input
-        client:idle
-        name="phone"
-        label="Phone Number"
-        type="tel"
-        required={true}
-        pattern="[0-9]{10,}"
-        title="Please enter at least 10 digits"
-        placeholder="Phone Number *"
-        containerClassName="md:col-span-1"
-        showLabel={false}
-      />
-
-      <Input
-        client:idle
-        name="company"
-        label="Company Name"
-        type="text"
-        placeholder="Company Name"
-        containerClassName="md:col-span-2"
-        showLabel={false}
-      />
-
-      <Select
-        client:idle
-        name="solution"
-        label="What are you interested in?"
-        required={true}
-        options={solutionOptions}
-        placeholder="What are you interested in? *"
-        containerClassName="md:col-span-2"
-        showLabel={false}
-      />
-
-      <Textarea
-        client:idle
-        name="message"
-        label="Tell us about your project"
-        required={true}
-        minLength={10}
-        placeholder="Tell us about your project, goals, and any specific requirements..."
-        rows={5}
-        containerClassName="md:col-span-2"
-        showLabel={false}
-      />
-    </div>
   </FormWrapper>
 </div>

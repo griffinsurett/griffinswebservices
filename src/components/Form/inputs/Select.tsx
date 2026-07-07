@@ -1,16 +1,18 @@
 // src/components/Form/inputs/Select.tsx
 /**
- * Hybrid Select Component with Animated Border styling.
+ * Hybrid Select with AnimatedBorder styling, built on the accessible Field
+ * foundation (real <label for>, aria-required/invalid/describedby).
  */
-
 import {
   useCallback,
-  useId,
   useState,
+  type ChangeEvent,
   type FocusEvent,
+  type ReactNode,
   type SelectHTMLAttributes,
 } from "react";
 import AnimatedBorder from "@/components/AnimatedBorder/AnimatedBorder";
+import Field, { useField } from "./Field";
 
 interface SelectOption {
   value: string;
@@ -22,17 +24,13 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   options: SelectOption[];
   placeholder?: string;
-
-  // Styling
   containerClassName?: string;
   labelClassName?: string;
   selectClassName?: string;
-
-  // Control
-  showLabel?: boolean;
-  labelHidden?: boolean;
+  hint?: ReactNode;
+  error?: ReactNode;
+  floating?: boolean;
   describedBy?: string;
-
   borderDuration?: number;
   borderWidth?: number;
   borderRadius?: string;
@@ -45,22 +43,30 @@ export default function Select({
   options,
   placeholder = "Select an option",
   containerClassName = "space-y-2",
-  labelClassName = "block text-sm text-text/80",
+  labelClassName,
   selectClassName = "",
-  showLabel = true,
-  labelHidden = false,
+  hint,
+  error,
+  floating = true,
   describedBy,
   borderDuration = 900,
   borderWidth = 2,
   borderRadius = "rounded-xl",
   id: idProp,
+  defaultValue,
+  value,
   onFocus,
   onBlur,
+  onChange,
   ...selectProps
 }: SelectProps) {
+  const a11y = useField({ name, idProp, required, hint, error, describedBy });
+
   const [focused, setFocused] = useState(false);
-  const reactId = useId();
-  const id = idProp ?? `${name}-${reactId}`;
+  const [hasValue, setHasValue] = useState(
+    Boolean((defaultValue ?? value ?? "") !== "" && (defaultValue ?? value))
+  );
+  const filled = focused || hasValue;
 
   const handleFocus = useCallback(
     (event: FocusEvent<HTMLSelectElement>) => {
@@ -69,7 +75,6 @@ export default function Select({
     },
     [onFocus]
   );
-
   const handleBlur = useCallback(
     (event: FocusEvent<HTMLSelectElement>) => {
       setFocused(false);
@@ -77,23 +82,26 @@ export default function Select({
     },
     [onBlur]
   );
-
-  const labelClasses = [
-    labelClassName,
-    !showLabel || labelHidden ? "sr-only" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLSelectElement>) => {
+      setHasValue(event.target.value !== "");
+      onChange?.(event);
+    },
+    [onChange]
+  );
 
   return (
-    <div className={containerClassName}>
-      {label && (
-        <label htmlFor={id} className={labelClasses}>
-          {label}
-          {required && <span aria-hidden="true"> *</span>}
-        </label>
-      )}
-
+    <Field
+      a11y={a11y}
+      label={label}
+      required={required}
+      hint={hint}
+      error={error}
+      floating={floating}
+      filled={filled}
+      containerClassName={containerClassName}
+      labelClassName={labelClassName}
+    >
       <AnimatedBorder
         variant="solid"
         triggers="controlled"
@@ -106,21 +114,22 @@ export default function Select({
       >
         <div className="relative">
           <select
-            id={id}
+            {...a11y.controlProps}
             name={name}
             required={required}
-            aria-required={required || undefined}
-            aria-describedby={describedBy}
-            className={`form-field appearance-none pr-10 ${selectClassName}`.trim()}
+            value={value}
+            defaultValue={defaultValue}
             onFocus={handleFocus}
             onBlur={handleBlur}
+            onChange={handleChange}
+            className={`peer form-field appearance-none pr-10 ${error ? "form-field-error" : ""} ${selectClassName}`.trim()}
             {...selectProps}
           >
-            {placeholder && (
-              <option value="" className="form-option" disabled>
-                {placeholder}
-              </option>
-            )}
+            {/* Empty placeholder option — the visible floating label is the
+                accessible name, so this stays empty (no text shown once floated). */}
+            <option value="" disabled hidden className="form-option">
+              {floating && label ? "" : placeholder}
+            </option>
             {options.map((option) => (
               <option
                 key={option.value}
@@ -146,6 +155,6 @@ export default function Select({
           </svg>
         </div>
       </AnimatedBorder>
-    </div>
+    </Field>
   );
 }
