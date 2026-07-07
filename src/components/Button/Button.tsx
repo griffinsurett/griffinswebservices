@@ -99,23 +99,18 @@ function generateAriaLabel(children: ReactNode, href: string | undefined): strin
   if (!href) return undefined;
 
   const textContent = extractTextContent(children).trim();
-  const destination = getDestinationContext(href);
 
-  // If there's meaningful text content, combine with destination
-  if (textContent && textContent.length > 0) {
-    // Avoid redundancy if text already matches destination closely
-    const normalizedText = textContent.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const normalizedDest = destination.toLowerCase().replace(/[^a-z0-9]/g, '');
+  // WCAG 2.5.3 (Label in Name): the accessible name must CONTAIN the visible
+  // text. When a link already has visible text, that text is a perfectly good
+  // accessible name — synthesizing an aria-label here only risks reordering or
+  // replacing it (e.g. "Learn more - About"), which fails 2.5.3. So we DON'T
+  // override it; the visible text becomes the name.
+  if (textContent.length > 0) return undefined;
 
-    if (normalizedText === normalizedDest || normalizedDest.includes(normalizedText)) {
-      return `${textContent} page`;
-    }
-
-    return `${textContent} - ${destination}`;
-  }
-
-  // Fallback to just destination if no text content
-  return `Navigate to ${destination}`;
+  // Icon-only / no visible text: there's nothing for the name to derive from,
+  // so provide a destination-based label. (Nothing to conflict with 2.5.3 —
+  // there's no visible text to contain.)
+  return `Navigate to ${getDestinationContext(href)}`;
 }
 
 /**
@@ -194,16 +189,16 @@ export const ButtonBase = ({
 
   if (href) {
     const anchorProps = props as AnchorHTMLAttributes<HTMLAnchorElement>;
-    // Auto-generate aria-label if not explicitly provided
-    const autoAriaLabel = anchorProps['aria-label']
-      ? undefined // Don't override explicit aria-label
-      : generateAriaLabel(children, href);
+    // No auto-generated aria-label: a link's visible text content IS its
+    // accessible name, which satisfies WCAG 2.5.3 (Label in Name) by
+    // construction. Synthesizing a label here only overrode that correct
+    // default with a guess that reordered/replaced the visible text and failed
+    // 2.5.3. Icon-only links pass an explicit aria-label via anchorProps.
 
     return (
       <a
         href={href}
         className={baseClasses}
-        aria-label={anchorProps['aria-label'] || autoAriaLabel}
         {...anchorProps}
       >
         {leftIcon}
