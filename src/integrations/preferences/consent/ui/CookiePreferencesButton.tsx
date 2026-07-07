@@ -25,11 +25,14 @@ function CookiePreferencesButton({
 
   return (
     <>
+      {/* No aria-label: the visible text "Your Privacy Choices" IS the
+          accessible name. An aria-label that omits the visible text breaks
+          WCAG 2.5.3 (label-in-name) — voice-control users can't say what they
+          see. The settings icon is aria-hidden, so it doesn't affect the name. */}
       <Button
         variant="link"
         size={size}
         onClick={() => setShowModal(true)}
-        aria-label="Manage cookie preferences"
         rightIcon="lucide:settings"
         className={className}
       >
