@@ -90,9 +90,18 @@ const hasExpandSlot = Astro.slots.has("expand-content");
           >
             {words.map((word) => (
               <>
+                {/* Two visual layers per word: a dim --base ghost + a --overlay
+                    that fades in on scroll. Purely a visual reveal effect — the
+                    accessible text is the h2's aria-label, and every word span is
+                    aria-hidden. The --base ghost sits at ~1.3:1 by design (it's the
+                    "not yet revealed" state), so it's marked data-decorative to
+                    match the AnimatedExamples: WCAG-exempt (aria-hidden), and
+                    contrast scanners that ignore aria-hidden skip it too. */}
                 <span
                   class="about-word"
                   aria-hidden="true"
+                  role="presentation"
+                  data-decorative="true"
                   data-about-word-progress
                 >
                   <span class="about-word-layer about-word-layer--base">{word.word}</span>
@@ -306,10 +315,12 @@ const hasExpandSlot = Astro.slots.has("expand-content");
   }
 
 
-  /* Portrait, pinned inside the about frame. Mobile (default): bottom-LEFT and
-     lifted to sit directly ABOVE the stats (vertical stack — image, then stats,
-     then the fixed chat bar). Desktop (lg+): bottom-RIGHT corner, mirroring the
-     bottom-left stats. Square source → height auto-derives from width. */
+  /* Portrait, pinned inside the about frame. Phones (default, < md): bottom-LEFT
+     and lifted to sit directly ABOVE the stats (vertical stack — image, then
+     stats, then the fixed chat bar). Tablet/desktop (md+): bottom-RIGHT corner,
+     mirroring the bottom-left stats. Square source → height auto-derives from
+     width. Switch is at md (768px), NOT lg — on tablets there's room for the
+     mirrored corners, so the left-stack is reserved for true phone widths. */
   .about-portrait {
     position: absolute;
     left: 0;
@@ -321,7 +332,7 @@ const hasExpandSlot = Astro.slots.has("expand-content");
     pointer-events: none;
     user-select: none;
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     .about-portrait {
       left: auto;
       right: 0;
@@ -436,6 +447,25 @@ const hasExpandSlot = Astro.slots.has("expand-content");
   }
   .about-expand-content > :global(*) {
     pointer-events: auto;
+  }
+
+  /* WCAG fix for the testimonial revealed OVER the photo. The carousel uses
+     theme tokens tuned for the dark PAGE background: --color-muted for the
+     role/company byline and --color-border-strong for the separators. Over the
+     dimmed photo the muted byline is only ~4:1 (< AA 4.5) even at full dim — a
+     token issue no animation-timing change can fix. Only in THIS over-image
+     context, promote them to solid --color-text so the byline clears AA against
+     the photo. The quote/author already use --color-heading (near-white → 12:1+),
+     so they're left untouched. Scoped here, so the carousel is unchanged wherever
+     else it renders on a normal page background. */
+  .about-expand-content :global(.tc-role),
+  .about-expand-content :global(.tc-company) {
+    color: var(--color-text);
+  }
+  .about-expand-content :global(.tc-sep),
+  .about-expand-content :global(.tc-dot) {
+    color: color-mix(in srgb, var(--color-text) 60%, transparent);
+    background: color-mix(in srgb, var(--color-text) 60%, transparent);
   }
 
   /* Flow content (grid + marquee) rides ABOVE the pinned image. Pulled up by one
@@ -797,15 +827,20 @@ const hasExpandSlot = Astro.slots.has("expand-content");
         //  2. From there it CONTINUES darkening with the morph progress (e) up to
         //     full (1.0) as the image expands, landing at max dim once full-bleed
         //     so the revealed testimonial text is at WCAG AA contrast.
-        const BASE_DIM = 0.8; // dim already applied while the marquee scrolls over
-                              // the resting photo (keeps that text readable), then
-                              // it keeps deepening to full as the image expands.
+        // Base (plateau) dim reached during the hold. On MOBILE the flow copy
+        // slides over the photo almost immediately AND overlaps the brightest
+        // regions (window/wood table), where white text needs the overlay at
+        // eff. opacity ~0.70 → --axp-dim ~0.80 just to clear WCAG AA. So give
+        // mobile extra headroom (0.86) above that floor; desktop keeps 0.8, where
+        // there's more runway before the copy overlaps.
+        const BASE_DIM = isMobile ? 0.86 : 0.8;
         // Pre-dim (during the hold, p:0→START): front-load it so the image is a
         // ready backdrop before the flow content slides over it. Reach BASE_DIM
         // within the first DIM_LEAD fraction of the hold, eased so it's quick.
-        // Mobile leads hardest (content covers the image almost as soon as the pin
-        // sticks); large screens front-load too, just a touch gentler.
-        const DIM_LEAD = isMobile ? 0.14 : 0.4; // fraction of hold to reach full dim
+        // Mobile leads HARDEST (content covers the image almost as soon as the pin
+        // sticks) — 0.10 so the readable floor is in place before the overlap;
+        // large screens front-load too, just a touch gentler.
+        const DIM_LEAD = isMobile ? 0.1 : 0.4; // fraction of hold to reach full dim
         const preT = Math.min(p / (START * DIM_LEAD), 1);
         const preDim = preT * (2 - preT) * BASE_DIM; // easeOut — quick to dark
         // As the image grows, deepen from BASE_DIM up to full (1.0 → max overlay,
@@ -818,8 +853,12 @@ const hasExpandSlot = Astro.slots.has("expand-content");
         const growDim = BASE_DIM + (1 - BASE_DIM) * g; // BASE_DIM → 1
         const dim = p < START ? preDim : growDim;
         region.style.setProperty("--axp-dim", dim.toFixed(4));
-        // Overlay copy fades in over the final 35% of the morph.
-        const content = Math.max(0, Math.min((m - 0.65) / 0.35, 1));
+        // Overlay copy fades in over the final 20% of the morph — reveal starts
+        // at m=0.80 (was 0.65) so the copy only appears once the dim overlay has
+        // essentially completed (~0.96+ dim). Keeps faint fading-in text from ever
+        // rendering over a still-bright photo region — a polish/legibility win on
+        // top of the WCAG token fix for the muted byline below.
+        const content = Math.max(0, Math.min((m - 0.8) / 0.2, 1));
         region.style.setProperty("--axp-content", content.toFixed(4));
       };
 
