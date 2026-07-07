@@ -36,16 +36,16 @@ export default function HorizontalLegalFooter({
     .filter(Boolean)
     .join(" ");
   const legalLinkClassName =
-    "p-0 whitespace-nowrap text-[0.76rem] text-text/85 no-underline transition-colors main-duration hover:text-text sm:text-[0.95rem]";
+    "p-0 whitespace-nowrap text-[0.76rem] text-text no-underline transition-colors main-duration hover:text-text sm:text-[0.95rem]";
   const utilityLinkClassName =
-    "p-0 text-[0.72rem] text-text/80 no-underline transition-colors main-duration hover:text-text sm:text-[0.82rem]";
+    "p-0 text-[0.72rem] text-text no-underline transition-colors main-duration hover:text-text sm:text-[0.82rem]";
   const hasSocialLinks = socialLinks.length > 0;
 
   return (
     <div className={wrapperClasses}>
       <div
         className={[
-          "flex w-full flex-col gap-4 py-5 text-text/80 lg:gap-5",
+          "flex w-full flex-col gap-4 py-5 text-text lg:gap-5",
           showBorder || hasSocialLinks ? "border-t border-border-soft" : "",
         ]
           .filter(Boolean)

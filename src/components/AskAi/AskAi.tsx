@@ -139,7 +139,7 @@ function AskBar({
         readOnly={asButton}
         tabIndex={asButton ? -1 : undefined}
         className={[
-          "min-w-0 flex-1 bg-transparent text-text placeholder:text-text/45 focus:outline-none",
+          "min-w-0 flex-1 bg-transparent text-text placeholder:text-text focus:outline-none",
           asButton ? "cursor-pointer" : "",
           big ? "text-base" : "text-sm",
         ].join(" ")}
@@ -149,7 +149,7 @@ function AskBar({
         aria-label="Send"
         tabIndex={asButton ? -1 : undefined}
         disabled={disabled}
-        className="shrink-0 rounded-full p-1.5 text-text/55 transition-colors hover:bg-heading/8 hover:text-heading disabled:opacity-40"
+        className="shrink-0 rounded-full p-1.5 text-text transition-colors hover:bg-heading/8 hover:text-heading disabled:opacity-40"
       >
         <SendIcon />
       </button>
@@ -301,7 +301,7 @@ export default function AskAi({
         // Overlay tint + stack ABOVE the site header so the sheet covers it. (GWS
         // Modal has no overlayZClass prop, so the z utility rides on overlayClass.)
         overlayClass="bg-primary-dark/60 z-[100001]"
-        closeButtonClass="absolute right-4 top-4 text-text/60 hover:text-heading"
+        closeButtonClass="absolute right-4 top-4 text-text hover:text-heading"
         closeButton
       >
         <div className="flex min-h-full flex-col gap-6 sm:min-h-0">
@@ -339,7 +339,7 @@ export default function AskAi({
               ))}
               {sending && (
                 <div className="flex justify-start">
-                  <div className="rounded-2xl bg-bg px-4 py-3 text-text/60">
+                  <div className="rounded-2xl bg-bg px-4 py-3 text-text">
                     <span className="inline-flex gap-1">
                       <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-text/50 [animation-delay:0ms]" />
                       <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-text/50 [animation-delay:150ms]" />
@@ -367,7 +367,7 @@ export default function AskAi({
                     // Clicking a chip only fills the input — the user decides
                     // whether to send. It never auto-submits.
                     onClick={() => setValue(s)}
-                    className="flex flex-col gap-3 rounded-xl border border-heading/12 bg-bg p-4 text-left text-sm text-text/80 transition-colors hover:border-primary/40 hover:text-heading"
+                    className="flex flex-col gap-3 rounded-xl border border-heading/12 bg-bg p-4 text-left text-sm text-text transition-colors hover:border-primary/40 hover:text-heading"
                   >
                     <span className="text-primary"><SparkleIcon /></span>
                     <span>{s}</span>
@@ -390,7 +390,7 @@ export default function AskAi({
             />
           </div>
 
-          <p className="max-w-2xl text-center text-xs leading-relaxed text-text/45">
+          <p className="max-w-2xl text-center text-xs leading-relaxed text-text">
             This AI assistant is for guidance only and responses may be
             inaccurate. Messages are processed by OpenAI and stored to improve
             support — please don't share sensitive personal information. See our{" "}

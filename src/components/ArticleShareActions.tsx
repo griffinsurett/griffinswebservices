@@ -50,7 +50,7 @@ export default function ArticleShareActions({
 
   return (
     <div className="flex flex-wrap items-center gap-2.5">
-      <span className="mr-[0.35rem] text-[0.86rem] leading-none uppercase tracking-[0.12em] text-text/70">
+      <span className="mr-[0.35rem] text-[0.86rem] leading-none uppercase tracking-[0.12em] text-text">
         Share on:
       </span>
       {targets.map((target) => (

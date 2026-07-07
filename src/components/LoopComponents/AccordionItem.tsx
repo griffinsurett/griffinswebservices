@@ -104,7 +104,7 @@ export default function AccordionItem({
           <div className="px-6 pb-6">
             <div className="w-full h-px bg-primary/15 mb-4" />
             {description && (
-              <p className="text-text/90 leading-relaxed mb-4">{description}</p>
+              <p className="text-text leading-relaxed mb-4">{description}</p>
             )}
             {children}
           </div>

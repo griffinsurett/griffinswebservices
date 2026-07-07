@@ -99,7 +99,7 @@ export default function FaqAccordion({
                 isExpanded ? "max-h-[900px] opacity-100" : "max-h-0 opacity-0"
               }`}
             >
-              <div className="max-w-4xl pb-8 pr-14 text-lg leading-relaxed text-text/82 md:pb-10">
+              <div className="max-w-4xl pb-8 pr-14 text-lg leading-relaxed text-text md:pb-10">
                 {item.description && <p className="mb-4">{item.description}</p>}
                 <div
                   ref={(el) => {

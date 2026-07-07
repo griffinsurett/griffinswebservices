@@ -103,21 +103,21 @@ Keep it concise, practical, and easy to scan.`;
                 {item.href && !isLast ? (
                   <a
                     href={item.href}
-                    class="text-[0.68rem] leading-none uppercase tracking-[0.1em] text-text/75 no-underline transition-colors duration-200 hover:text-heading lg:text-[0.86rem] lg:tracking-[0.14em]"
+                    class="text-[0.68rem] leading-none uppercase tracking-[0.1em] text-text no-underline transition-colors duration-200 hover:text-heading lg:text-[0.86rem] lg:tracking-[0.14em]"
                     aria-label={isHome ? item.label : undefined}
                   >
                     {labelContent}
                   </a>
                 ) : (
                   <span
-                    class="text-[0.68rem] leading-none uppercase tracking-[0.1em] text-text/75 lg:text-[0.86rem] lg:tracking-[0.14em]"
+                    class="text-[0.68rem] leading-none uppercase tracking-[0.1em] text-text lg:text-[0.86rem] lg:tracking-[0.14em]"
                     aria-current={isLast ? "page" : undefined}
                     aria-label={isHome ? item.label : undefined}
                   >
                     {labelContent}
                   </span>
                 )}
-                {!isLast && <span aria-hidden="true" class="text-text/40">/</span>}
+                {!isLast && <span aria-hidden="true" class="text-text">/</span>}
               </li>
             );
           })}
@@ -180,14 +180,14 @@ Keep it concise, practical, and easy to scan.`;
                 <div class="flex min-w-0 flex-col gap-[0.15rem]">
                   <p class="m-0 text-base text-heading">{authorName}</p>
                   {authorRole && (
-                    <p class="m-0 text-[0.96rem] text-text/70">{authorRole}</p>
+                    <p class="m-0 text-[0.96rem] text-text">{authorRole}</p>
                   )}
                 </div>
               </div>
             </div>
 
             {data.description && (
-              <p class="mt-8 max-w-[42rem] text-[clamp(1.22rem,1.8vw,1.72rem)] leading-[1.55] text-text/85">
+              <p class="mt-8 max-w-[42rem] text-[clamp(1.22rem,1.8vw,1.72rem)] leading-[1.55] text-text">
                 {data.description}
               </p>
             )}
@@ -198,7 +198,7 @@ Keep it concise, practical, and easy to scan.`;
                 promptSubject={data.title || "this article"}
                 label="Summarize this article with ai:"
                 className="w-auto items-start text-left lg:justify-start lg:text-left"
-                labelClassName="text-left text-text/70"
+                labelClassName="text-left text-text"
                 listClassName="justify-start lg:justify-start"
               />
             </div>

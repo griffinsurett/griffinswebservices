@@ -332,7 +332,7 @@ export default function FeatureCard({
         >
           <div
             ref={bodyRef}
-            className="prose prose-sm dark:prose-invert max-w-none text-text/85 leading-relaxed"
+            className="prose prose-sm dark:prose-invert max-w-none text-text leading-relaxed"
           />
           {children}
         </div>

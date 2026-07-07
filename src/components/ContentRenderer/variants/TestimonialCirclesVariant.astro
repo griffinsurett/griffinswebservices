@@ -49,7 +49,6 @@ const resolveImage = (face: any) => {
   id={id}
   href={link}
   class={`testimonials flex items-center gap-4 lg:gap-5 px-2 md:px-0 ${className}`.trim()}
-  aria-label="Five-star rated - View testimonials"
 >
   {/* Brand gradient used to fill the stars (fa6-solid stars are fill-based, so
       passing this as the Icon `color` renders fill="url(#…)"). */}
@@ -71,7 +70,7 @@ const resolveImage = (face: any) => {
           return (
             <Image
               src={resolved.src}
-              alt={resolved.alt}
+              alt=""
               widths={[56]}
               class="object-cover w-full h-full"
               fetchpriority="high"

@@ -145,7 +145,7 @@ export default function Field({
       {label && (
         <label
           htmlFor={id}
-          className={labelClassName ?? "block text-sm text-text/80"}
+          className={labelClassName ?? "block text-sm text-text"}
         >
           {label}
           {required && (

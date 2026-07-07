@@ -42,7 +42,7 @@ function PreferenceRow({
         </span>
         <span className="text-sm font-medium">{label}</span>
       </span>
-      <span className="text-sm text-text/75">{value}</span>
+      <span className="text-sm text-text">{value}</span>
     </button>
   );
 }
@@ -284,7 +284,7 @@ export default function ThemeControls({ className = "" }: ThemeControlsProps) {
                       </span>
                       <span className="flex-1">
                         <span className="block text-sm leading-tight">{language.nativeName}</span>
-                        <span className="text-xs text-text/70">{language.name}</span>
+                        <span className="text-xs text-text">{language.name}</span>
                       </span>
                       {isActive && (
                         <span className="text-primary text-xs uppercase tracking-[0.16em]">

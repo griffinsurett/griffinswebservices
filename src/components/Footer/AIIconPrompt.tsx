@@ -90,7 +90,7 @@ export default function AIIconPrompt({
 
       <ul
         className={[
-          "flex flex-wrap items-center justify-center gap-3.5 text-text/75 lg:justify-end",
+          "flex flex-wrap items-center justify-center gap-3.5 text-text lg:justify-end",
           listClassName,
         ]
           .filter(Boolean)

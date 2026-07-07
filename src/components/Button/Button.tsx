@@ -8,7 +8,6 @@
  */
 
 import type { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from 'react';
-import { Children } from 'react';
 import PrimaryButton from './variants/PrimaryButton';
 import SecondaryButton from './variants/SecondaryButton';
 import LinkButton from './variants/LinkButton';
@@ -21,97 +20,6 @@ import LinkPageButton from './variants/LinkPageButton';
 import FilterTabButton from './variants/FilterTabButton';
 import FilterIconButton from './variants/FilterIconButton';
 import FormButton from './variants/FormButton';
-
-/**
- * Extracts text content from React children for aria-label generation
- */
-function extractTextContent(node: ReactNode): string {
-  if (typeof node === 'string') return node;
-  if (typeof node === 'number') return String(node);
-  if (!node) return '';
-
-  if (Array.isArray(node)) {
-    return node.map(extractTextContent).filter(Boolean).join(' ');
-  }
-
-  if (typeof node === 'object' && 'props' in node) {
-    // Skip SVG and icon elements - they're decorative
-    if (node.type === 'svg' || node.type === 'img') return '';
-    // Recursively extract from children
-    return extractTextContent(node.props?.children);
-  }
-
-  return '';
-}
-
-/**
- * Generates a destination context from href for accessibility
- * Converts "/about" → "About", "/contact-us" → "Contact us", etc.
- */
-function getDestinationContext(href: string): string {
-  // External links - extract domain
-  if (href.startsWith('http://') || href.startsWith('https://')) {
-    try {
-      const url = new URL(href);
-      return `external link to ${url.hostname}`;
-    } catch {
-      return 'external link';
-    }
-  }
-
-  // Email links
-  if (href.startsWith('mailto:')) {
-    return 'email link';
-  }
-
-  // Phone links
-  if (href.startsWith('tel:')) {
-    return 'phone link';
-  }
-
-  // Hash links (same page)
-  if (href.startsWith('#')) {
-    const section = href.slice(1).replace(/-/g, ' ');
-    return section ? `jump to ${section}` : 'page section';
-  }
-
-  // Internal links - extract meaningful path
-  const path = href.split('?')[0].split('#')[0]; // Remove query/hash
-  const segments = path.split('/').filter(Boolean);
-
-  if (segments.length === 0) return 'home';
-
-  // Use last meaningful segment
-  const lastSegment = segments[segments.length - 1];
-  // Convert kebab-case to readable: "about-us" → "About us"
-  const readable = lastSegment
-    .replace(/-/g, ' ')
-    .replace(/^\w/, c => c.toUpperCase());
-
-  return readable;
-}
-
-/**
- * Generates an auto aria-label for links based on content and destination
- */
-function generateAriaLabel(children: ReactNode, href: string | undefined): string | undefined {
-  // Only generate for links
-  if (!href) return undefined;
-
-  const textContent = extractTextContent(children).trim();
-
-  // WCAG 2.5.3 (Label in Name): the accessible name must CONTAIN the visible
-  // text. When a link already has visible text, that text is a perfectly good
-  // accessible name — synthesizing an aria-label here only risks reordering or
-  // replacing it (e.g. "Learn more - About"), which fails 2.5.3. So we DON'T
-  // override it; the visible text becomes the name.
-  if (textContent.length > 0) return undefined;
-
-  // Icon-only / no visible text: there's nothing for the name to derive from,
-  // so provide a destination-based label. (Nothing to conflict with 2.5.3 —
-  // there's no visible text to contain.)
-  return `Navigate to ${getDestinationContext(href)}`;
-}
 
 /**
  * Base props shared by all button variants

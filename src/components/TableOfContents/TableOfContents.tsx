@@ -192,7 +192,7 @@ export default function TableOfContents({
   const tocContent = (
     <ol id={listId} className="m-0 list-none p-0">
       {groups.length === 0 ? (
-        <li className="px-5 py-5 text-sm text-text/60 md:px-6">{emptyLabel}</li>
+        <li className="px-5 py-5 text-sm text-text md:px-6">{emptyLabel}</li>
       ) : (
         groups.map((group) => {
           const groupId = group.parent.id;
@@ -212,7 +212,7 @@ export default function TableOfContents({
                 className={`flex w-full items-start justify-between gap-3 px-5 py-5 text-left text-lg leading-[1.45] no-underline transition-colors duration-200 md:px-6 md:py-6 md:text-[1.05rem] ${
                   parentActive
                     ? "bg-bg text-heading"
-                    : "text-text/72 hover:bg-bg3/30 hover:text-text focus-visible:bg-bg3/30 focus-visible:text-heading"
+                    : "text-text hover:bg-bg3/30 hover:text-text focus-visible:bg-bg3/30 focus-visible:text-heading"
                 }`}
                 aria-expanded={isOpen}
                 aria-controls={childListId}
@@ -238,7 +238,7 @@ export default function TableOfContents({
                           className={`flex items-start gap-3 text-[0.95rem] leading-[1.45] no-underline transition-colors duration-200 hover:text-primary focus-visible:text-primary ${
                             isChildActive
                               ? "font-semibold text-heading"
-                              : "text-text/60"
+                              : "text-text"
                           }`}
                           aria-current={isChildActive}
                           onClick={(event) =>

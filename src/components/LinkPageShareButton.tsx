@@ -113,7 +113,7 @@ export default function LinkPageShareButton({
         position="center"
         overlayClass="bg-black/60 backdrop-blur-sm flex items-end justify-center p-0 sm:p-4"
         className="card-bg light:bg-white/96 dark:bg-primary-light/6 faded-border shadow-2xl backdrop-blur-xl w-full max-w-[36rem] rounded-t-[2rem] sm:rounded-[2rem] px-5 pb-6 pt-8 sm:px-6 sm:pb-7 sm:pt-9"
-        closeButtonClass="absolute right-4 top-4 text-text/70 transition-opacity hover:opacity-70"
+        closeButtonClass="absolute right-4 top-4 text-text transition-opacity hover:opacity-70"
         ariaLabel="Share links page"
         ssr={false}
       >
@@ -136,7 +136,7 @@ export default function LinkPageShareButton({
                     <span className="faded-bg inline-flex h-12 w-12 items-center justify-center rounded-full transition-transform main-duration group-hover:-translate-y-1">
                       <Icon icon={target.icon} size="md" className="text-primary" />
                     </span>
-                    <span className="text-[0.7rem] font-medium uppercase tracking-[0.18em] text-text/80">
+                    <span className="text-[0.7rem] font-medium uppercase tracking-[0.18em] text-text">
                       {target.label}
                     </span>
                   </button>
@@ -152,7 +152,7 @@ export default function LinkPageShareButton({
                     <span className="faded-bg inline-flex h-12 w-12 items-center justify-center rounded-full transition-transform main-duration group-hover:-translate-y-1">
                       <Icon icon={target.icon} size="md" className="text-primary" />
                     </span>
-                    <span className="text-[0.7rem] font-medium uppercase tracking-[0.18em] text-text/80">
+                    <span className="text-[0.7rem] font-medium uppercase tracking-[0.18em] text-text">
                       {target.label}
                     </span>
                   </a>
