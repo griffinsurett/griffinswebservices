@@ -99,7 +99,24 @@ const normalizeCardProps = (
   };
 };
 
-const featureCardPropOverrides = normalizeCardProps(card);
+// When the section header is hidden, no <h2> is rendered above the cards, so
+// the card titles must step up from h3 to h2 — otherwise the document outline
+// skips a level (h1 → h3), failing "headings increase by one". When a header
+// IS shown, that heading is the h2 and cards stay h3. A caller can still force
+// a level via card.listItem.titleTag; we only supply the default.
+const withHeadingLevel = (
+  overrides?: Partial<FeatureCardProps>,
+): Partial<FeatureCardProps> | undefined => {
+  if (showHeader) return overrides;
+  const existing = overrides?.listItemProps ?? {};
+  if (existing.titleTag) return overrides;
+  return {
+    ...overrides,
+    listItemProps: { ...existing, titleTag: "h2", titleClassName: "h3 mb-3 relative z-10" },
+  };
+};
+
+const featureCardPropOverrides = withHeadingLevel(normalizeCardProps(card));
 const splitFeatureCardPropOverrides: Partial<FeatureCardProps> | undefined = isSplitLayout
   ? {
       ...featureCardPropOverrides,

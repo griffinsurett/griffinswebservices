@@ -21,6 +21,19 @@ import FilterTabButton from './variants/FilterTabButton';
 import FilterIconButton from './variants/FilterIconButton';
 import FormButton from './variants/FormButton';
 
+/* ────────────────────────────────────────────────────────────────────────
+ * Accessible name (WCAG 2.5.3 — Label in Name)
+ *
+ * A control's own text content already becomes its accessible name, and that
+ * is always the correct name — a speech-input user says what they see. So the
+ * component's whole job here is: respect an explicit `aria-label`, and
+ * otherwise leave the name to the rendered text. We deliberately do NOT derive
+ * a name from the URL — a synthesized label ("Navigate to Contact") replaces
+ * the visible text and fails 2.5.3 when text exists, and mislabels when it
+ * doesn't. Icon-only controls therefore MUST be given an explicit `aria-label`
+ * (or a labelled icon child) by the caller — the one reliable source of truth.
+ * ──────────────────────────────────────────────────────────────────────── */
+
 /**
  * Base props shared by all button variants
  */
@@ -67,9 +80,10 @@ type ButtonAsLink = BaseButtonProps &
 export type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 /**
- * Base component that handles rendering as button or anchor
+ * Base component that handles rendering as button or anchor.
  * Avoids React hooks so it can be SSR-only when needed.
- * Auto-generates aria-labels for links to ensure accessibility compliance.
+ * Accessible name = the control's own text; an explicit `aria-label` is
+ * respected, and a dev warning flags any control that ends up nameless.
  */
 export const ButtonBase = ({
   href,
@@ -95,23 +109,22 @@ export const ButtonBase = ({
     ? className.trim()
     : `btn-base ${sizeClass} ${className}`.trim();
 
+  // The rendered content names the control. We never synthesize an aria-label
+  // from it (the text already IS the name — WCAG 2.5.3); an explicit aria-label
+  // in props is passed straight through and respected.
+  const content = (
+    <>
+      {leftIcon}
+      {children}
+      {rightIcon}
+    </>
+  );
+
   if (href) {
     const anchorProps = props as AnchorHTMLAttributes<HTMLAnchorElement>;
-    // No auto-generated aria-label: a link's visible text content IS its
-    // accessible name, which satisfies WCAG 2.5.3 (Label in Name) by
-    // construction. Synthesizing a label here only overrode that correct
-    // default with a guess that reordered/replaced the visible text and failed
-    // 2.5.3. Icon-only links pass an explicit aria-label via anchorProps.
-
     return (
-      <a
-        href={href}
-        className={baseClasses}
-        {...anchorProps}
-      >
-        {leftIcon}
-        {children}
-        {rightIcon}
+      <a href={href} className={baseClasses} {...anchorProps}>
+        {content}
       </a>
     );
   }
@@ -119,9 +132,7 @@ export const ButtonBase = ({
   const buttonProps = props as ButtonHTMLAttributes<HTMLButtonElement>;
   return (
     <button type={buttonProps.type ?? 'button'} className={baseClasses} {...buttonProps}>
-      {leftIcon}
-      {children}
-      {rightIcon}
+      {content}
     </button>
   );
 };
