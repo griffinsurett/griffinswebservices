@@ -692,8 +692,26 @@ const hasExpandSlot = Astro.slots.has("expand-content");
       // testimonials become a clean 100svh container). Kept in sync with both the
       // OS preference and the in-app accessibility toggle so flipping it live
       // re-lays-out without a reload.
-      const syncReduced = () =>
-        region.classList.toggle("is-reduced", readMotionPreference());
+      //
+      // The scroll `apply()` writes the morph inline on `media` (--axp-x/y/w/h)
+      // and `region` (--axp-progress/dim/content). Toggling the class alone would
+      // leave those inline values, so the image would freeze wherever the scrub
+      // left it instead of snapping back to its static start. So when reduced
+      // motion turns on we ALSO strip those inline props — the CSS then owns the
+      // resting layout and the image jumps home immediately.
+      const clearMorphStyles = () => {
+        ["--axp-x", "--axp-y", "--axp-w", "--axp-h"].forEach((prop) =>
+          media.style.removeProperty(prop),
+        );
+        ["--axp-progress", "--axp-dim", "--axp-content"].forEach((prop) =>
+          region.style.removeProperty(prop),
+        );
+      };
+      const syncReduced = () => {
+        const reduced = readMotionPreference();
+        region.classList.toggle("is-reduced", reduced);
+        if (reduced) clearMorphStyles();
+      };
       syncReduced();
       window
         .matchMedia?.("(prefers-reduced-motion: reduce)")
@@ -738,6 +756,14 @@ const hasExpandSlot = Astro.slots.has("expand-content");
       measureViewport();
 
       const apply = (p: number) => {
+        // If reduced motion is active, the ScrollTrigger may still fire (it was
+        // created while motion was allowed, then the user toggled it on). Don't
+        // write the morph — clear any inline values so the static CSS owns the
+        // layout and the image sits at its resting start position.
+        if (readMotionPreference()) {
+          clearMorphStyles();
+          return;
+        }
         const fullW = pin.clientWidth;
         const fullH = pin.clientHeight;
         // Remap [START, 1] → [0, 1]; below START the image stays at rest.

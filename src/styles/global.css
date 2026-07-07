@@ -452,6 +452,20 @@ body {
   @apply rounded-full cursor-pointer;
 }
 
+/* Section boundary rule — the hairline drawn BETWEEN stacked sections. Applied
+   per-placement on the PAGE (not baked into a variant), so a section can opt in
+   where a divider is wanted and omit it where it isn't. Use the single-edge
+   variants when stacking bordered sections so adjacent rules don't double up. */
+@utility section-rule-y {
+  border-block: 1px solid var(--color-border);
+}
+@utility section-rule-t {
+  border-top: 1px solid var(--color-border);
+}
+@utility section-rule-b {
+  border-bottom: 1px solid var(--color-border);
+}
+
 @utility footer-cta-block {
   @apply inline-flex w-full items-center justify-center gap-3 px-6 py-6 text-center text-xl font-normal text-heading transition-all duration-300 md:px-8 md:py-7 md:text-[1.7rem] lg:w-auto lg:justify-start lg:px-10 lg:text-left;
 }
@@ -468,22 +482,22 @@ body {
   @apply duration-450;
 }
 
-/* Form controls */
+/* Form controls — themed to match the AskAi input (bg-bg2 surface, heading/15
+   hairline, primary focus ring, subtle placeholder). Shared by every form input
+   project-wide, so this is the single source for the input look. */
 @utility form-field {
-  @apply w-full input-bg rounded-xl px-4 py-3 focus:outline-none main-duration transition-all;
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--color-border);
+  @apply w-full rounded-xl px-4 py-3 focus:outline-none main-duration transition-all;
+  @apply border border-heading/15 shadow-sm;
   /* The entered value is content — it must meet 4.5:1, so use solid text, not
      muted. Only the placeholder (a hint) is muted. */
   @apply text-text;
 
   &:focus {
-    border-color: var(--color-accent);
+    @apply border-primary/50;
   }
 
   &::placeholder {
-    @apply text-muted;
+    @apply text-text/45;
   }
 
   &[type="select"],

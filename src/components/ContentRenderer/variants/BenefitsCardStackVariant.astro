@@ -59,9 +59,11 @@ const panels = await Promise.all(
 
 <style>
   .bcs {
+    /* Internal dividers (centre column + between squares) live here; the outer
+       top/bottom section rule is applied per-placement on the page via the
+       `section-rule-*` utilities, not baked in. */
     --bcs-rule: color-mix(in srgb, currentColor 12%, transparent);
     --bcs-pad: clamp(2rem, 5vw, 5rem);
-    border-block: 1px solid var(--bcs-rule);
   }
   @media (min-width: 768px) {
     .bcs { display: grid; grid-template-columns: 1fr 1fr; }

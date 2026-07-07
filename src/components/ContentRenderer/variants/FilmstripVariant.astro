@@ -185,8 +185,9 @@ const totalPanels = items.length + 2;
     height: 100vh;
     width: 100%;
     overflow: hidden;
-    border-top: 1px solid var(--fs-border-col);
-    border-bottom: 1px solid var(--fs-border-col);
+    /* Outer top/bottom section rule is applied per-placement on the page via
+       the `section-rule-*` utilities — not baked in here. Internal dividers
+       (column + panel rules) stay, since they're part of this layout. */
     /* bg-gradient (in markup) keeps this opaque so it curtains the section
        behind it during the slide-off. */
     will-change: transform;
@@ -509,11 +510,27 @@ const totalPanels = items.length + 2;
   }
 
   function reinit() {
-    // Kill our standalone pins/triggers, then re-run init under current prefs.
+    // Kill our standalone pins/triggers. kill(true) reverts the pin-spacer and
+    // any styles GSAP itself applied.
     ScrollTrigger.getAll().forEach((t) => {
       const trig = t.trigger as HTMLElement | undefined;
-      if (trig && trig.closest("[data-filmstrip]")) t.kill();
+      if (trig && trig.closest("[data-filmstrip]")) t.kill(true);
     });
+
+    // CRUCIAL: the scrub writes inline transform/opacity DIRECTLY on the track
+    // and each card (setProgress / applyCardRise). GSAP's kill() doesn't clear
+    // those — so if we don't wipe them, the leftover translateX/translateY fight
+    // the stacked 50/50 CSS and the section renders half-broken. Clear them so
+    // the reduced-motion layout starts from a clean slate.
+    document.querySelectorAll<HTMLElement>("[data-filmstrip]").forEach((s) => {
+      const track = s.querySelector<HTMLElement>("[data-filmstrip-track]");
+      if (track) track.style.transform = "";
+      s.querySelectorAll<HTMLElement>(".fs-card-rise").forEach((c) => {
+        c.style.transform = "";
+        c.style.opacity = "";
+      });
+    });
+
     syncReduced();
     init();
     ScrollTrigger.refresh();

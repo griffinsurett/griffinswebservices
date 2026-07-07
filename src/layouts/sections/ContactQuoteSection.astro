@@ -78,9 +78,10 @@ const {
 <style>
   /* Double-box flow — mirrors BenefitsCardStackVariant (.bcs). */
   .cq {
+    /* Internal centre divider lives here; the outer top/bottom section rule is
+       applied per-placement on the page via the `section-rule-*` utilities. */
     --cq-rule: color-mix(in srgb, currentColor 12%, transparent);
     --cq-pad: clamp(2rem, 5vw, 5rem);
-    border-block: 1px solid var(--cq-rule);
   }
   @media (min-width: 768px) {
     .cq { display: grid; grid-template-columns: 1fr 1fr; }

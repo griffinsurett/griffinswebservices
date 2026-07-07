@@ -97,20 +97,27 @@ const heroDescription =
         fixed-height stacked layer, so tall sections are never clipped.
         Below 768px / reduced-motion the filmstrip flattens to a vertical stack. */
     }
-    <ContentRenderer
-      query={byTag("projects", "screen").orderBy(sortByOrder())}
-      variant="FilmstripVariant"
-      title={"Selected work\n& explorations"}
-      collectionUrl="/projects"
-    />
+    {/* Page-level border wrappers: the rule lives on the PAGE composition, not
+        the section — so the same variant shows a divider here but none where a
+        page wraps it without `section-rule-*`. */}
+    <div class="section-rule-y">
+      <ContentRenderer
+        query={byTag("projects", "screen").orderBy(sortByOrder())}
+        variant="FilmstripVariant"
+        title={"Selected work\n& explorations"}
+        collectionUrl="/projects"
+      />
+    </div>
 
-    <ContentRenderer
-      query={query("benefits").orderBy(sortByOrder()).limit(8)}
-      variant="BenefitsCardStackVariant"
-      id="benefits"
-      heading="Your website should help with things like this."
-      description="Your website should do more than look good — it should quietly work for your business every day. It should make you easier to trust the moment someone lands on it, easier to find when people search, and easier to contact when they're ready to act. Every site we build is designed around outcomes like these, so the things that actually move your business forward keep happening long after launch."
-    />
+    <!-- <div class="section-rule-b"> -->
+      <ContentRenderer
+        query={query("benefits").orderBy(sortByOrder()).limit(8)}
+        variant="BenefitsCardStackVariant"
+        id="benefits"
+        heading="Your website should help with things like this."
+        description="Your website should do more than look good — it should quietly work for your business every day. It should make you easier to trust the moment someone lands on it, easier to find when people search, and easier to contact when they're ready to act. Every site we build is designed around outcomes like these, so the things that actually move your business forward keep happening long after launch."
+      />
+    <!-- </div> -->
 
     <div class="bottom-content-section">
       <ContentRenderer
@@ -121,9 +128,9 @@ const heroDescription =
         title="Featured Technologies"
         description="These are some of the tools and platforms we use to build and support websites."
       />
+    </div>
 
       {/* FAQs moved to /faq */}
-    </div>
 
     <!-- BLOG — editorial cards (webmaxers style) under a GWS SectionHeading. -->
     <ContentRenderer
