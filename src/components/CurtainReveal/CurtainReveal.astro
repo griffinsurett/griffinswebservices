@@ -1,0 +1,221 @@
+---
+// src/components/CurtainReveal/CurtainReveal.astro
+/**
+ * CurtainReveal — a slotted seam transition between two sections.
+ *
+ * Slot two sections in. Each keeps its OWN natural height and scroll behavior
+ * (self-pinning, internal scrubs, morphs — all untouched). CurtainReveal owns
+ * only the SEAM between them: as you finish scrolling the `outgoing` section,
+ * its last full screen is pinned and slides off in the `move` direction like a
+ * curtain, uncovering the `incoming` section — which was already sitting there,
+ * full-screen and stationary, behind it.
+ *
+ *   <CurtainReveal move="up">
+ *     <YourSectionA slot="outgoing" />   (stays fully intact)
+ *     <YourSectionB slot="incoming" />   (revealed underneath)
+ *   </CurtainReveal>
+ *
+ * `move`: which way the outgoing curtain slides off — "up" | "down" | "left" |
+ * "right". Default "up".
+ *
+ * How it works (desktop, motion allowed):
+ *   • The incoming section is pulled up by one viewport + the slide distance, so
+ *     it sits directly BEHIND the outgoing section's last screen.
+ *   • At the seam the outgoing wrapper is pinned (GSAP) for `slideVh` of scroll
+ *     and translated off in `move`; a higher z-index keeps it above the incoming
+ *     one until it's gone.
+ *   • The incoming section is held at its start until the slide completes (so it
+ *     "isn't loaded" until fully visible): its own scroll-driven animation only
+ *     begins once revealed. Sections opt into this hold by reading
+ *     `--curtain-hold` (a scroll distance) — e.g. FilmstripVariant. Sections
+ *     without that hook simply sit static behind the curtain, which also looks
+ *     correct.
+ *
+ * Below 768px / reduced motion: NO pin, NO overlap, NO slide — both sections
+ * fall into plain vertical flow and render with their own static fallbacks.
+ */
+
+type Move = "up" | "down" | "left" | "right";
+
+interface Props {
+  /** Direction the outgoing curtain slides off to reveal the incoming section. */
+  move?: Move;
+  /** Scroll distance (in svh) the slide-off spans. Also the hold distance handed
+      to the incoming section so it stays at its start until fully revealed. */
+  slideVh?: number;
+  class?: string;
+}
+
+const { move = "up", slideVh = 120, class: className = "" } = Astro.props;
+---
+
+<div
+  class:list={["curtain-reveal", className]}
+  data-curtain-reveal
+  data-move={move}
+  style={`--curtain-slide: ${slideVh}svh;`}
+>
+  {/* OUTGOING — kept fully intact; the wrapper pins + slides its last screen. */}
+  <div class="curtain-outgoing" data-curtain-outgoing>
+    <slot name="outgoing" />
+  </div>
+
+  {/* INCOMING — pulled up to sit behind the outgoing curtain, held at its start
+      (via --curtain-hold) until the slide reveals it. */}
+  <div class="curtain-incoming" data-curtain-incoming>
+    <slot name="incoming" />
+  </div>
+</div>
+
+<style>
+  .curtain-reveal {
+    position: relative;
+  }
+
+  /* Pull the incoming section up so its first screen sits behind the outgoing
+     section's last screen (one viewport) PLUS the slide runway — so it's fully
+     parked and stationary before the curtain begins sliding, and the slide
+     uncovers a finished section rather than one still arriving. */
+  .curtain-incoming {
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-100svh - var(--curtain-slide, 120svh));
+  }
+
+  /* The outgoing curtain rides ABOVE the incoming section while it slides away.
+     The slotted outgoing section is responsible for being opaque (painting its
+     own bg) — otherwise the incoming section parked behind it bleeds through the
+     gaps before the curtain lifts. */
+  .curtain-outgoing {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Hand the incoming section its HOLD distance so it stays at its start until
+     the curtain has fully slid off. The incoming section is pulled up by the
+     full overlap (one viewport + the slide runway) and is COVERED for exactly
+     that whole distance — so the hold must equal the overlap, NOT just the
+     slide. A section that supports a scroll-hold (see FilmstripVariant) reads
+     --curtain-hold and freezes its internal scrub for this many px after it
+     pins; only once uncovered does it animate. Inherited down to the section. */
+  .curtain-incoming {
+    --curtain-hold: calc(100svh + var(--curtain-slide, 120svh));
+  }
+
+  /* Flatten: no curtain below 768px / reduced motion. Remove the overlap and the
+     hold so both sections sit in normal flow and self-drive. */
+  @media (max-width: 767px), (prefers-reduced-motion: reduce) {
+    .curtain-incoming {
+      margin-top: 0;
+      --curtain-hold: 0px;
+    }
+  }
+  :global([data-a11y-motion="reduced"]) .curtain-incoming {
+    margin-top: 0;
+    --curtain-hold: 0px;
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { readMotionPreference } from "@/hooks/useMotionPreference";
+  gsap.registerPlugin(ScrollTrigger);
+
+  type Move = "up" | "down" | "left" | "right";
+
+  // The slide-off transform for each direction — ONE VIEWPORT away (not the
+  // element's own size: the outgoing section can be many viewports tall, but
+  // only its last visible screen is at the seam, so a single viewport of travel
+  // clears it). Pixel-based off vw/vh, recomputed on refresh.
+  function offEnd(move: Move, vw: number, vh: number): gsap.TweenVars {
+    switch (move) {
+      case "down":  return { y: vh };
+      case "left":  return { x: -vw };
+      case "right": return { x: vw };
+      case "up":
+      default:      return { y: -vh };
+    }
+  }
+
+  function buildReveal(root: HTMLElement) {
+    const outgoing = root.querySelector<HTMLElement>("[data-curtain-outgoing]");
+    const incoming = root.querySelector<HTMLElement>("[data-curtain-incoming]");
+    if (!outgoing || !incoming) return () => {};
+
+    const move = ((root.getAttribute("data-move") as Move) || "up") as Move;
+
+    // Resolve the slide distance (--curtain-slide, an svh length) to px via a
+    // one-time probe so svh/vh resolve correctly.
+    const probe = document.createElement("div");
+    probe.style.cssText =
+      "position:absolute;visibility:hidden;height:var(--curtain-slide,120svh);";
+    root.appendChild(probe);
+    const slidePx = Math.max(1, probe.offsetHeight);
+    probe.remove();
+
+    // Pin the outgoing section's LAST screen at the seam and slide it off over
+    // `slidePx` of scroll. GSAP pins the outgoing wrapper: start when its bottom
+    // reaches the viewport bottom (its last screen is filling the viewport), end
+    // slidePx later. `pinSpacing:false` because the incoming section already
+    // occupies that scroll space (it's pulled up under the curtain) — we don't
+    // want GSAP to add extra spacer height.
+    const tween = gsap.fromTo(
+      outgoing,
+      { x: 0, y: 0 },
+      { ...offEnd(move, window.innerWidth, window.innerHeight), ease: "none" },
+    );
+
+    const st = ScrollTrigger.create({
+      trigger: outgoing,
+      start: "bottom bottom",
+      end: "+=" + slidePx,
+      pin: true,
+      pinSpacing: false,
+      scrub: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      animation: tween,
+    });
+
+    return () => {
+      st.kill();
+      tween.kill();
+      gsap.set(outgoing, { clearProps: "transform" });
+    };
+  }
+
+  function init() {
+    const roots = document.querySelectorAll<HTMLElement>("[data-curtain-reveal]");
+    if (!roots.length) return;
+
+    roots.forEach((root) => {
+      let cleanup: () => void = () => {};
+
+      const build = () => {
+        cleanup();
+        cleanup = () => {};
+        // Flatten (mobile OR reduced motion): no pin/slide — sections self-flow.
+        const flatten =
+          window.matchMedia("(max-width: 767px)").matches ||
+          readMotionPreference();
+        if (flatten) return;
+        cleanup = buildReveal(root);
+      };
+
+      build();
+
+      window.matchMedia("(max-width: 767px)").addEventListener("change", build);
+      window
+        .matchMedia("(prefers-reduced-motion: reduce)")
+        .addEventListener("change", build);
+      new MutationObserver(build).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-a11y-motion", "data-a11y-animations"],
+      });
+    });
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

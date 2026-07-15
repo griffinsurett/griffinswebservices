@@ -74,7 +74,7 @@ const words = splitTextIntoAnimatedWords(statement);
 const hasExpandSlot = Astro.slots.has("expand-content");
 ---
 
-<div id={id} class="flex flex-col gap-24 md:gap-36 lg:gap-48">
+<div id={id} class="about-root flex flex-col gap-24 md:gap-36 lg:gap-48">
 
   <!-- Sticky scroll statement -->
   <aside
@@ -279,6 +279,19 @@ const hasExpandSlot = Astro.slots.has("expand-content");
 </div>
 
 <style>
+  /* The About section must be OPAQUE so that when it's the outgoing curtain (see
+     CurtainReveal) the incoming section parked behind it can't bleed through the
+     transparent gaps in the expand pin. It paints the SAME background as the site's
+     fixed layer (.site-fixed-bg) — the left→right bg3→bg gradient, attached to the
+     viewport — so it aligns pixel-for-pixel with the page background and introduces
+     NO visible seam where the section begins. */
+  .about-root {
+    background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+  }
+
   .about-sticky-section {
     min-height: var(--about-section-height);
     position: relative;
@@ -885,6 +898,9 @@ const hasExpandSlot = Astro.slots.has("expand-content");
       };
       measureViewport();
 
+      const clamp = (v: number, lo: number, hi: number) =>
+        v < lo ? lo : v > hi ? hi : v;
+
       const apply = (p: number) => {
         // If reduced motion is active, the ScrollTrigger may still fire (it was
         // created while motion was allowed, then the user toggled it on). Don't
@@ -894,6 +910,7 @@ const hasExpandSlot = Astro.slots.has("expand-content");
           clearMorphStyles();
           return;
         }
+
         const fullW = pin.clientWidth;
         const fullH = pin.clientHeight;
         // Remap [START, 1] → [0, 1]; below START the image stays at rest.

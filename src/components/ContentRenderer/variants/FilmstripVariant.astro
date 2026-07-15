@@ -333,6 +333,30 @@ const totalPanels = items.length + 2;
     let rafId = null;
     let lastScrollY = -1;
 
+    // Optional reveal HOLD: hold the strip at its intro (progress 0) for this
+    // many pixels of scroll AFTER it pins, then begin the horizontal scrub. Read
+    // from --curtain-hold, the generic hook a CurtainReveal wrapper sets on the
+    // revealed (incoming) section = the curtain's slide distance. So when this
+    // strip is revealed by a curtain, it stays on its intro until the curtain has
+    // fully slid off and the strip is fully visible ("not loaded until visible"),
+    // then scrubs. Unset (no curtain) → 0, standalone behavior unchanged.
+    // Measured once (and on resize) via a probe so svh/vh resolve to px — never
+    // per scroll frame, to avoid layout thrash.
+    let offset = 0;
+    function measureOffset() {
+      const raw = getComputedStyle(section)
+        .getPropertyValue("--curtain-hold")
+        .trim();
+      if (!raw) { offset = 0; return; }
+      const probe = document.createElement("div");
+      probe.style.cssText =
+        "position:absolute;visibility:hidden;height:" + raw + ";";
+      section.appendChild(probe);
+      const px = probe.offsetHeight;
+      probe.remove();
+      offset = px > 0 ? px : 0;
+    }
+
     function update() {
       rafId = null;
       const scrollY = window.scrollY;
@@ -341,11 +365,14 @@ const totalPanels = items.length + 2;
 
       const vw = window.innerWidth;
       const sectionTop = section.getBoundingClientRect().top + scrollY;
-      const maxScroll = Math.max(1, section.offsetHeight - window.innerHeight);
+      // Skip the offset off the FRONT of the scrub window and shrink the runway
+      // by the same amount, so the strip holds at progress 0 through the offset,
+      // then scrubs 0→1 across the remaining scroll and still lands flush.
+      const maxScroll = Math.max(1, section.offsetHeight - window.innerHeight - offset);
       // Clamp to [0,1]: the sticky viewport unpins once the section bottom
       // reaches the viewport bottom, so any scroll past that must NOT keep
       // advancing the track — otherwise the last panel slides off-left.
-      const progress = clamp((scrollY - sectionTop) / maxScroll, 0, 1);
+      const progress = clamp((scrollY - sectionTop - offset) / maxScroll, 0, 1);
       // Travel exactly the track's overflow — no extra, so the last panel lands
       // flush at the right edge and stops there.
       const maxX = Math.max(0, track.scrollWidth - vw);
@@ -375,10 +402,11 @@ const totalPanels = items.length + 2;
     }
 
     function onScroll() { if (!rafId) rafId = requestAnimationFrame(update); }
-    function onResize() { lastScrollY = -1; update(); }
+    function onResize() { lastScrollY = -1; measureOffset(); update(); }
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
+    measureOffset();
     update();
 
     section._fsCleanup = function () {

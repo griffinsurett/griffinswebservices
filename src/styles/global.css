@@ -232,11 +232,7 @@ body {
     display: none;
   }
 
-  /* Override base background utility to use the gradient */
-  .bg-bg {
-    background-color: transparent;
-    @apply bg-gradient;
-  }
+
 }
 
 @property --ab-progress {

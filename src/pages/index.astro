@@ -12,9 +12,9 @@ import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 // import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 import AboutSection from "@/components/AboutSection/AboutSection.astro";
 import TestimonialCarousel from "@/components/TestimonialCarousel/TestimonialCarousel.astro";
-// CurtainStack available if a multi-layer curtain is wanted later; the filmstrip
-// now peels off on its own (standalone mode) to reveal normal-flow content.
-// import CurtainStack from "@/components/CurtainStack/CurtainStack.astro";
+// CurtainReveal — slotted seam transition: the About section (outgoing) slides
+// off to reveal the Projects filmstrip (incoming). Both sections stay intact.
+import CurtainReveal from "@/components/CurtainReveal/CurtainReveal.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
 
 const heroHeading = {
@@ -75,41 +75,38 @@ const heroDescription =
         homepage. (No `withBackground` here: the AboutSection's own expanding
         image is already the backdrop.) */
     }
-    <AboutSection
-      id="about"
-      statement={`${siteData.title} builds fast, trustworthy websites that help local businesses get found, look credible, and win more work.`}
-      leftText="We design for clarity first, build it right the first time, and keep it fast long after launch."
-      rightText="Our goal is simple: a website that makes your business easier to trust, easier to find, and easier to contact."
-      ctaText="See What We Do"
-      ctaLink="/capabilities"
-      showStats
-    >
-      <div slot="expand-content" class="w-full">
-        <TestimonialCarousel id="testimonials-home" />
-      </div>
-    </AboutSection>
+    {/* ABOUT → PROJECTS curtain. Both sections stay fully intact (each keeps its
+        own scroll runway, morph, and scrub). CurtainReveal owns only the SEAM:
+        the About section's last screen (the full-bleed image + testimonials)
+        pins and slides UP, uncovering the Projects filmstrip parked behind it.
+        The filmstrip holds on its intro until the curtain has fully lifted (via
+        --curtain-hold), then scrubs. No `section-rule` at the seam — a curtain
+        reveal should be seamless. Below 768px / reduced-motion CurtainReveal
+        flattens: both sections fall into normal flow, self-driving. */}
+    <CurtainReveal move="up">
+      <AboutSection
+        slot="outgoing"
+        id="about"
+        statement={`${siteData.title} builds fast, trustworthy websites that help local businesses get found, look credible, and win more work.`}
+        leftText="We design for clarity first, build it right the first time, and keep it fast long after launch."
+        rightText="Our goal is simple: a website that makes your business easier to trust, easier to find, and easier to contact."
+        ctaText="See What We Do"
+        ctaLink="/capabilities"
+        showStats
+      >
+        <div slot="expand-content" class="w-full">
+          <TestimonialCarousel id="testimonials-home" />
+        </div>
+      </AboutSection>
 
-    {
-      /* PROJECTS — ported from webmaxers' filmstrip. In standalone mode it
-        self-pins: the project row scrubs left, then the whole section peels
-        off-LEFT to reveal whatever follows it in normal document flow (here,
-        the Benefits section). This is the same "curtain" peel as webmaxers, but
-        the revealed content below scrolls NATURALLY — it isn't trapped in a
-        fixed-height stacked layer, so tall sections are never clipped.
-        Below 768px / reduced-motion the filmstrip flattens to a vertical stack. */
-    }
-    
-    {/* Page-level border wrappers: the rule lives on the PAGE composition, not
-        the section — so the same variant shows a divider here but none where a
-        page wraps it without `section-rule-*`. */}
-    <div class="section-rule-y">
       <ContentRenderer
+        slot="incoming"
         query={byTag("projects", "featured").orderBy(sortByOrder())}
         variant="FilmstripVariant"
         title={"Selected work\n& explorations"}
         collectionUrl="/projects"
       />
-    </div>
+    </CurtainReveal>
 
     <!-- <div class="section-rule-b"> -->
       <ContentRenderer
