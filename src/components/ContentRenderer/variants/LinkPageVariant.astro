@@ -14,6 +14,8 @@ import BackgroundMedia from "@/components/BackgroundMedia.astro";
 import type { BaseVariantProps } from "../ContentRenderer.types";
 import { toArray } from "@/utils/array";
 import { getCollection } from "astro:content";
+import { query } from "@/utils/query";
+import { prepareCollectionEntries, getCollectionMeta } from "@/utils/collections";
 
 interface Props extends BaseVariantProps {
   showIcons?: boolean;

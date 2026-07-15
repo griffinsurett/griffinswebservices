@@ -3,19 +3,27 @@ import SocialIcon from "@/components/LoopComponents/SocialIcon";
 import { siteData } from "@/content/siteData";
 import type { IconType } from "@/content/schema";
 import CookiePreferencesButton from "@/integrations/preferences/consent/ui/CookiePreferencesButton";
-import AccessibilityButton from "@/integrations/preferences/accessibility/ui/AccessibilityButton";
+import {
+  FOOTER_MENU_ITEM_CLASS,
+  FOOTER_MENU_NAV_BASE,
+  FOOTER_MENU_NAV_HORIZONTAL,
+} from "@/components/ContentRenderer/variants/utils/footerMenuClasses";
 import type { MouseEventHandler } from "react";
 
-const LEGAL_LINKS = [
-  { href: "/privacy-policy", label: "Privacy Policy" },
-  { href: "/cookie-policy", label: "Cookie Policy" },
-  { href: "/terms-of-service", label: "Terms of Service" },
-];
+interface LegalItem {
+  id: string;
+  title: string;
+  url?: string;
+  /** Action rows render as a control instead of a link (e.g. cookie prefs). */
+  action?: string;
+}
 
 interface HorizontalLegalFooterProps {
   className?: string;
   showBorder?: boolean;
   onLinkClick?: MouseEventHandler<HTMLAnchorElement>;
+  /** Legal links + "Your Privacy Choices" action, queried upstream (MenuVariant). */
+  legalItems?: LegalItem[];
   socialLinks?: Array<{
     title: string;
     url?: string;
@@ -27,18 +35,13 @@ export default function HorizontalLegalFooter({
   className = "",
   showBorder = true,
   onLinkClick,
+  legalItems = [],
   socialLinks = [],
 }: HorizontalLegalFooterProps) {
-  const wrapperClasses = [
-    "w-full",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
-  const legalLinkClassName =
-    "p-0 whitespace-nowrap text-[0.76rem] text-text no-underline transition-colors main-duration hover:text-text sm:text-[0.95rem]";
-  const utilityLinkClassName =
-    "p-0 text-[0.72rem] text-text no-underline transition-colors main-duration hover:text-text sm:text-[0.82rem]";
+  const wrapperClasses = ["w-full", className].filter(Boolean).join(" ");
+  // Same "hover one, mute the rest" behaviour as the main footer (FooterMenuVariant),
+  // via the shared class module — laid out horizontally here.
+  const itemClass = `${FOOTER_MENU_ITEM_CLASS} whitespace-nowrap text-[0.76rem] sm:text-[0.95rem]`;
   const hasSocialLinks = socialLinks.length > 0;
 
   return (
@@ -68,29 +71,32 @@ export default function HorizontalLegalFooter({
           </div>
         )}
 
-        <div className="flex flex-col items-center gap-4 lg:flex-row lg:flex-wrap lg:justify-center lg:gap-x-6 lg:gap-y-3">
+        {legalItems.length > 0 && (
           <div className="overflow-x-auto max-w-full">
-            <div className="mx-auto flex min-w-max w-fit flex-nowrap items-center justify-center gap-2.5 px-2 sm:gap-4 sm:px-0">
-              {LEGAL_LINKS.map((link) => (
-                <Button
-                  key={link.href}
-                  variant="link"
-                  href={link.href}
-                  size="sm"
-                  className={legalLinkClassName}
-                  onClick={onLinkClick}
-                >
-                  {link.label}
-                </Button>
-              ))}
-            </div>
+            {/* group/menu marker → each row mutes when a sibling is hovered. */}
+            <nav
+              className={`${FOOTER_MENU_NAV_BASE} ${FOOTER_MENU_NAV_HORIZONTAL} mx-auto min-w-max w-fit justify-center px-2 sm:px-0`}
+              aria-label="Legal links"
+            >
+              {legalItems.map((item) =>
+                item.action === "cookie-preferences" ? (
+                  <CookiePreferencesButton key={item.id} className={itemClass} />
+                ) : (
+                  <Button
+                    key={item.id}
+                    variant="link"
+                    href={item.url}
+                    size="sm"
+                    className={itemClass}
+                    onClick={onLinkClick}
+                  >
+                    {item.title}
+                  </Button>
+                ),
+              )}
+            </nav>
           </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-            <CookiePreferencesButton className={utilityLinkClassName} />
-            <AccessibilityButton className={utilityLinkClassName} />
-          </div>
-        </div>
+        )}
 
         <p className="text-center text-xs leading-relaxed sm:text-sm">
           &copy; {new Date().getFullYear()} {siteData.legalName}. All rights reserved.

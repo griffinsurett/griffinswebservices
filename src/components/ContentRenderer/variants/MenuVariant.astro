@@ -13,6 +13,8 @@ import HamburgerMenuDrawer from "@/components/LoopTemplates/Menu/HamburgerMenu/H
 import { buildMenuTree } from "@/utils/menuQueries";
 import { toArray } from "@/utils/array";
 import { getCollection } from "astro:content";
+import { query } from "@/utils/query";
+import { prepareCollectionEntries, getCollectionMeta } from "@/utils/collections";
 
 type MenuMode = "responsive" | "flat-only" | "hamburger-only";
 
@@ -40,6 +42,24 @@ const currentPath = Astro.url.pathname;
 // Build hierarchical tree from flat items
 const menuTree = buildMenuTree(safeItems);
 
+// Legal menu for the mobile drawer footer: query the `legal` collection, then
+// append "Your Privacy Choices" as a synthetic ACTION item (same pattern as the
+// main site footer). Mapped to plain serialisable objects — the prepared items
+// carry a `render` fn that can't cross into the React drawer.
+const legalPrepared = await prepareCollectionEntries(
+  (await query("legal").get()).entries,
+  "legal",
+  getCollectionMeta("legal"),
+);
+const legalItems = [
+  ...legalPrepared.map((entry: any) => ({
+    id: entry.id,
+    title: entry.title,
+    url: entry.url,
+  })),
+  { id: "your-privacy-choices", title: "Your Privacy Choices", action: "cookie-preferences" },
+];
+
 // Determine which versions to show based on mode
 const showDesktop = mode === "responsive" || mode === "flat-only";
 const showMobile = mode === "responsive" || mode === "hamburger-only";
@@ -65,6 +85,7 @@ const mobileClasses = showMobile && mode === "responsive" ? "md:hidden" : "";
         <HamburgerMenuDrawer
           client:idle
           items={menuTree}
+          legalItems={legalItems}
           currentPath={currentPath}
           socialLinks={socialLinks.map((entry) => ({
             title: entry.data.title,

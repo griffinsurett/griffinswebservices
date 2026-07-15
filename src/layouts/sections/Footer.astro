@@ -11,10 +11,10 @@
 import { siteData, ctaData } from "@/content/siteData";
 import ContentRenderer from "@/components/ContentRenderer/ContentRenderer.astro";
 import { query } from "@/utils/query";
+import { prepareCollectionEntries, getCollectionMeta } from "@/utils/collections";
 import Button from "@/components/Button/Button";
 import AIIconPrompt from "@/components/Footer/AIIconPrompt";
 import Eyebrow from "@/components/Eyebrow";
-import CookiePreferencesButton from "@/integrations/preferences/consent/ui/CookiePreferencesButton";
 
 const eyebrow = "Let's build work that inspires.";
 const heading = "Ready to build";
@@ -33,15 +33,29 @@ Use this site as the source: ${siteData.url}
 
 Keep it practical, specific, and favorable where the evidence supports it.`;
 
-// LEGAL column: flatten ListVariant into a clean left-aligned list (small
-// uppercase heading, light links, no description/CTA) — GWS list styling.
+// LEGAL column heading styling (small uppercase muted label). The links + their
+// hover behaviour live in FooterMenuVariant now.
 const legalColClass = [
   "!py-0",
   "[&>div]:mb-4 [&_.h4]:text-sm [&_.h4]:font-light [&_.h4]:uppercase [&_.h4]:tracking-[0.24em] [&_.h4]:text-muted [&_.h4]:mb-0",
-  "[&_p]:hidden",
-  "[&_nav]:flex-col [&_nav]:items-start [&_nav]:gap-3 [&_nav]:flex-nowrap",
-  "[&_.link-base]:text-base [&_.link-base]:font-normal",
 ].join(" ");
+
+// Build the legal menu items: query the `legal` collection, prepare its entries
+// (so each gets its proper URL), then append the "Your Privacy Choices" control
+// as a synthetic ACTION item. FooterMenuVariant renders the action row as the
+// cookie-preferences button, so it lives INSIDE the same list — and the
+// "hover one, mute the rest" effect covers it too — instead of being appended
+// separately after the section.
+const legalResult = await query("legal").get();
+const legalItems = await prepareCollectionEntries(
+  legalResult.entries,
+  "legal",
+  getCollectionMeta("legal"),
+);
+const legalMenuItems = [
+  ...legalItems,
+  { id: "your-privacy-choices", title: "Your Privacy Choices", action: "cookie-preferences" },
+];
 
 ---
 
@@ -85,18 +99,16 @@ const legalColClass = [
       class="flex flex-wrap gap-x-16 gap-y-10 lg:col-start-2 lg:row-start-2 lg:justify-end"
     >
       <div class="flex flex-col gap-3">
+        {/* Legal links + "Your Privacy Choices" come through as one item list
+            (see legalMenuItems above), so the hover-mutes-the-rest effect spans
+            all of them. */}
         <ContentRenderer
           id="footer-legal-section"
-          query={query("legal")}
-          variant="ListVariant"
+          items={legalMenuItems}
+          variant="FooterMenuVariant"
           title="Legal"
           showButtonSection={false}
           className={legalColClass}
-        />
-        {/* Cookie preferences lives under the Legal links (opens the consent modal). */}
-        <CookiePreferencesButton
-          className="p-0! justify-start! text-base font-normal text-text! hover:text-heading!"
-          client:visible
         />
       </div>
       <div>

@@ -1,0 +1,77 @@
+---
+// src/components/ContentRenderer/variants/FooterMenuVariant.astro
+/**
+ * Footer Menu Variant — link list with the "hover one, mute the rest" behaviour
+ * ported from the mobile overlay menu (MobileMenuItem):
+ *   • rest                → text-text
+ *   • any sibling hovered → the non-hovered rows fade to text-muted
+ *   • the hovered row     → text-heading
+ * No underline. The colour/layout classes live in footerMenuClasses.ts so this
+ * Astro variant and the React HorizontalLegalFooter share ONE source of truth.
+ *
+ * `horizontal` lays the items in a row (the menu footer) instead of a column
+ * (the main site footer).
+ *
+ * Items are whatever the query/items feed in. An item can also be an ACTION row
+ * (no `url`, `action: "cookie-preferences"`) — rendered as the privacy-choices
+ * button so it lives in the SAME list and participates in the mute-hover, rather
+ * than being appended separately after the section.
+ */
+
+import type { BaseVariantProps } from "../ContentRenderer.types";
+import Button from "@/components/Button/Button";
+import Section from "@/components/Section.astro";
+import DividerHeading from "@/components/DividerHeading/DividerHeading";
+import { toArray } from "@/utils/array";
+import CookiePreferencesButton from "@/integrations/preferences/consent/ui/CookiePreferencesButton";
+import {
+  FOOTER_MENU_ITEM_CLASS,
+  FOOTER_MENU_NAV_BASE,
+  FOOTER_MENU_NAV_VERTICAL,
+  FOOTER_MENU_NAV_HORIZONTAL,
+} from "./utils/footerMenuClasses";
+
+interface Props extends BaseVariantProps {
+  horizontal?: boolean;
+}
+
+const {
+  items = [],
+  title,
+  description,
+  className = "",
+  id,
+  showHeadingSection = true,
+  horizontal = false,
+} = Astro.props as Props;
+
+const safeItems = toArray(items);
+
+const itemClass = `${FOOTER_MENU_ITEM_CLASS} text-base`;
+const navClass = `${FOOTER_MENU_NAV_BASE} ${horizontal ? FOOTER_MENU_NAV_HORIZONTAL : FOOTER_MENU_NAV_VERTICAL}`;
+---
+
+<Section id={id} class={`${className}`}>
+  {showHeadingSection && (title || description) && (
+    <DividerHeading
+      title={title}
+      showDivider={false}
+      className="mb-4"
+      headingClassName="h4 text-heading"
+    />
+  )}
+
+  {safeItems.length > 0 && (
+    <nav class={navClass} aria-label={title ? `${title} links` : undefined}>
+      {safeItems.map((item: any) =>
+        item.action === "cookie-preferences" ? (
+          <CookiePreferencesButton className={itemClass} client:visible />
+        ) : (
+          <Button href={item.url} variant="link" className={itemClass}>
+            {item.title}
+          </Button>
+        ),
+      )}
+    </nav>
+  )}
+</Section>

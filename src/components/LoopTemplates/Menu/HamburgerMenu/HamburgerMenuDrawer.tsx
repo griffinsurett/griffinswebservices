@@ -15,6 +15,8 @@ import type { IconType } from "@/content/schema";
 
 interface MobileMenuDrawerProps {
   items: any[];
+  /** Legal links + "Your Privacy Choices" action, rendered in the drawer footer. */
+  legalItems?: any[];
   currentPath: string;
   socialLinks?: Array<{
     title: string;
@@ -33,6 +35,7 @@ interface MenuLevel {
 
 export default function MobileMenuDrawer({
   items,
+  legalItems = [],
   currentPath,
   socialLinks = [],
   className = "",
@@ -170,7 +173,7 @@ export default function MobileMenuDrawer({
                           index > 0 ? "min-h-0 flex-1" : "max-h-full"
                         }`}
                       >
-                        <ul className="menu-item-spacing text-left">
+                        <ul className="group/menu menu-item-spacing text-left">
                           {level.items.map((item) => (
                             <MobileMenuItem
                               key={item.id}
@@ -195,6 +198,7 @@ export default function MobileMenuDrawer({
             <div className="border-t border-border-soft"></div>
             <div className="inner-section">
               <HorizontalLegalFooter
+                legalItems={legalItems}
                 socialLinks={socialLinks}
                 showBorder={false}
                 onLinkClick={() => toggleMenu(false)}
