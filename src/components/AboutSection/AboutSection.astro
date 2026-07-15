@@ -405,12 +405,18 @@ const hasExpandSlot = Astro.slots.has("expand-content");
     position: absolute;
     margin: 0;
     overflow: hidden;
-    /* Rest geometry (placeholder box) → full-bleed, interpolated in JS via vars. */
-    left: var(--axp-x, 50%);
-    top: var(--axp-y, 50%);
-    width: var(--axp-w, 60%);
-    height: var(--axp-h, 60%);
-    will-change: left, top, width, height;
+    /* Sized at the FULL-BLEED box permanently (top-left origin). The rest→expand
+       morph is driven purely by a compositor transform (translate + scale) set
+       per-frame in JS via --axp-tx/ty/sx/sy — NO width/height/left/top animation,
+       so scroll frames never trigger layout or a re-paint of the cover image. */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: 0 0;
+    transform: translate(var(--axp-tx, 0px), var(--axp-ty, 0px))
+               scale(var(--axp-sx, 1), var(--axp-sy, 1));
+    will-change: transform;
   }
 
   .about-expand-img {
@@ -821,7 +827,7 @@ const hasExpandSlot = Astro.slots.has("expand-content");
       // motion turns on we ALSO strip those inline props — the CSS then owns the
       // resting layout and the image jumps home immediately.
       const clearMorphStyles = () => {
-        ["--axp-x", "--axp-y", "--axp-w", "--axp-h"].forEach((prop) =>
+        ["--axp-tx", "--axp-ty", "--axp-sx", "--axp-sy"].forEach((prop) =>
           media.style.removeProperty(prop),
         );
         ["--axp-progress", "--axp-dim", "--axp-content"].forEach((prop) =>
@@ -891,14 +897,22 @@ const hasExpandSlot = Astro.slots.has("expand-content");
         const m = Math.max(0, Math.min((p - START) / (1 - START), 1));
         // Ease the geometry so the morph feels smooth, not linear.
         const e = m * m * (3 - 2 * m); // smoothstep
-        const x = rest.x + (0 - rest.x) * e;
-        const y = rest.y + (0 - rest.y) * e;
-        const w = rest.w + (fullW - rest.w) * e;
-        const h = rest.h + (fullH - rest.h) * e;
-        media.style.setProperty("--axp-x", `${x}px`);
-        media.style.setProperty("--axp-y", `${y}px`);
-        media.style.setProperty("--axp-w", `${w}px`);
-        media.style.setProperty("--axp-h", `${h}px`);
+        // The media element is laid out at the full-bleed box (fullW × fullH) with
+        // origin at its top-left. We interpolate a compositor transform from the
+        // REST box (placeholder: translate rest.x/rest.y, scale rest.w/fullW ×
+        // rest.h/fullH) toward identity (full-bleed). No layout props change, so
+        // the browser only recomposites — no per-frame reflow/repaint. Guard the
+        // full dims against 0 (pre-measure) to avoid NaN scales.
+        const restSx = fullW ? rest.w / fullW : 1;
+        const restSy = fullH ? rest.h / fullH : 1;
+        const tx = rest.x * (1 - e);
+        const ty = rest.y * (1 - e);
+        const sx = restSx + (1 - restSx) * e;
+        const sy = restSy + (1 - restSy) * e;
+        media.style.setProperty("--axp-tx", `${tx.toFixed(2)}px`);
+        media.style.setProperty("--axp-ty", `${ty.toFixed(2)}px`);
+        media.style.setProperty("--axp-sx", sx.toFixed(4));
+        media.style.setProperty("--axp-sy", sy.toFixed(4));
         region.style.setProperty("--axp-progress", e.toFixed(4));
         // Dim overlay — two stages so it keeps deepening AS the image grows:
         //  1. Base dim ramps in EARLY (during the hold, p:0→START) so the marquee
