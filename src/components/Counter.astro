@@ -51,7 +51,11 @@ const initialDisplay = resolvedDecimals > 0
   : Math.round(start).toString();
 ---
 
-<span class:list={["counter-wrapper", className]} aria-label={`${prefix}${finalDisplay}${suffix}`}>
+<span
+  class:list={["counter-wrapper", className]}
+  role="img"
+  aria-label={`${prefix}${finalDisplay}${suffix}`}
+>
   {prefix && <span class="counter-prefix" aria-hidden="true">{prefix}</span>}
   <span
     class="counter-value tabular-nums"

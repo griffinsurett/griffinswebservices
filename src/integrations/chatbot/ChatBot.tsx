@@ -57,7 +57,7 @@ function CloseIcon({ size = 16 }: { size?: number }) {
 
 function TypingDots() {
   return (
-    <span className="inline-flex items-center gap-1.5 h-4" aria-label="Typing">
+    <span className="inline-flex items-center gap-1.5 h-4" role="img" aria-label="Typing">
       <span className="w-1.5 h-1.5 rounded-full bg-muted animate-chatbot-dot [animation-delay:0s]" />
       <span className="w-1.5 h-1.5 rounded-full bg-muted animate-chatbot-dot [animation-delay:.18s]" />
       <span className="w-1.5 h-1.5 rounded-full bg-muted animate-chatbot-dot [animation-delay:.36s]" />
@@ -174,7 +174,7 @@ function Fab({ open, unread, onClick }: { open: boolean; unread: number; onClick
         {open ? <CloseIcon size={18} /> : <ChatIcon size={24} />}
       </span>
       {!open && unread > 0 && (
-        <span aria-label={`${unread} new`}
+        <span role="img" aria-label={`${unread} new`}
           className="absolute -top-1 -right-1 bg-red-500 text-white text-[.6rem] font-bold min-w-[1.15rem] h-[1.15rem] rounded-full flex items-center justify-center border-2 border-bg animate-chatbot-badge">
           {unread}
         </span>

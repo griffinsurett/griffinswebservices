@@ -107,7 +107,7 @@ export default function LanguageDropdown({
                 </span>
               </span>
               {isActive && (
-                <span className="text-primary" aria-label="Currently selected language">
+                <span className="text-primary" role="img" aria-label="Currently selected language">
                   <svg
                     viewBox="0 0 24 24"
                     className="w-4 h-4"
