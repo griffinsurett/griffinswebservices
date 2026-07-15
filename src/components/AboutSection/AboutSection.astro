@@ -10,6 +10,8 @@ import Marquee from "@/components/Marquee.astro";
 import aboutExpandImage from "@/assets/meoncomp.jpg";
 
 interface Props {
+  /** Optional id on the section root — used as a scroll anchor (e.g. menu "About" → /#about). */
+  id?: string;
   eyebrow?: string;
   statement?: string;
   leftText?: string;
@@ -42,6 +44,7 @@ const DEFAULT_STATS: Array<Record<string, any>> = [
 ];
 
 const {
+  id,
   eyebrow = "About",
   statement = `${siteData.title} is an independent digital studio crafting meaningful brand experiences through strategy, design, and technology.`,
   leftText = "We design for longevity, clarity first, craft always, built to scale.",
@@ -71,7 +74,7 @@ const words = splitTextIntoAnimatedWords(statement);
 const hasExpandSlot = Astro.slots.has("expand-content");
 ---
 
-<div class="flex flex-col gap-24 md:gap-36 lg:gap-48">
+<div id={id} class="flex flex-col gap-24 md:gap-36 lg:gap-48">
 
   <!-- Sticky scroll statement -->
   <aside

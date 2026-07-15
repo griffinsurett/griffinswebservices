@@ -10,6 +10,16 @@
     "menu": ["main-menu", "links-menu", "footer-menu-2"]
   },
   {
+    "id": "about",
+    "title": "About",
+    "description": "Jump to the About section on the homepage",
+    "url": "/#about",
+    "icon": "fa6-solid:circle-info",
+    "order": 1,
+    "openInNewTab": false,
+    "menu": ["main-menu"]
+  },
+  {
     "id": "contact-us",
     "title": "Contact Us",
     "description": "Contact page link",
