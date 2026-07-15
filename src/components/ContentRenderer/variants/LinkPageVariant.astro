@@ -32,6 +32,20 @@ const {
 
 const safeItems = toArray(items);
 const socialLinks = await getCollection("social-media");
+
+// Legal menu for the footer: query `legal` + append the "Your Privacy Choices"
+// action (same pattern as the site + mobile-menu footers), mapped to plain
+// serialisable objects for the React HorizontalLegalFooter.
+const legalPrepared = await prepareCollectionEntries(
+  (await query("legal").get()).entries,
+  "legal",
+  getCollectionMeta("legal"),
+);
+const legalItems = [
+  ...legalPrepared.map((entry: any) => ({ id: entry.id, title: entry.title, url: entry.url })),
+  { id: "your-privacy-choices", title: "Your Privacy Choices", action: "cookie-preferences" },
+];
+
 const hasContactPageItem = safeItems.some(
   (item) => typeof item?.url === "string" && item.url === "/contact-us",
 );
@@ -185,6 +199,7 @@ const linkHeroVideoSrc = "/video3.mp4";
     </div>
     <HorizontalLegalFooter
       client:visible
+      legalItems={legalItems}
       socialLinks={socialLinks.map((entry) => ({
         title: entry.data.title,
         url: entry.data.link,
