@@ -94,8 +94,7 @@ const items: SerializedItem[] = await Promise.all(
 </div>
 
 <style>
-  /* Outer section padding (the EyebrowSection owns the eyebrow/content columns;
-     the background comes from the parent curtain layer). */
+  /* Outer section padding (the EyebrowSection owns the eyebrow/content columns). */
   .tc-section {
     width: 100%;
     padding-block: clamp(4rem, 8vw, 7rem);
@@ -103,15 +102,12 @@ const items: SerializedItem[] = await Promise.all(
 
   /* ── Fire-background variant ──────────────────────────────────────
      Full-bleed fire photo behind the carousel with a dim overlay so the light
-     testimonial text stays readable. Fills the pinned curtain layer. */
+     testimonial text stays readable. */
   .tc-section--bg {
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* EXACTLY one viewport — not min-height. As a curtain layer this section
-       must never exceed the layer's 100vh, or its overflow stays in frame when
-       the layer slides up (a band of it covers the footer beneath). */
     height: 100vh;
     overflow: hidden;
   }

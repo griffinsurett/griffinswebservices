@@ -279,9 +279,8 @@ const hasExpandSlot = Astro.slots.has("expand-content");
 </div>
 
 <style>
-  /* The About section must be OPAQUE so that when it's the outgoing curtain (see
-     CurtainReveal) the incoming section parked behind it can't bleed through the
-     transparent gaps in the expand pin. It paints the SAME background as the site's
+  /* The About section paints its own OPAQUE background so the transparent gaps in
+     the expand pin never show through. It paints the SAME background as the site's
      fixed layer (.site-fixed-bg) — the left→right bg3→bg gradient, attached to the
      viewport — so it aligns pixel-for-pixel with the page background and introduces
      NO visible seam where the section begins. */
