@@ -280,10 +280,10 @@ const hasExpandSlot = Astro.slots.has("expand-content");
 
 <style>
   /* The About section paints its own OPAQUE background so the transparent gaps in
-     the expand pin never show through. It paints the SAME background as the site's
-     fixed layer (.site-fixed-bg) — the left→right bg3→bg gradient, attached to the
-     viewport — so it aligns pixel-for-pixel with the page background and introduces
-     NO visible seam where the section begins. */
+     the expand pin never show through. It paints the SAME background as the page
+     body — the left→right bg3→bg gradient, attached to the viewport — so it aligns
+     pixel-for-pixel with the page background and introduces NO visible seam where
+     the section begins. */
   .about-root {
     background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
     background-attachment: fixed;

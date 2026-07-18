@@ -1,0 +1,15 @@
+---
+import Curtain from "@/components/Curtain/Curtain.astro";
+---
+<html>
+  <body style="margin:0">
+    <Curtain run="100svh">
+      <div slot="1" style="height:200vh;background:linear-gradient(#333,#111);color:#fff;padding:2rem">
+        TOP SECTION (200vh) — end here
+      </div>
+      <div slot="2" style="height:200vh;background:linear-gradient(#06c,#039);color:#fff;padding:2rem">
+        BOTTOM SECTION (200vh) — start here
+      </div>
+    </Curtain>
+  </body>
+</html>

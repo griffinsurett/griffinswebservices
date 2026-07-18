@@ -76,8 +76,8 @@ const heroDescription =
         `expand-content` slot. */}
     {/* ABOUT lifts away like a curtain to reveal the PROJECTS filmstrip.
         Each section is wrapped in a slot div — the curtain targets the wrapper. */}
-    <Curtain>
-      <div slot="1">
+    <!-- <Curtain>
+      <div slot="1"> -->
         <AboutSection
           id="about"
           statement={`${siteData.title} builds fast, trustworthy websites that help local businesses get found, look credible, and win more work.`}
@@ -91,17 +91,17 @@ const heroDescription =
             <TestimonialCarousel id="testimonials-home" />
           </div>
         </AboutSection>
-      </div>
+      <!-- </div> -->
 
-      <div slot="2">
+      <!-- <div slot="2"> -->
         <ContentRenderer
           query={byTag("projects", "featured").orderBy(sortByOrder())}
           variant="FilmstripVariant"
           title={"Selected work\n& explorations"}
           collectionUrl="/projects"
         />
-      </div>
-    </Curtain>
+      <!-- </div> -->
+    <!-- </Curtain> -->
 
     <div class="section-rule-t">
       <ContentRenderer

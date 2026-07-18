@@ -1,57 +1,46 @@
 ---
 // src/components/Curtain/Curtain.astro
 //
-// Public curtain-transition component.
+// Curtain — a fully isolated scroll transition between two arbitrary sections.
 //
 // Usage:
 //   <Curtain>
-//     <Section1 slot="1">…</Section1>
-//     <Section2 slot="2">…</Section2>
+//     <div slot="1">…anything…</div>
+//     <div slot="2">…anything…</div>
 //   </Curtain>
 //
-// Section 1 (foreground) lifts away upward to reveal Section 2 behind it. The motion
-// is pure native scroll (position: sticky) — no JS drives scroll or animation. JS is
-// used ONLY to MEASURE (see the coordinator below); it never touches scroll, so the
-// lift stays exactly as smooth as the browser's own scrolling.
+// WHAT IT DOES (and ONLY this): the LAST screen of the top section is held pinned,
+// then lifts up and off while the FIRST screen of the bottom section is revealed
+// behind it — held frozen at the bottom section's own start. The end of the top
+// meets the start of the bottom, whatever the height of either.
 //
-// ── SEPARATION OF CONCERNS (the load-bearing architecture) ───────────────────
-// THE CURTAIN PINS FOR THE CURTAIN. THE SECTIONS INSIDE PIN FOR THEMSELVES.
-// The curtain owns its reveal pin (holds Section 2 behind Section 1) and it owns the
-// SEQUENCING of the seam. The slots are untouched black boxes — whatever internal
-// sticky/scroll animation they run is their own business.
+// ── HEIGHT-AGNOSTIC ──────────────────────────────────────────────────────────
+// The reveal plays out over ONE viewport of scroll that the curtain owns end to
+// end. It measures only its OWN pinned lift-layer's position. A 1-screen section
+// and a 20-screen section transition identically — no breakpoints, no per-section
+// tuning, no dependency on either child's height.
 //
-// ── WHY A (MEASURE-ONLY) COORDINATOR IS NEEDED ───────────────────────────────
-// `position: sticky` resolves against the shared PAGE scroll — NOT the slot wrapper.
-// `contain: layout` (below) bounds where a child's sticky can travel and seals
-// layout/paint/transform/z-index, but it canNOT give a slot its own scroll timeline:
-// doing that needs a nested scroll container, which clamps the slot to one viewport
-// and destroys the page-driven lift (verified). So Section 1's own internal pin
-// (e.g. AboutSection's 300svh expand pin) and the curtain's Section-2 pin
-// unavoidably share ONE scroll timeline. Two sticky pins on one timeline can't be
-// isolated — they must be SEQUENCED: Section 1 (incl. its internal pins) must finish
-// before Section 2 is revealed. Sequencing needs Section 1's TRUE rendered end,
-// which CSS can't read but a ResizeObserver can. That single measured number is all
-// the JS does; everything else is CSS.
+// ── ISOLATED FROM WHATEVER YOU SLOT IN ───────────────────────────────────────
+// The curtain never transforms, pins, or margins the slotted content. It works by
+// STACKING, not by reaching into the children:
 //
-// ── HOW THE SEAM WORKS ───────────────────────────────────────────────────────
-//   - Section 1 flows in normal document order and runs to its natural end (its own
-//     pins release at its box bottom). z-index 2, opaque.
-//   - Section 2 is `position: sticky; top: 0` (z-index 1, behind), pulled up ONE
-//     viewport so its first screen sits behind Section 1's LAST screen and is
-//     uncovered as Section 1 lifts. The pull is applied via `--curtain-overlap`,
-//     which the coordinator sets to one viewport measured against Section 1's real
-//     end — so the reveal window opens exactly when Section 1 finishes, never during
-//     Section 1's own pinned phase. Falls back to a static `-100svh` before JS runs
-//     and whenever Section 1 has no competing internal pin (the common case).
+//   • TOP renders in normal flow. Appended AFTER it (still inside the top layer) is
+//     the curtain's OWN sticky lift-layer (`.curtain-lift`) — a transparent,
+//     viewport-tall sticky-BOTTOM block. Sticky-bottom grabs the TOP layer's final
+//     screen and holds it at the viewport bottom as the top ends, then releases it
+//     as you scroll past. This layer is the ONLY thing the curtain pins; it carries
+//     the top's last screen upward via a compositor transform.
+//   • BOTTOM renders in normal flow immediately after, pulled up by exactly ONE
+//     viewport so its first screen sits behind the held top screen and is uncovered
+//     as the lift-layer rises. Crucially the bottom's OWN sticky/scroll systems
+//     (e.g. a pinned horizontal filmstrip) are NOT yet in their scrub window during
+//     the reveal — the reveal happens over the lift-layer's sticky window, which
+//     ends exactly as the bottom's own first frame settles at progress 0. So the
+//     bottom is revealed AT ITS START and only begins its own animation afterward.
 //
-// Astro owns the API, named-slot composition, and DOM structure. Slot content is
-// authored declaratively and never serialized through any props.
-//
-// ── ISOLATION CONTRACT ───────────────────────────────────────────────────────
-// Each slot wrapper sets `contain: layout` — a sticky-containing block + layout/
-// stacking boundary: a child's sticky resolves against ITS island (can't pin past
-// the seam) and a child's transform/z-index can't leak out. `layout` ONLY (never
-// paint/overflow) so nothing is clipped. Native page scroll preserved.
+// The lift is one CSS var (`--curtain-lift`, 0→1) written per-frame by a tiny
+// self-contained controller keyed off the lift-layer's own rect. No coordinator,
+// no globals, no knowledge of the children.
 
 interface Props {
   /** Extra classes on the root. */
@@ -61,122 +50,155 @@ interface Props {
 const { class: className = "" } = Astro.props;
 ---
 
-<div class:list={["curtain-root relative isolate", className]} data-curtain>
+<div class:list={["curtain-root", className]} data-curtain>
   {/*
-    DOM order: FRONT first (on top), then BACK (curtain-pinned behind). z-index —
-    not DOM order — controls which paints on top; DOM order places the back AFTER
-    the front so, pulled up one viewport, it sits behind the front's last screen and
-    is uncovered as the front lifts.
+    TOP LAYER — the slotted top section in normal flow, followed by the curtain's
+    own sticky lift-layer. On top (z 2). The lift-layer holds and raises the top's
+    final screen; the slotted content itself is never transformed.
   */}
-  <div class="curtain-front" data-curtain-section="1">
+  <div class="curtain-top" data-curtain-top>
     <slot name="1" />
+    {/* The curtain's OWN pinned surface — transparent, viewport-tall, sticky to the
+        bottom so it captures the top layer's last screen. Its transform is the lift. */}
+    <div class="curtain-lift" data-curtain-lift aria-hidden="true"></div>
   </div>
-  <div class="curtain-back" data-curtain-section="2">
+
+  {/*
+    BOTTOM LAYER — the slotted bottom section, pulled up one viewport so its first
+    screen sits behind the held top screen and is revealed as the lift rises. Behind
+    (z 1). Its own scroll systems run undisturbed.
+  */}
+  <div class="curtain-bottom" data-curtain-bottom>
     <slot name="2" />
   </div>
 </div>
 
 <style>
   .curtain-root {
-    /* Stacking context so z-index below is scoped to this instance. */
     position: relative;
-    /* Reveal window = one viewport, pulled up so Section 2 sits behind Section 1's
-       last screen. The coordinator may refine this per instance; this is the
-       correct default and the pre-JS value. */
-    --curtain-overlap: 100svh;
+    isolation: isolate; /* scope the z-index stack to this instance */
+    --curtain-lift: 0;  /* 0 rest → 1 fully lifted; written per-frame by the controller */
   }
 
-  /* Section 1 — the lift. Normal flow, on top (z-index 2), opaque. Runs to its
-     natural end (its own internal pins release at its box bottom), then scrolls up
-     and off, lifting away from the curtain-pinned Section 2 held behind it. */
-  .curtain-front {
+  /* TOP LAYER — normal flow, on top. The lift is applied to the sticky lift-layer
+     below, not to this wrapper, so the slotted content keeps its own geometry. */
+  .curtain-top {
     position: relative;
     z-index: 2;
-    /* ISLAND: layout containment — sticky-containing block + layout/stacking
-       boundary. `layout` ONLY (no paint/overflow) so nothing is clipped. */
-    contain: layout;
-    /* Opaque so Section 1 fully covers the pinned Section 2 behind it until it
-       lifts. Matches the site's fixed bg3→bg gradient so there is no seam where
-       Section 1 ends. `contain: layout` does NOT create a containing block for a
-       fixed background, so background-attachment:fixed still tracks the viewport. */
-    background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
-    background-attachment: fixed;
-    background-size: cover;
   }
 
-  /* Section 2 — revealed behind, held by THE CURTAIN'S OWN PIN. `position: sticky;
-     top: 0` holds Section 2's first screen at the top of the viewport so Section 1
-     lifts off it — at every width, whether or not Section 2 pins itself. Pulled up
-     one reveal-window (`--curtain-overlap`) so it sits behind Section 1's last
-     screen. Section 2's OWN internal sticky/animation runs undisturbed inside this
-     island. */
-  .curtain-back {
+  /* The curtain's own SENTINEL — a transparent, viewport-tall, sticky-TOP spacer
+     appended after the top's content. It adds exactly ONE viewport of scroll runway
+     at the top section's end, and while the page scrolls that runway the sentinel is
+     pinned (its rect.top holds at 0) then releases (rect.top climbs negative). The
+     controller reads THIS element's rect to drive the lift 0→1 over that one
+     viewport. It paints nothing; it is pure, curtain-owned runway + measuring stick. */
+  .curtain-lift {
     position: sticky;
     top: 0;
-    z-index: 1;
-    /* ISLAND: same containment as the front. */
-    contain: layout;
-    margin-top: calc(-1 * var(--curtain-overlap));
+    height: 100svh;
+    pointer-events: none;
   }
 
-  /* Reduced motion: no pinning, no overlap — the two sections simply stack in
-     normal document order (Section 1 above Section 2). */
+  /* The lift itself: the whole top wrapper translates up 0 → -100svh across the
+     sentinel's pinned window, carrying the top's last painted screen off the top of
+     the viewport. It returns to 0 outside that window, so the top behaves as if
+     untouched for its entire scroll except the final handoff. Compositor-only
+     transform — no layout, so the slotted content's own scroll math is never
+     disturbed mid-lift. */
+  .curtain-top {
+    transform: translate3d(0, calc(var(--curtain-lift) * -100svh), 0);
+    will-change: transform;
+  }
+
+  /* BOTTOM LAYER — pulled up ONE viewport so its first screen is already positioned
+     behind the top's held last screen. As the top lifts, this is uncovered at the
+     bottom section's own START (progress 0). Behind the top (z 1). Uniform static
+     offset — the child's internal scroll math stays self-consistent. */
+  .curtain-bottom {
+    position: relative;
+    z-index: 1;
+    margin-top: -100svh;
+  }
+
+  /* Reduced motion: plain vertical stack, no lift, no overlap. */
   @media (prefers-reduced-motion: reduce) {
-    .curtain-front,
-    .curtain-back {
-      position: static;
-      margin-top: 0;
-      background: none;
-      contain: none;
-    }
+    .curtain-top { transform: none; }
+    .curtain-lift { display: none; }
+    .curtain-bottom { margin-top: 0; }
   }
 </style>
 
 <script>
-  // ── Curtain coordinator: MEASURE ONLY (no scroll handler) ──────────────────
-  // Sequences the seam so Section 1 finishes (including its own internal sticky
-  // pins) before Section 2 is revealed. It reads Section 1's real rendered
-  // geometry and sets `--curtain-overlap` = one viewport, so Section 2's pin opens
-  // exactly at Section 1's end and never competes with Section 1's internal pin.
-  // Runs on load, on resize, and whenever a slot's size changes (ResizeObserver) —
-  // never on scroll, so the lift stays pure native scroll.
-  function initCurtain(root: HTMLElement) {
-    const front = root.querySelector<HTMLElement>('[data-curtain-section="1"]');
-    if (!front) return;
+  import { readMotionPreference } from "@/hooks/useMotionPreference";
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function initCurtains() {
+    const roots = document.querySelectorAll<HTMLElement>("[data-curtain]");
 
-    const apply = () => {
-      if (reduce.matches) {
-        root.style.removeProperty("--curtain-overlap");
-        return;
+    roots.forEach((root) => {
+      const lift = root.querySelector<HTMLElement>("[data-curtain-lift]");
+      if (!lift) return;
+
+      if ((root as any)._curtainCleanup) {
+        (root as any)._curtainCleanup();
+        (root as any)._curtainCleanup = null;
       }
-      // One viewport of overlap is the reveal window. We use svh via CSS default;
-      // JS only needs to confirm/settle it against the live viewport height so the
-      // overlap lands exactly one screen behind Section 1's true end regardless of
-      // mobile chrome collapse (where svh and innerHeight can diverge).
-      const vh = window.innerHeight;
-      root.style.setProperty("--curtain-overlap", vh + "px");
-    };
 
-    apply();
+      let rafId: number | null = null;
+      let last = -1;
 
-    const ro = new ResizeObserver(apply);
-    ro.observe(front);
-    window.addEventListener("resize", apply, { passive: true });
-    reduce.addEventListener?.("change", apply);
+      const clamp = (v: number, lo: number, hi: number) =>
+        v < lo ? lo : v > hi ? hi : v;
+
+      const apply = () => {
+        rafId = null;
+
+        if (readMotionPreference()) {
+          if (last !== 0) {
+            root.style.setProperty("--curtain-lift", "0");
+            last = 0;
+          }
+          return;
+        }
+
+        // Measure the lift-layer's OWN position. While it is sticky-pinned its top
+        // sits at (viewportHeight - layerHeight) = 0 offset from bottom; as you
+        // scroll PAST the top section the layer un-pins and its top rises above the
+        // viewport. We want lift 0→1 across exactly the one viewport where the top's
+        // last screen would otherwise be held pinned then released.
+        //
+        // The lift-layer is sticky bottom:0 with height = 100svh. It stays pinned
+        // (rect.top ≈ 0) until the top layer's content above it has scrolled past;
+        // then rect.top goes negative as it releases. Progress = how far its top has
+        // risen past the viewport top, over one viewport.
+        const rect = lift.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        // While pinned, rect.top === 0. On release it climbs negative toward -vh.
+        // Map [0 → -vh] → lift [0 → 1].
+        const progress = clamp(-rect.top / vh, 0, 1);
+
+        if (progress !== last) {
+          root.style.setProperty("--curtain-lift", progress.toFixed(4));
+          last = progress;
+        }
+      };
+
+      const onScroll = () => {
+        if (rafId == null) rafId = requestAnimationFrame(apply);
+      };
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      apply();
+
+      (root as any)._curtainCleanup = () => {
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onScroll);
+        if (rafId != null) cancelAnimationFrame(rafId);
+      };
+    });
   }
 
-  function initAll() {
-    document
-      .querySelectorAll<HTMLElement>("[data-curtain]")
-      .forEach(initCurtain);
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initAll);
-  } else {
-    initAll();
-  }
-  document.addEventListener("astro:page-load", initAll);
+  initCurtains();
+  document.addEventListener("astro:page-load", initCurtains);
 </script>

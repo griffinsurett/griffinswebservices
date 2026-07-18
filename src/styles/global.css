@@ -253,7 +253,14 @@ body {
 
   body {
     font-family: var(--font-body, "TikTok Sans", Helvetica, Arial, sans-serif);
-    background-color: transparent;
+    /* The page background. A horizontal bg3→bg gradient painted directly on the
+       body — it looks identical at every scroll position (the gradient only varies
+       left→right), so it needs no fixed overlay layer. Sections that paint their own
+       opaque background to cover transparent gaps (AboutSection, the Curtain front)
+       match this gradient so there is no seam where they begin. */
+    background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
+    background-size: cover;
+    background-attachment: fixed;
     /* overscroll-behavior: none; */
     @apply overflow-x-hidden;
   }
@@ -604,11 +611,6 @@ body {
  * 4. COMPONENT PATTERNS
  * ============================================================ */
 @layer components {
-  .site-fixed-bg {
-    @apply bg-cover bg-center;
-    background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
-  }
-
   /* Hero & decorative elements */
   .hero-gradient-bg {
     @apply bg-cover bg-center;
