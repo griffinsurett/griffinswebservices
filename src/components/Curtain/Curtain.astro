@@ -1,0 +1,120 @@
+---
+// src/components/Curtain/Curtain.astro
+//
+// Public curtain-transition component.
+//
+// Usage:
+//   <Curtain>
+//     <Section1 slot="1">…</Section1>
+//     <Section2 slot="2">…</Section2>
+//   </Curtain>
+//
+// Section 1 (foreground) lifts away upward to reveal Section 2 behind it. The motion
+// is pure native scroll (position: sticky) — NO JS drives scroll or animation and
+// there is NO coordinator. The lift stays exactly as smooth as the browser's own
+// scrolling because nothing in JS ever touches it.
+//
+// ── HEIGHT-AGNOSTIC MECHANISM (the load-bearing design, runs at EVERY width) ──
+// THE CURTAIN LIFTS OVER EXACTLY ONE VIEWPORT (100svh). The LAST screen of the top
+// section lifts away; the FIRST screen of the bottom section is revealed underneath.
+// It makes NO assumption about either section's height — a 1-screen section and a
+// 20-screen section curtain identically. There is no breakpoint gate and no JS.
+//   - `.curtain-front` is `position: sticky; bottom: 0`. A sticky-BOTTOM block holds
+//     its own LAST screen at the viewport bottom as you reach its end, then lifts
+//     away as you scroll past. Sticky-bottom always grabs the box's FINAL viewport
+//     regardless of the box's total height — that IS the height-agnostic guarantee.
+//     z-index 2, opaque, so the held last screen covers Section 2 until it lifts.
+//   - `.curtain-back` is normal flow AFTER the front, pulled up one reveal-window
+//     (`margin-top: -100svh` — a constant one viewport, NOT derived from any section
+//     height) so it sits behind Section 1's last screen and is uncovered as the
+//     front lifts. z-index 1, behind.
+//
+// Astro owns the API, named-slot composition, and DOM structure. Slot content is
+// authored declaratively and never serialized through any props.
+//
+// ── ISOLATION CONTRACT ───────────────────────────────────────────────────────
+// Each slot wrapper sets `contain: layout` — a sticky-containing block + layout/
+// stacking boundary: a child's sticky resolves against ITS island (can't pin past
+// the seam) and a child's transform/z-index can't leak out. `layout` ONLY (never
+// paint/overflow) so nothing is clipped, and `background-attachment: fixed` still
+// tracks the viewport. Native page scroll preserved.
+
+interface Props {
+  /** Extra classes on the root. */
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<div class:list={["curtain-root relative isolate", className]} data-curtain>
+  {/*
+    DOM order: FRONT first (on top, sticky-bottom on desktop), then BACK (normal
+    flow, pulled up one viewport behind it on desktop). z-index — not DOM order —
+    controls which paints on top; DOM order places the back AFTER the front so,
+    pulled up one viewport, it sits behind the front's last screen and is uncovered
+    as the front lifts.
+  */}
+  <div class="curtain-front" data-curtain-section="1">
+    <slot name="1" />
+  </div>
+  <div class="curtain-back" data-curtain-section="2">
+    <slot name="2" />
+  </div>
+</div>
+
+<style>
+  .curtain-root {
+    /* Stacking context so z-index below is scoped to this instance. */
+    position: relative;
+  }
+
+  /* Section 1 — the lift. `position: sticky; bottom: 0` holds Section 1's LAST
+     screen at the viewport bottom as its end reaches the bottom, then lifts it away
+     as you scroll past — height-agnostic, so a section of ANY height (and any empty
+     reserved tail) lifts correctly and never becomes a static cover. On top
+     (z-index 2), opaque. */
+  .curtain-front {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    /* ISLAND: layout containment — sticky-containing block + layout/stacking
+       boundary. `layout` ONLY (no paint/overflow) so nothing is clipped, and this
+       element's OWN sticky still resolves against the page scroll. */
+    contain: layout;
+    /* Opaque so Section 1's held last screen fully covers the pinned Section 2
+       behind it until it lifts. Matches the site's fixed bg3→bg gradient so there is
+       no seam where Section 1 ends. `contain: layout` does NOT create a containing
+       block for a fixed background, so background-attachment:fixed still tracks the
+       viewport. */
+    background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
+    background-attachment: fixed;
+    background-size: cover;
+  }
+
+  /* Section 2 — revealed behind. Normal flow, pulled up ONE reveal-window (a
+     constant one viewport, NOT derived from any section height) so it sits behind
+     Section 1's last screen and is uncovered as Section 1 lifts. Behind (z-index 1).
+     Section 2's OWN internal sticky/animation runs undisturbed inside this island. */
+  .curtain-back {
+    position: relative;
+    z-index: 1;
+    contain: layout;
+    margin-top: -100svh;
+  }
+
+  /* ── Reduced motion: never lift ──────────────────────────────────────────────
+     Collapse to a plain stack in normal document order — Section 1 above Section 2,
+     no overlap, no sticky. */
+  @media (prefers-reduced-motion: reduce) {
+    .curtain-front {
+      position: static;
+      background: none;
+      contain: none;
+    }
+    .curtain-back {
+      margin-top: 0;
+      contain: none;
+    }
+  }
+</style>
