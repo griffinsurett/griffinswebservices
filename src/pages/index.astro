@@ -14,6 +14,7 @@ import AboutSection from "@/components/AboutSection/AboutSection.astro";
 import TestimonialCarousel from "@/components/TestimonialCarousel/TestimonialCarousel.astro";
 import Curtain from "@/components/Curtain/Curtain.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
+import CalculatorAgent from "@/components/CalculatorAgent/CalculatorAgent";
 
 const heroHeading = {
   before: "Launch a Website That Actually Works.",
@@ -39,6 +40,18 @@ const heroDescription =
     }}
     scrollToSection="#under-hero"
   />
+
+  <div class="px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto py-12 lg:py-24 relative z-10">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-[var(--color-heading)]">
+        Calculate Your Project Scope
+      </h2>
+      <p class="text-[var(--color-muted)] text-lg mt-4 max-w-2xl mx-auto">
+        Use our AI Agent to get an instant cost estimate and generate custom wireframes before we even talk.
+      </p>
+    </div>
+    <CalculatorAgent client:load />
+  </div>
 
   <div id="under-hero">
     <!-- <div
