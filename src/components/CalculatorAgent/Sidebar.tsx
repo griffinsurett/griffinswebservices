@@ -1,15 +1,16 @@
 import React from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { FaWandMagicSparkles, FaCheck, FaHeadset } from 'react-icons/fa6';
-import LottieLogo from '../Logo/LottieLogo';
 
 interface SidebarProps {
   step: number;
   answers: Record<string, string>;
   showResults?: boolean;
+  /** Rendered branding (the site's <Logo> passed in as a slot from Astro). */
+  logo?: React.ReactNode;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ step, answers, showResults }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ step, answers, showResults, logo }) => {
   const getFeatures = () => {
     const features: string[] = [];
     
@@ -44,15 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ step, answers, showResults }) 
       {/* Decorative gradient orb */}
       <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[var(--color-primary)]/10 to-transparent pointer-events-none"></div>
 
-      <div className="flex items-center gap-3 mb-10 relative z-10">
-        <div className="flex items-center justify-center shrink-0">
-          <LottieLogo autoplay loop />
-        </div>
-        <div>
-          <h1 className="text-lg font-bold tracking-tight text-[var(--color-heading)] leading-tight">Griffin's Web</h1>
-          <p className="text-xs font-medium text-[var(--color-muted)] uppercase tracking-widest">Services AI</p>
-        </div>
-      </div>
+      {logo && <div className="mb-10 relative z-10">{logo}</div>}
 
       <div className="flex-1 overflow-y-auto space-y-6 relative z-10 pr-2 custom-scrollbar">
         {showResults ? (

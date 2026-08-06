@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaArrowRight, FaWandMagicSparkles, FaCheck } from 'react-icons/fa6';
+import { FaArrowRight, FaArrowLeft, FaWandMagicSparkles, FaCheck } from 'react-icons/fa6';
 import { FiLayout } from 'react-icons/fi';
 
 interface Question {
@@ -16,7 +16,7 @@ const QUESTIONS: Question[] = [
     label: 'What is your primary industry?',
     description: 'What type of business are you operating?',
     type: 'dropdown',
-    options: ['Home Services (Roofing, Plumbing, HVAC)', 'Health & Medical (Dentist, Clinic)', 'Professional Services (Law, Finance)', 'Retail / E-commerce', 'Restaurant / Hospitality', 'Real Estate', 'Other']
+    options: ['Home Services (Roofing, Plumbing, HVAC)', 'Professional Services (Law, Finance)', 'Retail / E-commerce', 'Restaurant / Hospitality', 'Real Estate', 'Other']
   },
   {
     id: 'q2',
@@ -139,6 +139,15 @@ export const ChatArea: React.FC<ChatAreaProps> = ({ onGenerate, step, setStep, a
     }
   };
 
+  const handleBack = () => {
+    if (step <= 0) return;
+    const prevStep = step - 1;
+    const prevQ = QUESTIONS[prevStep];
+    // Restore any previously typed text so going back doesn't discard the answer.
+    setCurrentTextValue(prevQ?.type === 'textarea' ? answers[prevQ.id] ?? '' : '');
+    setStep(prevStep);
+  };
+
   const handleDropdownSelect = (val: string) => {
     if (!currentQ) return;
     const newAnswers = { ...answers, [currentQ.id]: val };
@@ -208,7 +217,20 @@ export const ChatArea: React.FC<ChatAreaProps> = ({ onGenerate, step, setStep, a
         {/* Question State */}
         {step >= 0 && step < QUESTIONS.length && currentQ && (
           <div key={currentQ.id} className="w-full max-w-2xl animate-in fade-in slide-in-from-right-8 duration-500">
-            <div className="mb-2 text-sm font-semibold text-[var(--color-primary)] uppercase tracking-wider">Question {step + 1} of {QUESTIONS.length}</div>
+            <div className="mb-2 flex items-center gap-3">
+              {step > 0 && (
+                <button
+                  type="button"
+                  onClick={handleBack}
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-heading)] transition-colors cursor-pointer"
+                >
+                  <FaArrowLeft className="text-xs" /> Back
+                </button>
+              )}
+              <span className="text-sm font-semibold text-[var(--color-primary)] uppercase tracking-wider">
+                Question {step + 1} of {QUESTIONS.length}
+              </span>
+            </div>
             <h2 className="text-3xl md:text-4xl font-header font-bold text-[var(--color-heading)] mb-3 leading-tight">
               {currentQ.label}
             </h2>

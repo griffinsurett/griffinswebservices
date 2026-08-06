@@ -17,7 +17,12 @@ const PROGRESS_STEPS = [
   'Finalizing project estimate & live preview...',
 ];
 
-export default function CalculatorAgent() {
+interface CalculatorAgentProps {
+  /** Rendered branding for the sidebar — pass the site's <Logo> from Astro. */
+  logo?: React.ReactNode;
+}
+
+export default function CalculatorAgent({ logo }: CalculatorAgentProps = {}) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [apiResult, setApiResult] = useState<GenerateResponse | null>(null);
@@ -90,7 +95,7 @@ export default function CalculatorAgent() {
 
       {/* Desktop App */}
       <div className="hidden md:flex h-[750px] w-full max-w-7xl mx-auto bg-[var(--color-bg)] overflow-hidden font-body text-[var(--color-text)] border border-[var(--color-border)] rounded-3xl shadow-2xl my-12 relative z-10">
-        <Sidebar step={step} answers={userAnswers} showResults={showResults} />
+        <Sidebar step={step} answers={userAnswers} showResults={showResults} logo={logo} />
         
         <main className="flex-1 relative h-full flex flex-col overflow-hidden">
           {/* Decorative background glow */}

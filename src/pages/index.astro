@@ -12,9 +12,7 @@ import HomeSolutionBridge from "@/layouts/sections/HomeSolutionBridge.astro";
 // import TrustPanel from "@/layouts/sections/TrustPanel.astro";
 import AboutSection from "@/components/AboutSection/AboutSection.astro";
 import TestimonialCarousel from "@/components/TestimonialCarousel/TestimonialCarousel.astro";
-import Curtain from "@/components/Curtain/Curtain.astro";
 import { animationProps } from "@/integrations/scroll-animations/props";
-import CalculatorAgent from "@/components/CalculatorAgent/CalculatorAgent";
 
 const heroHeading = {
   before: "Launch a Website That Actually Works.",
@@ -41,18 +39,6 @@ const heroDescription =
     scrollToSection="#under-hero"
   />
 
-  <div class="px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto py-12 lg:py-24 relative z-10">
-    <div class="text-center mb-8">
-      <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-[var(--color-heading)]">
-        Calculate Your Project Scope
-      </h2>
-      <p class="text-[var(--color-muted)] text-lg mt-4 max-w-2xl mx-auto">
-        Use our AI Agent to get an instant cost estimate and generate custom wireframes before we even talk.
-      </p>
-    </div>
-    <CalculatorAgent client:load />
-  </div>
-
   <div id="under-hero">
     <!-- <div
       class="block lg:min-h-screen inner-section"
@@ -75,46 +61,30 @@ const heroDescription =
       /> -->
     <!-- </div> -->
 
-    {
-      /* ABOUT — ported from webmaxers. Animated statement reveal → rolling logo
-        divider → single image that expands to a full-bleed background with a
-        marquee scrolling over it. The testimonials carousel is revealed over the
-        full-bleed image via the `expand-content` slot — same as the webmaxers
-        homepage. (No `withBackground` here: the AboutSection's own expanding
-        image is already the backdrop.) */
-    }
     {/* ABOUT — animated statement reveal → rolling logo divider → single image
         that expands to a full-bleed background with a marquee scrolling over it.
         The testimonials carousel is revealed over the full-bleed image via the
-        `expand-content` slot. */}
-    {/* ABOUT lifts away like a curtain to reveal the PROJECTS filmstrip.
-        Each section is wrapped in a slot div — the curtain targets the wrapper. */}
-    <!-- <Curtain>
-      <div slot="1"> -->
-        <AboutSection
-          id="about"
-          statement={`${siteData.title} builds fast, trustworthy websites that help local businesses get found, look credible, and win more work.`}
-          leftText="We design for clarity first, build it right the first time, and keep it fast long after launch."
-          rightText="Our goal is simple: a website that makes your business easier to trust, easier to find, and easier to contact."
-          ctaText="See What We Do"
-          ctaLink="/capabilities"
-          showStats
-        >
-          <div slot="expand-content" class="w-full">
-            <TestimonialCarousel id="testimonials-home" />
-          </div>
-        </AboutSection>
-      <!-- </div> -->
+        `expand-content` slot. Followed by the PROJECTS filmstrip. */}
+    <AboutSection
+      id="about"
+      statement={`${siteData.title} builds fast, trustworthy websites that help local businesses get found, look credible, and win more work.`}
+      leftText="We design for clarity first, build it right the first time, and keep it fast long after launch."
+      rightText="Our goal is simple: a website that makes your business easier to trust, easier to find, and easier to contact."
+      ctaText="See What We Do"
+      ctaLink="/capabilities"
+      showStats
+    >
+      <div slot="expand-content" class="w-full">
+        <TestimonialCarousel id="testimonials-home" />
+      </div>
+    </AboutSection>
 
-      <!-- <div slot="2"> -->
-        <ContentRenderer
-          query={byTag("projects", "featured").orderBy(sortByOrder())}
-          variant="FilmstripVariant"
-          title={"Selected work\n& explorations"}
-          collectionUrl="/projects"
-        />
-      <!-- </div> -->
-    <!-- </Curtain> -->
+    <ContentRenderer
+      query={byTag("projects", "featured").orderBy(sortByOrder())}
+      variant="FilmstripVariant"
+      title={"Selected work\n& explorations"}
+      collectionUrl="/projects"
+    />
 
     <div class="section-rule-t">
       <ContentRenderer

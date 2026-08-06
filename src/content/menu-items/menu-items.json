@@ -20,6 +20,16 @@
     "menu": ["main-menu"]
   },
   {
+    "id": "pricing",
+    "title": "Pricing",
+    "description": "Get an instant project estimate",
+    "url": "/pricing",
+    "icon": "fa6-solid:calculator",
+    "order": 5,
+    "openInNewTab": false,
+    "menu": ["main-menu", "footer-menu-2"]
+  },
+  {
     "id": "contact-us",
     "title": "Contact Us",
     "description": "Contact page link",
