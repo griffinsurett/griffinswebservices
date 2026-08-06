@@ -1,6 +1,6 @@
 import type { GenerateRequest, GenerateResponse, ApiErrorPayload } from './types';
 
-const API_BASE_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.PUBLIC_API_URL || 'https://pricing-calc-mauve.vercel.app';
 
 function mapIndustry(val?: string): string {
   if (!val) return 'service_consulting';
