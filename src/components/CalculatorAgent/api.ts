@@ -1,6 +1,6 @@
 import type { GenerateRequest, GenerateResponse, ApiErrorPayload } from './types';
 
-const API_BASE_URL = import.meta.env.PUBLIC_API_URL || 'https://pricing-calc-mauve.vercel.app';
+const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || '').replace(/\/$/, '');
 
 function mapIndustry(val?: string): string {
   if (!val) return 'service_consulting';
@@ -104,6 +104,10 @@ export function mapAnswersToPayload(answers: Record<string, string>, email: stri
 }
 
 export async function generateEstimate(payload: GenerateRequest): Promise<GenerateResponse> {
+  if (!API_BASE_URL) {
+    throw new Error('Backend API URL is not configured. Please set the PUBLIC_API_URL environment variable.');
+  }
+
   const response = await fetch(`${API_BASE_URL}/api/generate`, {
     method: 'POST',
     headers: {
