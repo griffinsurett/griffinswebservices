@@ -1,6 +1,6 @@
 import type { GenerateRequest, GenerateResponse, ApiErrorPayload } from './types';
 
-const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || '').replace(/\/$/, '');
+const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || 'https://calculator-wireframe-agent-production-0cb8.up.railway.app').replace(/\/$/, '');
 
 function mapIndustry(val?: string): string {
   if (!val) return 'service_consulting';
