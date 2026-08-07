@@ -80,6 +80,12 @@
       ]
     }
   ],
+  "rewrites": [
+    {
+      "source": "/api/railway-generate",
+      "destination": "https://calculator-wireframe-agent.up.railway.app/api/generate"
+    }
+  ],
   "crons": [
     {
       "path": "/api/sync",
