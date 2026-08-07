@@ -1,6 +1,6 @@
 import type { GenerateRequest, GenerateResponse, ApiErrorPayload } from './types';
 
-const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || 'https://calculator-wireframe-agent-production-34e8.up.railway.app').replace(/\/$/, '');
+const API_BASE_URL = (import.meta.env.PUBLIC_API_URL || 'https://calculator-wireframe-agent.up.railway.app').replace(/\/$/, '');
 
 function mapIndustry(val?: string): string {
   if (!val) return 'service_consulting';
@@ -108,14 +108,22 @@ export async function generateEstimate(payload: GenerateRequest): Promise<Genera
     throw new Error('Backend API URL is not configured. Please set the PUBLIC_API_URL environment variable.');
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/generate`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(6 * 60 * 1000),
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}/api/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(6 * 60 * 1000),
+    });
+  } catch (err: any) {
+    if (err instanceof TypeError || (err && err.name === 'TypeError')) {
+      throw new Error(`Network Error: Unable to reach backend at "${API_BASE_URL}". Please ensure the Railway service is running, public domain is active, and CORS_ORIGINS allows this origin.`);
+    }
+    throw err;
+  }
 
   if (!response.ok) {
     let errorMsg = `Server returned status ${response.status}`;
