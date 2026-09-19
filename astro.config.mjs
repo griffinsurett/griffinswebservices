@@ -11,8 +11,10 @@ import iconGeneratorIntegration from './src/integrations/icons/icon-generator.in
 import clientDirectivesIntegration from './src/integrations/client-directives/client-directives.integration.mjs';
 import conditionalPartytown from './src/integrations/partytown/partytown.integration.mjs';
 import robotsLlmsIntegration from './src/integrations/robots-llms/robots-llms.integration.ts';
-// TEMPORARILY DISABLED — chatbot knowledge-base generator (feeds the API-connected ChatBot).
-// import chatbotKbIntegration from './src/integrations/chatbot/chatbot-kb.integration.ts';
+// Chatbot knowledge-base generator (feeds the API-connected ChatBot). Must stay
+// enabled: /api/chat imports the file it writes, so leaving it off freezes the
+// KB (and its site name/URLs) at whatever was last committed.
+import chatbotKbIntegration from './src/integrations/chatbot/chatbot-kb.integration.ts';
 import { SITE_URL } from './src/content/siteData.ts';
 
 const redirects = await buildRedirectConfig();
@@ -64,11 +66,17 @@ export default defineConfig({
     iconGeneratorIntegration(),
     mdx(),
     react(),
-    sitemap(),
+    // `/sitemap.xml` is rewritten to this integration's sitemap-index.xml in
+    // vercel.json — tools that guess /sitemap.xml got a 404 and concluded
+    // there was no sitemap at all.
+    //
+    // `lastmod` is a native option. Build time is the honest value for a
+    // static site: it IS when each page was generated. Per-page content dates
+    // would need `serialize`.
+    sitemap({ lastmod: new Date() }),
     conditionalPartytown(),
     robotsLlmsIntegration(),
-    // TEMPORARILY DISABLED — chatbot KB generator (API-connected ChatBot). Re-enable with the import above.
-    // chatbotKbIntegration(),
+    chatbotKbIntegration(),
     {
       name: 'background-sync',
       hooks: {

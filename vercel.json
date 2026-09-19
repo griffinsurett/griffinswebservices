@@ -82,6 +82,10 @@
   ],
   "rewrites": [
     {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap-index.xml"
+    },
+    {
       "source": "/api/railway-generate",
       "destination": "https://calculator-wireframe-agent.up.railway.app/api/generate"
     }
