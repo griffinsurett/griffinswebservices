@@ -81,24 +81,31 @@ const heroDescription =
         </div>
       </AboutSection>
 
-      <ContentRenderer
-        slot="bottom"
-        query={byTag("projects", "featured").orderBy(sortByOrder())}
-        variant="FilmstripVariant"
-        title={"Selected work\n& explorations"}
-        collectionUrl="/projects"
-      />
-    </CurtainReveal>
+      {/* PROJECTS + BENEFITS share one `bg-gradient` wrapper so the gradient
+          runs across both as a single surface rather than restarting per
+          section. Neither variant paints its own background. The section-rule-t
+          on benefits is now a deliberate divider: with the gradient continuous
+          across the seam, the 1px rule is the only thing marking the boundary
+          between the two sections. */}
+      <div slot="bottom" class="bg-gradient">
+        <ContentRenderer
+          query={byTag("projects", "featured").orderBy(sortByOrder())}
+          variant="FilmstripVariant"
+          title={"Selected work\n& explorations"}
+          collectionUrl="/projects"
+        />
 
-    <div class="section-rule-t">
-      <ContentRenderer
-        query={query("benefits").orderBy(sortByOrder()).limit(8)}
-        variant="BenefitsCardStackVariant"
-        id="benefits"
-        heading="Your website should help with things like this."
-        description="Your website should do more than look good — it should quietly work for your business every day. It should make you easier to trust the moment someone lands on it, easier to find when people search, and easier to contact when they're ready to act. Every site we build is designed around outcomes like these, so the things that actually move your business forward keep happening long after launch."
-      />
-    </div>
+        <div class="section-rule-t">
+          <ContentRenderer
+            query={query("benefits").orderBy(sortByOrder()).limit(8)}
+            variant="BenefitsCardStackVariant"
+            id="benefits"
+            heading="Your website should help with things like this."
+            description="Your website should do more than look good — it should quietly work for your business every day. It should make you easier to trust the moment someone lands on it, easier to find when people search, and easier to contact when they're ready to act. Every site we build is designed around outcomes like these, so the things that actually move your business forward keep happening long after launch."
+          />
+        </div>
+      </div>
+    </CurtainReveal>
 
     <div class="bottom-content-section">
       <ContentRenderer

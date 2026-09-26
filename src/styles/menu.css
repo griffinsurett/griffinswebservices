@@ -38,8 +38,8 @@
 
 /* Base mobile menu content max-height */
 .mobile-menu-content {
-  max-height: calc(100vh - 6rem);
-  max-height: calc(100dvh - 6rem);
+  max-height: calc(100vh - var(--site-header-height, 5.5rem));
+  max-height: calc(100dvh - var(--site-header-height, 5.5rem));
 }
 
 /* Landscape adjustments for menu - uses shared .landscape-hero from global.css */
@@ -61,6 +61,22 @@
   }
 }
 
+/* While the mobile menu is open the panel runs the FULL height of the viewport
+   and passes BEHIND the header, so the menu's own background is what shows up
+   there. The header keeps its own stacking context above the panel (it is
+   z-[100000] to the modal's z-[99999]) so the logo, theme gear and close button
+   stay visible and clickable over the menu — but it must not paint its own
+   background, or it reads as a strip cut out of the top of the menu.
+
+   Explicitly cleared rather than simply omitted: the header carries a
+   background elsewhere, and this overrides that for the duration of the menu
+   only. */
 .mobile-menu-open .site-header {
-  background-image: linear-gradient(to right, var(--color-bg3), var(--color-bg));
+  background-image: none;
+  background-color: transparent;
+  /* Any blur/shadow the scrolled header applies would also read as a seam. */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  border-color: transparent;
 }

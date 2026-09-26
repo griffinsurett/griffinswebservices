@@ -110,8 +110,14 @@ export default function CookieConsentBanner() {
               aria-hidden="true"
             />
             <div className="relative z-10 flex flex-col gap-6">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl" role="img" aria-label="Cookie">
+              {/* items-center so the cookie sits level with the text block
+                  rather than pinned to its first line. */}
+              <div className="flex items-center gap-3">
+                <span
+                  className="text-2xl leading-none shrink-0"
+                  role="img"
+                  aria-label="Cookie"
+                >
                   🍪
                 </span>
                 <p className="text-sm text-text leading-relaxed">

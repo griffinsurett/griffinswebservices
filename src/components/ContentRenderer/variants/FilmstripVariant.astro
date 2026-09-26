@@ -76,7 +76,7 @@ const totalPanels = items.length + 2;
 
 <section
   id={id}
-  class="fs-section bg-gradient"
+  class="fs-section"
   style={`--fs-total-panels: ${totalPanels};`}
   data-filmstrip
   aria-label={title?.replace?.("\n", " ") ?? "Selected work"}
@@ -178,6 +178,9 @@ const totalPanels = items.length + 2;
   .fs-section {
     position: relative;
     height: calc((var(--fs-total-panels) - 1) * var(--fs-panel-w) + 100vh);
+    /* No background here: the page wraps this section together with the
+       benefits stack in a single `bg-gradient`, so the gradient runs across
+       both as one surface instead of restarting per section. */
     /* Outer top/bottom section rule is applied per-placement on the page via
        the `section-rule-*` utilities — not baked in here. */
   }
